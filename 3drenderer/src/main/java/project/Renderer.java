@@ -6,6 +6,9 @@ import java.util.List;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL46;
 
+import project.shader.ShaderProgram;
+import project.utils.FileUtils;
+
 public class Renderer {
 	
 	private Window clientWindow;

@@ -1,4 +1,4 @@
-package project;
+package project.shader;
 
 import org.lwjgl.opengl.GL46;
 

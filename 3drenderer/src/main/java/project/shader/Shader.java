@@ -1,6 +1,8 @@
-package project;
+package project.shader;
 
 import org.lwjgl.opengl.GL46;
+
+import project.utils.FileUtils;
 
 public class Shader {
 
