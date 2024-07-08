@@ -39,7 +39,7 @@ public class Window {
 		});
 		
 		GLFW.glfwMakeContextCurrent(this.windowHandle);
-		GLFW.glfwSwapInterval(1); // v-sync
+		GLFW.glfwSwapInterval(0); // v-sync
 		this.renderer.init();
 	}
 	
