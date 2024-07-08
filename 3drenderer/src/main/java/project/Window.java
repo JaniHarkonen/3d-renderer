@@ -63,4 +63,12 @@ public class Window {
 	public void setRenderer(Renderer renderer) {
 		this.renderer = renderer;
 	}
+	
+	public int getWidth() {
+		return this.width;
+	}
+	
+	public int getHeight() {
+		return this.height;
+	}
 }

@@ -9,7 +9,7 @@ public class Application {
 	
 	public void execute() {
 		Window window = new Window(800, 600);
-		window.setRenderer(new Renderer());
+		window.setRenderer(new Renderer(window));
 		window.init();
 		
 		while( !window.closeIfNeeded() ) {
