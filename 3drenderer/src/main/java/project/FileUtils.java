@@ -32,6 +32,13 @@ public final class FileUtils {
 	
 	public static String getResourcePath(String relativePath) {
 		URL url = Renderer.class.getResource("/" + relativePath);
+		
+		if( url == null ) {
+			System.out.println("ERROR: Unable to resolve relative resource path: ");
+			System.out.println(relativePath);
+			return null;
+		}
+		
 		File file = new File(url.getPath());
 		return file.getAbsolutePath();
 	}

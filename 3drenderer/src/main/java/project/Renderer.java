@@ -11,11 +11,13 @@ public class Renderer {
 	private Window clientWindow;
 	private ShaderProgram shaderProgram;
 	private List<VAO> scene;
+	private Texture texture;
 	
 	public Renderer(Window clientWindow) {
 		this.clientWindow = clientWindow;
 		this.shaderProgram = null;
 		this.scene = null;
+		this.texture = null;
 	}
 
 	public void init() {
@@ -29,13 +31,22 @@ public class Renderer {
 		VAO vao = new VAO(0, 0, 0);
 		vao.init();
 		this.scene.add(vao);
+		
+		this.texture = new Texture(FileUtils.getResourcePath("creep.png"));
+		this.texture.init();
 	}
-	
+		
 	public void render() {
 		GL46.glClear(GL46.GL_COLOR_BUFFER_BIT | GL46.GL_DEPTH_BUFFER_BIT);
 		this.shaderProgram.bind();
 			
-			GL46.glViewport(0, 0, this.clientWindow.getWidth(), this.clientWindow.getHeight());
+				// Width and height are not yet updated when resizing the window
+			GL46.glViewport(
+				0, 0, this.clientWindow.getWidth(), this.clientWindow.getHeight()
+			);
+			
+			GL46.glActiveTexture(GL46.GL_TEXTURE0);
+			this.texture.bind();
 			
 			for( VAO vao : this.scene ) {
 				vao.bind();
