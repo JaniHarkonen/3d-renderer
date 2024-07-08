@@ -5,13 +5,15 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryUtil;
 
 public class Window {
+	private long windowHandle;
+	private String title;
 	private int width;
 	private int height;
-	private long windowID;
 	private Renderer renderer;
 	
-	public Window(int width, int height) {
-		this.windowID = MemoryUtil.NULL;
+	public Window(String title, int width, int height) {
+		this.windowHandle = MemoryUtil.NULL;
+		this.title = title;
 		this.width = width;
 		this.height = height;
 		this.renderer = null;
@@ -20,24 +22,24 @@ public class Window {
 	public void init() {
 		GLFW.glfwInit();
 		
-		this.windowID = GLFW.glfwCreateWindow(this.width, this.height, "3D renderer", MemoryUtil.NULL, MemoryUtil.NULL);
+		this.windowHandle = GLFW.glfwCreateWindow(this.width, this.height, this.title, MemoryUtil.NULL, MemoryUtil.NULL);
 		
-		if( this.windowID == MemoryUtil.NULL ) {
+		if( this.windowHandle == MemoryUtil.NULL ) {
 			System.out.println("Unable to create window!");
 			return;
 		}
 		
 		GLFWVidMode videoMode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-		GLFW.glfwSetWindowPos(this.windowID, videoMode.width() / 2 - this.width / 2, videoMode.height() / 2 - this.height / 2);
+		GLFW.glfwSetWindowPos(this.windowHandle, videoMode.width() / 2 - this.width / 2, videoMode.height() / 2 - this.height / 2);
 		
-		GLFW.glfwSetKeyCallback(this.windowID, (window, key, scancode, action, mods) -> {
+		GLFW.glfwSetKeyCallback(this.windowHandle, (window, key, scancode, action, mods) -> {
 			if( key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_PRESS ) {
-				GLFW.glfwSetWindowShouldClose(this.windowID, true);
+				GLFW.glfwSetWindowShouldClose(this.windowHandle, true);
 			}
 		});
 		
-		GLFW.glfwMakeContextCurrent(this.windowID);
-		GLFW.glfwSwapInterval(1); // v-sync
+		GLFW.glfwMakeContextCurrent(this.windowHandle);
+		GLFW.glfwSwapInterval(0); // v-sync
 		this.renderer.init();
 	}
 	
@@ -46,13 +48,13 @@ public class Window {
 	}
 	
 	public void swapBuffers() {
-		GLFW.glfwSwapBuffers(this.windowID);
+		GLFW.glfwSwapBuffers(this.windowHandle);
 		this.renderer.render();
 	}
 	
 	public boolean closeIfNeeded() {
-		if( GLFW.glfwWindowShouldClose(this.windowID) ) {
-			GLFW.glfwDestroyWindow(this.windowID);
+		if( GLFW.glfwWindowShouldClose(this.windowHandle) ) {
+			GLFW.glfwDestroyWindow(this.windowHandle);
 			GLFW.glfwTerminate();
 			return true;
 		}
@@ -62,5 +64,22 @@ public class Window {
 	
 	public void setRenderer(Renderer renderer) {
 		this.renderer = renderer;
+	}
+	
+	public void setTitle(String title) {
+		GLFW.glfwSetWindowTitle(this.windowHandle, title);
+		this.title = title;
+	}
+	
+	public int getWidth() {
+		return this.width;
+	}
+	
+	public int getHeight() {
+		return this.height;
+	}
+	
+	public String getTitle() {
+		return this.title;
 	}
 }
