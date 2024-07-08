@@ -23,9 +23,9 @@ public class VAO {
 		this.position = new Vector3f(x, y, z);
 		
 		this.positions = new float[] {
-			0.0f, 0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f
+			this.position.x + 0.0f, this.position.y + 0.5f, this.position.z + 0.0f,
+			this.position.x - 0.5f, this.position.y - 0.5f, this.position.z + 0.0f,
+			this.position.x + 0.5f, this.position.y - 0.5f, this.position.z + 0.0f
 		};
 		
 		this.textureCoordinates = new float[] {
@@ -89,5 +89,9 @@ public class VAO {
 	
 	public int getHandle() {
 		return this.vaoHandle;
+	}
+	
+	public Vector3f getPosition() {
+		return this.position;
 	}
 }
