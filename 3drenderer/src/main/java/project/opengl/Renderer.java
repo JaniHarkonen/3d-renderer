@@ -4,19 +4,26 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL46;
 
 import project.Window;
+import project.asset.Mesh;
 import project.scene.Camera;
+import project.scene.Model;
 import project.scene.Scene;
+import project.scene.SceneObject;
 import project.shader.ShaderProgram;
 
 public class Renderer {
 	
 	private Window clientWindow;
 	private ShaderProgram shaderProgram;
+	private VAOCache vaoCache;
+	private TextureCache textureCache;
 	private Scene scene;
 	
 	public Renderer(Window clientWindow, Scene scene) {
 		this.clientWindow = clientWindow;
 		this.shaderProgram = null;
+		this.vaoCache = null;
+		this.textureCache = null;
 		this.scene = scene;
 	}
 
@@ -30,12 +37,8 @@ public class Renderer {
 		
 			// Initialize scene graphics assets
 		this.scene.init();
-		
-		for( VAO vao : this.scene.getObjects() ) {
-			vao.init();
-		}
-		
-		this.scene.getTexture().init();
+		this.vaoCache = new VAOCache();
+		this.textureCache = new TextureCache();
 	}
 		
 	public void render() {
@@ -43,8 +46,7 @@ public class Renderer {
 		this.shaderProgram.bind();
 		this.shaderProgram.setDiffuseSamplerUniform(0);
 		
-		Camera activeCamera = this.scene.getCamera();
-		
+		Camera activeCamera = this.scene.getActiveCamera();
 		activeCamera.getProjection().update(
 			this.clientWindow.getWidth(), this.clientWindow.getHeight()
 		);
@@ -56,12 +58,23 @@ public class Renderer {
 				0, 0, this.clientWindow.getWidth(), this.clientWindow.getHeight()
 			);
 			
-			GL46.glActiveTexture(GL46.GL_TEXTURE0);
-			this.scene.getTexture().bind();
-			
-			for( VAO vao : this.scene.getObjects() ) {
-				vao.bind();
-				GL46.glDrawArrays(GL46.GL_TRIANGLES, 0, vao.getVertexCount());
+			for( SceneObject object : this.scene.getObjects() ) {
+				
+					// Determine the appropriate way of rendering the object
+					// (THIS MUST BE CHANGED TO A MORE DYNAMIC APPROACH)
+				if( object instanceof Model ) {
+					Model model = (Model) object;
+					Texture texture = model.getTexture();
+					Mesh mesh = model.getMesh();
+					
+					this.textureCache.generateIfNotEncountered(texture);
+					GL46.glActiveTexture(GL46.GL_TEXTURE0);
+					texture.bind();
+					
+					VAO vao = this.vaoCache.getOrGenerate(mesh);
+					vao.bind();
+					GL46.glDrawArrays(GL46.GL_TRIANGLES, 0, vao.getVertexCount());
+				}
 			}
 		
 		this.shaderProgram.unbind();

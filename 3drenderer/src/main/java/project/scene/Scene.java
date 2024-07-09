@@ -4,43 +4,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import project.geometry.Projection;
-import project.opengl.Texture;
-import project.opengl.VAO;
-import project.utils.FileUtils;
 
 public class Scene {
-	private List<VAO> objects;
-	private Texture texture;
-	private Camera camera;
+	private List<SceneObject> objects;
+	private Camera activeCamera;
 	
 	public Scene() {
 		this.objects = null;
-		this.texture = null;
-		this.camera = null;
+		this.activeCamera = null;
 	}
 	
 	public void init() {
+		this.activeCamera = new Camera(new Projection(60.0f, 0.01f, 1000.0f));
 		this.objects = new ArrayList<>();
-		this.texture = new Texture(FileUtils.getResourcePath("creep.png"));
-		this.camera = new Camera(new Projection(60.0f, 0.01f, 1000.0f));
-		
-		VAO vao = new VAO(0, 0, -1);
-		this.objects.add(vao);
+		this.objects.add(new Model());
+		this.objects.add(this.activeCamera);
 	}
 
 	public void update() {
 		
 	}
 	
-	public List<VAO> getObjects() {
+	public List<SceneObject> getObjects() {
 		return this.objects;
 	}
 	
-	public Texture getTexture() {
-		return this.texture;
-	}
-	
-	public Camera getCamera() {
-		return this.camera;
+	public Camera getActiveCamera() {
+		return this.activeCamera;
 	}
 }

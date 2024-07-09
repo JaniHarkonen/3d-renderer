@@ -7,8 +7,6 @@
 
 ### Renderer
 - separate Renderer into different render passes, for example, color pass for scene rendering, shadow pass for shadows etc.
-- Renderer should not initialize the Scene, rather, this should be done inside Scene
-- textures should be bound to Models, which should consist of Textures, Meshes, and possibly later, armatures
 
 ### ShaderProgram
 - uniforms should be stored in a Map or some other container where they can be easily fetched from
@@ -19,7 +17,5 @@
 - finish Camera-class so that it can be rotated and moved around the scene
 
 ### VAO
-- extract mesh info into a separate Mesh-class
 - mesh info should not be represented by arrays, possibly
-- VAOs should be generated based on Meshes
 - consider creating a VBO-class for VBO generation

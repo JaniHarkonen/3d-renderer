@@ -2,7 +2,7 @@ package project.scene;
 
 import project.geometry.Projection;
 
-public class Camera {
+public class Camera extends SceneObject {
 
 	private Projection projection;
 	
