@@ -14,11 +14,12 @@ public class Application {
 		final String TITLE = "3D Renderer";
 		final int FPS_MAX = 60;
 		
-		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);
-		window.setRenderer(new Renderer(window));
-		window.init();
-		
 		Scene scene = new Scene();
+		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);
+		Renderer renderer = new Renderer(window, scene);
+		
+		window.setRenderer(renderer);
+		window.init();
 		
 		while( !window.isDestroyed() ) {
 			window.refresh();
