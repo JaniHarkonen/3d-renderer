@@ -1,4 +1,4 @@
-package project;
+package project.opengl;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;

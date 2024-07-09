@@ -1,4 +1,4 @@
-package project;
+package project.scene;
 
 public class Scene {
 

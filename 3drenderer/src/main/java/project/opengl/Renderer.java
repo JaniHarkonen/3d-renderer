@@ -1,4 +1,4 @@
-package project;
+package project.opengl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,9 @@ import java.util.List;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL46;
 
+import project.Window;
 import project.geometry.Projection;
+import project.scene.Camera;
 import project.shader.ShaderProgram;
 import project.utils.FileUtils;
 

@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.net.URL;
 
-import project.Renderer;
+import project.opengl.Renderer;
 
 public final class FileUtils {
 

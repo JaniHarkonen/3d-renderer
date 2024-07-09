@@ -1,4 +1,4 @@
-package project;
+package project.scene;
 
 import project.geometry.Projection;
 
