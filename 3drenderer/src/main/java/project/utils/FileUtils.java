@@ -1,9 +1,11 @@
-package project;
+package project.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.net.URL;
+
+import project.opengl.Renderer;
 
 public final class FileUtils {
 
@@ -23,8 +25,11 @@ public final class FileUtils {
 			return sourceBuilder.toString();
 			
 		} catch( Exception e ) {
-			System.out.println("ERROR: Unable to read file: ");
-			System.out.println(path);
+			DebugUtils.log(
+				"[FileUtils.readTextFile(String)]",
+				"ERROR: Unable to read file: ",
+				path
+			);
 		}
 		
 		return "";
@@ -34,8 +39,11 @@ public final class FileUtils {
 		URL url = Renderer.class.getResource("/" + relativePath);
 		
 		if( url == null ) {
-			System.out.println("ERROR: Unable to resolve relative resource path: ");
-			System.out.println(relativePath);
+			DebugUtils.log(
+				"[FileUtils.getResourcePath(String)]", 
+				"ERROR: Unable to resolve relative resource path: ",
+				relativePath
+			);
 			return null;
 		}
 		

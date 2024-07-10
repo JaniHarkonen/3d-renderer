@@ -4,9 +4,9 @@ in vec2 outTextureCoordinate;
 
 out vec4 fragColor;
 
-uniform sampler2D diffuseSampler;
+uniform sampler2D uDiffuseSampler;
 
 void main()
 {
-    fragColor = texture(diffuseSampler, outTextureCoordinate);
+    fragColor = texture(uDiffuseSampler, outTextureCoordinate);
 }

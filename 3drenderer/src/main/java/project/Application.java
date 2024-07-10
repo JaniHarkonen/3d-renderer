@@ -1,6 +1,12 @@
 package project;
 
+import project.opengl.Renderer;
+import project.scene.Scene;
+import project.utils.DebugUtils;
+
 public class Application {
+	
+	private Window window;
 
 	public static void main(String[] args) {
 		Application app = new Application();
@@ -10,31 +16,25 @@ public class Application {
 	public void execute() {
 		final String TITLE = "3D Renderer";
 		final int FPS_MAX = 60;
+		final int TICK_RATE = 60;
 		
-		Window window = new Window(TITLE, 800, 600);
-		window.setRenderer(new Renderer(window));
+		Scene scene = new Scene(this, TICK_RATE);
+		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);
+		this.window = window;
+		Renderer renderer = new Renderer(window, scene);
+		
+		window.setRenderer(renderer);
 		window.init();
 		
-		long time = System.nanoTime();
-		long frameTime = System.nanoTime();
-		long frameDelta = 1000000000 / FPS_MAX;
-		int counter = 0;
-		while( !window.closeIfNeeded() ) {
-			if( System.nanoTime() - frameTime >= frameDelta ) {
-				frameTime = System.nanoTime();
-				
-				window.pollInputEvents();
-				window.swapBuffers();
-				counter++;
-				
-				if( System.nanoTime() - time >= 1000000000 ) {
-					window.setTitle(TITLE + " | FPS: " + counter + "/" + FPS_MAX);
-					counter = 0;
-					time = System.nanoTime();
-				}
-			}
+		while( !window.isDestroyed() ) {
+			window.refresh();
+			scene.update();
 		}
 		
-		System.out.println("main loop terminated!");
+		DebugUtils.log(this, "main loop terminated!");
+	}
+	
+	public Window getWindow() {
+		return this.window;
 	}
 }
