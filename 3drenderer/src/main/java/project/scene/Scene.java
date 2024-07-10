@@ -10,12 +10,14 @@ public class Scene {
 	private Camera activeCamera;
 	private long deltaTimer;
 	private long tickDelta;
+	private long tickTimer;
 	private int tickRate;
 	
 	public Scene(int tickRate) {
 		this.objects = null;
 		this.activeCamera = null;
 		this.deltaTimer = System.nanoTime();
+		this.tickTimer = System.nanoTime();
 		this.setTickRate(tickRate);
 	}
 	
@@ -27,13 +29,13 @@ public class Scene {
 	}
 
 	public void update() {
-		/*if( System.nanoTime() - this.deltaTimer < this.tickDelta ) {
+		if( System.nanoTime() - this.deltaTimer < this.tickDelta ) {
 			return;
-		}*/
-		
-		this.deltaTimer = System.nanoTime();
+		}
 		
 		float deltaTime = (System.nanoTime() - this.deltaTimer) / 1000000000.0f;
+		this.deltaTimer = System.nanoTime();
+		
 		for( SceneObject object : this.objects ) {
 			object.tick(deltaTime);
 		}
