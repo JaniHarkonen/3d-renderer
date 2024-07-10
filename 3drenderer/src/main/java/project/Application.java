@@ -5,6 +5,8 @@ import project.scene.Scene;
 import project.utils.DebugUtils;
 
 public class Application {
+	
+	private Window window;
 
 	public static void main(String[] args) {
 		Application app = new Application();
@@ -16,8 +18,9 @@ public class Application {
 		final int FPS_MAX = 60;
 		final int TICK_RATE = 60;
 		
-		Scene scene = new Scene(TICK_RATE);
+		Scene scene = new Scene(this, TICK_RATE);
 		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);
+		this.window = window;
 		Renderer renderer = new Renderer(window, scene);
 		
 		window.setRenderer(renderer);
@@ -29,5 +32,9 @@ public class Application {
 		}
 		
 		DebugUtils.log(this, "main loop terminated!");
+	}
+	
+	public Window getWindow() {
+		return this.window;
 	}
 }

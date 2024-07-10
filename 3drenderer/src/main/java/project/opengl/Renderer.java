@@ -52,6 +52,7 @@ public class Renderer {
 		);
 		
 		this.shaderProgram.setProjectionUniform(activeCamera.getProjection().getMatrix());
+		this.shaderProgram.setCameraTransformUniform(activeCamera.getCameraTransform());
 			
 				// Width and height are not yet updated when resizing the window
 			GL46.glViewport(
@@ -63,7 +64,7 @@ public class Renderer {
 					// Determine the appropriate way of rendering the object
 					// (THIS MUST BE CHANGED TO A MORE DYNAMIC APPROACH)
 				if( object instanceof Model ) {
-					this.shaderProgram.setTransformUniform(object.getTransformMatrix());
+					this.shaderProgram.setObjectTransformUniform(object.getTransformMatrix());
 					
 					Model model = (Model) object;
 					Texture texture = model.getTexture();

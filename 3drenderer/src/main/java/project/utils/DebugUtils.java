@@ -2,8 +2,11 @@ package project.utils;
 
 public final class DebugUtils {
 
-	public static void log(Object me, Object message) {
+	public static void log(Object me, Object... messages) {
 		System.out.println("[" + me + "]");
-		System.out.println(message);
+		
+		for( Object message : messages ) {
+			System.out.println(message);
+		}
 	}
 }

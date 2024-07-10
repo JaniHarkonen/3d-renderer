@@ -7,6 +7,8 @@ import org.lwjgl.opengl.GL46;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
+import project.utils.DebugUtils;
+
 public class Texture {
 
 	private String texturePath;
@@ -28,10 +30,13 @@ public class Texture {
 			);
 			
 			if( textureBuffer == null ) {
-				System.out.println("ERROR: Unable to load texture: ");
-				System.out.println(this.texturePath);
-				System.out.println("Reason: ");
-				System.out.println(STBImage.stbi_failure_reason());
+				DebugUtils.log(
+					this,
+					"ERROR: Unable to load texture: ",
+					this.texturePath,
+					"Reason: ",
+					STBImage.stbi_failure_reason()
+				);
 				
 				return;
 			}

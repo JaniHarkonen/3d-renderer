@@ -5,6 +5,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryUtil;
 
 import project.opengl.Renderer;
+import project.utils.DebugUtils;
 
 public class Window {
 	private long windowHandle;
@@ -19,6 +20,10 @@ public class Window {
 	private int fpsCounter;
 	private long fpsTimer;
 	
+		// Public for now, must be moved to a different class
+	public double mouseX;
+	public double mouseY;
+	
 	private long frameDelta;
 	private long frameTimer;
 	
@@ -32,10 +37,16 @@ public class Window {
 		this.height = height;
 		this.fpsMax = fpsMax;
 		this.vsync = vsync;
+		
 		this.fpsTimer = 0;
 		this.fpsCounter = 0;
+		
+		this.mouseX = 0.0d;
+		this.mouseY = 0.0d;
+		
 		this.frameDelta = 1000000000 / this.fpsMax;
 		this.frameTimer = 0;
+		
 		this.renderer = null;
 	}
 	
@@ -48,7 +59,7 @@ public class Window {
 		);
 		
 		if( this.windowHandle == MemoryUtil.NULL ) {
-			System.out.println("Unable to create window!");
+			DebugUtils.log(this, "Unable to create window!");
 			return;
 		}
 		
@@ -60,15 +71,21 @@ public class Window {
 			videoMode.height() / 2 - this.height / 2
 		);
 		
-			// Listen to key-presses
+			// Listen to key presses
 		GLFW.glfwSetKeyCallback(this.windowHandle, (window, key, scancode, action, mods) -> {
 			if( key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_PRESS ) {
 				GLFW.glfwSetWindowShouldClose(this.windowHandle, true);
 			}
 		});
 		
+			// Listen to mouse input
+		GLFW.glfwSetCursorPosCallback(this.windowHandle, (handle, xpos, ypos) -> {
+			this.mouseX = xpos;
+			this.mouseY = ypos;
+		});
+		
 		GLFW.glfwMakeContextCurrent(this.windowHandle);
-		GLFW.glfwSwapInterval(vsync); // v-sync
+		GLFW.glfwSwapInterval(this.vsync); // v-sync
 		this.isDestroyed = false;
 		
 		this.renderer.init();
@@ -87,7 +104,7 @@ public class Window {
 		}
 		
 			// Only refresh if the frame timer allows it
-			// This will cap the fps to the given FPS max
+			// This will cap the FPS to the given FPS max
 		if( System.nanoTime() - this.frameTimer < this.frameDelta ) {
 			return;
 		}
@@ -120,6 +137,10 @@ public class Window {
 	
 	public boolean isDestroyed() {
 		return this.isDestroyed;
+	}
+	
+	public long getHandle() {
+		return this.windowHandle;
 	}
 	
 	public int getWidth() {

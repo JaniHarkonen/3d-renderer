@@ -2,6 +2,7 @@ package project.shader;
 
 import org.lwjgl.opengl.GL46;
 
+import project.utils.DebugUtils;
 import project.utils.FileUtils;
 
 public class Shader {
@@ -25,8 +26,11 @@ public class Shader {
 		GL46.glCompileShader(this.handle);
 		
 		if( GL46.glGetShaderi(this.handle, GL46.GL_COMPILE_STATUS) != GL46.GL_TRUE ) {
-			System.out.println("ERROR: Unable to compile shader 'default.frag' Reason:");
-			System.out.println(GL46.glGetShaderInfoLog(this.handle));
+			DebugUtils.log(
+				this, 
+				"ERROR: Unable to compile shader 'default.frag' Reason:",
+				GL46.glGetShaderInfoLog(this.handle)
+			);
 		}
 	}
 	

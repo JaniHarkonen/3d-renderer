@@ -6,24 +6,23 @@ import org.joml.Vector3f;
 
 public abstract class SceneObject {
 
-	private Vector3f position;
-	private Quaternionf rotation;
-	private Vector3f scale;
-	private Matrix4f transformMatrix;
+	protected final Scene scene;
 	
+	protected Vector3f position;
+	protected Quaternionf rotation;
+	protected Vector3f scale;
+	protected Matrix4f transformMatrix;
 	
-	public SceneObject() {
+	public SceneObject(Scene scene) {
 		this.position = new Vector3f(0.0f);
 		this.rotation = new Quaternionf();
 		this.scale = new Vector3f(1.0f);
 		this.transformMatrix = new Matrix4f();
+		this.scene = scene;
 	}
 	
 	
-	public void tick(float deltaTime) {
-		this.position.add(0, 0, -1.0f * deltaTime);
-		this.updateTransformMatrix();
-	}
+	public abstract void tick(float deltaTime);
 	
 	public void updateTransformMatrix() {
 		this.transformMatrix.translationRotateScale(
@@ -57,5 +56,9 @@ public abstract class SceneObject {
 	
 	public Matrix4f getTransformMatrix() {
 		return this.transformMatrix;
+	}
+	
+	public Scene getScene() {
+		return this.scene;
 	}
 }
