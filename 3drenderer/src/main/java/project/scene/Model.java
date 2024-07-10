@@ -10,6 +10,7 @@ public class Model extends SceneObject {
 	private Texture texture;
 	
 	public Model() {
+		super();
 		this.mesh = new Mesh();
 		this.texture = new Texture(FileUtils.getResourcePath("creep.png"));
 	}

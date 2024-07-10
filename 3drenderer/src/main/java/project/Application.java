@@ -2,6 +2,7 @@ package project;
 
 import project.opengl.Renderer;
 import project.scene.Scene;
+import project.utils.DebugUtils;
 
 public class Application {
 
@@ -13,8 +14,9 @@ public class Application {
 	public void execute() {
 		final String TITLE = "3D Renderer";
 		final int FPS_MAX = 60;
+		final int TICK_RATE = 60;
 		
-		Scene scene = new Scene();
+		Scene scene = new Scene(TICK_RATE);
 		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);
 		Renderer renderer = new Renderer(window, scene);
 		
@@ -26,6 +28,6 @@ public class Application {
 			scene.update();
 		}
 		
-		System.out.println("main loop terminated!");
+		DebugUtils.log(this, "main loop terminated!");
 	}
 }

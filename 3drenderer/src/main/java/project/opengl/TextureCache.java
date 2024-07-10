@@ -15,7 +15,6 @@ public class TextureCache {
 		if( !this.textureSet.contains(texture) ) {
 			texture.init();
 			this.textureSet.add(texture);
-			System.out.println("not encountered");
 		}
 	}
 }

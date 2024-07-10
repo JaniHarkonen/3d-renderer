@@ -63,6 +63,8 @@ public class Renderer {
 					// Determine the appropriate way of rendering the object
 					// (THIS MUST BE CHANGED TO A MORE DYNAMIC APPROACH)
 				if( object instanceof Model ) {
+					this.shaderProgram.setTransformUniform(object.getTransformMatrix());
+					
 					Model model = (Model) object;
 					Texture texture = model.getTexture();
 					Mesh mesh = model.getMesh();

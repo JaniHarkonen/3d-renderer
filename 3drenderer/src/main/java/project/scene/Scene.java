@@ -8,10 +8,15 @@ import project.geometry.Projection;
 public class Scene {
 	private List<SceneObject> objects;
 	private Camera activeCamera;
+	private long deltaTimer;
+	private long tickDelta;
+	private int tickRate;
 	
-	public Scene() {
+	public Scene(int tickRate) {
 		this.objects = null;
 		this.activeCamera = null;
+		this.deltaTimer = System.nanoTime();
+		this.setTickRate(tickRate);
 	}
 	
 	public void init() {
@@ -22,7 +27,21 @@ public class Scene {
 	}
 
 	public void update() {
+		/*if( System.nanoTime() - this.deltaTimer < this.tickDelta ) {
+			return;
+		}*/
 		
+		this.deltaTimer = System.nanoTime();
+		
+		float deltaTime = (System.nanoTime() - this.deltaTimer) / 1000000000.0f;
+		for( SceneObject object : this.objects ) {
+			object.tick(deltaTime);
+		}
+	}
+	
+	public void setTickRate(int tickRate) {
+		this.tickRate = tickRate;
+		this.tickDelta = 1000000000 / this.tickRate;
 	}
 	
 	public List<SceneObject> getObjects() {
