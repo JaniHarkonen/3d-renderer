@@ -37,6 +37,7 @@ public class Scene {
 		float deltaTime = (System.nanoTime() - this.deltaTimer) / 1000000000.0f;
 		this.deltaTimer = System.nanoTime();
 		
+		this.app.getWindow().pollInput();
 		for( SceneObject object : this.objects ) {
 			object.tick(deltaTime);
 		}

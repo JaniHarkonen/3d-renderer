@@ -4,6 +4,8 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryUtil;
 
+import project.input.Input;
+import project.input.InputSnapshot;
 import project.opengl.Renderer;
 import project.utils.DebugUtils;
 
@@ -20,14 +22,12 @@ public class Window {
 	private int fpsCounter;
 	private long fpsTimer;
 	
-		// Public for now, must be moved to a different class
-	public double mouseX;
-	public double mouseY;
-	
 	private long frameDelta;
 	private long frameTimer;
 	
 	private Renderer renderer;
+	private Input input;
+	private InputSnapshot latestInputSnapshot;
 	
 	public Window(String title, int width, int height, int fpsMax, int vsync) {
 		this.windowHandle = MemoryUtil.NULL;
@@ -41,13 +41,12 @@ public class Window {
 		this.fpsTimer = 0;
 		this.fpsCounter = 0;
 		
-		this.mouseX = 0.0d;
-		this.mouseY = 0.0d;
-		
 		this.frameDelta = 1000000000 / this.fpsMax;
 		this.frameTimer = 0;
 		
 		this.renderer = null;
+		this.input = null;
+		this.latestInputSnapshot = null;
 	}
 	
 	public void init() {
@@ -71,18 +70,9 @@ public class Window {
 			videoMode.height() / 2 - this.height / 2
 		);
 		
-			// Listen to key presses
-		GLFW.glfwSetKeyCallback(this.windowHandle, (window, key, scancode, action, mods) -> {
-			if( key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_PRESS ) {
-				GLFW.glfwSetWindowShouldClose(this.windowHandle, true);
-			}
-		});
-		
-			// Listen to mouse input
-		GLFW.glfwSetCursorPosCallback(this.windowHandle, (handle, xpos, ypos) -> {
-			this.mouseX = xpos;
-			this.mouseY = ypos;
-		});
+			// Bind input listener
+		this.input = new Input();
+		this.input.bind(this);
 		
 		GLFW.glfwMakeContextCurrent(this.windowHandle);
 		GLFW.glfwSwapInterval(this.vsync); // v-sync
@@ -92,6 +82,7 @@ public class Window {
 	}
 	
 	public void refresh() {
+		this.input.updateBackSnapshot();
 		
 			// FPS-counter
 		if( System.nanoTime() - this.fpsTimer >= 1000000000 ) {
@@ -111,11 +102,9 @@ public class Window {
 		
 		this.frameTimer = System.nanoTime();
 		
-		GLFW.glfwPollEvents();
-		
 			// Polling events may cause the window to be marked as "closing"
 			// Buffers don't need to be swapped on destroyed windows
-		if( GLFW.glfwWindowShouldClose(this.windowHandle) ) {
+		if( this.input.getSnapshot().isKeyHeld(GLFW.GLFW_KEY_ESCAPE) ) {
 			this.destroy();
 			return;
 		}
@@ -123,6 +112,11 @@ public class Window {
 		GLFW.glfwSwapBuffers(this.windowHandle);
 		this.renderer.render();
 		this.fpsCounter++;
+	}
+	
+	public void pollInput() {
+		this.input.updateFrontSnapshot();
+		this.latestInputSnapshot = this.input.getSnapshot();
 	}
 	
 	public void destroy() {
@@ -133,6 +127,10 @@ public class Window {
 	
 	public void setRenderer(Renderer renderer) {
 		this.renderer = renderer;
+	}
+	
+	public void setInput(Input input) {
+		this.input = input;
 	}
 	
 	public boolean isDestroyed() {
@@ -153,5 +151,9 @@ public class Window {
 	
 	public String getTitle() {
 		return this.title;
+	}
+	
+	public InputSnapshot getInputSnapshot() {
+		return this.latestInputSnapshot;
 	}
 }

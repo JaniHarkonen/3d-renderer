@@ -17,11 +17,6 @@ public class Camera extends SceneObject {
 	private Vector2f rotation2D;
 	private Matrix4f cameraTransform;
 	
-		// Should be stored in a separate controller object
-	private double mousePreviousX;
-	private double mousePreviousY;
-		///////////////////////////////////////////////////
-	
 	public Camera(Scene scene, Projection projection) {
 		super(scene);
 		this.projection = projection;
@@ -30,9 +25,6 @@ public class Camera extends SceneObject {
 		this.up = new Vector3f(0.0f);
 		this.rotation2D = new Vector2f(0.0f);
 		this.cameraTransform = new Matrix4f();
-		
-		this.mousePreviousX = 0.0d;
-		this.mousePreviousY = 0.0d;
 	}
 	
 	
@@ -41,26 +33,22 @@ public class Camera extends SceneObject {
 		Window window = this.scene.getApp().getWindow();
 		float sensitivity = 0.1f;
 		this.rotate2D(
-			(float) Math.toRadians(sensitivity * (window.mouseY - this.mousePreviousY)),
-			(float) Math.toRadians(sensitivity * (window.mouseX - this.mousePreviousX))
+			(float) Math.toRadians(sensitivity * (window.getInputSnapshot().getMouseDeltaY())),
+			(float) Math.toRadians(sensitivity * (window.getInputSnapshot().getMouseDeltaX()))
 		);
 		
-		if( GLFW.glfwGetKey(window.getHandle(), GLFW.GLFW_KEY_W) == GLFW.GLFW_PRESS ) {
+		
+		if( window.getInputSnapshot().isKeyHeld(GLFW.GLFW_KEY_W) ) {
 			this.moveForward(1.0f * deltaTime);
-		} else if( GLFW.glfwGetKey(window.getHandle(), GLFW.GLFW_KEY_S) == GLFW.GLFW_PRESS ) {
+		} else if( window.getInputSnapshot().isKeyHeld(GLFW.GLFW_KEY_S) ) {
 			this.moveBackwards(1.0f * deltaTime);
 		}
 		
-		if( GLFW.glfwGetKey(window.getHandle(), GLFW.GLFW_KEY_A) == GLFW.GLFW_PRESS ) {
+		if( window.getInputSnapshot().isKeyHeld(GLFW.GLFW_KEY_A) ) {
 			this.moveLeft(1.0f * deltaTime);
-		} else if( GLFW.glfwGetKey(window.getHandle(), GLFW.GLFW_KEY_D) == GLFW.GLFW_PRESS ) {
+		} else if( window.getInputSnapshot().isKeyHeld(GLFW.GLFW_KEY_D) ) {
 			this.moveRight(1.0f * deltaTime);
 		}
-		
-		GLFW.glfwSetCursorPos(window.getHandle(), window.getWidth() / 2, window.getHeight() / 2);
-		
-		this.mousePreviousX = window.getWidth() / 2;
-		this.mousePreviousY = window.getHeight() / 2;
 	}
 	
 	public void rotate2D(float x, float y) {
