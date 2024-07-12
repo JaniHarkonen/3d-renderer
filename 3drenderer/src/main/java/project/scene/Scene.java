@@ -7,7 +7,7 @@ import project.Application;
 import project.geometry.Projection;
 
 public class Scene {
-	private List<SceneObject> objects;
+	private List<ASceneObject> objects;
 	private Camera activeCamera;
 	private long deltaTimer;
 	private long tickDelta;
@@ -38,7 +38,7 @@ public class Scene {
 		this.deltaTimer = System.nanoTime();
 		
 		this.app.getWindow().pollInput();
-		for( SceneObject object : this.objects ) {
+		for( ASceneObject object : this.objects ) {
 			object.tick(deltaTime);
 		}
 	}
@@ -48,7 +48,7 @@ public class Scene {
 		this.tickDelta = 1000000000 / this.tickRate;
 	}
 	
-	public List<SceneObject> getObjects() {
+	public List<ASceneObject> getObjects() {
 		return this.objects;
 	}
 	

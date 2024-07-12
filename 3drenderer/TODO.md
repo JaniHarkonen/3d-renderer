@@ -17,11 +17,5 @@
 - mesh info should not be represented by arrays, possibly
 - consider creating a VBO-class for VBO generation
 
-### SceneObject
-- rename to ASceneObject as the class is abstract
-
-### Input
-- cursor should be disabled as resetting the mouse position yields volatile results
-
 ### Controller
 - create a new Controller-class whose responsibility it is to map input events into actions that control SceneObjects

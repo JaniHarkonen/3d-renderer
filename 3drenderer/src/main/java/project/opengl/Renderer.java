@@ -8,7 +8,7 @@ import project.asset.Mesh;
 import project.scene.Camera;
 import project.scene.Model;
 import project.scene.Scene;
-import project.scene.SceneObject;
+import project.scene.ASceneObject;
 import project.shader.ShaderProgram;
 
 public class Renderer {
@@ -59,7 +59,7 @@ public class Renderer {
 				0, 0, this.clientWindow.getWidth(), this.clientWindow.getHeight()
 			);
 			
-			for( SceneObject object : this.scene.getObjects() ) {
+			for( ASceneObject object : this.scene.getObjects() ) {
 				
 					// Determine the appropriate way of rendering the object
 					// (THIS MUST BE CHANGED TO A MORE DYNAMIC APPROACH)

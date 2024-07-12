@@ -8,7 +8,7 @@ import org.lwjgl.glfw.GLFW;
 import project.Window;
 import project.geometry.Projection;
 
-public class Camera extends SceneObject {
+public class Camera extends ASceneObject {
 
 	private Projection projection;
 	private Vector3f direction;

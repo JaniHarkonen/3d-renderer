@@ -110,9 +110,18 @@ public class Window {
 		
 		this.frameTimer = System.nanoTime();
 		
+			// Toggle cursor visibility upon pressing ESC
+		if( this.input.getLatestInput().isKeyPressed(GLFW.GLFW_KEY_ESCAPE) ) {
+			GLFW.glfwSetInputMode(
+	            this.windowHandle, 
+	            GLFW.GLFW_CURSOR, 
+	            GLFW.glfwGetInputMode(this.windowHandle, GLFW.GLFW_CURSOR) == GLFW.GLFW_CURSOR_NORMAL ? GLFW.GLFW_CURSOR_DISABLED : GLFW.GLFW_CURSOR_NORMAL
+	        );
+		}
+		
 			// Polling events may cause the window to be marked as "closing"
-			// Buffers don't need to be swapped on destroyed windows
-		if( this.input.getLatestInput().isKeyHeld(GLFW.GLFW_KEY_ESCAPE) ) {
+			// Buffers of destroyed windows don't need to be swapped
+		if( GLFW.glfwWindowShouldClose(this.windowHandle) ) {
 			this.destroy();
 			return;
 		}

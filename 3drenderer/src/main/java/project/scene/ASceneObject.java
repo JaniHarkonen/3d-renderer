@@ -4,7 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public abstract class SceneObject {
+public abstract class ASceneObject {
 
 	protected final Scene scene;
 	
@@ -13,7 +13,7 @@ public abstract class SceneObject {
 	protected Vector3f scale;
 	protected Matrix4f transformMatrix;
 	
-	public SceneObject(Scene scene) {
+	public ASceneObject(Scene scene) {
 		this.position = new Vector3f(0.0f);
 		this.rotation = new Quaternionf();
 		this.scale = new Vector3f(1.0f);

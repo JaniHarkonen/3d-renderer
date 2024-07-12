@@ -4,7 +4,7 @@ import project.asset.Mesh;
 import project.opengl.Texture;
 import project.utils.FileUtils;
 
-public class Model extends SceneObject {
+public class Model extends ASceneObject {
 
 	private Mesh mesh;
 	private Texture texture;
