@@ -70,6 +70,14 @@ public class Window {
 			videoMode.height() / 2 - this.height / 2
 		);
 		
+			// Disable the cursor to allow free range of motion
+			// (enable the cursor, once interacting with menus or other window bound UI elements)
+		GLFW.glfwSetInputMode(
+            this.windowHandle, 
+            GLFW.GLFW_CURSOR, 
+            GLFW.GLFW_CURSOR_DISABLED
+        );
+		
 			// Bind input listener
 		this.input = new Input();
 		this.input.bind(this);
@@ -104,7 +112,7 @@ public class Window {
 		
 			// Polling events may cause the window to be marked as "closing"
 			// Buffers don't need to be swapped on destroyed windows
-		if( this.input.getSnapshot().isKeyHeld(GLFW.GLFW_KEY_ESCAPE) ) {
+		if( this.input.getLatestInput().isKeyHeld(GLFW.GLFW_KEY_ESCAPE) ) {
 			this.destroy();
 			return;
 		}
@@ -116,7 +124,7 @@ public class Window {
 	
 	public void pollInput() {
 		this.input.updateFrontSnapshot();
-		this.latestInputSnapshot = this.input.getSnapshot();
+		this.latestInputSnapshot = this.input.getLatestInput();
 	}
 	
 	public void destroy() {

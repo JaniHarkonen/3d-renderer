@@ -7,26 +7,20 @@ import project.utils.DebugUtils;
 
 public class Input {
 	private Window clientWindow;
-	private InputSnapshot frontSnapshot;
-	private InputSnapshot backSnapshot;
+	private InputSnapshot front;
+	private InputSnapshot back;
 	
 	public Input() {
 		this.clientWindow = null;
-		this.frontSnapshot = null;
-		this.backSnapshot = null;
+		this.front = null;
+		this.back = null;
 	}
 
 	
 	public void bind(Window clientWindow) {
 		this.clientWindow = clientWindow;
-		this.frontSnapshot = new InputSnapshot();
-		this.backSnapshot = new InputSnapshot();
-		
-		/*GLFW.glfwSetKeyCallback(this.windowHandle, (window, key, scancode, action, mods) -> {
-			if( key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_PRESS ) {
-				GLFW.glfwSetWindowShouldClose(this.windowHandle, true);
-			}
-		});*/
+		this.front = new InputSnapshot();
+		this.back = new InputSnapshot();
 		
 			// Bind key listener
 		long windowHandle = this.clientWindow.getHandle();
@@ -37,6 +31,7 @@ public class Input {
 			}
 		);
 		
+			// Bind mouse button listener
 		GLFW.glfwSetMouseButtonCallback(
 			windowHandle, 
 			(window, button, action, mods) -> {
@@ -57,15 +52,10 @@ public class Input {
 	
 	public void updateBackSnapshot() {
 		GLFW.glfwPollEvents();
-		GLFW.glfwSetCursorPos(
-			this.clientWindow.getHandle(), 
-			this.clientWindow.getWidth() / 2, 
-			this.clientWindow.getHeight() / 2
-		);
 	}
 	
 	public void updateFrontSnapshot() {
-		this.backSnapshot.snapshot(this.frontSnapshot);
+		this.back.snapshot(this.front);
 	}
 	
 	private void keyListener(
@@ -73,34 +63,48 @@ public class Input {
 	) {
 		switch( action ) {
 			case GLFW.GLFW_REPEAT:
-			case GLFW.GLFW_PRESS: {
-				this.backSnapshot.attemptToPressKey(key);
+			case GLFW.GLFW_PRESS: this.back.attemptToPressKey(key); break;
+			
+			case GLFW.GLFW_RELEASE: this.back.attemptToReleaseKey(key); break;
+			
+			default: {
+				DebugUtils.log(
+					this,
+					"WARNING: Unknown action code '" + action + "' on keyboard key '" + 
+					key + "'!"
+				);
 			} break;
-			
-			case GLFW.GLFW_RELEASE: this.backSnapshot.attemptToReleaseKey(key); break;
-			
-			default: DebugUtils.log(this, "WARNING: Unknown action code '" + action + "'!"); return;
 		}
 	}
 	
 	private void mousePositionListener(long window, double xpos, double ypos) {
-		this.backSnapshot.setMouseMetrics(
-			xpos, 
-			ypos, 
-			xpos - (this.clientWindow.getWidth() / 2), 
-			ypos - (this.clientWindow.getHeight() / 2)
-		);
+		this.back.setMousePosition(xpos, ypos);
 	}
 	
 	private void mouseButtonListener(long window, int button, int action, int mods) {
-		
+		switch( action ) {
+			case GLFW.GLFW_REPEAT:
+			case GLFW.GLFW_PRESS: {
+				this.back.attemptToPressMouseButton(button);
+			} break;
+			
+			case GLFW.GLFW_RELEASE: this.back.attemptToReleaseMouseButton(button); break;
+			
+			default: {
+				DebugUtils.log(
+					this,
+					"WARNING: Unknown action code '" + action + "' on mouse button '" + 
+					button + "'!"
+				);
+			} break;
+		}
 	}
 	
 	private void keyboardCharacterListener(long window, int codePoint) {
-		
+		this.back.updateKeyboardString((char) codePoint);
 	}
 	
-	public InputSnapshot getSnapshot() {
-		return this.frontSnapshot;
+	public InputSnapshot getLatestInput() {
+		return this.front;
 	}
 }
