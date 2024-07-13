@@ -1,8 +1,11 @@
 package project;
 
+import project.asset.Font;
+import project.asset.FontLoadTask;
 import project.opengl.Renderer;
 import project.scene.Scene;
 import project.utils.DebugUtils;
+import project.utils.FileUtils;
 
 public class Application {
 	
@@ -17,6 +20,9 @@ public class Application {
 		final String TITLE = "3D Renderer";
 		final int FPS_MAX = 60;
 		final int TICK_RATE = 60;
+		
+		FontLoadTask fontLoadTask = new FontLoadTask(FileUtils.getResourcePath("arial20.json"), new Font());
+		fontLoadTask.load();
 		
 		Scene scene = new Scene(this, TICK_RATE);
 		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);

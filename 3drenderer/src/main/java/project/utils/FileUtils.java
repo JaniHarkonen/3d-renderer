@@ -44,6 +44,7 @@ public final class FileUtils {
 				"ERROR: Unable to resolve relative resource path: ",
 				relativePath
 			);
+			
 			return null;
 		}
 		

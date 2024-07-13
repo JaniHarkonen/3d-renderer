@@ -28,3 +28,6 @@
 
 ### AInputEvent
 - perhaps input events should be static classes of Input instead of being tied to an Input instance by default
+
+### Application
+- tick rate and frame rate seem to cause issues with reading input
