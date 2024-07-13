@@ -1,6 +1,7 @@
 package project.scene;
 
 import project.asset.Mesh;
+import project.asset.SceneAssetLoadTask;
 import project.opengl.Texture;
 import project.utils.FileUtils;
 
@@ -13,6 +14,10 @@ public class Model extends ASceneObject {
 		super(scene);
 		this.mesh = new Mesh();
 		this.texture = new Texture(FileUtils.getResourcePath("creep.png"));
+		
+		SceneAssetLoadTask task = new SceneAssetLoadTask(FileUtils.getResourcePath("box.fbx"));
+		task.expectMesh(this.mesh);
+		task.load();
 	}
 	
 	

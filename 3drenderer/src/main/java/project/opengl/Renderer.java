@@ -30,6 +30,7 @@ public class Renderer {
 	public void init() {
 		GL.createCapabilities();
 		GL46.glClearColor(0.85f, 0.85f, 0.85f, 0.0f);
+		GL46.glEnable(GL46.GL_DEPTH_TEST);
 		
 			// Shaders
 		this.shaderProgram = new ShaderProgram();
@@ -76,7 +77,8 @@ public class Renderer {
 					
 					VAO vao = this.vaoCache.getOrGenerate(mesh);
 					vao.bind();
-					GL46.glDrawArrays(GL46.GL_TRIANGLES, 0, vao.getVertexCount());
+					//GL46.glDrawArrays(GL46.GL_TRIANGLES, 0, vao.getVertexCount());
+					GL46.glDrawElements(GL46.GL_TRIANGLES, vao.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0);
 				}
 			}
 		
