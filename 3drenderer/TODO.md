@@ -1,5 +1,8 @@
 ## TO DO
 
+### General
+- restrict visibilities of class to the lowest level needed
+
 ### Window
 - create getters and setters for window attributes (such as, dimensions, position, vsync, fullscreen mode, fps limiter, etc.)
 - add functionality for re-creating the window (this entails re-generation of OpenGL-assets that can't be transfered between contexts, like VAOs)
@@ -19,3 +22,9 @@
 
 ### Controller
 - create a new Controller-class whose responsibility it is to map input events into actions that control SceneObjects
+
+### Input
+- add NoKeyAction, AnyKey, NoMouseAction input events
+
+### AInputEvent
+- perhaps input events should be static classes of Input instead of being tied to an Input instance by default

@@ -6,6 +6,106 @@ import project.Window;
 import project.utils.DebugUtils;
 
 public class Input {
+	
+	public class KeyPressed extends AInputEvent {
+		public KeyPressed(int key) {
+			super(key, 0.0f);
+		}
+		
+		
+		@Override
+		public void poll() {
+			this.setAxis(0, Input.this.front.isKeyPressed(this.inputKey) ? 1.0f : 0.0f);
+		}
+	}
+	
+	public class KeyHeld extends AInputEvent {
+		public KeyHeld(int key) {
+			super(key, 0.0f);
+		}
+		
+		
+		@Override
+		public void poll() {
+			this.setAxis(0, Input.this.front.isKeyHeld(this.inputKey) ? 1.0f : 0.0f);
+		}
+	}
+	
+	public class KeyReleased extends AInputEvent {
+		public KeyReleased(int key) {
+			super(key, 0.0f);
+		}
+		
+		
+		@Override
+		public void poll() {
+			this.setAxis(0, Input.this.front.isKeyReleased(this.inputKey) ? 1.0f : 0.0f);
+		}
+	}
+	
+	public class MousePressed extends AInputEvent {
+		public MousePressed(int key) {
+			super(key, 0.0f);
+		}
+		
+		
+		@Override
+		public void poll() {
+			this.setAxis(0, Input.this.front.isMouseButtonPressed(this.inputKey) ? 1.0f : 0.0f);
+		}
+	}
+	
+	public class MouseHeld extends AInputEvent {
+		public MouseHeld(int key) {
+			super(key, 0.0f);
+		}
+		
+		
+		@Override
+		public void poll() {
+			this.setAxis(0, Input.this.front.isMouseButtonHeld(this.inputKey) ? 1.0f : 0.0f);
+		}
+	}
+	
+	public class MouseReleased extends AInputEvent {
+		public MouseReleased(int key) {
+			super(key, 0.0f);
+		}
+		
+		
+		@Override
+		public void poll() {
+			this.setAxis(0, Input.this.front.isMouseButtonReleased(this.inputKey) ? 1.0f : 0.0f);
+		}
+	}
+	
+	public class MouseMove extends AInputEvent {
+		public MouseMove() {
+			super(-1, 0.0f, 0.0f);
+		}
+		
+		
+		@Override
+		public void poll() {
+			this.setAxis(0, (float) Input.this.front.getMouseDeltaX());
+			this.setAxis(1, (float) Input.this.front.getMouseDeltaY());
+		}
+		
+		@Override
+		public boolean checkThreshold(int axis) {
+			return this.getAxis(axis) != this.getThreshold(axis);
+		}
+		
+		@Override
+		public float getIntensityBeyondThreshold(int axis) {
+			return (
+				this.getAxis(axis) != this.getThreshold(axis) ? 
+				this.getAxis(axis) : 0.0f
+			);
+		}
+	}
+	
+	
 	private Window clientWindow;
 	private InputSnapshot front;
 	private InputSnapshot back;
@@ -40,14 +140,20 @@ public class Input {
 		);
 		
 			// Bind mouse position listener
-		GLFW.glfwSetCursorPosCallback(windowHandle, (window, mouseX, mouseY) -> {
-			this.mousePositionListener(window, mouseX, mouseY);
-		});
+		GLFW.glfwSetCursorPosCallback(
+			windowHandle, 
+			(window, mouseX, mouseY) -> {
+				this.mousePositionListener(window, mouseX, mouseY);
+			}
+		);
 		
 			// Bind keyboard character input listener (keyboard string)
-		GLFW.glfwSetCharCallback(windowHandle, (window, codePoint) -> {
-			this.keyboardCharacterListener(window, codePoint);
-		});
+		GLFW.glfwSetCharCallback(
+			windowHandle,
+			(window, codePoint) -> {
+				this.keyboardCharacterListener(window, codePoint);
+			}
+		);
 	}
 	
 	public void updateBackSnapshot() {

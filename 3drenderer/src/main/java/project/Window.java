@@ -173,4 +173,8 @@ public class Window {
 	public InputSnapshot getInputSnapshot() {
 		return this.latestInputSnapshot;
 	}
+	
+	public Input getInput() {
+		return this.input;
+	}
 }
