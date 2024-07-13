@@ -8,7 +8,7 @@ import project.asset.Mesh;
 import project.scene.Camera;
 import project.scene.Model;
 import project.scene.Scene;
-import project.scene.SceneObject;
+import project.scene.ASceneObject;
 import project.shader.ShaderProgram;
 
 public class Renderer {
@@ -30,6 +30,7 @@ public class Renderer {
 	public void init() {
 		GL.createCapabilities();
 		GL46.glClearColor(0.85f, 0.85f, 0.85f, 0.0f);
+		GL46.glEnable(GL46.GL_DEPTH_TEST);
 		
 			// Shaders
 		this.shaderProgram = new ShaderProgram();
@@ -59,7 +60,7 @@ public class Renderer {
 				0, 0, this.clientWindow.getWidth(), this.clientWindow.getHeight()
 			);
 			
-			for( SceneObject object : this.scene.getObjects() ) {
+			for( ASceneObject object : this.scene.getObjects() ) {
 				
 					// Determine the appropriate way of rendering the object
 					// (THIS MUST BE CHANGED TO A MORE DYNAMIC APPROACH)
@@ -76,7 +77,8 @@ public class Renderer {
 					
 					VAO vao = this.vaoCache.getOrGenerate(mesh);
 					vao.bind();
-					GL46.glDrawArrays(GL46.GL_TRIANGLES, 0, vao.getVertexCount());
+					//GL46.glDrawArrays(GL46.GL_TRIANGLES, 0, vao.getVertexCount());
+					GL46.glDrawElements(GL46.GL_TRIANGLES, vao.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0);
 				}
 			}
 		

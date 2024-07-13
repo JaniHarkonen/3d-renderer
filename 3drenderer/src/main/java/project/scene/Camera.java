@@ -3,12 +3,14 @@ package project.scene;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
 
-import project.Window;
+import project.controls.Action;
+import project.controls.Controller;
+import project.controls.IControllable;
 import project.geometry.Projection;
+import project.testing.ActionSet;
 
-public class Camera extends SceneObject {
+public class Camera extends ASceneObject implements IControllable {
 
 	private Projection projection;
 	private Vector3f direction;
@@ -17,10 +19,7 @@ public class Camera extends SceneObject {
 	private Vector2f rotation2D;
 	private Matrix4f cameraTransform;
 	
-		// Should be stored in a separate controller object
-	private double mousePreviousX;
-	private double mousePreviousY;
-		///////////////////////////////////////////////////
+	private Controller DEBUGcontroller;
 	
 	public Camera(Scene scene, Projection projection) {
 		super(scene);
@@ -31,36 +30,13 @@ public class Camera extends SceneObject {
 		this.rotation2D = new Vector2f(0.0f);
 		this.cameraTransform = new Matrix4f();
 		
-		this.mousePreviousX = 0.0d;
-		this.mousePreviousY = 0.0d;
+		this.DEBUGcontroller = null;
 	}
 	
 	
 	@Override
 	public void tick(float deltaTime) {
-		Window window = this.scene.getApp().getWindow();
-		float sensitivity = 0.1f;
-		this.rotate2D(
-			(float) Math.toRadians(sensitivity * (window.mouseY - this.mousePreviousY)),
-			(float) Math.toRadians(sensitivity * (window.mouseX - this.mousePreviousX))
-		);
-		
-		if( GLFW.glfwGetKey(window.getHandle(), GLFW.GLFW_KEY_W) == GLFW.GLFW_PRESS ) {
-			this.moveForward(1.0f * deltaTime);
-		} else if( GLFW.glfwGetKey(window.getHandle(), GLFW.GLFW_KEY_S) == GLFW.GLFW_PRESS ) {
-			this.moveBackwards(1.0f * deltaTime);
-		}
-		
-		if( GLFW.glfwGetKey(window.getHandle(), GLFW.GLFW_KEY_A) == GLFW.GLFW_PRESS ) {
-			this.moveLeft(1.0f * deltaTime);
-		} else if( GLFW.glfwGetKey(window.getHandle(), GLFW.GLFW_KEY_D) == GLFW.GLFW_PRESS ) {
-			this.moveRight(1.0f * deltaTime);
-		}
-		
-		GLFW.glfwSetCursorPos(window.getHandle(), window.getWidth() / 2, window.getHeight() / 2);
-		
-		this.mousePreviousX = window.getWidth() / 2;
-		this.mousePreviousY = window.getHeight() / 2;
+		this.DEBUGcontroller.tick(deltaTime);
 	}
 	
 	public void rotate2D(float x, float y) {
@@ -132,5 +108,44 @@ public class Camera extends SceneObject {
 	
 	public Matrix4f getCameraTransform() {
 		return this.cameraTransform;
+	}
+
+
+	@Override
+	public void control(Action action, float deltaTime) {
+		float sensitivity = 0.1f;
+		float speed = 1.0f;
+		
+		switch( action.getActionID() ) {
+			case ActionSet.LOOK_AROUND: {
+				this.rotate2D(
+					(float) Math.toRadians(sensitivity * action.getAxisIntensity(1)),
+					(float) Math.toRadians(sensitivity * action.getAxisIntensity(0))
+				);
+			} break;
+
+			case ActionSet.MOVE_FORWARD: {
+				this.moveForward(action.getAxisIntensity(0) * speed * deltaTime);
+			} break;
+
+			case ActionSet.MOVE_LEFT: {
+				this.moveLeft(action.getAxisIntensity(0) * speed * deltaTime);
+			} break;
+
+			case ActionSet.MOVE_BACKWARDS: {
+				this.moveBackwards(action.getAxisIntensity(0) * speed * deltaTime);
+			} break;
+
+			case ActionSet.MOVE_RIGHT: {
+				this.moveRight(action.getAxisIntensity(0) * speed * deltaTime);
+			} break;
+			
+		}
+	}
+
+
+	@Override
+	public void setController(Controller controller) {
+		this.DEBUGcontroller = controller;
 	}
 }
