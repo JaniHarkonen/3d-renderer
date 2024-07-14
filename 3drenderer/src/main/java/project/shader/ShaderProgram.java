@@ -1,6 +1,8 @@
 package project.shader;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.joml.Matrix4f;
@@ -13,23 +15,22 @@ public class ShaderProgram {
 
 	private int programHandle;
 	private Map<String, Integer> uniformLocationMap;
+	private List<Shader> shaders;
 
 	public ShaderProgram() {
 		this.programHandle = -1;
 		this.uniformLocationMap = new HashMap<>();
+		this.shaders = new ArrayList<>();
 	}
 	
 	public void init() {
 		this.programHandle = GL46.glCreateProgram();
 		
-		Shader vertexShader = new Shader("default.vert", GL46.GL_VERTEX_SHADER);
-		Shader fragmentShader = new Shader("default.frag", GL46.GL_FRAGMENT_SHADER);
-		
-		vertexShader.init();
-		vertexShader.attach(this);
-		
-		fragmentShader.init();
-		fragmentShader.attach(this);
+		DebugUtils.log(this, this.shaders.size());		
+		for( Shader shader : this.shaders ) {
+			shader.init();
+			shader.attach(this);
+		}
 		
 		GL46.glLinkProgram(this.programHandle);	
 		
@@ -38,24 +39,35 @@ public class ShaderProgram {
 			return;
 		}
 		
-		vertexShader.detach(this);
-		fragmentShader.detach(this);
-		
-		this.createUniform("uDiffuseSampler");
-		this.createUniform("uProjection");
-		this.createUniform("uCameraTransform");
-		this.createUniform("uObjectTransform");
-	}
-	
-	private void createUniform(String name) {
-		final char START = 'u';
-		if( name.charAt(0) != START ) {
-			DebugUtils.log(this, "ERROR: Trying to declare a uniform with an invalid name! Name: '" + name + "'");
-			throw new RuntimeException("FATAL ERROR: Trying to create a uniform whose name doesn't start with '" + START + "'!");
+		for( Shader shader : this.shaders ) {
+			shader.detach(this);
 		}
 		
-		int uniformLocation = GL46.glGetUniformLocation(this.programHandle, name);
-		this.uniformLocationMap.put(name, uniformLocation);
+		for( Map.Entry<String, Integer> en : this.uniformLocationMap.entrySet() ) {
+			String key = en.getKey();
+			this.uniformLocationMap.put(
+				key, GL46.glGetUniformLocation(this.programHandle, key)
+			);
+		}
+	}
+	
+	public ShaderProgram declareUniform(String uniformName) {
+		final char START = 'u';
+		if( uniformName.charAt(0) != START ) {
+			DebugUtils.log(
+				this, 
+				"ERROR: Trying to declare a uniform with an invalid name! Name: '" + 
+				uniformName + "'"
+			);
+			
+			throw new RuntimeException(
+				"FATAL ERROR: Trying to create a uniform whose name doesn't start " +
+				"with '" + START + "'!"
+			);
+		}
+		
+		this.uniformLocationMap.put(uniformName, -1);
+		return this;
 	}
 	
 	public void bind() {
@@ -66,11 +78,17 @@ public class ShaderProgram {
 		GL46.glUseProgram(0);
 	}
 	
+	public void addShader(Shader shader) {
+		this.shaders.add(shader);
+	}
+	
 	private Integer getUniformOrError(String name) {
 		Integer uniformLocation = this.uniformLocationMap.get(name);
 		
 		if( uniformLocation == null ) {
-			throw new RuntimeException("ERROR: Trying to get a non-existent uniform '" + name + "'!");
+			throw new RuntimeException(
+				"ERROR: Trying to get a non-existent uniform '" + name + "'!"
+			);
 		}
 		
 		return uniformLocation;
@@ -88,22 +106,6 @@ public class ShaderProgram {
 				mat4f.get(stack.mallocFloat(16))
 			);
 		}
-	}
-	
-	public void setDiffuseSamplerUniform(int sampler) {
-		this.setInteger1Uniform("uDiffuseSampler", sampler);
-	}
-	
-	public void setProjectionUniform(Matrix4f projectionMatrix) {
-		this.setMatrix4fUniform("uProjection", projectionMatrix);
-	}
-	
-	public void setObjectTransformUniform(Matrix4f transformMatrix) {
-		this.setMatrix4fUniform("uObjectTransform", transformMatrix);
-	}
-	
-	public void setCameraTransformUniform(Matrix4f cameraTransformMatrix) {
-		this.setMatrix4fUniform("uCameraTransform", cameraTransformMatrix);
 	}
 	
 	public int getHandle() {
