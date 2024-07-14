@@ -12,16 +12,10 @@ import project.utils.DebugUtils;
 public class ShaderProgram {
 
 	private int programHandle;
-	//private int uniformDiffuseSamplerLocation;
-	//private int uniformProjectionLocation;
-	//private int uniformObjectTransformLocation;
 	private Map<String, Integer> uniformLocationMap;
 
 	public ShaderProgram() {
 		this.programHandle = -1;
-		//this.uniformDiffuseSamplerLocation = -1;
-		//this.uniformProjectionLocation = -1;
-		//this.uniformObjectTransformLocation = -1;
 		this.uniformLocationMap = new HashMap<>();
 	}
 	
@@ -51,18 +45,6 @@ public class ShaderProgram {
 		this.createUniform("uProjection");
 		this.createUniform("uCameraTransform");
 		this.createUniform("uObjectTransform");
-		
-		/*this.uniformDiffuseSamplerLocation = GL46.glGetUniformLocation(
-			this.programHandle, "uDiffuseSampler"
-		);
-		
-		this.uniformProjectionLocation = GL46.glGetUniformLocation(
-			this.programHandle, "uProjection"
-		);
-		
-		this.uniformObjectTransformLocation = GL46.glGetUniformLocation(
-			this.programHandle, "uObjectTransform"
-		);*/
 	}
 	
 	private void createUniform(String name) {
@@ -109,29 +91,14 @@ public class ShaderProgram {
 	}
 	
 	public void setDiffuseSamplerUniform(int sampler) {
-		//GL46.glUniform1i(this.uniformDiffuseSamplerLocation, 0);
 		this.setInteger1Uniform("uDiffuseSampler", sampler);
 	}
 	
 	public void setProjectionUniform(Matrix4f projectionMatrix) {
-		/*try( MemoryStack stack = MemoryStack.stackPush() ) {
-			GL46.glUniformMatrix4fv(
-				this.uniformProjectionLocation, 
-				false, 
-				projectionMatrix.get(stack.mallocFloat(16))
-			);
-		}*/
 		this.setMatrix4fUniform("uProjection", projectionMatrix);
 	}
 	
 	public void setObjectTransformUniform(Matrix4f transformMatrix) {
-		/*try( MemoryStack stack = MemoryStack.stackPush() ) {
-			GL46.glUniformMatrix4fv(
-				this.uniformObjectTransformLocation, 
-				false, 
-				transformMatrix.get(stack.mallocFloat(16))
-			);
-		}*/
 		this.setMatrix4fUniform("uObjectTransform", transformMatrix);
 	}
 	

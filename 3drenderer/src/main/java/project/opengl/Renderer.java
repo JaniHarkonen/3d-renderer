@@ -14,7 +14,10 @@ import project.shader.ShaderProgram;
 public class Renderer {
 	
 	private Window clientWindow;
+	
 	private ShaderProgram shaderProgram;
+	private ShaderProgram guiShaderProgram;
+	
 	private VAOCache vaoCache;
 	private TextureCache textureCache;
 	private Scene scene;
@@ -77,11 +80,14 @@ public class Renderer {
 					
 					VAO vao = this.vaoCache.getOrGenerate(mesh);
 					vao.bind();
-					//GL46.glDrawArrays(GL46.GL_TRIANGLES, 0, vao.getVertexCount());
 					GL46.glDrawElements(GL46.GL_TRIANGLES, vao.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0);
 				}
 			}
 		
 		this.shaderProgram.unbind();
+	}
+	
+	public Window getClientWindow() {
+		return this.clientWindow;
 	}
 }
