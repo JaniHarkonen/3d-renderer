@@ -11,9 +11,9 @@ public class Fonts {
 	static {
 		Texture fontTexture;
 		
-		fontTexture = new Texture(FileUtils.getResourcePath("font_arial20.png"));
+		fontTexture = new Texture(FileUtils.getResourcePath("fonts/arial/font_arial20.png"));
 		Fonts.ARIAL_20 = new Font(fontTexture, 230, 89);
-		FontLoadTask task = new FontLoadTask(FileUtils.getResourcePath("arial20.json"), Fonts.ARIAL_20);
+		FontLoadTask task = new FontLoadTask(FileUtils.getResourcePath("fonts/arial/arial20.json"), Fonts.ARIAL_20);
 		task.load();
 		Fonts.ARIAL_20.init();
 	}

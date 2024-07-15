@@ -58,8 +58,8 @@ public class Renderer {
 		this.shaderProgram.declareUniform(Renderer.U_PROJECTION);
 		this.shaderProgram.declareUniform(Renderer.U_CAMERA_TRANSFORM);
 		this.shaderProgram.declareUniform(Renderer.U_OBJECT_TRANSFORM);
-		this.shaderProgram.addShader(new Shader("default.vert", GL46.GL_VERTEX_SHADER));
-		this.shaderProgram.addShader(new Shader("default.frag", GL46.GL_FRAGMENT_SHADER));
+		this.shaderProgram.addShader(new Shader("shaders/scene/scene.vert", GL46.GL_VERTEX_SHADER));
+		this.shaderProgram.addShader(new Shader("shaders/scene/scene.frag", GL46.GL_FRAGMENT_SHADER));
 		this.shaderProgram.init();
 		
 			// GUI shaders
@@ -68,8 +68,8 @@ public class Renderer {
 		this.shaderProgramGUI.declareUniform(Renderer.U_DIFFUSE_SAMPLER_GUI);
 		this.shaderProgramGUI.declareUniform(Renderer.U_OBJECT_TRANSFORM_GUI);
 		this.shaderProgramGUI.declareUniform(Renderer.U_TEXT_COLOR_GUI);
-		this.shaderProgramGUI.addShader(new Shader("gui.vert", GL46.GL_VERTEX_SHADER));
-		this.shaderProgramGUI.addShader(new Shader("gui.frag", GL46.GL_FRAGMENT_SHADER));
+		this.shaderProgramGUI.addShader(new Shader("shaders/gui/gui.vert", GL46.GL_VERTEX_SHADER));
+		this.shaderProgramGUI.addShader(new Shader("shaders/gui/gui.frag", GL46.GL_FRAGMENT_SHADER));
 		this.shaderProgramGUI.init();
 		
 			// Initialize scene graphics assets

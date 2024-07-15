@@ -37,12 +37,15 @@ public class Scene {
 	public void init() {
 		
 			// Scene
-		this.activeCamera = new Camera(this, new Projection(60.0f, 0.01f, 1000.0f));
 		this.objects = new ArrayList<>();
-		this.objects.add(new Model(this));
-		this.objects.add(new Model(this));
-		this.objects.add(new Model(this));
+		
+		this.activeCamera = new Camera(this, new Projection(60.0f, 0.01f, 1000.0f));
 		this.objects.add(this.activeCamera);
+		
+		Model model = new Model(this);
+		model.setPosition(0, -0.5f, 0);
+		model.setScale(0.1f, 0.01f, 0.1f);
+		this.objects.add(model);
 		
 			// GUI
 		this.textAppStatistics = new Text(this.gui, "");
