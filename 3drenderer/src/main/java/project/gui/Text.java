@@ -18,6 +18,10 @@ public class Text extends AGUIElement {
 	}
 	
 	
+	public void setContent(String content) {
+		this.content = content;
+	}
+	
 	public String getContent() {
 		return this.content;
 	}

@@ -19,6 +19,7 @@ public class Window {
 	private int fpsMax;
 	private int vsync;
 	
+	private int fps;
 	private int fpsCounter;
 	private long fpsTimer;
 	
@@ -38,6 +39,7 @@ public class Window {
 		this.fpsMax = fpsMax;
 		this.vsync = vsync;
 		
+		this.fps = 0;
 		this.fpsTimer = 0;
 		this.fpsCounter = 0;
 		
@@ -94,11 +96,8 @@ public class Window {
 		
 			// FPS-counter
 		if( System.nanoTime() - this.fpsTimer >= 1000000000 ) {
-			GLFW.glfwSetWindowTitle(
-				this.windowHandle, this.title + " | FPS: " + this.fpsCounter + " / " + this.fpsMax
-			);
-			
 			this.fpsTimer = System.nanoTime();
+			this.fps = this.fpsCounter;
 			this.fpsCounter = 0;
 		}
 		
@@ -112,10 +111,19 @@ public class Window {
 		
 			// Toggle cursor visibility upon pressing ESC
 		if( this.input.getLatestInput().isKeyPressed(GLFW.GLFW_KEY_ESCAPE) ) {
+			boolean isCursorDisabled = (
+				GLFW.glfwGetInputMode(this.windowHandle, GLFW.GLFW_CURSOR) == 
+				GLFW.GLFW_CURSOR_DISABLED
+			);
+			
+			int inputMode = (
+				isCursorDisabled ? GLFW.GLFW_CURSOR_NORMAL : GLFW.GLFW_CURSOR_DISABLED
+			);
+			
 			GLFW.glfwSetInputMode(
 	            this.windowHandle, 
 	            GLFW.GLFW_CURSOR, 
-	            GLFW.glfwGetInputMode(this.windowHandle, GLFW.GLFW_CURSOR) == GLFW.GLFW_CURSOR_NORMAL ? GLFW.GLFW_CURSOR_DISABLED : GLFW.GLFW_CURSOR_NORMAL
+	            inputMode
 	        );
 		}
 		
@@ -176,5 +184,13 @@ public class Window {
 	
 	public Input getInput() {
 		return this.input;
+	}
+	
+	public int getFPS() {
+		return this.fps;
+	}
+	
+	public int getMaxFPS() {
+		return this.fpsMax;
 	}
 }

@@ -192,6 +192,7 @@ public class Renderer {
 						textX += glyph.getWidth();
 					}
 					
+					textX = 0.0f;
 					textY += lineHeight;
 				}
 			}

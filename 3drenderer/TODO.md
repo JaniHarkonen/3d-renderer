@@ -37,3 +37,9 @@
 
 ### Scene & GUI
 - GUI should not be a member of Scene, there should be a third class that holds both the Scene and the GUI
+
+### Font
+- consider using an array instead of a map for quicker glyph access by character
+
+### Text
+- Font and color probably shouldn't be a part of Text (maybe set a draw font for draw calls), consider this when implementing GUI further
