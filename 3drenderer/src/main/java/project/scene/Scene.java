@@ -6,33 +6,49 @@ import java.util.List;
 import org.lwjgl.glfw.GLFW;
 
 import project.Application;
+import project.Window;
 import project.controls.Controller;
 import project.geometry.Projection;
+import project.gui.GUI;
+import project.gui.Text;
 import project.input.Input;
 import project.testing.ActionSet;
 
 public class Scene {
 	private List<ASceneObject> objects;
 	private Camera activeCamera;
+	private GUI gui;
 	private long deltaTimer;
 	private long tickDelta;
 	private int tickRate;
 	private Application app;
+	private Text textAppStatistics;
 	
 	public Scene(Application app, int tickRate) {
 		this.objects = null;
 		this.activeCamera = null;
+		this.gui = null;
 		this.deltaTimer = System.nanoTime();
 		this.setTickRate(tickRate);
 		this.app = app;
+		this.textAppStatistics = null;
 	}
 	
 	public void init() {
 		
+			// Scene
 		this.activeCamera = new Camera(this, new Projection(60.0f, 0.01f, 1000.0f));
 		this.objects = new ArrayList<>();
 		this.objects.add(new Model(this));
+		this.objects.add(new Model(this));
+		this.objects.add(new Model(this));
 		this.objects.add(this.activeCamera);
+		
+			// GUI
+		this.textAppStatistics = new Text(this.gui, "");
+		this.gui = new GUI(this);
+		this.gui.init();
+		this.gui.addElement(this.textAppStatistics);
 		
 			// Camera controls here
 		Input input = this.app.getWindow().getInput();
@@ -53,11 +69,40 @@ public class Scene {
 		
 		float deltaTime = (System.nanoTime() - this.deltaTimer) / 1000000000.0f;
 		this.deltaTimer = System.nanoTime();
+		Window appWindow = this.app.getWindow();
 		
-		this.app.getWindow().pollInput();
+		appWindow.pollInput();
 		for( ASceneObject object : this.objects ) {
 			object.tick(deltaTime);
 		}
+		
+		long memoryUsage = Runtime.getRuntime().totalMemory();
+		this.textAppStatistics.setContent(
+			"FPS: " + appWindow.getFPS() + " / " + appWindow.getMaxFPS() + "\n" +
+			"TICK: " + this.tickRate + " (d: " + deltaTime + ")" +
+			"\nHEAP: " + this.convertToLargestByte(memoryUsage) + " (" + memoryUsage + " bytes)"
+		);
+	}
+	
+	private String convertToLargestByte(long n) {
+		String[] units = new String[] {
+			" bytes",
+			"KB",
+			"MB",
+			"GB"
+		};
+		
+		if( n <= 0 ) {
+			return "0 bytes";
+		}
+		
+		int index = 0;
+		while( n / 1000 > 0 && index < units.length - 1 ) {
+			n /= 1000;
+			index++;
+		}
+		
+		return n + units[index];
 	}
 	
 	public void setTickRate(int tickRate) {
@@ -75,5 +120,9 @@ public class Scene {
 	
 	public Application getApp() {
 		return this.app;
+	}
+	
+	public GUI getGUI() {
+		return this.gui;
 	}
 }

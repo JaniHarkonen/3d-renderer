@@ -18,6 +18,8 @@ public class Model extends ASceneObject {
 		SceneAssetLoadTask task = new SceneAssetLoadTask(FileUtils.getResourcePath("box.fbx"));
 		task.expectMesh(this.mesh);
 		task.load();
+		
+		this.setPosition((float) Math.random() * 5, (float) Math.random() * 5, (float) Math.random() * 5);
 	}
 	
 	

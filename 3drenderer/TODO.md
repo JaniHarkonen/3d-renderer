@@ -3,6 +3,9 @@
 ### General
 - restrict visibilities of class to the lowest level needed
 
+### AGUIElement & ASceneObject
+- AGUIElement and ASceneObject are essentially the same, combine the two or create a new class
+
 ### Window
 - create getters and setters for window attributes (such as, dimensions, position, vsync, fullscreen mode, fps limiter, etc.)
 - add functionality for re-creating the window (this entails re-generation of OpenGL-assets that can't be transfered between contexts, like VAOs)
@@ -28,3 +31,15 @@
 
 ### AInputEvent
 - perhaps input events should be static classes of Input instead of being tied to an Input instance by default
+
+### Application
+- tick rate and frame rate seem to cause issues with reading input
+
+### Scene & GUI
+- GUI should not be a member of Scene, there should be a third class that holds both the Scene and the GUI
+
+### Font
+- consider using an array instead of a map for quicker glyph access by character
+
+### Text
+- Font and color probably shouldn't be a part of Text (maybe set a draw font for draw calls), consider this when implementing GUI further
