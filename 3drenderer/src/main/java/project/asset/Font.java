@@ -153,46 +153,15 @@ public class Font {
             float w = glyphWidth;
             float h = glyphHeight;
             
-            /*Vector3f[] positions = new Vector3f[] {
-                new Vector3f(x, y, 0.0f),           // top-left
-                new Vector3f(x + w, y, 0.0f),       // top-right
-                new Vector3f(x + w, y + h, 0.0f),   // bottom-right
-                new Vector3f(x, y + h, 0.0f),       // bottom-left
-            };*/
-            
             float u0 = glyphX / this.textureWidth;
             float v0 = glyphY / this.textureHeight;
             float u1 = u0 + glyphWidth / this.textureWidth;
             float v1 = v0 + glyphHeight / this.textureHeight;
             
-            /*Vector2f[] textureCoordinates = new Vector2f[] {
-                new Vector2f(u0, v0),
-                new Vector2f(u1, v0),
-                new Vector2f(u1, v1),
-                new Vector2f(u0, v1)
-            };*/
-            
             glyph.u0 = u0;
             glyph.v0 = v0;
             glyph.u1 = u1;
             glyph.v1 = v1;
-            
-            /*Mesh.Face[] faces = new Mesh.Face[] {
-                new Mesh.Face(new int[] {0, 1, 2}),
-                new Mesh.Face(new int[] {2, 3, 0})
-            };
-            
-            glyph.mesh = Mesh.createAndLoadMesh(
-                this.name + "-glyph-mesh-" + glyph.getCharacter(), 
-                false, 
-                this.meshGraphicsStrategy.duplicateStrategy(),
-                vertices,
-                new Vector3f[0], 
-                uvs, 
-                faces, 
-                new Vector3f[0], 
-                new Vector3f[0]
-            );*/
             
             glyph.mesh = new Mesh();
             glyph.mesh.populate(

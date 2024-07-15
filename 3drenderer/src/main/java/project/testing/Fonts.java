@@ -15,5 +15,6 @@ public class Fonts {
 		Fonts.ARIAL_20 = new Font(fontTexture, 230, 89);
 		FontLoadTask task = new FontLoadTask(FileUtils.getResourcePath("arial20.json"), Fonts.ARIAL_20);
 		task.load();
+		Fonts.ARIAL_20.init();
 	}
 }

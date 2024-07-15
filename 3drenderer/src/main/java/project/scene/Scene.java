@@ -8,12 +8,15 @@ import org.lwjgl.glfw.GLFW;
 import project.Application;
 import project.controls.Controller;
 import project.geometry.Projection;
+import project.gui.GUI;
+import project.gui.Text;
 import project.input.Input;
 import project.testing.ActionSet;
 
 public class Scene {
 	private List<ASceneObject> objects;
 	private Camera activeCamera;
+	private GUI gui;
 	private long deltaTimer;
 	private long tickDelta;
 	private int tickRate;
@@ -22,6 +25,7 @@ public class Scene {
 	public Scene(Application app, int tickRate) {
 		this.objects = null;
 		this.activeCamera = null;
+		this.gui = null;
 		this.deltaTimer = System.nanoTime();
 		this.setTickRate(tickRate);
 		this.app = app;
@@ -29,10 +33,16 @@ public class Scene {
 	
 	public void init() {
 		
+			// Scene
 		this.activeCamera = new Camera(this, new Projection(60.0f, 0.01f, 1000.0f));
 		this.objects = new ArrayList<>();
 		this.objects.add(new Model(this));
 		this.objects.add(this.activeCamera);
+		
+			// GUI
+		this.gui = new GUI(this);
+		this.gui.init();
+		this.gui.addElement(new Text(this.gui, "hello world"));
 		
 			// Camera controls here
 		Input input = this.app.getWindow().getInput();
@@ -75,5 +85,9 @@ public class Scene {
 	
 	public Application getApp() {
 		return this.app;
+	}
+	
+	public GUI getGUI() {
+		return this.gui;
 	}
 }
