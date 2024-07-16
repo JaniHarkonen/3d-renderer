@@ -21,7 +21,6 @@ import project.scene.PointLight;
 import project.scene.Scene;
 import project.shader.Shader;
 import project.shader.ShaderProgram;
-import project.utils.DebugUtils;
 
 public class Renderer {
 	
@@ -89,28 +88,55 @@ public class Renderer {
 		this.shaderProgram.declareUniform(Renderer.U_AMBIENT_LIGHT_COLOR);
 		
 		for( int i = 0; i < Renderer.MAX_POINT_LIGHTS; i++ ) {
-			this.shaderProgram.declareUniform(Renderer.U_POINT_LIGHTS + "[" + i + "].position");
-			this.shaderProgram.declareUniform(Renderer.U_POINT_LIGHTS + "[" + i + "].color");
-			this.shaderProgram.declareUniform(Renderer.U_POINT_LIGHTS + "[" + i + "].intensity");
-			this.shaderProgram.declareUniform(Renderer.U_POINT_LIGHTS + "[" + i + "].att.constant");
-			this.shaderProgram.declareUniform(Renderer.U_POINT_LIGHTS + "[" + i + "].att.linear");
-			this.shaderProgram.declareUniform(Renderer.U_POINT_LIGHTS + "[" + i + "].att.exponent");
+			this.shaderProgram.declareUniform(
+				Renderer.U_POINT_LIGHTS + "[" + i + "].position"
+			);
+			this.shaderProgram.declareUniform(
+				Renderer.U_POINT_LIGHTS + "[" + i + "].color"
+			);
+			this.shaderProgram.declareUniform(
+				Renderer.U_POINT_LIGHTS + "[" + i + "].intensity"
+			);
+			this.shaderProgram.declareUniform(
+				Renderer.U_POINT_LIGHTS + "[" + i + "].att.constant"
+			);
+			this.shaderProgram.declareUniform(
+				Renderer.U_POINT_LIGHTS + "[" + i + "].att.linear"
+			);
+			this.shaderProgram.declareUniform(
+				Renderer.U_POINT_LIGHTS + "[" + i + "].att.exponent"
+			);
 		}
 
 			// Spot light uniform declarations here
-			
-		this.shaderProgram.addShader(new Shader("shaders/scene/scene.vert", GL46.GL_VERTEX_SHADER));
-		this.shaderProgram.addShader(new Shader("shaders/scene/scene.frag", GL46.GL_FRAGMENT_SHADER));
+		this.shaderProgram.addShader(
+			new Shader("shaders/scene/scene.vert", GL46.GL_VERTEX_SHADER)
+		);
+		this.shaderProgram.addShader(
+			new Shader("shaders/scene/scene.frag", GL46.GL_FRAGMENT_SHADER)
+		);
 		this.shaderProgram.init();
 		
 			// Set point light uniforms to default values, RIGHT NOW LIGHTS CANNOT BE REMOVED 
 		for( int i = 0; i < Renderer.MAX_POINT_LIGHTS; i++ ) {
-			this.shaderProgram.setVector3fUniform(Renderer.U_POINT_LIGHTS + "[" + i + "].position", new Vector3f(0.0f));
-			this.shaderProgram.setVector3fUniform(Renderer.U_POINT_LIGHTS + "[" + i + "].color", new Vector3f(0.0f));
-			this.shaderProgram.setFloat1Uniform(Renderer.U_POINT_LIGHTS + "[" + i + "].intensity", 0.0f);
-			this.shaderProgram.setFloat1Uniform(Renderer.U_POINT_LIGHTS + "[" + i + "].att.constant", 0.0f);
-			this.shaderProgram.setFloat1Uniform(Renderer.U_POINT_LIGHTS + "[" + i + "].att.linear", 0.0f);
-			this.shaderProgram.setFloat1Uniform(Renderer.U_POINT_LIGHTS + "[" + i + "].att.exponent", 0.0f);
+			this.shaderProgram.setVector3fUniform(
+				Renderer.U_POINT_LIGHTS + "[" + i + "].position", new Vector3f(0.0f)
+			);
+			this.shaderProgram.setVector3fUniform(
+				Renderer.U_POINT_LIGHTS + "[" + i + "].color", new Vector3f(0.0f)
+			);
+			this.shaderProgram.setFloat1Uniform(
+				Renderer.U_POINT_LIGHTS + "[" + i + "].intensity", 0.0f
+			);
+			this.shaderProgram.setFloat1Uniform(
+				Renderer.U_POINT_LIGHTS + "[" + i + "].att.constant", 0.0f
+			);
+			this.shaderProgram.setFloat1Uniform(
+				Renderer.U_POINT_LIGHTS + "[" + i + "].att.linear", 0.0f
+			);
+			this.shaderProgram.setFloat1Uniform(
+				Renderer.U_POINT_LIGHTS + "[" + i + "].att.exponent", 0.0f
+			);
 		}
 		
 			// Spot light uniform default value settings here
@@ -121,8 +147,12 @@ public class Renderer {
 		this.shaderProgramGUI.declareUniform(Renderer.U_DIFFUSE_SAMPLER_GUI);
 		this.shaderProgramGUI.declareUniform(Renderer.U_OBJECT_TRANSFORM_GUI);
 		this.shaderProgramGUI.declareUniform(Renderer.U_TEXT_COLOR_GUI);
-		this.shaderProgramGUI.addShader(new Shader("shaders/gui/gui.vert", GL46.GL_VERTEX_SHADER));
-		this.shaderProgramGUI.addShader(new Shader("shaders/gui/gui.frag", GL46.GL_FRAGMENT_SHADER));
+		this.shaderProgramGUI.addShader(
+			new Shader("shaders/gui/gui.vert", GL46.GL_VERTEX_SHADER)
+		);
+		this.shaderProgramGUI.addShader(
+			new Shader("shaders/gui/gui.frag", GL46.GL_FRAGMENT_SHADER)
+		);
 		this.shaderProgramGUI.init();
 		
 			// Initialize scene graphics assets
@@ -133,12 +163,6 @@ public class Renderer {
 	
 	private void updatePointLight(PointLight pointLight, int index) {
         Vector4f aux = new Vector4f();
-        /*Vector3f lightPosition = new Vector3f();
-        Vector3f color = new Vector3f();
-        float intensity = 0.0f;
-        float constant = 0.0f;
-        float linear = 0.0f;
-        float exponent = 0.0f;*/
         
         Matrix4f cameraTransform = this.scene.getActiveCamera().getCameraTransform();
         aux.set(pointLight.getPosition(), 1);
@@ -156,18 +180,24 @@ public class Renderer {
         float linear = attenuation.getLinear();
         float exponent = attenuation.getExponent();
         
-		this.shaderProgram.setVector3fUniform(Renderer.U_POINT_LIGHTS + "[" + index + "].position", lightPosition);
-		this.shaderProgram.setVector3fUniform(Renderer.U_POINT_LIGHTS + "[" + index + "].color", color);
-		this.shaderProgram.setFloat1Uniform(Renderer.U_POINT_LIGHTS + "[" + index + "].intensity", intensity);
-		this.shaderProgram.setFloat1Uniform(Renderer.U_POINT_LIGHTS + "[" + index + "].att.constant", constant);
-		this.shaderProgram.setFloat1Uniform(Renderer.U_POINT_LIGHTS + "[" + index + "].att.linear", linear);
-		this.shaderProgram.setFloat1Uniform(Renderer.U_POINT_LIGHTS + "[" + index + "].att.exponent", exponent);
-        /*uniformsMap.setUniform(prefix + ".position", lightPosition);
-        uniformsMap.setUniform(prefix + ".color", color);
-        uniformsMap.setUniform(prefix + ".intensity", intensity);
-        uniformsMap.setUniform(prefix + ".att.constant", constant);
-        uniformsMap.setUniform(prefix + ".att.linear", linear);
-        uniformsMap.setUniform(prefix + ".att.exponent", exponent);*/
+		this.shaderProgram.setVector3fUniform(
+			Renderer.U_POINT_LIGHTS + "[" + index + "].position", lightPosition
+		);
+		this.shaderProgram.setVector3fUniform(
+			Renderer.U_POINT_LIGHTS + "[" + index + "].color", color
+		);
+		this.shaderProgram.setFloat1Uniform(
+			Renderer.U_POINT_LIGHTS + "[" + index + "].intensity", intensity
+		);
+		this.shaderProgram.setFloat1Uniform(
+			Renderer.U_POINT_LIGHTS + "[" + index + "].att.constant", constant
+		);
+		this.shaderProgram.setFloat1Uniform(
+			Renderer.U_POINT_LIGHTS + "[" + index + "].att.linear", linear
+		);
+		this.shaderProgram.setFloat1Uniform(
+			Renderer.U_POINT_LIGHTS + "[" + index + "].att.exponent", exponent
+		);
 	}
 	
 		// UNUSED AS OF NOW
@@ -217,6 +247,7 @@ public class Renderer {
 		);
 		
 		for( ASceneObject object : this.scene.getObjects() ) {
+			
 				// Determine the appropriate way of rendering the object
 				// (THIS MUST BE CHANGED TO A MORE DYNAMIC APPROACH)
 			if( object instanceof AmbientLight ) {
@@ -243,7 +274,6 @@ public class Renderer {
 				for( int i = 0; i < material.getTextures().length; i++ ) {
 					Texture texture = material.getTextures()[i];
 					if( texture == null ) {
-						DebugUtils.log(this, "WARNING: Rejected texture indexed at " + i + "!");
 						continue;
 					}
 					

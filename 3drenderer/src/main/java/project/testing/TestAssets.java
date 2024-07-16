@@ -33,9 +33,10 @@ public final class TestAssets {
 	
 		// Textures
 	public static Texture TEXTURE_CREEP;
-	//public static Texture TEXTURE_BRICK; UNUSED AS OF NOW
+	public static Texture TEXTURE_BRICK;
 	static {
 		TestAssets.TEXTURE_CREEP = new Texture(FileUtils.getResourcePath("textures/creep.png"));
+		TestAssets.TEXTURE_BRICK = new Texture(FileUtils.getResourcePath("textures/brick/Bricks082B_4K_Color.jpg"));
 			// Will be initialized by TextureCache of Renderer
 	}
 }

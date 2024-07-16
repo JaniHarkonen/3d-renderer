@@ -8,7 +8,6 @@ public class Model extends ASceneObject {
 
 	private Mesh mesh;
 	private Material material;
-	//private Texture texture;
 	private float DEBUGangle;
 	
 	public Model(Scene scene) {
@@ -16,12 +15,7 @@ public class Model extends ASceneObject {
 		//this.mesh = new Mesh();t
 		this.mesh = TestAssets.MESH_BRICK;
 		this.material = new Material();
-		this.material.setTexture(0, TestAssets.TEXTURE_CREEP);
-		//this.texture = new Texture(FileUtils.getResourcePath("textures/creep.png"));
-		
-		/*SceneAssetLoadTask task = new SceneAssetLoadTask(FileUtils.getResourcePath("models/Brick.fbx"));
-		task.expectMesh(this.mesh);
-		task.load();*/
+		this.material.setTexture(0, TestAssets.TEXTURE_BRICK);
 		
 		
 		/*this.setPosition(
@@ -45,10 +39,6 @@ public class Model extends ASceneObject {
 	public Mesh getMesh() {
 		return this.mesh;
 	}
-	
-	/*public Texture getTexture() {
-		return this.texture;
-	}*/
 	
 	public Material getMaterial() {
 		return this.material;

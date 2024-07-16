@@ -25,6 +25,7 @@ public class Scene {
 	private int tickRate;
 	private Application app;
 	private Text textAppStatistics;
+	private PointLight pointLight0;
 	
 	public Scene(Application app, int tickRate) {
 		this.objects = null;
@@ -34,6 +35,7 @@ public class Scene {
 		this.setTickRate(tickRate);
 		this.app = app;
 		this.textAppStatistics = null;
+		this.pointLight0 = null;
 	}
 	
 	public void init() {
@@ -52,11 +54,11 @@ public class Scene {
 		this.objects.add(ambientLight);
 		DebugUtils.log(this, "Added AmbientLight!");
 		
-		PointLight pointLight = new PointLight(
-			this, new Vector3f(1.0f, 0.0f, 0.0f), 1.0f
+		this.pointLight0 = new PointLight(
+			this, new Vector3f(1.0f, 1.0f, 1.0f), 0.5f
 		);
-		pointLight.setPosition(0.0f, 1.0f, 0.0f);
-		this.objects.add(pointLight);
+		this.pointLight0.setPosition(0.0f, 1.0f, 0.0f);
+		this.objects.add(this.pointLight0);
 		DebugUtils.log(this, "Added PointLight!");
 		
 		Model model = new Model(this);
@@ -78,8 +80,23 @@ public class Scene {
 		.addBinding(ActionSet.MOVE_BACKWARDS, input.new KeyHeld(GLFW.GLFW_KEY_S))
 		.addBinding(ActionSet.MOVE_RIGHT, input.new KeyHeld(GLFW.GLFW_KEY_D))
 		.addBinding(ActionSet.LOOK_AROUND, input.new MouseMove());
-		
 		this.activeCamera.setController(cameraController);
+		
+			// Point light controls here
+		Controller pointLightController = new Controller(input, this.pointLight0)
+		.addBinding(ActionSet.MOVE_FORWARD, input.new KeyHeld(GLFW.GLFW_KEY_UP))
+		.addBinding(ActionSet.MOVE_BACKWARDS, input.new KeyHeld(GLFW.GLFW_KEY_DOWN))
+		.addBinding(ActionSet.MOVE_LEFT, input.new KeyHeld(GLFW.GLFW_KEY_LEFT))
+		.addBinding(ActionSet.MOVE_RIGHT, input.new KeyHeld(GLFW.GLFW_KEY_RIGHT))
+		.addBinding(ActionSet.LIGHT_INTENSIFY, input.new KeyHeld(GLFW.GLFW_KEY_KP_ADD))
+		.addBinding(ActionSet.LIGHT_DIM, input.new KeyHeld(GLFW.GLFW_KEY_KP_SUBTRACT))
+		.addBinding(ActionSet.LIGHT_INCREASE_RED, input.new KeyHeld(GLFW.GLFW_KEY_1))
+		.addBinding(ActionSet.LIGHT_DECREASE_RED, input.new KeyHeld(GLFW.GLFW_KEY_2))
+		.addBinding(ActionSet.LIGHT_INCREASE_GREEN, input.new KeyHeld(GLFW.GLFW_KEY_3))
+		.addBinding(ActionSet.LIGHT_DECREASE_GREEN, input.new KeyHeld(GLFW.GLFW_KEY_4))
+		.addBinding(ActionSet.LIGHT_INCREASE_BLUE, input.new KeyHeld(GLFW.GLFW_KEY_5))
+		.addBinding(ActionSet.LIGHT_DECREASE_BLUE, input.new KeyHeld(GLFW.GLFW_KEY_6));
+		this.pointLight0.setController(pointLightController);
 	}
 
 	public void update() {
@@ -99,8 +116,21 @@ public class Scene {
 		long memoryUsage = Runtime.getRuntime().totalMemory();
 		this.textAppStatistics.setContent(
 			"FPS: " + appWindow.getFPS() + " / " + appWindow.getMaxFPS() + "\n" +
-			"TICK: " + this.tickRate + " (d: " + deltaTime + ")" +
-			"\nHEAP: " + this.convertToLargestByte(memoryUsage) + " (" + memoryUsage + " bytes)"
+			"TICK: " + this.tickRate + " (d: " + deltaTime + ")\n" +
+			"HEAP: " + this.convertToLargestByte(memoryUsage) + " (" + memoryUsage + " bytes)\n" +
+			"pointLight0: \n" +
+			"    pos: (" + 
+				this.pointLight0.getPosition().x + ", " + 
+				this.pointLight0.getPosition().y + ", " + 
+				this.pointLight0.getPosition().z + 
+			")\n" +
+			"    rgb: (" +
+				this.pointLight0.getColor().x + ", " +
+				this.pointLight0.getColor().y + ", " +
+				this.pointLight0.getColor().z +
+			")\n" +
+			"    intensity: " + this.pointLight0.getIntensity() + "\n"
+			
 		);
 	}
 	
