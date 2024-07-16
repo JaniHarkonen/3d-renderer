@@ -16,7 +16,7 @@ public abstract class ASceneObject {
 	public ASceneObject(Scene scene) {
 		this.position = new Vector3f(0.0f);
 		this.rotation = new Quaternionf();
-		this.scale = new Vector3f(0.01f);
+		this.scale = new Vector3f(1.0f);
 		this.transformMatrix = new Matrix4f();
 		this.scene = scene;
 	}

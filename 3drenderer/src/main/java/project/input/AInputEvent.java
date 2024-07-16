@@ -28,7 +28,7 @@ public abstract class AInputEvent {
 	public abstract void poll();
 	
 	public boolean checkThreshold(int axis) {
-		return (this.axes[axis] >= this.thresholds[axis]);
+		return (this.axes[axis] > this.thresholds[axis]);
 	}
 	
 	public float getIntensity(int axis) {
@@ -36,7 +36,7 @@ public abstract class AInputEvent {
 	}
 	
 	public float getIntensityBeyondThreshold(int axis) {
-		return this.axes[axis] >= this.thresholds[axis] ? this.axes[axis] : 0.0f;
+		return this.axes[axis] > this.thresholds[axis] ? this.axes[axis] : 0.0f;
 	}
 	
 	public int getAxisCount() {

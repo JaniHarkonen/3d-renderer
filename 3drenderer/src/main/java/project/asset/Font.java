@@ -171,6 +171,7 @@ public class Font {
     				x + w, y + h, 0.0f,
     				x, y + h, 0.0f
         		}, 
+        		new float[0],
         		new float[] {
     				u0, v0,
     				u1, v0,

@@ -18,6 +18,7 @@
 
 ### Camera
 - Camera should utilize the transform provided by the SceneObject instead of having a separate rotation2D-field
+- Camera should not be controlled by a Controller, rather, it should be attached to a ASceneObject that is then controlled
 
 ### VAO
 - mesh info should not be represented by arrays, possibly
@@ -43,3 +44,9 @@
 
 ### Text
 - Font and color probably shouldn't be a part of Text (maybe set a draw font for draw calls), consider this when implementing GUI further
+
+### SceneAssetLoadTask
+- separate extractions (mesh extraction, material extraction) into separate methods or classes
+
+### PointLight
+- PointLight should not be controlled by a Controller, rather, it should be attached to a ASceneObject that is then controlled
