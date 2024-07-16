@@ -11,14 +11,23 @@ public final class TestAssets {
 
 		// Fonts
 	public static Font FONT_ARIAL_20;
+	public static Font FONT_ARIAL_16;
 	static {
 		Texture fontTexture;
 		
-		fontTexture = new Texture(FileUtils.getResourcePath("fonts/arial/font_arial20.png"));
+			// Arial, normal, size 20
+		fontTexture = new Texture(FileUtils.getResourcePath("fonts/arial/size20/font_arial20.png"));
 		TestAssets.FONT_ARIAL_20 = new Font(fontTexture, 230, 89);
-		FontLoadTask task = new FontLoadTask(FileUtils.getResourcePath("fonts/arial/arial20.json"), TestAssets.FONT_ARIAL_20);
+		FontLoadTask task = new FontLoadTask(FileUtils.getResourcePath("fonts/arial/size20/arial20.json"), TestAssets.FONT_ARIAL_20);
 		task.load();
 		TestAssets.FONT_ARIAL_20.init();
+		
+			// Arial, normal, size 16
+		fontTexture = new Texture(FileUtils.getResourcePath("fonts/arial/size16/arial16.png"));
+		TestAssets.FONT_ARIAL_16 = new Font(fontTexture, 178, 76);
+		task = new FontLoadTask(FileUtils.getResourcePath("fonts/arial/size16/arial16.json"), TestAssets.FONT_ARIAL_16);
+		task.load();
+		TestAssets.FONT_ARIAL_16.init();
 	}
 	
 		// Meshes
