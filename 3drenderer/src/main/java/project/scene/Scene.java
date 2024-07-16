@@ -3,16 +3,18 @@ package project.scene;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import project.Application;
 import project.Window;
+import project.component.Projection;
 import project.controls.Controller;
-import project.geometry.Projection;
 import project.gui.GUI;
 import project.gui.Text;
 import project.input.Input;
 import project.testing.ActionSet;
+import project.utils.DebugUtils;
 
 public class Scene {
 	private List<ASceneObject> objects;
@@ -37,10 +39,25 @@ public class Scene {
 	public void init() {
 		
 			// Scene
+			// WARNING: ORDER IN WHICH SCENE OBJECTS ARE ADDED IS IMPORTANT FOR DRAW CALLS
+			// LIGHTS HAVE TO BE ADDED FIRST SO THAT THEY ARE UPDATED BEFORE SCENE RENDERING
 		this.objects = new ArrayList<>();
 		
 		this.activeCamera = new Camera(this, new Projection(60.0f, 0.01f, 1000.0f));
 		this.objects.add(this.activeCamera);
+		
+		AmbientLight ambientLight = new AmbientLight(
+			this, new Vector3f(1.0f, 1.0f, 1.0f), 0.1f
+		);
+		this.objects.add(ambientLight);
+		DebugUtils.log(this, "Added AmbientLight!");
+		
+		PointLight pointLight = new PointLight(
+			this, new Vector3f(1.0f, 0.0f, 0.0f), 1.0f
+		);
+		pointLight.setPosition(0.0f, 1.0f, 0.0f);
+		this.objects.add(pointLight);
+		DebugUtils.log(this, "Added PointLight!");
 		
 		Model model = new Model(this);
 		model.setPosition(0, -0.5f, 0);

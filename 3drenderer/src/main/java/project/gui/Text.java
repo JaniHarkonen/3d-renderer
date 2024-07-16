@@ -3,7 +3,7 @@ package project.gui;
 import org.joml.Vector4f;
 
 import project.asset.Font;
-import project.testing.Fonts;
+import project.testing.TestAssets;
 
 public class Text extends AGUIElement {
 	private Font font;
@@ -12,7 +12,7 @@ public class Text extends AGUIElement {
 	
 	public Text(GUI gui, String content) {
 		super(gui);
-		this.font = Fonts.ARIAL_20;
+		this.font = TestAssets.FONT_ARIAL_20;
 		this.content = content;
 		this.textColor = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}

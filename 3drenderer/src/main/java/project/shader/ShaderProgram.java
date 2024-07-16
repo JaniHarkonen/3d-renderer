@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryStack;
@@ -96,6 +97,14 @@ public class ShaderProgram {
 	
 	public void setInteger1Uniform(String name, int i1) {
 		GL46.glUniform1i(this.getUniformOrError(name), i1);
+	}
+	
+	public void setFloat1Uniform(String name, float f1) {
+		GL46.glUniform1f(this.getUniformOrError(name), f1);
+	}
+	
+	public void setVector3fUniform(String name, Vector3f vec3f) {
+		GL46.glUniform3f(this.getUniformOrError(name), vec3f.x, vec3f.y, vec3f.z);
 	}
 	
 	public void setVector4fUniform(String name, Vector4f vec4f) {

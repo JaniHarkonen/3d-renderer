@@ -1,24 +1,28 @@
 package project.scene;
 
 import project.asset.Mesh;
-import project.asset.SceneAssetLoadTask;
-import project.opengl.Texture;
-import project.utils.FileUtils;
+import project.component.Material;
+import project.testing.TestAssets;
 
 public class Model extends ASceneObject {
 
 	private Mesh mesh;
-	private Texture texture;
+	private Material material;
+	//private Texture texture;
 	private float DEBUGangle;
 	
 	public Model(Scene scene) {
 		super(scene);
-		this.mesh = new Mesh();
-		this.texture = new Texture(FileUtils.getResourcePath("textures/creep.png"));
+		//this.mesh = new Mesh();t
+		this.mesh = TestAssets.MESH_BRICK;
+		this.material = new Material();
+		this.material.setTexture(0, TestAssets.TEXTURE_CREEP);
+		//this.texture = new Texture(FileUtils.getResourcePath("textures/creep.png"));
 		
-		SceneAssetLoadTask task = new SceneAssetLoadTask(FileUtils.getResourcePath("models/Brick.fbx"));
+		/*SceneAssetLoadTask task = new SceneAssetLoadTask(FileUtils.getResourcePath("models/Brick.fbx"));
 		task.expectMesh(this.mesh);
-		task.load();
+		task.load();*/
+		
 		
 		/*this.setPosition(
 			(float) Math.random() * 5, 
@@ -42,7 +46,11 @@ public class Model extends ASceneObject {
 		return this.mesh;
 	}
 	
-	public Texture getTexture() {
+	/*public Texture getTexture() {
 		return this.texture;
+	}*/
+	
+	public Material getMaterial() {
+		return this.material;
 	}
 }

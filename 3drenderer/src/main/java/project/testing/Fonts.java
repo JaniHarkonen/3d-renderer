@@ -7,14 +7,5 @@ import project.utils.FileUtils;
 
 public class Fonts {
 
-	public static Font ARIAL_20;
-	static {
-		Texture fontTexture;
-		
-		fontTexture = new Texture(FileUtils.getResourcePath("fonts/arial/font_arial20.png"));
-		Fonts.ARIAL_20 = new Font(fontTexture, 230, 89);
-		FontLoadTask task = new FontLoadTask(FileUtils.getResourcePath("fonts/arial/arial20.json"), Fonts.ARIAL_20);
-		task.load();
-		Fonts.ARIAL_20.init();
-	}
+	
 }

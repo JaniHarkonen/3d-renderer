@@ -1,4 +1,4 @@
-package project.geometry;
+package project.component;
 
 import org.joml.Matrix4f;
 

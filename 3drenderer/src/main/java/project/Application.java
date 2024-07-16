@@ -19,7 +19,7 @@ public class Application {
 		final int FPS_MAX = 60;
 		final int TICK_RATE = 60;
 		
-		DebugUtils.log(this, Fonts.ARIAL_20);
+		//DebugUtils.log(this, Fonts.ARIAL_20);
 		
 		Scene scene = new Scene(this, TICK_RATE);
 		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);

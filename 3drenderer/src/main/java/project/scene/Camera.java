@@ -4,10 +4,10 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import project.component.Projection;
 import project.controls.Action;
 import project.controls.Controller;
 import project.controls.IControllable;
-import project.geometry.Projection;
 import project.testing.ActionSet;
 
 public class Camera extends ASceneObject implements IControllable {

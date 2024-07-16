@@ -43,3 +43,6 @@
 
 ### Text
 - Font and color probably shouldn't be a part of Text (maybe set a draw font for draw calls), consider this when implementing GUI further
+
+### SceneAssetLoadTask
+- separate extractions (mesh extraction, material extraction) into separate methods or classes

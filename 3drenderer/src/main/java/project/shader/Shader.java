@@ -19,16 +19,14 @@ public class Shader {
 	
 	public void init() {
 		this.handle = GL46.glCreateShader(this.type);
-		GL46.glShaderSource(
-			this.handle, 
-			FileUtils.readTextFile(FileUtils.getResourcePath(this.sourcePath))
-		);
+		String sourceCode = FileUtils.readTextFile(FileUtils.getResourcePath(this.sourcePath));
+		GL46.glShaderSource(this.handle, sourceCode);
 		GL46.glCompileShader(this.handle);
 		
 		if( GL46.glGetShaderi(this.handle, GL46.GL_COMPILE_STATUS) != GL46.GL_TRUE ) {
 			DebugUtils.log(
 				this, 
-				"ERROR: Unable to compile shader 'default.frag' Reason:",
+				"ERROR: Unable to compile shader. Reason:",
 				GL46.glGetShaderInfoLog(this.handle)
 			);
 		}
