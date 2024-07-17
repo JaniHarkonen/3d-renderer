@@ -70,6 +70,8 @@ public class SceneAssetLoadTask {
 			
 			float[] positions;
 			float[] normals;
+			float[] bitangents;
+			float[] tangents;
 			float[] textureCoordinates = new float[0];
 			int[] indices;
 			
@@ -95,9 +97,39 @@ public class SceneAssetLoadTask {
 				normals[normalIndex++] = normal.z();
 			}
 			
+				// Extract tangents
+			AIVector3D.Buffer tangentBuffer = aiMesh.mTangents();
+			tangents = new float[tangentBuffer.remaining() * 3];
+			int tangentIndex = 0;
+			while( tangentBuffer.remaining() > 0 ) {
+				AIVector3D tangent = tangentBuffer.get();
+				tangents[tangentIndex++] = tangent.x();
+				tangents[tangentIndex++] = tangent.y();
+				tangents[tangentIndex++] = tangent.z();
+			}
+			
+			if( tangents.length == 0 ) {
+				tangents = new float[normals.length];
+			}
+			
+			
+				// Extract bitangents
+			AIVector3D.Buffer bitangentBuffer = aiMesh.mBitangents();
+			bitangents = new float[bitangentBuffer.remaining() * 3];
+			int bitangentIndex = 0;
+			while( bitangentBuffer.remaining() > 0 ) {
+				AIVector3D bitangent = bitangentBuffer.get();
+				bitangents[bitangentIndex++] = bitangent.x();
+				bitangents[bitangentIndex++] = bitangent.y();
+				bitangents[bitangentIndex++] = bitangent.z();
+			}
+			
+			if( bitangents.length == 0 ) {
+				bitangents = new float[normals.length];
+			}
+			
 				// Extract texture coordinates
 			AIVector3D.Buffer textureCoordinateBuffer = aiMesh.mTextureCoords(0);
-			
 			if( textureCoordinateBuffer != null ) {
 				textureCoordinates = new float[textureCoordinateBuffer.remaining() * 2];
 				int coordinateIndex = 0;
@@ -120,13 +152,17 @@ public class SceneAssetLoadTask {
 				}
 			}
 			
+			if( tangents.length == 0 ) {
+				tangents = new float[normals.length];
+			}
+			
 			indices = new int[indexList.size()];
 			for( int j = 0; j < indexList.size(); j++ ) {
 				indices[j] = indexList.get(j);
 			}
 			
 			this.expectedMeshes.get(i).populate(
-				positions, normals, textureCoordinates, indices
+				positions, normals, bitangents, tangents, textureCoordinates, indices
 			);
 		}
 		

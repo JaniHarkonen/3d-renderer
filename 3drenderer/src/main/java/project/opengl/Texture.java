@@ -51,7 +51,7 @@ public class Texture {
 			GL46.glTexParameteri(target, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_NEAREST);
 			GL46.glTexParameteri(target, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_NEAREST);
 			GL46.glTexImage2D(
-					target, 
+				target, 
 				0, 
 				GL46.GL_RGBA, 
 				width, 

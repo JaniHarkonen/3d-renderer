@@ -12,11 +12,10 @@ public class Model extends ASceneObject {
 	
 	public Model(Scene scene) {
 		super(scene);
-		//this.mesh = new Mesh();t
 		this.mesh = TestAssets.MESH_BRICK;
 		this.material = new Material();
 		this.material.setTexture(0, TestAssets.TEXTURE_BRICK);
-		
+		this.material.setTexture(1, TestAssets.TEXTURE_BRICK_NORMAL);
 		
 		/*this.setPosition(
 			(float) Math.random() * 5, 

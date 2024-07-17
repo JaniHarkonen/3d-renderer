@@ -4,6 +4,8 @@ public class Mesh {
 
 	private float[] positions;
 	private float[] normals;
+	private float[] tangents;
+	private float[] bitangents;
 	private float[] textureCoordinates;
 	private int[] indices;
 	private int vertexCount;
@@ -16,6 +18,8 @@ public class Mesh {
 				-0.5f, -0.5f, -1.0f,
 				0.5f, -0.5f, -1.0f
 			}, 
+			new float[0],
+			new float[0],
 			new float[0],
 			new float[] {
 				0.5f, 0.0f,
@@ -31,11 +35,15 @@ public class Mesh {
 	public void populate(
 		float[] positions, 
 		float[] normals, 
-		float[] textureCoordinates, 
+		float[] tangents,
+		float[] bitangents,
+		float[] textureCoordinates,
 		int[] indices
 	) {
 		this.positions = positions;
 		this.normals = normals;
+		this.tangents = tangents;
+		this.bitangents = bitangents;
 		this.textureCoordinates = textureCoordinates;
 		this.indices = indices;
 		this.vertexCount = this.positions.length / 3;
@@ -51,6 +59,14 @@ public class Mesh {
 	
 	public float[] getNormals() {
 		return this.normals;
+	}
+	
+	public float[] getTangents() {
+		return this.tangents;
+	}
+	
+	public float[] getBitangents() {
+		return this.bitangents;
 	}
 	
 	public float[] getTextureCoordinates() {

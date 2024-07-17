@@ -6,10 +6,13 @@ import project.opengl.Texture;
 
 public class Material {
 	
-	public static final int DEFAULT_TEXTURE_SLOT_COUNT = 1;
-	public static final Vector4f DEFAULT_AMBIENT_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 1.0f); // pulled from fbx via Assimp
-	public static final Vector4f DEFAULT_DIFFUSE_COLOR = new Vector4f(0.8f, 0.8f, 0.8f, 1.0f); // pulled from fbx via Assimp
-	public static final Vector4f DEFAULT_SPECULAR_COLOR = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f); // pulled from fbx via Assimp
+	public static final int DEFAULT_TEXTURE_SLOT_COUNT = 2;
+	public static final Vector4f DEFAULT_AMBIENT_COLOR = 
+		new Vector4f(0.0f, 0.0f, 0.0f, 1.0f); // pulled from fbx via Assimp
+	public static final Vector4f DEFAULT_DIFFUSE_COLOR = 
+		new Vector4f(0.8f, 0.8f, 0.8f, 1.0f); // pulled from fbx via Assimp
+	public static final Vector4f DEFAULT_SPECULAR_COLOR = 
+		new Vector4f(1.0f, 1.0f, 1.0f, 1.0f); // pulled from fbx via Assimp
 
 	private Texture[] textureSlot;
 	private Vector4f ambientColor;
@@ -48,6 +51,10 @@ public class Material {
 	
 	public Texture[] getTextures() {
 		return this.textureSlot;
+	}
+	
+	public Texture getTexture(int textureSlot) {
+		return this.textureSlot[textureSlot];
 	}
 	
 	public Vector4f getAmbientColor() {

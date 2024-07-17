@@ -14,7 +14,7 @@ public class Text extends AGUIElement {
 		super(gui);
 		this.font = TestAssets.FONT_ARIAL_16;
 		this.content = content;
-		this.textColor = new Vector4f(1.0f, 1.0f, 1.0f, 0.5f);
+		this.textColor = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	
 	

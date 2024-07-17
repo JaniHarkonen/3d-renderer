@@ -36,6 +36,7 @@ struct Material
     vec4 diffuse;
     vec4 specular;
     float reflectance;
+    int hasNormalMap;
 };
 
 struct AmbientLight
@@ -54,11 +55,14 @@ struct PointLight
 
 in vec3 outPosition;
 in vec3 outNormal;
+in vec3 outTangent;
+in vec3 outBitangent;
 in vec2 outTextureCoordinate;//in vec2 outTextCoord;
 
 out vec4 fragColor;
 
 uniform sampler2D uDiffuseSampler; //uniform sampler2D txtSampler;
+uniform sampler2D uNormalSampler;
 uniform Material uMaterial; //uniform Material material;
 uniform AmbientLight uAmbientLight; //uniform AmbientLight ambientLight;
 uniform PointLight uPointLights[MAX_POINT_LIGHTS]; //uniform PointLight pointLights[MAX_POINT_LIGHTS];
@@ -127,6 +131,14 @@ vec4 calcDirLight(vec4 diffuse, vec4 specular, DirLight light, vec3 position, ve
 }
 */
 
+vec3 calcNormal(vec3 normal, vec3 tangent, vec3 bitangent, vec2 textCoords) {
+    mat3 TBN = mat3(tangent, bitangent, normal);
+    vec3 newNormal = texture(uNormalSampler, textCoords).rgb;
+    newNormal = normalize(newNormal * 2.0 - 1.0);
+    newNormal = normalize(TBN * newNormal);
+    return newNormal;
+}
+
 void main()
 {
     //fragColor = texture(uDiffuseSampler, outTextureCoordinate);
@@ -136,11 +148,16 @@ void main()
     vec4 diffuse = text_color + uMaterial.diffuse;
     vec4 specular = text_color + uMaterial.specular;
 
-    vec4 diffuseSpecularComp = vec4(0.0, 0.0, 0.0, 0.0);//calcDirLight(diffuse, specular, dirLight, outPosition, outNormal); // Directional light calculated here UNUSED AS OF NOW
+    vec3 normal = outNormal;
+    if (uMaterial.hasNormalMap > 0) {
+        normal = calcNormal(outNormal, outTangent, outBitangent, outTextureCoordinate);
+    }
+
+    vec4 diffuseSpecularComp = vec4(0.0, 0.0, 0.0, 0.0);//calcDirLight(diffuse, specular, dirLight, outPosition, normal); // Directional light calculated here UNUSED AS OF NOW
 
     for (int i=0; i<MAX_POINT_LIGHTS; i++) {
         if (uPointLights[i].intensity > 0) {
-            diffuseSpecularComp += calcPointLight(diffuse, specular, uPointLights[i], outPosition, outNormal);
+            diffuseSpecularComp += calcPointLight(diffuse, specular, uPointLights[i], outPosition, normal);
         }
     }
 
@@ -148,7 +165,7 @@ void main()
         // UNUSED AS OF NOW
     for (int i=0; i<MAX_SPOT_LIGHTS; i++) {
         if (spotLights[i].pl.intensity > 0) {
-            diffuseSpecularComp += calcSpotLight(diffuse, specular, spotLights[i], outPosition, outNormal);
+            diffuseSpecularComp += calcSpotLight(diffuse, specular, spotLights[i], outPosition, normal);
         }
     }
     */

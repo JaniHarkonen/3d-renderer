@@ -1,5 +1,8 @@
 package project.opengl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -26,6 +29,7 @@ public class Renderer {
 	
 		// Uniform names
 	private static final String U_DIFFUSE_SAMPLER = "uDiffuseSampler";
+	private static final String U_NORMAL_SAMPLER = "uNormalSampler";
 	private static final String U_PROJECTION = "uProjection";
 	private static final String U_CAMERA_TRANSFORM = "uCameraTransform";
 	private static final String U_OBJECT_TRANSFORM = "uObjectTransform";
@@ -34,12 +38,12 @@ public class Renderer {
 	private static final String U_MATERIAL_DIFFUSE = "uMaterial.diffuse";
 	private static final String U_MATERIAL_SPECULAR = "uMaterial.specular";
 	private static final String U_MATERIAL_REFLECTANCE = "uMaterial.reflectance";
+	private static final String U_MATERIAL_HAS_NORMAL_MAP = "uMaterial.hasNormalMap";
 	private static final String U_AMBIENT_LIGHT_FACTOR = "uAmbientLight.factor";
 	private static final String U_AMBIENT_LIGHT_COLOR = "uAmbientLight.color";
 	private static final String U_POINT_LIGHTS = "uPointLights";
 	
 		// Spot light uniform names here
-	
 	
 	private static final String U_PROJECTION_GUI = "uProjection";
 	private static final String U_DIFFUSE_SAMPLER_GUI = "uDiffuseSampler";
@@ -76,6 +80,7 @@ public class Renderer {
 			// Scene shaders
 		this.shaderProgram = new ShaderProgram();
 		this.shaderProgram.declareUniform(Renderer.U_DIFFUSE_SAMPLER);
+		this.shaderProgram.declareUniform(Renderer.U_NORMAL_SAMPLER);
 		this.shaderProgram.declareUniform(Renderer.U_PROJECTION);
 		this.shaderProgram.declareUniform(Renderer.U_CAMERA_TRANSFORM);
 		this.shaderProgram.declareUniform(Renderer.U_OBJECT_TRANSFORM);
@@ -84,6 +89,7 @@ public class Renderer {
 		this.shaderProgram.declareUniform(Renderer.U_MATERIAL_DIFFUSE);
 		this.shaderProgram.declareUniform(Renderer.U_MATERIAL_SPECULAR);
 		this.shaderProgram.declareUniform(Renderer.U_MATERIAL_REFLECTANCE);
+		this.shaderProgram.declareUniform(Renderer.U_MATERIAL_HAS_NORMAL_MAP);
 		this.shaderProgram.declareUniform(Renderer.U_AMBIENT_LIGHT_FACTOR);
 		this.shaderProgram.declareUniform(Renderer.U_AMBIENT_LIGHT_COLOR);
 		
@@ -227,6 +233,7 @@ public class Renderer {
 		activeShaderProgram = this.shaderProgram;
 		activeShaderProgram.bind();
 		activeShaderProgram.setInteger1Uniform(Renderer.U_DIFFUSE_SAMPLER, 0);
+		activeShaderProgram.setInteger1Uniform(Renderer.U_NORMAL_SAMPLER, 1);
 		
 		Camera activeCamera = this.scene.getActiveCamera();
 		activeCamera.getProjection().update(
@@ -282,6 +289,16 @@ public class Renderer {
 					texture.bind();
 				}
 				
+				if( material.getTexture(1) != null ) {
+					activeShaderProgram.setInteger1Uniform(
+						Renderer.U_MATERIAL_HAS_NORMAL_MAP, 1
+					);
+				} else {
+					activeShaderProgram.setInteger1Uniform(
+						Renderer.U_MATERIAL_HAS_NORMAL_MAP, 0
+					);
+				}
+				
 				activeShaderProgram.setVector4fUniform(
 					Renderer.U_MATERIAL_AMBIENT, material.getAmbientColor()
 				);
@@ -303,76 +320,82 @@ public class Renderer {
 			}
 		}
 		
+		//GL46.glBindVertexArray(0); // may not be needed
 		activeShaderProgram.unbind();
 	
 		
 			/////////////////////////////////// GUI render pass ///////////////////////////////////
-		GL46.glDisable(GL46.GL_DEPTH_TEST);
-		GL46.glEnable(GL46.GL_BLEND);
-        GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
-        activeShaderProgram = this.shaderProgramGUI;
-        activeShaderProgram.bind();
-        activeShaderProgram.setInteger1Uniform(Renderer.U_DIFFUSE_SAMPLER, 0);
-		
-        activeShaderProgram.setMatrix4fUniform(
-			Renderer.U_PROJECTION_GUI, 
-			this.scene.getGUI().calculateAndGetProjection()
-		);
-		
-		float lineHeight = 22.0f;
-		float baseLine = 16.0f;
-		for( AGUIElement element : this.scene.getGUI().getElements() ) {
+		if( this.scene.getGUI() != null ) {
+			GL46.glDisable(GL46.GL_DEPTH_TEST);
+			GL46.glEnable(GL46.GL_BLEND);
+	        GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
+	        activeShaderProgram = this.shaderProgramGUI;
+	        activeShaderProgram.bind();
+	        activeShaderProgram.setInteger1Uniform(Renderer.U_DIFFUSE_SAMPLER, 0);
 			
-				// Determine the appropriate way of rendering the element
-				// (THIS MUST BE CHANGED TO A MORE DYNAMIC APPROACH)			
-			if( element instanceof Text ) {
-				float textX = element.getPosition().x;
-				float textY = element.getPosition().y;
-				Text text = (Text) element;
-				Font font = text.getFont();
-				Texture texture = font.getTexture();
-				Vector4f color = text.getTextColor();
+	        activeShaderProgram.setMatrix4fUniform(
+				Renderer.U_PROJECTION_GUI, 
+				this.scene.getGUI().calculateAndGetProjection()
+			);
+	        
+			
+			float lineHeight = 22.0f;
+			float baseLine = 16.0f;
+			
+			for( AGUIElement element : this.scene.getGUI().getElements() ) {
 				
-				activeShaderProgram.setVector4fUniform(Renderer.U_TEXT_COLOR_GUI, color);
-				this.textureCache.generateIfNotEncountered(texture);
-				GL46.glActiveTexture(GL46.GL_TEXTURE0);
-				texture.bind();
-
-				for( String line : text.getContent().split("\n") ) {
-					for( int i = 0; i < line.length(); i++ ) {
-						Font.Glyph glyph = font.getGlyph(line.charAt(i));
-						activeShaderProgram.setMatrix4fUniform(
-							Renderer.U_OBJECT_TRANSFORM_GUI, 
-							new Matrix4f()
-							.translationRotateScale(
-								textX, textY + baseLine - glyph.getOriginY(), 0.0f, 
-								element.getRotation().x, 
-								element.getRotation().y, 
-								element.getRotation().z, 
-								element.getRotation().w, 
-								1.0f, 1.0f, 1.0f
-							)
-						);
-						
-						VAO vao = this.vaoCache.getOrGenerate(glyph.getMesh());	
-						vao.bind();
-						GL46.glDrawElements(
-							GL46.GL_TRIANGLES, 
-							vao.getVertexCount() * 3, 
-							GL46.GL_UNSIGNED_INT, 
-							0
-						);
-						
-						textX += glyph.getWidth();
-					}
+					// Determine the appropriate way of rendering the element
+					// (THIS MUST BE CHANGED TO A MORE DYNAMIC APPROACH)			
+				if( element instanceof Text ) {
+					float textX = element.getPosition().x;
+					float textY = element.getPosition().y;
+					Text text = (Text) element;
+					Font font = text.getFont();
+					Texture texture = font.getTexture();
+					Vector4f color = text.getTextColor();
 					
-					textX = 0.0f;
-					textY += lineHeight;
+					activeShaderProgram.setVector4fUniform(Renderer.U_TEXT_COLOR_GUI, color);
+					this.textureCache.generateIfNotEncountered(texture);
+					GL46.glActiveTexture(GL46.GL_TEXTURE0);
+					texture.bind();
+
+					for( String line : text.getContent().split("\n") ) {
+						for( int i = 0; i < line.length(); i++ ) {
+							Font.Glyph glyph = font.getGlyph(line.charAt(i));
+							activeShaderProgram.setMatrix4fUniform(
+								Renderer.U_OBJECT_TRANSFORM_GUI, 
+								new Matrix4f()
+								.translationRotateScale(
+									textX, textY + baseLine - glyph.getOriginY(), 0.0f, 
+									element.getRotation().x, 
+									element.getRotation().y, 
+									element.getRotation().z, 
+									element.getRotation().w, 
+									1.0f, 1.0f, 1.0f
+								)
+							);
+							
+							VAO vao = this.vaoCache.getOrGenerate(glyph.getMesh());	
+							vao.bind();
+							GL46.glDrawElements(
+								GL46.GL_TRIANGLES, 
+								vao.getVertexCount() * 3, 
+								GL46.GL_UNSIGNED_INT, 
+								0
+							);
+							
+							textX += glyph.getWidth();
+						}
+						
+						textX = 0.0f;
+						textY += lineHeight;
+					}
 				}
 			}
+			
+			//GL46.glBindVertexArray(0); // may not be needed
+			activeShaderProgram.unbind();
 		}
-		
-		activeShaderProgram.unbind();
 	}
 	
 	public Window getClientWindow() {

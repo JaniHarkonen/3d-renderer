@@ -14,6 +14,7 @@ import project.gui.GUI;
 import project.gui.Text;
 import project.input.Input;
 import project.testing.ActionSet;
+import project.testing.DebugModel;
 import project.utils.DebugUtils;
 
 public class Scene {
@@ -26,6 +27,7 @@ public class Scene {
 	private Application app;
 	private Text textAppStatistics;
 	private PointLight pointLight0;
+	private DebugModel floorBrick;
 	
 	public Scene(Application app, int tickRate) {
 		this.objects = null;
@@ -36,6 +38,7 @@ public class Scene {
 		this.app = app;
 		this.textAppStatistics = null;
 		this.pointLight0 = null;
+		this.floorBrick = null;
 	}
 	
 	public void init() {
@@ -61,16 +64,13 @@ public class Scene {
 		this.objects.add(this.pointLight0);
 		DebugUtils.log(this, "Added PointLight!");
 		
-		Model model = new Model(this);
-		model.setPosition(0, -0.5f, 0);
-		model.setScale(0.1f, 0.01f, 0.1f);
-		this.objects.add(model);
+		this.floorBrick = new DebugModel(this);
+		this.floorBrick.setPosition(0, -0.5f, 0);
+		this.floorBrick.setScale(0.1f, 0.01f, 0.1f);
+		this.objects.add(this.floorBrick);
 		
 			// GUI
-		this.textAppStatistics = new Text(this.gui, "");
-		this.gui = new GUI(this);
-		this.gui.init();
-		this.gui.addElement(this.textAppStatistics);
+		this.createGUI();
 		
 			// Camera controls here
 		Input input = this.app.getWindow().getInput();
@@ -97,6 +97,11 @@ public class Scene {
 		.addBinding(ActionSet.LIGHT_INCREASE_BLUE, input.new KeyHeld(GLFW.GLFW_KEY_5))
 		.addBinding(ActionSet.LIGHT_DECREASE_BLUE, input.new KeyHeld(GLFW.GLFW_KEY_6));
 		this.pointLight0.setController(pointLightController);
+		
+			// Floor brick controls
+		Controller floorBrickController = new Controller(input, this.floorBrick)
+		.addBinding(ActionSet.NORMAL_MAP_TOGGLE, input.new KeyPressed(GLFW.GLFW_KEY_N));
+		this.floorBrick.setController(floorBrickController);
 	}
 
 	public void update() {
@@ -129,9 +134,27 @@ public class Scene {
 				this.pointLight0.getColor().y + ", " +
 				this.pointLight0.getColor().z +
 			")\n" +
-			"    intensity: " + this.pointLight0.getIntensity() + "\n"
-			
+			"    intensity: " + this.pointLight0.getIntensity() + "\n" +
+			"    normal map: " + (this.floorBrick.isNormalMapActive() ? "ON" : "OFF") + "\n\n" +
+			"Controls: \n" + 
+			"    WASD to move\n" +
+			"    MOUSE to look around\n" +
+			"    ARROW KEYS to move point light\n" +
+			"    +/- to change point light intensity\n" +
+			"    1/2 to change point light red value\n" +
+			"    3/4 to change point light green value\n" +
+			"    5/6 to change point light blue value\n" + 
+			"    N to toggle normal map" +
+			"    H to toggle HUD"
 		);
+		
+		if( this.app.getWindow().getInputSnapshot().isKeyPressed(GLFW.GLFW_KEY_H) ) {
+			if( this.gui == null ) {
+				this.createGUI();
+			} else {
+				this.gui = null;
+			}
+		}
 	}
 	
 	private String convertToLargestByte(long n) {
@@ -153,6 +176,13 @@ public class Scene {
 		}
 		
 		return n + units[index];
+	}
+	
+	private void createGUI() {
+		this.textAppStatistics = new Text(this.gui, "");
+		this.gui = new GUI(this);
+		this.gui.init();
+		this.gui.addElement(this.textAppStatistics);
 	}
 	
 	public void setTickRate(int tickRate) {
