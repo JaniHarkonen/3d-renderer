@@ -13,6 +13,8 @@ public class VAO {
 	private int vaoHandle;
 	private int positionsVBO;
 	private int normalsVBO;
+	private int tangentsVBO;
+	private int bitangentsVBO;
 	private int textureCoordinatesVBO;
 	private int indicesVBO;
 	
@@ -23,6 +25,8 @@ public class VAO {
 		this.vaoHandle = -1;
 		this.positionsVBO = -1;
 		this.normalsVBO = -1;
+		this.tangentsVBO = -1;
+		this.bitangentsVBO = -1;
 		this.textureCoordinatesVBO = -1;
 		this.indicesVBO = -1;
 		
@@ -36,6 +40,8 @@ public class VAO {
 		
 			float[] positions = this.targetMesh.getPositions();
 			float[] normals = this.targetMesh.getNormals();
+			float[] tangents = this.targetMesh.getTangents();
+			float[] bitangents = this.targetMesh.getBitangents();
 			float[] textureCoordinates = this.targetMesh.getTextureCoordinates();
 			int[] indices = this.targetMesh.getIndices();
 		
@@ -57,14 +63,32 @@ public class VAO {
 			GL46.glEnableVertexAttribArray(1);
 			GL46.glVertexAttribPointer(1, 3, GL46.GL_FLOAT, false, 0, 0);
 			
+				// Tangents
+			this.tangentsVBO = GL46.glGenBuffers();
+			FloatBuffer tangentsBuffer = MemoryUtil.memAllocFloat(tangents.length);
+			tangentsBuffer.put(0, tangents);
+			GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, this.tangentsVBO);
+			GL46.glBufferData(GL46.GL_ARRAY_BUFFER, tangentsBuffer, GL46.GL_STATIC_DRAW);
+			GL46.glEnableVertexAttribArray(2);
+			GL46.glVertexAttribPointer(2, 3, GL46.GL_FLOAT, false, 0, 0);
+			
+				// Bitangents
+			this.bitangentsVBO = GL46.glGenBuffers();
+			FloatBuffer bitangentsBuffer = MemoryUtil.memAllocFloat(bitangents.length);
+			bitangentsBuffer.put(0, bitangents);
+			GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, this.bitangentsVBO);
+			GL46.glBufferData(GL46.GL_ARRAY_BUFFER, bitangentsBuffer, GL46.GL_STATIC_DRAW);
+			GL46.glEnableVertexAttribArray(3);
+			GL46.glVertexAttribPointer(3, 3, GL46.GL_FLOAT, false, 0, 0);
+			
 				// Texture coordinates
 			this.textureCoordinatesVBO = GL46.glGenBuffers();
 			FloatBuffer textureCoordinatesBuffer = MemoryUtil.memAllocFloat(textureCoordinates.length);
 			textureCoordinatesBuffer.put(0, textureCoordinates);
 			GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, this.textureCoordinatesVBO);
 			GL46.glBufferData(GL46.GL_ARRAY_BUFFER, textureCoordinatesBuffer, GL46.GL_STATIC_DRAW);
-			GL46.glEnableVertexAttribArray(2);
-			GL46.glVertexAttribPointer(2, 2, GL46.GL_FLOAT, false, 0, 0);
+			GL46.glEnableVertexAttribArray(4);
+			GL46.glVertexAttribPointer(4, 2, GL46.GL_FLOAT, false, 0, 0);
 			
 				// Indices
 			this.indicesVBO = GL46.glGenBuffers();

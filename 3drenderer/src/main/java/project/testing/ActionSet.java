@@ -15,4 +15,6 @@ public final class ActionSet {
 	public static final int LIGHT_DECREASE_GREEN = 11;
 	public static final int LIGHT_INCREASE_BLUE = 12;
 	public static final int LIGHT_DECREASE_BLUE = 13;
+	
+	public static final int NORMAL_MAP_TOGGLE = 14;
 }
