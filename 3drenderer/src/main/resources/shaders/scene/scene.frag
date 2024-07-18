@@ -4,6 +4,10 @@ const int MAX_POINT_LIGHTS = 5;
 //const int MAX_SPOT_LIGHTS = 5; // UNUSED AS OF NOW
 const float SPECULAR_POWER = 10;
 
+const float BIAS = 0.0005;
+const float SHADOW_FACTOR = 0.25;
+const int NUM_CASCADES = 3;
+
 /*
     // UNUSED AS OF NOW
 struct SpotLight
@@ -53,19 +57,28 @@ struct PointLight
     Attenuation att;
 };
 
-in vec3 outPosition;
+struct CascadeShadow {
+    mat4 lightView;
+    float splitDistance;
+};
+
+//in vec3 outPosition;
 in vec3 outNormal;
 in vec3 outTangent;
 in vec3 outBitangent;
 in vec2 outTextureCoordinate;//in vec2 outTextCoord;
+in vec3 outViewPosition;
+in vec4 outWorldPosition;
 
 out vec4 fragColor;
 
 uniform sampler2D uDiffuseSampler; //uniform sampler2D txtSampler;
 uniform sampler2D uNormalSampler;
+uniform sampler2D uShadowMap[NUM_CASCADES];
 uniform Material uMaterial; //uniform Material material;
 uniform AmbientLight uAmbientLight; //uniform AmbientLight ambientLight;
 uniform PointLight uPointLights[MAX_POINT_LIGHTS]; //uniform PointLight pointLights[MAX_POINT_LIGHTS];
+uniform CascadeShadow uCascadeShadows[NUM_CASCADES];
 // uniform SpotLight spotLights[MAX_SPOT_LIGHTS]; // UNUSED AS OF NOW
 //uniform DirLight dirLight; // UNUSED AS OF NOW
 
@@ -139,10 +152,29 @@ vec3 calcNormal(vec3 normal, vec3 tangent, vec3 bitangent, vec2 textCoords) {
     return newNormal;
 }
 
+float textureProj(vec4 shadowCoord, vec2 offset, int idx) {
+    float shadow = 1.0;
+
+    if (shadowCoord.z > -1.0 && shadowCoord.z < 1.0) {
+        float dist = 0.0;
+        dist = texture(uShadowMap[idx], vec2(shadowCoord.xy + offset)).r;
+        if (shadowCoord.w > 0 && dist < shadowCoord.z - BIAS) {
+            shadow = SHADOW_FACTOR;
+        }
+    }
+    return shadow;
+}
+
+float calcShadow(vec4 worldPosition, int idx) {
+    vec4 shadowMapPosition = uCascadeShadows[idx].lightView * worldPosition;
+    float shadow = 1.0;
+    vec4 shadowCoord = (shadowMapPosition / shadowMapPosition.w) * 0.5 + 0.5;
+    shadow = textureProj(shadowCoord, vec2(0, 0), idx);
+    return shadow;
+}
+
 void main()
 {
-    //fragColor = texture(uDiffuseSampler, outTextureCoordinate);
-
     vec4 text_color = texture(uDiffuseSampler, outTextureCoordinate);
     vec4 ambient = calcAmbient(uAmbientLight, text_color + uMaterial.ambient);
     vec4 diffuse = text_color + uMaterial.diffuse;
@@ -155,9 +187,19 @@ void main()
 
     vec4 diffuseSpecularComp = vec4(0.0, 0.0, 0.0, 0.0);//calcDirLight(diffuse, specular, dirLight, outPosition, normal); // Directional light calculated here UNUSED AS OF NOW
 
+    int cascadeIndex = 0;
+    for (int i=0; i<NUM_CASCADES - 1; i++) {
+        if (outViewPosition.z < uCascadeShadows[i].splitDistance) {
+            cascadeIndex = i + 1;
+        }
+    }
+
+    float shadowFactor = calcShadow(outWorldPosition, cascadeIndex);
+
     for (int i=0; i<MAX_POINT_LIGHTS; i++) {
         if (uPointLights[i].intensity > 0) {
-            diffuseSpecularComp += calcPointLight(diffuse, specular, uPointLights[i], outPosition, normal);
+            //diffuseSpecularComp += calcPointLight(diffuse, specular, uPointLights[i], outPosition, normal);
+            diffuseSpecularComp += calcPointLight(diffuse, specular, uPointLights[i], outViewPosition, normal);
         }
     }
 
@@ -171,4 +213,5 @@ void main()
     */
 
     fragColor = ambient + diffuseSpecularComp;
+    fragColor.rgb = fragColor.rgb * shadowFactor;
 }

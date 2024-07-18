@@ -69,6 +69,11 @@ public class Scene {
 		this.floorBrick.setScale(0.1f, 0.01f, 0.1f);
 		this.objects.add(this.floorBrick);
 		
+		Model model = new Model(this);
+		model.setPosition(-0.5f, 0.5f, -0.5f);
+		model.setScale(0.01f, 0.01f, 0.01f);
+		this.objects.add(model);
+		
 			// GUI
 		this.createGUI();
 		
