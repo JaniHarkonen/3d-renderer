@@ -1,5 +1,8 @@
 ## TO DO
 
+### Formatting
+- switch from using ClassName.STATIC_FINAL_FIELD or ClassName.STATIC_METHOD to simply STATIC_FINAL_FIELD or STATIC_METHOD to make refactoring easier
+
 ### General
 - restrict visibilities of class to the lowest level needed
 
@@ -50,3 +53,7 @@
 
 ### PointLight
 - PointLight should not be controlled by a Controller, rather, it should be attached to a ASceneObject that is then controlled
+
+### DepthTexture
+- should this be called something other than texture as it is essentially an array of textures
+- see if this class can be somehow merged with Texture given that both have overlap in their implementation

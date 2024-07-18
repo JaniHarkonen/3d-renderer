@@ -13,6 +13,7 @@ import project.Window;
 import project.asset.Font;
 import project.asset.Mesh;
 import project.component.Attenuation;
+import project.component.CascadeShadow;
 import project.component.Material;
 import project.gui.AGUIElement;
 import project.gui.Text;
@@ -43,6 +44,12 @@ public class Renderer {
 	private static final String U_AMBIENT_LIGHT_COLOR = "uAmbientLight.color";
 	private static final String U_POINT_LIGHTS = "uPointLights";
 	
+	private static final String U_SHADOW_MAP = "uShadowMap";
+	private static final String U_CASCADE_SHADOWS = "uCascadeShadows";
+	
+	private static final String U_LIGHT_VIEW_SHADOWS = "uLightView";
+	private static final String U_OBJECT_TRANSFORM_SHADOWS = "uObjectTransform";
+	
 		// Spot light uniform names here
 	
 	private static final String U_PROJECTION_GUI = "uProjection";
@@ -57,7 +64,11 @@ public class Renderer {
 	private Window clientWindow;
 	
 	private ShaderProgram shaderProgram;
+	private ShaderProgram shaderProgramShadows;
 	private ShaderProgram shaderProgramGUI;
+	
+	private List<CascadeShadow> cascadeShadows;
+	private ShadowBuffer shadowBuffer;
 	
 	private VAOCache vaoCache;
 	private TextureCache textureCache;
@@ -66,7 +77,10 @@ public class Renderer {
 	public Renderer(Window clientWindow, Scene scene) {
 		this.clientWindow = clientWindow;
 		this.shaderProgram = null;
+		this.shaderProgramShadows = null;
 		this.shaderProgramGUI = null;
+		this.cascadeShadows = null;
+		this.shadowBuffer = null;
 		this.vaoCache = null;
 		this.textureCache = null;
 		this.scene = scene;
@@ -113,6 +127,12 @@ public class Renderer {
 				Renderer.U_POINT_LIGHTS + "[" + i + "].att.exponent"
 			);
 		}
+		
+		for( int i = 0; i < CascadeShadow.SHADOW_MAP_CASCADE_COUNT; i++ ) {
+			this.shaderProgram.declareUniform(U_SHADOW_MAP + "[" + i + "]");
+			this.shaderProgram.declareUniform(U_CASCADE_SHADOWS + "[" + i + "].lightView");
+			this.shaderProgram.declareUniform(U_CASCADE_SHADOWS + "[" + i + "].splitDistance");
+		}
 
 			// Spot light uniform declarations here
 		this.shaderProgram.addShader(
@@ -146,6 +166,21 @@ public class Renderer {
 		}
 		
 			// Spot light uniform default value settings here
+		
+			// Cascade shadow shaders
+		this.shaderProgramShadows = new ShaderProgram();
+		this.shaderProgramShadows.addShader(new Shader("shaders/cshadow/cshadow.vert", GL46.GL_VERTEX_SHADER));
+		this.shaderProgramShadows.declareUniform(Renderer.U_LIGHT_VIEW_SHADOWS);
+		this.shaderProgramShadows.declareUniform(Renderer.U_OBJECT_TRANSFORM_SHADOWS);
+		this.shaderProgramShadows.init();
+		
+		this.cascadeShadows = new ArrayList<>();
+		this.shadowBuffer = new ShadowBuffer();
+		this.shadowBuffer.init();
+		
+		for( int i = 0; i < CascadeShadow.SHADOW_MAP_CASCADE_COUNT; i++ ) {
+			this.cascadeShadows.add(new CascadeShadow());
+		}
 		
 			// GUI shaders
 		this.shaderProgramGUI = new ShaderProgram();
@@ -227,13 +262,61 @@ public class Renderer {
 		GL46.glClear(GL46.GL_COLOR_BUFFER_BIT | GL46.GL_DEPTH_BUFFER_BIT);
 		ShaderProgram activeShaderProgram;
 		
+			/////////////////////////////////// Cascade shadow render pass ///////////////////////////////////
+		GL46.glEnable(GL46.GL_DEPTH_TEST);
+		GL46.glEnable(GL46.GL_BLEND);
+        GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
+        activeShaderProgram = this.shaderProgramShadows;
+        activeShaderProgram.bind();
+        
+        CascadeShadow.updateCascadeShadows(this.cascadeShadows, this.scene.getActiveCamera());
+        GL46.glBindFramebuffer(GL46.GL_FRAMEBUFFER, this.shadowBuffer.getDepthMapFBO());
+        GL46.glViewport(0, 0, ShadowBuffer.DEFAULT_SHADOW_MAP_WIDTH, ShadowBuffer.DEFAULT_SHADOW_MAP_HEIGHT);
+
+        for (int i = 0; i < CascadeShadow.SHADOW_MAP_CASCADE_COUNT; i++) {
+        	GL46.glFramebufferTexture2D(GL46.GL_FRAMEBUFFER, GL46.GL_DEPTH_ATTACHMENT, GL46.GL_TEXTURE_2D, this.shadowBuffer.getDepthMap().getTextureHandles()[i], 0);
+        	GL46.glClear(GL46.GL_DEPTH_BUFFER_BIT);
+
+            CascadeShadow shadowCascade = this.cascadeShadows.get(i);
+            activeShaderProgram.setMatrix4fUniform(U_LIGHT_VIEW_SHADOWS, shadowCascade.getLightViewMatrix());
+
+            for( ASceneObject object : this.scene.getObjects() ) {
+            	if( object instanceof Model ) {
+            		Model model = (Model) object;
+            		Mesh mesh = model.getMesh();
+            		VAO vao = this.vaoCache.getOrGenerate(mesh);
+            		vao.bind();
+            		
+            		activeShaderProgram.setMatrix4fUniform(U_OBJECT_TRANSFORM_SHADOWS, model.getTransformMatrix());
+            		GL46.glDrawElements(GL46.GL_TRIANGLES, vao.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0);
+            	}
+            }
+        }
+
+        activeShaderProgram.unbind();
+        GL46.glBindFramebuffer(GL46.GL_FRAMEBUFFER, 0);
+        
 			/////////////////////////////////// Scene render pass ///////////////////////////////////
 		GL46.glEnable(GL46.GL_DEPTH_TEST);
 		GL46.glDisable(GL46.GL_BLEND);
 		activeShaderProgram = this.shaderProgram;
 		activeShaderProgram.bind();
-		activeShaderProgram.setInteger1Uniform(Renderer.U_DIFFUSE_SAMPLER, 0);
-		activeShaderProgram.setInteger1Uniform(Renderer.U_NORMAL_SAMPLER, 1);
+		
+		final int DIFFUSE_SAMPLER = 0;
+		final int NORMAL_SAMPLER = 1;
+		final int SHADOW_MAP_FIRST = 2;
+		
+		activeShaderProgram.setInteger1Uniform(Renderer.U_DIFFUSE_SAMPLER, DIFFUSE_SAMPLER);
+		activeShaderProgram.setInteger1Uniform(Renderer.U_NORMAL_SAMPLER, NORMAL_SAMPLER);
+		
+		for( int i = 0; i < CascadeShadow.SHADOW_MAP_CASCADE_COUNT; i++ ) {
+			CascadeShadow cascadeShadow = this.cascadeShadows.get(i);
+			activeShaderProgram.setInteger1Uniform(U_SHADOW_MAP + "[" + i + "]", SHADOW_MAP_FIRST + i);
+			activeShaderProgram.setMatrix4fUniform(U_CASCADE_SHADOWS + "[" + i + "].lightView", cascadeShadow.getLightViewMatrix());
+			activeShaderProgram.setFloat1Uniform(U_CASCADE_SHADOWS + "[" + i + "].splitDistance", cascadeShadow.getSplitDistance());
+		}
+		
+		this.shadowBuffer.bindTextures(GL46.GL_TEXTURE2);
 		
 		Camera activeCamera = this.scene.getActiveCamera();
 		activeCamera.getProjection().update(
