@@ -283,12 +283,14 @@ public class Renderer {
             for( ASceneObject object : this.scene.getObjects() ) {
             	if( object instanceof Model ) {
             		Model model = (Model) object;
-            		Mesh mesh = model.getMesh();
-            		VAO vao = this.vaoCache.getOrGenerate(mesh);
-            		vao.bind();
-            		
-            		activeShaderProgram.setMatrix4fUniform(U_OBJECT_TRANSFORM_SHADOWS, model.getTransformMatrix());
-            		GL46.glDrawElements(GL46.GL_TRIANGLES, vao.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0);
+            		for( int m = 0; m < model.getMeshCount(); m++ ) {
+            			Mesh mesh = model.getMesh(m);
+                		VAO vao = this.vaoCache.getOrGenerate(mesh);
+                		vao.bind();
+                		
+                		activeShaderProgram.setMatrix4fUniform(U_OBJECT_TRANSFORM_SHADOWS, model.getTransformMatrix());
+                		GL46.glDrawElements(GL46.GL_TRIANGLES, vao.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0);
+            		}
             	}
             }
         }
@@ -358,48 +360,51 @@ public class Renderer {
 				);
 				
 				Model model = (Model) object;
-				Material material = model.getMaterial();
-				Mesh mesh = model.getMesh();
 				
-				for( int i = 0; i < material.getTextures().length; i++ ) {
-					Texture texture = material.getTextures()[i];
-					if( texture == null ) {
-						continue;
+				for( int m = 0; m < model.getMeshCount(); m++ ) {
+					Material material = model.getMaterial(m);
+					Mesh mesh = model.getMesh(m);
+					
+					for( int i = 0; i < material.getTextures().length; i++ ) {
+						Texture texture = material.getTextures()[i];
+						if( texture == null ) {
+							continue;
+						}
+						
+						this.textureCache.generateIfNotEncountered(texture);
+						GL46.glActiveTexture(GL46.GL_TEXTURE0 + i);
+						texture.bind();
 					}
 					
-					this.textureCache.generateIfNotEncountered(texture);
-					GL46.glActiveTexture(GL46.GL_TEXTURE0 + i);
-					texture.bind();
-				}
-				
-				if( material.getTexture(1) != null ) {
-					activeShaderProgram.setInteger1Uniform(
-						Renderer.U_MATERIAL_HAS_NORMAL_MAP, 1
+					if( material.getTexture(1) != null ) {
+						activeShaderProgram.setInteger1Uniform(
+							Renderer.U_MATERIAL_HAS_NORMAL_MAP, 1
+						);
+					} else {
+						activeShaderProgram.setInteger1Uniform(
+							Renderer.U_MATERIAL_HAS_NORMAL_MAP, 0
+						);
+					}
+					
+					activeShaderProgram.setVector4fUniform(
+						Renderer.U_MATERIAL_AMBIENT, material.getAmbientColor()
 					);
-				} else {
-					activeShaderProgram.setInteger1Uniform(
-						Renderer.U_MATERIAL_HAS_NORMAL_MAP, 0
+					activeShaderProgram.setVector4fUniform(
+						Renderer.U_MATERIAL_DIFFUSE, material.getDiffuseColor()
+					);
+					activeShaderProgram.setVector4fUniform(
+						Renderer.U_MATERIAL_SPECULAR, material.getSpecularColor()
+					);
+					activeShaderProgram.setFloat1Uniform(
+						Renderer.U_MATERIAL_REFLECTANCE, material.getReflectance()
+					);
+					
+					VAO vao = this.vaoCache.getOrGenerate(mesh);
+					vao.bind();
+					GL46.glDrawElements(
+						GL46.GL_TRIANGLES, vao.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0
 					);
 				}
-				
-				activeShaderProgram.setVector4fUniform(
-					Renderer.U_MATERIAL_AMBIENT, material.getAmbientColor()
-				);
-				activeShaderProgram.setVector4fUniform(
-					Renderer.U_MATERIAL_DIFFUSE, material.getDiffuseColor()
-				);
-				activeShaderProgram.setVector4fUniform(
-					Renderer.U_MATERIAL_SPECULAR, material.getSpecularColor()
-				);
-				activeShaderProgram.setFloat1Uniform(
-					Renderer.U_MATERIAL_REFLECTANCE, material.getReflectance()
-				);
-				
-				VAO vao = this.vaoCache.getOrGenerate(mesh);
-				vao.bind();
-				GL46.glDrawElements(
-					GL46.GL_TRIANGLES, vao.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0
-				);
 			}
 		}
 		

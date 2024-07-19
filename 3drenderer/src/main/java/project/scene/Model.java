@@ -1,21 +1,35 @@
 package project.scene;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import project.asset.Mesh;
 import project.component.Material;
-import project.testing.TestAssets;
 
 public class Model extends ASceneObject {
 
-	private Mesh mesh;
-	private Material material;
+	private class MeshEntry {
+		private Mesh mesh;
+		private Material material;
+		
+		private MeshEntry(Mesh mesh, Material material) {
+			this.mesh = mesh;
+			this.material = material;
+		}
+	}
+	
+	//private Mesh mesh;
+	//private Material material;
+	private List<MeshEntry> meshMaterialTable;
 	private float DEBUGangle;
 	
 	public Model(Scene scene) {
 		super(scene);
-		this.mesh = TestAssets.MESH_BRICK;
+		this.meshMaterialTable = new ArrayList<>();
+		/*this.mesh = TestAssets.MESH_BRICK;
 		this.material = new Material();
 		this.material.setTexture(0, TestAssets.TEXTURE_BRICK);
-		this.material.setTexture(1, TestAssets.TEXTURE_BRICK_NORMAL);
+		this.material.setTexture(1, TestAssets.TEXTURE_BRICK_NORMAL);*/
 		
 		/*this.setPosition(
 			(float) Math.random() * 5, 
@@ -35,11 +49,27 @@ public class Model extends ASceneObject {
 		//this.updateTransformMatrix();
 	}
 	
-	public Mesh getMesh() {
+	public void addMesh(Mesh mesh, Material material) {
+		this.meshMaterialTable.add(new MeshEntry(mesh, material));
+	}
+	
+	public int getMeshCount() {
+		return this.meshMaterialTable.size();
+	}
+	
+	public Mesh getMesh(int meshIndex) {
+		return this.meshMaterialTable.get(meshIndex).mesh;
+	}
+	
+	public Material getMaterial(int meshIndex) {
+		return this.meshMaterialTable.get(meshIndex).material;
+	}
+	
+	/*public Mesh getMesh() {
 		return this.mesh;
 	}
 	
 	public Material getMaterial() {
 		return this.material;
-	}
+	}*/
 }

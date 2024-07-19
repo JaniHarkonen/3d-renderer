@@ -8,6 +8,8 @@ import org.lwjgl.glfw.GLFW;
 
 import project.Application;
 import project.Window;
+import project.asset.Mesh;
+import project.component.Material;
 import project.component.Projection;
 import project.controls.Controller;
 import project.gui.GUI;
@@ -15,6 +17,7 @@ import project.gui.Text;
 import project.input.Input;
 import project.testing.ActionSet;
 import project.testing.DebugModel;
+import project.testing.TestAssets;
 import project.utils.DebugUtils;
 
 public class Scene {
@@ -52,7 +55,7 @@ public class Scene {
 		this.objects.add(this.activeCamera);
 		
 		AmbientLight ambientLight = new AmbientLight(
-			this, new Vector3f(1.0f, 1.0f, 1.0f), 0.1f
+			this, new Vector3f(1.0f, 1.0f, 1.0f), 0.5f
 		);
 		this.objects.add(ambientLight);
 		DebugUtils.log(this, "Added AmbientLight!");
@@ -64,15 +67,46 @@ public class Scene {
 		this.objects.add(this.pointLight0);
 		DebugUtils.log(this, "Added PointLight!");
 		
+		Material brickMaterial = new Material();
+		brickMaterial.setTexture(0, TestAssets.TEXTURE_BRICK);
+		brickMaterial.setTexture(1, TestAssets.TEXTURE_BRICK_NORMAL);
+		
 		this.floorBrick = new DebugModel(this);
+		this.floorBrick.addMesh(TestAssets.MESH_BRICK, brickMaterial);
 		this.floorBrick.setPosition(0, -0.5f, 0);
 		this.floorBrick.setScale(0.1f, 0.01f, 0.1f);
 		this.objects.add(this.floorBrick);
 		
 		Model model = new Model(this);
+		model.addMesh(TestAssets.MESH_BRICK, brickMaterial);
 		model.setPosition(-0.5f, 0.5f, -0.5f);
 		model.setScale(0.01f, 0.01f, 0.01f);
 		this.objects.add(model);
+		
+		Material manMaterial = new Material();
+		manMaterial.setTexture(0, TestAssets.TEXTURE_CREEP);
+		model = new Model(this);
+		model.addMesh(TestAssets.MESH_MAN, manMaterial);
+		model.setPosition(0.0f, 0.0f, 0.0f);
+		model.setScale(0.01f, 0.01f, 0.01f);
+		this.objects.add(model);
+		
+		/*
+		model = new Model(this);
+		Material outsideMaterial = new Material();
+		outsideMaterial.setTexture(0, TestAssets.TEXTURE_OUTSIDE_PAVEMENT1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[0], outsideMaterial);
+		outsideMaterial = new Material();
+		outsideMaterial.setTexture(0, TestAssets.TEXTURE_OUTSIDE_CONCRETE_BLOCK1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[1], outsideMaterial);
+		outsideMaterial = new Material();
+		outsideMaterial.setTexture(0, TestAssets.TEXTURE_OUTSIDE_METAL_DIRTYRUST);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[2], outsideMaterial);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[3], brickMaterial);
+		model.setPosition(0.0f, -1.0f, 0.0f);
+		model.setScale(0.001f, 0.001f, 0.001f);
+		this.objects.add(model);
+		*/
 		
 			// GUI
 		this.createGUI();

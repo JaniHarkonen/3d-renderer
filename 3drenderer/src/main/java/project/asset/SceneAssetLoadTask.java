@@ -168,13 +168,21 @@ public class SceneAssetLoadTask {
 		
 		
 			////////////////////////////Extract meshes ////////////////////////////
-		//s = Math.min(aiScene.mNumMaterials(), this.expectedMaterials.size());
-		/*DebugUtils.log(this, aiScene.mNumMaterials());
+		/*s = Math.min(aiScene.mNumMaterials(), this.expectedMaterials.size());
 		s = aiScene.mNumMaterials();
 		for( int i = 0; i < s; i++ ) {
 			Material expected = new Material();//this.expectedMaterials.get(i);
-			AIMaterial aiMaterial = AIMaterial.create(aiScene.mMaterials().get(i));
-			try( MemoryStack stack = MemoryStack.stackPush() ) {
+			//try( MemoryStack stack = MemoryStack.stackPush() ) {
+			AIMaterial aiMaterial = AIMaterial.create(aiScene.mMaterials().get());
+			int textureCount = Assimp.aiGetMaterialTextureCount(aiMaterial, Assimp.aiTextureType_DIFFUSE);
+			PointerBuffer pb = MemoryUtil.memAllocPointer(1000);
+			Assimp.aiGetMaterialProperty(aiMaterial, "name", pb);
+			DebugUtils.log(this, pb.remaining());
+			
+				
+				//AIString aiMaterialName = AIString.calloc(stack);
+			
+
 				AIColor4D aiColor = AIColor4D.create();
 				int result = Assimp.aiGetMaterialColor(
 					aiMaterial, 
@@ -227,12 +235,14 @@ public class SceneAssetLoadTask {
 				
 				float reflectance = 0.0f;
 				float[] roughness = new float[1];
-			}
-		}*/	
+			//}
+		}*/
 	}
 	
-	public void expectMesh(Mesh mesh) {
-		this.expectedMeshes.add(mesh);
+	public void expectMesh(Mesh... meshes) {
+		for( Mesh mesh : meshes ) {
+			this.expectedMeshes.add(mesh);
+		}
 	}
 	
 	public void expectMaterial(Material material) {
