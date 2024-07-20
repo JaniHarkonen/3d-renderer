@@ -18,18 +18,12 @@ public class Model extends ASceneObject {
 		}
 	}
 	
-	//private Mesh mesh;
-	//private Material material;
 	private List<MeshEntry> meshMaterialTable;
 	private float DEBUGangle;
 	
 	public Model(Scene scene) {
 		super(scene);
 		this.meshMaterialTable = new ArrayList<>();
-		/*this.mesh = TestAssets.MESH_BRICK;
-		this.material = new Material();
-		this.material.setTexture(0, TestAssets.TEXTURE_BRICK);
-		this.material.setTexture(1, TestAssets.TEXTURE_BRICK_NORMAL);*/
 		
 		/*this.setPosition(
 			(float) Math.random() * 5, 
@@ -64,12 +58,4 @@ public class Model extends ASceneObject {
 	public Material getMaterial(int meshIndex) {
 		return this.meshMaterialTable.get(meshIndex).material;
 	}
-	
-	/*public Mesh getMesh() {
-		return this.mesh;
-	}
-	
-	public Material getMaterial() {
-		return this.material;
-	}*/
 }

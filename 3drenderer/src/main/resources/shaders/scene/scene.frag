@@ -213,5 +213,5 @@ void main()
     */
 
     fragColor = ambient + diffuseSpecularComp;
-    fragColor.rgb = fragColor.rgb * shadowFactor;
+    //fragColor.rgb = fragColor.rgb * shadowFactor;
 }

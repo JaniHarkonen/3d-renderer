@@ -83,6 +83,7 @@ public class Scene {
 		model.setScale(0.01f, 0.01f, 0.01f);
 		this.objects.add(model);
 		
+		
 		Material manMaterial = new Material();
 		manMaterial.setTexture(0, TestAssets.TEXTURE_CREEP);
 		model = new Model(this);
@@ -105,6 +106,9 @@ public class Scene {
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[3], brickMaterial);
 		model.setPosition(0.0f, -1.0f, 0.0f);
 		model.setScale(0.001f, 0.001f, 0.001f);
+		for( int i = 4; i < TestAssets.MESH_OUTSIDE_PLACE.length; i++ ) {
+			model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[i], brickMaterial);
+		}
 		this.objects.add(model);
 		*/
 		

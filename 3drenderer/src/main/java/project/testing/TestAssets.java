@@ -51,8 +51,8 @@ public final class TestAssets {
 		);
 		task.expectMesh(MESH_BRICK);
 		task.load();
-		
-		/*MESH_OUTSIDE_PLACE = new Mesh[29];
+		/*
+		MESH_OUTSIDE_PLACE = new Mesh[29];
 		for( int i = 0; i < MESH_OUTSIDE_PLACE.length; i++ ) {
 			MESH_OUTSIDE_PLACE[i] = new Mesh();
 		}
@@ -61,8 +61,8 @@ public final class TestAssets {
 			FileUtils.getResourcePath("models/Outside.fbx")
 		);
 		task.expectMesh(MESH_OUTSIDE_PLACE);
-		task.load();*/
-		
+		task.load();
+		*/
 		MESH_MAN = new Mesh();
 		task = new SceneAssetLoadTask(
 			FileUtils.getResourcePath("models/man.fbx")

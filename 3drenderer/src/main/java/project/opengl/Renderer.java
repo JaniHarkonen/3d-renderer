@@ -265,7 +265,8 @@ public class Renderer {
 			/////////////////////////////////// Cascade shadow render pass ///////////////////////////////////
 		GL46.glEnable(GL46.GL_DEPTH_TEST);
 		GL46.glEnable(GL46.GL_BLEND);
-        GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
+		GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
+		GL46.glEnable(GL46.GL_MULTISAMPLE);
         activeShaderProgram = this.shaderProgramShadows;
         activeShaderProgram.bind();
         
@@ -297,10 +298,16 @@ public class Renderer {
 
         activeShaderProgram.unbind();
         GL46.glBindFramebuffer(GL46.GL_FRAMEBUFFER, 0);
+		//GL46.glDisable(GL46.GL_DEPTH_TEST);
+		//GL46.glDisable(GL46.GL_BLEND);
+        //GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
+        //GL46.glDisable(GL46.GL_MULTISAMPLE);
         
 			/////////////////////////////////// Scene render pass ///////////////////////////////////
-		GL46.glEnable(GL46.GL_DEPTH_TEST);
-		GL46.glDisable(GL46.GL_BLEND);
+		//GL46.glEnable(GL46.GL_DEPTH_TEST);
+		//GL46.glEnable(GL46.GL_BLEND);
+		//GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
+		//GL46.glEnable(GL46.GL_MULTISAMPLE);
 		activeShaderProgram = this.shaderProgram;
 		activeShaderProgram.bind();
 		
@@ -409,14 +416,17 @@ public class Renderer {
 		}
 		
 		//GL46.glBindVertexArray(0); // may not be needed
+		//GL46.glDisable(GL46.GL_DEPTH_TEST);
+		//GL46.glDisable(GL46.GL_BLEND);
+        //GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
+        //GL46.glDisable(GL46.GL_MULTISAMPLE);
 		activeShaderProgram.unbind();
-	
 		
 			/////////////////////////////////// GUI render pass ///////////////////////////////////
 		if( this.scene.getGUI() != null ) {
-			GL46.glDisable(GL46.GL_DEPTH_TEST);
-			GL46.glEnable(GL46.GL_BLEND);
-	        GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
+		  	GL46.glDisable(GL46.GL_DEPTH_TEST);
+			//GL46.glEnable(GL46.GL_BLEND);
+			//GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
 	        activeShaderProgram = this.shaderProgramGUI;
 	        activeShaderProgram.bind();
 	        activeShaderProgram.setInteger1Uniform(Renderer.U_DIFFUSE_SAMPLER, 0);
@@ -482,6 +492,8 @@ public class Renderer {
 			}
 			
 			//GL46.glBindVertexArray(0); // may not be needed
+		  	GL46.glDisable(GL46.GL_DEPTH_TEST);
+			GL46.glDisable(GL46.GL_BLEND);
 			activeShaderProgram.unbind();
 		}
 	}
