@@ -339,8 +339,8 @@ public class Renderer {
         //GL46.glDisable(GL46.GL_MULTISAMPLE);
         
 			/////////////////////////////////// Scene render pass ///////////////////////////////////
-        GL46.glDisable(GL46.GL_BLEND);
-		GL46.glEnable(GL46.GL_DEPTH_TEST);
+        //GL46.glDisable(GL46.GL_BLEND);
+		//GL46.glEnable(GL46.GL_DEPTH_TEST);
 		//GL46.glEnable(GL46.GL_BLEND);
 		//GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
 		//GL46.glEnable(GL46.GL_MULTISAMPLE);
@@ -463,16 +463,7 @@ public class Renderer {
 							U_BONE_MATRICES, animationData.getCurrentFrame().getBoneTransforms()
 						);
 					}
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					//DebugUtils.log(this, "drawing scene");
+
 					GL46.glDrawElements(
 						GL46.GL_TRIANGLES, vao.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0
 					);
@@ -502,9 +493,7 @@ public class Renderer {
 			);
 			
 			float lineHeight = 22.0f;
-			
 			float baseLine = 16.0f;
-			
 			for( AGUIElement element : this.scene.getGUI().getElements() ) {
 				
 					// Determine the appropriate way of rendering the element
