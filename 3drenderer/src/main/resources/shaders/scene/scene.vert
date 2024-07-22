@@ -25,7 +25,14 @@ uniform mat4 uBoneMatrices[MAX_BONES]; //uniform mat4 bonesMatrices[MAX_BONES]
 
 void main()
 {
-    /*vec4 initPos = vec4(0, 0, 0, 0);
+    /*
+    vec4 initPos = vec4(position, 1.0);
+    vec4 initNormal = vec4(normal, 0.0);
+    vec4 initTangent = vec4(tangent, 0.0);
+    vec4 initBitangent = vec4(bitangent, 0.0);
+    */
+
+    vec4 initPos = vec4(10, 0, 0, 0);
     vec4 initNormal = vec4(0, 0, 0, 0);
     vec4 initTangent = vec4(0, 0, 0, 0);
     vec4 initBitangent = vec4(0, 0, 0, 0);
@@ -49,12 +56,12 @@ void main()
             initBitangent += weight * tmpBitangent;
         }
     }
-    if (count == 0) {*/
-        vec4 initPos = vec4(position, 1.0);
-        vec4 initNormal = vec4(normal, 0.0);
-        vec4 initTangent = vec4(tangent, 0.0);
-        vec4 initBitangent = vec4(bitangent, 0.0);
-    //}
+    if (count == 0) {
+        initPos = vec4(position, 1.0);
+        initNormal = vec4(normal, 0.0);
+        initTangent = vec4(tangent, 0.0);
+        initBitangent = vec4(bitangent, 0.0);
+    }
 
     mat4 modelViewMatrix = uCameraTransform * uObjectTransform;
     vec4 mvPosition = modelViewMatrix * initPos;//vec4(position, 1.0);

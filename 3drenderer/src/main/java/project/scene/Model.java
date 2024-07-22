@@ -22,6 +22,7 @@ public class Model extends ASceneObject {
 	private List<MeshEntry> meshMaterialTable;
 	private AnimationData animationData;
 	private float DEBUGangle;
+	private float DEBUGcounter;
 	
 	public Model(Scene scene) {
 		super(scene);
@@ -35,11 +36,17 @@ public class Model extends ASceneObject {
 		);*/
 		
 		this.DEBUGangle = 0.0f;
+		this.DEBUGcounter = 0.0f;
 	}
 	
 	
 	@Override
 	public void tick(float deltaTime) {
+		if( this.animationData != null && this.DEBUGcounter >= 0.5f ) {
+			this.animationData.nextFrame();
+			this.DEBUGcounter = 0;
+		}
+		this.DEBUGcounter += deltaTime;
 		//this.position.add(0, 0, -1.0f * deltaTime);
 		//this.setRotation(0, 1, 0, this.DEBUGangle);
 		//this.DEBUGangle += deltaTime;

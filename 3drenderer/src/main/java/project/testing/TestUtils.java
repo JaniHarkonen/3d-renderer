@@ -16,12 +16,12 @@ public final class TestUtils {
 
 	public static Model createModelFromMeshesAndTextures(Scene scene, String meshPath, int meshCount, String[] texturePaths/*, Texture[ normals]*/) {
 		Map<String, Material> materialTextureNameMap = new HashMap<>();
-		for( String texturePath : texturePaths ) {
+		/*for( String texturePath : texturePaths ) {
 			Material material = new Material();
 			Texture diffuse = new Texture(FileUtils.getResourcePath(texturePath));
 			material.setTexture(0, diffuse);
 			materialTextureNameMap.put((new File(texturePath).getName()), material);
-		}
+		}*/
 		
 		SceneAssetLoadTask task = new SceneAssetLoadTask(FileUtils.getResourcePath(meshPath));
 		Mesh[] meshes = new Mesh[meshCount];

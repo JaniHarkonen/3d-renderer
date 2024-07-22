@@ -126,11 +126,15 @@ public class ShaderProgram {
 	
 	public void setMatrix4fArrayUniform(String name, Matrix4f[] mat4fArray) {
 		try( MemoryStack stack = MemoryStack.stackPush() ) {
+			
 			int length = (mat4fArray != null) ? mat4fArray.length : 0;
 			FloatBuffer arrayBuffer = stack.mallocFloat(16 * length);
 			for( int i = 0; i < length; i++ ) {
 				mat4fArray[i].get(16 * i, arrayBuffer);
 			}
+			
+			
+			//DebugUtils.log(this, "setting mat4 array", name, mat4fArray[0]);
 			GL46.glUniformMatrix4fv(this.getUniformOrError(name), false, arrayBuffer);
 		}
 	}

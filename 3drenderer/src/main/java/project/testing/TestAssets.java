@@ -5,6 +5,7 @@ import project.asset.Font;
 import project.asset.FontLoadTask;
 import project.asset.Mesh;
 import project.asset.SceneAssetLoadTask;
+import project.asset.TextureLoadTask;
 import project.opengl.Texture;
 import project.utils.FileUtils;
 
@@ -14,30 +15,23 @@ public final class TestAssets {
 	public static Font FONT_ARIAL_20;
 	public static Font FONT_ARIAL_16;
 	static {
-		Texture fontTexture;
 		
 			// Arial, normal, size 20
-		fontTexture = new Texture(
-			FileUtils.getResourcePath("fonts/arial/size20/font_arial20.png")
-		);
-		FONT_ARIAL_20 = new Font(fontTexture, 230, 89);
-		FontLoadTask task = new FontLoadTask(
+		FONT_ARIAL_20 = new Font(loadTexture("fonts/arial/size20/font_arial20.png"), 230, 89);
+		FontLoadTask fontTask = new FontLoadTask(
 			FileUtils.getResourcePath("fonts/arial/size20/arial20.json"), 
 			FONT_ARIAL_20
 		);
-		task.load();
+		fontTask.load();
 		FONT_ARIAL_20.init();
 		
 			// Arial, normal, size 16
-		fontTexture = new Texture(
-			FileUtils.getResourcePath("fonts/arial/size16/arial16.png")
-		);
-		FONT_ARIAL_16 = new Font(fontTexture, 178, 76);
-		task = new FontLoadTask(
+		FONT_ARIAL_16 = new Font(loadTexture("fonts/arial/size16/arial16.png"), 178, 76);
+		fontTask = new FontLoadTask(
 			FileUtils.getResourcePath("fonts/arial/size16/arial16.json"), 
 			FONT_ARIAL_16
 		);
-		task.load();
+		fontTask.load();
 		FONT_ARIAL_16.init();
 	}
 	
@@ -99,15 +93,10 @@ public final class TestAssets {
 	public static Texture TEXTURE_OUTSIDE_CONCRETE_BLOCK1;
 	public static Texture TEXTURE_OUTSIDE_METAL_DIRTYRUST;
 	static {
-		TestAssets.TEXTURE_CREEP = new Texture(
-			FileUtils.getResourcePath("textures/creep.png")
-		);
-		TestAssets.TEXTURE_BRICK = new Texture(
-			FileUtils.getResourcePath("textures/brick/Bricks082B_4K_Color.jpg")
-		);
-		TestAssets.TEXTURE_BRICK_NORMAL = new Texture(
-			FileUtils.getResourcePath("textures/brick/Bricks082B_4K_NormalDX.jpg")
-		);
+		TEXTURE_CREEP = loadTexture("textures/creep.png");
+		TEXTURE_BRICK = loadTexture("textures/brick/Bricks082B_4K_Color.jpg");
+		TEXTURE_BRICK_NORMAL = loadTexture("textures/brick/Bricks082B_4K_NormalDX.jpg");
+		
 		/*
 		TestAssets.TEXTURE_OUTSIDE_PAVEMENT1 = new Texture(
 			FileUtils.getResourcePath("textures/outside/pavement1_diff.png")
@@ -119,5 +108,14 @@ public final class TestAssets {
 			FileUtils.getResourcePath("textures/outside/metal_dirtyrust_diff.png")
 		); */
 			// Will be initialized by TextureCache of Renderer
+	}
+	
+	private static Texture loadTexture(String relativePath) {
+		String texturePath = FileUtils.getResourcePath(relativePath);
+		Texture result = new Texture();
+		TextureLoadTask task = new TextureLoadTask(texturePath, result);
+		task.load();
+		
+		return result;
 	}
 }

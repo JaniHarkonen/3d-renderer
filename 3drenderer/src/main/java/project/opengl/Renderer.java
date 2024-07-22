@@ -26,7 +26,6 @@ import project.scene.PointLight;
 import project.scene.Scene;
 import project.shader.Shader;
 import project.shader.ShaderProgram;
-import project.utils.DebugUtils;
 
 public class Renderer {
 	
@@ -204,6 +203,7 @@ public class Renderer {
 		);
 		this.shaderProgramGUI.init();
 		
+		
 			// Initialize scene graphics assets
 		this.scene.init();
 		this.vaoCache = new VAOCache();
@@ -317,22 +317,15 @@ public class Renderer {
     						activeShaderProgram.setMatrix4fArrayUniform(
     							U_BONE_MATRICES_SHADOWS, AnimationData.DEFAULT_BONE_TRANSFORMS
     						);
-    						DebugUtils.log(this, "it was null SHADOW");
     						
     					} else {
     						activeShaderProgram.setMatrix4fArrayUniform(
     							U_BONE_MATRICES_SHADOWS, animationData.getCurrentFrame().getBoneTransforms()
     						);
-    						
-    						
-    						DebugUtils.log(this, "not null animation data SHADOW", animationData.getCurrentFrame().getBoneTransforms());
     					}
-                		DebugUtils.log(this, "drawing shadow");
                 		GL46.glDrawElements(
             				GL46.GL_TRIANGLES, vao.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0
         				);
-                		
-                		DebugUtils.log(this, "drawing shadow success");
             		}
             	}
             }
@@ -422,7 +415,6 @@ public class Renderer {
 					Mesh mesh = model.getMesh(m);
 					
 					for( int i = 0; i < material.getTextures().length; i++ ) {
-						DebugUtils.log(this, "texture" + i);
 						Texture texture = material.getTextures()[i];
 						if( texture == null ) {
 							continue;
@@ -465,25 +457,25 @@ public class Renderer {
 						activeShaderProgram.setMatrix4fArrayUniform(
 							U_BONE_MATRICES, AnimationData.DEFAULT_BONE_TRANSFORMS
 						);
-						DebugUtils.log(this, "it was null");
 						
 					} else {
 						activeShaderProgram.setMatrix4fArrayUniform(
 							U_BONE_MATRICES, animationData.getCurrentFrame().getBoneTransforms()
 						);
-						
-						
-						DebugUtils.log(this, "not null animation data", animationData.getCurrentFrame().getBoneTransforms());
 					}
 					
-					DebugUtils.log(this, "draw", object);
 					
 					
+					
+					
+					
+					
+					
+					
+					//DebugUtils.log(this, "drawing scene");
 					GL46.glDrawElements(
 						GL46.GL_TRIANGLES, vao.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0
 					);
-					
-					DebugUtils.log(this, "draw success", object);
 				}
 			}
 		}
@@ -495,11 +487,8 @@ public class Renderer {
         //GL46.glDisable(GL46.GL_MULTISAMPLE);
 		activeShaderProgram.unbind();
 		
-		DebugUtils.log(this, "gui");
-		
 			/////////////////////////////////// GUI render pass ///////////////////////////////////
 		if( this.scene.getGUI() != null ) {
-			DebugUtils.log(this, "gui pass starts");
 		  	GL46.glDisable(GL46.GL_DEPTH_TEST);
 			//GL46.glEnable(GL46.GL_BLEND);
 			//GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
@@ -529,9 +518,7 @@ public class Renderer {
 					Vector4f color = text.getTextColor();
 					
 					activeShaderProgram.setVector4fUniform(U_TEXT_COLOR_GUI, color);
-					DebugUtils.log(this, "text element generating texture", texture.getPath());
 					this.textureCache.generateIfNotEncountered(texture);
-					DebugUtils.log(this, "text element generating texture success");
 					GL46.glActiveTexture(GL46.GL_TEXTURE0);
 					texture.bind();
 
@@ -553,15 +540,12 @@ public class Renderer {
 							
 							VAO vao = this.vaoCache.getOrGenerate(glyph.getMesh());	
 							vao.bind();
-							DebugUtils.log(this, "drawing gui element");
 							GL46.glDrawElements(
 								GL46.GL_TRIANGLES, 
 								vao.getVertexCount() * 3, 
 								GL46.GL_UNSIGNED_INT, 
 								0
 							);
-							
-							DebugUtils.log(this, "drawing gui element success");
 							
 							textX += glyph.getWidth();
 						}
@@ -577,7 +561,6 @@ public class Renderer {
 			GL46.glDisable(GL46.GL_BLEND);
 			activeShaderProgram.unbind();
 		}
-		DebugUtils.log(this, "gui end");
 	}
 	
 	public Window getClientWindow() {

@@ -8,7 +8,6 @@ import org.lwjgl.system.MemoryUtil;
 
 import project.asset.Mesh;
 import project.asset.SceneAssetLoadTask;
-import project.utils.DebugUtils;
 
 public class VAO {
 
@@ -56,7 +55,6 @@ public class VAO {
 			if( this.targetMesh.getAnimationMeshData() != null ) {
 				boneWeights = this.targetMesh.getAnimationMeshData().getBoneWeights();
 				boneIndices = this.targetMesh.getAnimationMeshData().getBoneIDs();
-				DebugUtils.log(this, "AnimationMeshData was not NULL for VAO", boneWeights.length, boneIndices.length);
 			} else {
 				boneWeights = new float[SceneAssetLoadTask.MAX_WEIGHT_COUNT * positions.length / 3];
 				boneIndices = new int[SceneAssetLoadTask.MAX_WEIGHT_COUNT * positions.length / 3];
@@ -120,7 +118,8 @@ public class VAO {
 				// Bone weights
 			this.boneWeightVBO = GL46.glGenBuffers();
 			FloatBuffer weightsBuffer = MemoryUtil.memAllocFloat(boneWeights.length);
-			weightsBuffer.put(0, boneWeights).flip();
+			weightsBuffer.put(0, boneWeights);
+			//weightsBuffer.put(boneWeights).flip();
 			GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, this.boneWeightVBO);
 			GL46.glBufferData(GL46.GL_ARRAY_BUFFER, weightsBuffer, GL46.GL_STATIC_DRAW);
 			GL46.glEnableVertexAttribArray(5);
@@ -131,13 +130,12 @@ public class VAO {
 				// Bone indices
 			this.boneIndicesVBO = GL46.glGenBuffers();
 			IntBuffer boneIndicesBuffer = MemoryUtil.memAllocInt(boneIndices.length);
-			boneIndicesBuffer.put(0, boneIndices).flip();
+			boneIndicesBuffer.put(0, boneIndices);
+			//boneIndicesBuffer.put(boneIndices).flip();
 			GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, this.boneIndicesVBO);
 			GL46.glBufferData(GL46.GL_ARRAY_BUFFER, boneIndicesBuffer, GL46.GL_STATIC_DRAW);
 			GL46.glEnableVertexAttribArray(6);
 			GL46.glVertexAttribPointer(6, 4, GL46.GL_FLOAT, false, 0, 0);
-			
-			
 			
 			MemoryUtil.memFree(boneIndicesBuffer);
 			

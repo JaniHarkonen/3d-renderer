@@ -75,13 +75,13 @@ public class Scene {
 		this.floorBrick.addMesh(TestAssets.MESH_BRICK, brickMaterial);
 		this.floorBrick.setPosition(0, -0.5f, 0);
 		this.floorBrick.setScale(0.1f, 0.01f, 0.1f);
-		//this.objects.add(this.floorBrick);
+		this.objects.add(this.floorBrick);
 		
 		Model model = new Model(this);
 		model.addMesh(TestAssets.MESH_BRICK, brickMaterial);
 		model.setPosition(-0.5f, 0.5f, -0.5f);
 		model.setScale(0.01f, 0.01f, 0.01f);
-		//this.objects.add(model);
+		this.objects.add(model);
 		
 		AnimationData animationData = new AnimationData(TestAssets.ANIM_RUN);
 		Material manMaterial = new Material();
@@ -92,6 +92,7 @@ public class Scene {
 		model.setPosition(0.0f, 0.0f, 0.0f);
 		model.setScale(0.01f, 0.01f, 0.01f);
 		model.setAnimationData(animationData);
+		model.setRotation(0, 0, -1, (float) Math.toRadians(90.0d));
 		
 		this.objects.add(model);
 		
@@ -127,6 +128,8 @@ public class Scene {
 		.addBinding(ActionSet.MOVE_RIGHT, input.new KeyHeld(GLFW.GLFW_KEY_D))
 		.addBinding(ActionSet.LOOK_AROUND, input.new MouseMove());
 		this.activeCamera.setController(cameraController);
+		
+		
 		
 			// Point light controls here
 		Controller pointLightController = new Controller(input, this.pointLight0)
