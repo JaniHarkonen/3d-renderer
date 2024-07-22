@@ -1,5 +1,6 @@
 package project.shader;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -120,6 +121,17 @@ public class ShaderProgram {
 				false, 
 				mat4f.get(stack.mallocFloat(16))
 			);
+		}
+	}
+	
+	public void setMatrix4fArrayUniform(String name, Matrix4f[] mat4fArray) {
+		try( MemoryStack stack = MemoryStack.stackPush() ) {
+			int length = (mat4fArray != null) ? mat4fArray.length : 0;
+			FloatBuffer arrayBuffer = stack.mallocFloat(16 * length);
+			for( int i = 0; i < length; i++ ) {
+				mat4fArray[i].get(16 * i, arrayBuffer);
+			}
+			GL46.glUniformMatrix4fv(this.getUniformOrError(name), false, arrayBuffer);
 		}
 	}
 	

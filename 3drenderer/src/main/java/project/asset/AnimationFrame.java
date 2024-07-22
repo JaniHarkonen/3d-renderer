@@ -18,4 +18,8 @@ public class AnimationFrame {
 	public Matrix4f getBoneTransform(int boneIndex) {
 		return this.boneTransforms[boneIndex];
 	}
+	
+	public Matrix4f[] getBoneTransforms() {
+		return this.boneTransforms;
+	}
 }

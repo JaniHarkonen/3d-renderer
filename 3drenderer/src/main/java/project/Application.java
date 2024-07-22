@@ -27,6 +27,7 @@ public class Application {
 		window.init();
 		
 		while( !window.isDestroyed() ) {
+			
 			window.refresh();
 			scene.update();
 		}

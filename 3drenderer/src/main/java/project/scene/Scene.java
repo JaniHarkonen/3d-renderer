@@ -8,7 +8,7 @@ import org.lwjgl.glfw.GLFW;
 
 import project.Application;
 import project.Window;
-import project.asset.Mesh;
+import project.asset.AnimationData;
 import project.component.Material;
 import project.component.Projection;
 import project.controls.Controller;
@@ -75,21 +75,24 @@ public class Scene {
 		this.floorBrick.addMesh(TestAssets.MESH_BRICK, brickMaterial);
 		this.floorBrick.setPosition(0, -0.5f, 0);
 		this.floorBrick.setScale(0.1f, 0.01f, 0.1f);
-		this.objects.add(this.floorBrick);
+		//this.objects.add(this.floorBrick);
 		
 		Model model = new Model(this);
 		model.addMesh(TestAssets.MESH_BRICK, brickMaterial);
 		model.setPosition(-0.5f, 0.5f, -0.5f);
 		model.setScale(0.01f, 0.01f, 0.01f);
-		this.objects.add(model);
+		//this.objects.add(model);
 		
-		
+		AnimationData animationData = new AnimationData(TestAssets.ANIM_RUN);
 		Material manMaterial = new Material();
-		manMaterial.setTexture(0, TestAssets.TEXTURE_CREEP);
+		manMaterial.setTexture(0, TestAssets.TEXTURE_BRICK);
+		manMaterial.setTexture(1, TestAssets.TEXTURE_BRICK_NORMAL);
 		model = new Model(this);
 		model.addMesh(TestAssets.MESH_MAN, manMaterial);
 		model.setPosition(0.0f, 0.0f, 0.0f);
 		model.setScale(0.01f, 0.01f, 0.01f);
+		model.setAnimationData(animationData);
+		
 		this.objects.add(model);
 		
 		/*
@@ -162,34 +165,37 @@ public class Scene {
 		}
 		
 		long memoryUsage = Runtime.getRuntime().totalMemory();
-		this.textAppStatistics.setContent(
-			"FPS: " + appWindow.getFPS() + " / " + appWindow.getMaxFPS() + "\n" +
-			"TICK: " + this.tickRate + " (d: " + deltaTime + ")\n" +
-			"HEAP: " + this.convertToLargestByte(memoryUsage) + " (" + memoryUsage + " bytes)\n" +
-			"pointLight0: \n" +
-			"    pos: (" + 
-				this.pointLight0.getPosition().x + ", " + 
-				this.pointLight0.getPosition().y + ", " + 
-				this.pointLight0.getPosition().z + 
-			")\n" +
-			"    rgb: (" +
-				this.pointLight0.getColor().x + ", " +
-				this.pointLight0.getColor().y + ", " +
-				this.pointLight0.getColor().z +
-			")\n" +
-			"    intensity: " + this.pointLight0.getIntensity() + "\n" +
-			"    normal map: " + (this.floorBrick.isNormalMapActive() ? "ON" : "OFF") + "\n\n" +
-			"Controls: \n" + 
-			"    WASD to move\n" +
-			"    MOUSE to look around\n" +
-			"    ARROW KEYS to move point light\n" +
-			"    +/- to change point light intensity\n" +
-			"    1/2 to change point light red value\n" +
-			"    3/4 to change point light green value\n" +
-			"    5/6 to change point light blue value\n" + 
-			"    N to toggle normal map" +
-			"    H to toggle HUD"
-		);
+		
+		if( this.gui != null ) {
+			this.textAppStatistics.setContent(
+				"FPS: " + appWindow.getFPS() + " / " + appWindow.getMaxFPS() + "\n" +
+				"TICK: " + this.tickRate + " (d: " + deltaTime + ")\n" +
+				"HEAP: " + this.convertToLargestByte(memoryUsage) + " (" + memoryUsage + " bytes)\n" +
+				"pointLight0: \n" +
+				"    pos: (" + 
+					this.pointLight0.getPosition().x + ", " + 
+					this.pointLight0.getPosition().y + ", " + 
+					this.pointLight0.getPosition().z + 
+				")\n" +
+				"    rgb: (" +
+					this.pointLight0.getColor().x + ", " +
+					this.pointLight0.getColor().y + ", " +
+					this.pointLight0.getColor().z +
+				")\n" +
+				"    intensity: " + this.pointLight0.getIntensity() + "\n" +
+				"    normal map: " + (this.floorBrick.isNormalMapActive() ? "ON" : "OFF") + "\n\n" +
+				"Controls: \n" + 
+				"    WASD to move\n" +
+				"    MOUSE to look around\n" +
+				"    ARROW KEYS to move point light\n" +
+				"    +/- to change point light intensity\n" +
+				"    1/2 to change point light red value\n" +
+				"    3/4 to change point light green value\n" +
+				"    5/6 to change point light blue value\n" + 
+				"    N to toggle normal map" +
+				"    H to toggle HUD"
+			);
+		}
 		
 		if( this.app.getWindow().getInputSnapshot().isKeyPressed(GLFW.GLFW_KEY_H) ) {
 			if( this.gui == null ) {

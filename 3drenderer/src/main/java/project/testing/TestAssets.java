@@ -1,5 +1,6 @@
 package project.testing;
 
+import project.asset.Animation;
 import project.asset.Font;
 import project.asset.FontLoadTask;
 import project.asset.Mesh;
@@ -44,6 +45,10 @@ public final class TestAssets {
 	public static Mesh MESH_BRICK;
 	public static Mesh[] MESH_OUTSIDE_PLACE;
 	public static Mesh MESH_MAN;
+	public static Mesh MESH_JUMP;
+	
+	public static Animation ANIM_RUN;
+	public static Animation ANIM_JUMP;
 	static {
 		MESH_BRICK = new Mesh();
 		SceneAssetLoadTask task = new SceneAssetLoadTask(
@@ -68,6 +73,20 @@ public final class TestAssets {
 			FileUtils.getResourcePath("models/man.fbx")
 		);
 		task.expectMesh(MESH_MAN);
+		ANIM_RUN = new Animation();
+		task.expectAnimation(ANIM_RUN);
+		task.load();
+		
+		//DebugUtils.log("[TestAssets::static]", man.getFrames().size());
+		
+		
+		MESH_JUMP = new Mesh();
+		task = new SceneAssetLoadTask(
+			FileUtils.getResourcePath("models/JUmp.fbx")
+		);
+		task.expectMesh(MESH_JUMP);
+		ANIM_JUMP = new Animation();
+		task.expectAnimation(ANIM_JUMP);
 		task.load();
 			// Will be initialized by VAOCache of Renderer
 	}
@@ -89,6 +108,7 @@ public final class TestAssets {
 		TestAssets.TEXTURE_BRICK_NORMAL = new Texture(
 			FileUtils.getResourcePath("textures/brick/Bricks082B_4K_NormalDX.jpg")
 		);
+		/*
 		TestAssets.TEXTURE_OUTSIDE_PAVEMENT1 = new Texture(
 			FileUtils.getResourcePath("textures/outside/pavement1_diff.png")
 		); 
@@ -97,7 +117,7 @@ public final class TestAssets {
 		);
 		TestAssets.TEXTURE_OUTSIDE_METAL_DIRTYRUST = new Texture(
 			FileUtils.getResourcePath("textures/outside/metal_dirtyrust_diff.png")
-		); 
+		); */
 			// Will be initialized by TextureCache of Renderer
 	}
 }

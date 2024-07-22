@@ -1,5 +1,6 @@
 package project.asset;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Animation {
@@ -8,10 +9,10 @@ public class Animation {
 	private double duration;
 	private List<AnimationFrame> frames;
 	
-	public Animation(String animationName, double duration, List<AnimationFrame> frames) {
-		this.animationName = animationName;
-		this.duration = duration;
-		this.frames = frames;
+	public Animation() {
+		this.animationName = null;
+		this.duration = 0.0d;
+		this.frames = new ArrayList<>();
 	}
 	
 	
@@ -25,5 +26,9 @@ public class Animation {
 	
 	public void setFrames(List<AnimationFrame> frames) {
 		this.frames = frames;
+	}
+	
+	public List<AnimationFrame> getFrames() {
+		return this.frames;
 	}
 }

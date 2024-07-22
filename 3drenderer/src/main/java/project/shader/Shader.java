@@ -30,6 +30,7 @@ public class Shader {
 				GL46.glGetShaderInfoLog(this.handle)
 			);
 		}
+		DebugUtils.log(this, sourceCode);
 	}
 	
 	public void attach(ShaderProgram program) {

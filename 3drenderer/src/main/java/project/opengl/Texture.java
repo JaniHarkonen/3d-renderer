@@ -34,6 +34,7 @@ public class Texture {
 					this,
 					"ERROR: Unable to load texture: ",
 					this.texturePath,
+					
 					"Reason: ",
 					STBImage.stbi_failure_reason()
 				);
@@ -44,7 +45,9 @@ public class Texture {
 			int width = widthBuffer.get();
 			int height = heightBuffer.get();
 			
+			DebugUtils.log(this, "generating texture", this.texturePath);
 			this.handle = GL46.glGenTextures();
+			DebugUtils.log(this, "generating texture success");
 			int target = GL46.GL_TEXTURE_2D;
 			this.bind();
 			GL46.glPixelStorei(GL46.GL_UNPACK_ALIGNMENT, 1);
@@ -74,5 +77,9 @@ public class Texture {
 	
 	public void unbind() {
 		GL46.glBindTexture(GL46.GL_TEXTURE_2D, this.handle);
+	}
+	
+	public String getPath() {
+		return this.texturePath;
 	}
 }
