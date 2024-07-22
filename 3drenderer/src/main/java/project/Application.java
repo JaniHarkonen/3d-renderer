@@ -15,7 +15,7 @@ public class Application {
 	
 	public void execute() {
 		final String TITLE = "3D Renderer";
-		final int FPS_MAX = 60;
+		final int FPS_MAX = 300;
 		final int TICK_RATE = 60;
 		
 		Scene scene = new Scene(this, TICK_RATE);
@@ -26,7 +26,10 @@ public class Application {
 		window.setRenderer(renderer);
 		window.init();
 		
+		
+		
 		while( !window.isDestroyed() ) {
+			
 			window.refresh();
 			scene.update();
 		}

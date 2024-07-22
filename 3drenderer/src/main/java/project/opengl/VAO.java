@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryUtil;
 
 import project.asset.Mesh;
+import project.asset.SceneAssetLoadTask;
 
 public class VAO {
 
@@ -16,6 +17,8 @@ public class VAO {
 	private int tangentsVBO;
 	private int bitangentsVBO;
 	private int textureCoordinatesVBO;
+	private int boneWeightVBO;
+	private int boneIndicesVBO;
 	private int indicesVBO;
 	
 	private Mesh targetMesh;
@@ -28,6 +31,8 @@ public class VAO {
 		this.tangentsVBO = -1;
 		this.bitangentsVBO = -1;
 		this.textureCoordinatesVBO = -1;
+		this.boneWeightVBO = -1;
+		this.boneIndicesVBO = -1;
 		this.indicesVBO = -1;
 		
 		this.targetMesh = targetMesh;
@@ -43,7 +48,17 @@ public class VAO {
 			float[] tangents = this.targetMesh.getTangents();
 			float[] bitangents = this.targetMesh.getBitangents();
 			float[] textureCoordinates = this.targetMesh.getTextureCoordinates();
+			float[] boneWeights;
+			int[] boneIndices;
 			int[] indices = this.targetMesh.getIndices();
+			
+			if( this.targetMesh.getAnimationMeshData() != null ) {
+				boneWeights = this.targetMesh.getAnimationMeshData().getBoneWeights();
+				boneIndices = this.targetMesh.getAnimationMeshData().getBoneIDs();
+			} else {
+				boneWeights = new float[SceneAssetLoadTask.MAX_WEIGHT_COUNT * positions.length / 3];
+				boneIndices = new int[SceneAssetLoadTask.MAX_WEIGHT_COUNT * positions.length / 3];
+			}
 		
 				// Positions
 			this.positionsVBO = GL46.glGenBuffers();
@@ -54,6 +69,8 @@ public class VAO {
 			GL46.glEnableVertexAttribArray(0);
 			GL46.glVertexAttribPointer(0, 3, GL46.GL_FLOAT, false, 0, 0);
 			
+			MemoryUtil.memFree(positionsBuffer);
+			
 				// Normals
 			this.normalsVBO = GL46.glGenBuffers();
 			FloatBuffer normalsBuffer = MemoryUtil.memAllocFloat(normals.length);
@@ -62,6 +79,8 @@ public class VAO {
 			GL46.glBufferData(GL46.GL_ARRAY_BUFFER, normalsBuffer, GL46.GL_STATIC_DRAW);
 			GL46.glEnableVertexAttribArray(1);
 			GL46.glVertexAttribPointer(1, 3, GL46.GL_FLOAT, false, 0, 0);
+			
+			MemoryUtil.memFree(normalsBuffer);
 			
 				// Tangents
 			this.tangentsVBO = GL46.glGenBuffers();
@@ -72,6 +91,8 @@ public class VAO {
 			GL46.glEnableVertexAttribArray(2);
 			GL46.glVertexAttribPointer(2, 3, GL46.GL_FLOAT, false, 0, 0);
 			
+			MemoryUtil.memFree(tangentsBuffer);
+			
 				// Bitangents
 			this.bitangentsVBO = GL46.glGenBuffers();
 			FloatBuffer bitangentsBuffer = MemoryUtil.memAllocFloat(bitangents.length);
@@ -80,6 +101,8 @@ public class VAO {
 			GL46.glBufferData(GL46.GL_ARRAY_BUFFER, bitangentsBuffer, GL46.GL_STATIC_DRAW);
 			GL46.glEnableVertexAttribArray(3);
 			GL46.glVertexAttribPointer(3, 3, GL46.GL_FLOAT, false, 0, 0);
+			
+			MemoryUtil.memFree(bitangentsBuffer);
 			
 				// Texture coordinates
 			this.textureCoordinatesVBO = GL46.glGenBuffers();
@@ -90,6 +113,32 @@ public class VAO {
 			GL46.glEnableVertexAttribArray(4);
 			GL46.glVertexAttribPointer(4, 2, GL46.GL_FLOAT, false, 0, 0);
 			
+			MemoryUtil.memFree(textureCoordinatesBuffer);
+			
+				// Bone weights
+			this.boneWeightVBO = GL46.glGenBuffers();
+			FloatBuffer weightsBuffer = MemoryUtil.memAllocFloat(boneWeights.length);
+			weightsBuffer.put(0, boneWeights);
+			//weightsBuffer.put(boneWeights).flip();
+			GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, this.boneWeightVBO);
+			GL46.glBufferData(GL46.GL_ARRAY_BUFFER, weightsBuffer, GL46.GL_STATIC_DRAW);
+			GL46.glEnableVertexAttribArray(5);
+			GL46.glVertexAttribPointer(5, 4, GL46.GL_FLOAT, false, 0, 0);
+			
+			MemoryUtil.memFree(weightsBuffer);
+			
+				// Bone indices
+			this.boneIndicesVBO = GL46.glGenBuffers();
+			IntBuffer boneIndicesBuffer = MemoryUtil.memAllocInt(boneIndices.length);
+			boneIndicesBuffer.put(0, boneIndices);
+			//boneIndicesBuffer.put(boneIndices).flip();
+			GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, this.boneIndicesVBO);
+			GL46.glBufferData(GL46.GL_ARRAY_BUFFER, boneIndicesBuffer, GL46.GL_STATIC_DRAW);
+			GL46.glEnableVertexAttribArray(6);
+			GL46.glVertexAttribPointer(6, 4, GL46.GL_FLOAT, false, 0, 0);
+			
+			MemoryUtil.memFree(boneIndicesBuffer);
+			
 				// Indices
 			this.indicesVBO = GL46.glGenBuffers();
 			IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);
@@ -98,6 +147,7 @@ public class VAO {
 			GL46.glBufferData(GL46.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL46.GL_STATIC_DRAW);
 			
 			GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, 0);
+			MemoryUtil.memFree(indicesBuffer);
 		
 		this.unbind();
 		this.vertexCount = this.targetMesh.getVertexCount();

@@ -1,49 +1,26 @@
 package project.opengl;
 
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
 
 import org.lwjgl.opengl.GL46;
-import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
-
-import project.utils.DebugUtils;
 
 public class Texture {
 
-	private String texturePath;
 	private int handle;
+	private ByteBuffer pixels;
+	private int width;
+	private int height;
 	
-	public Texture(String texturePath) {
+	public Texture() {
 		this.handle = -1;
-		this.texturePath = texturePath;
+		this.pixels = null;
+		this.width = 0;
+		this.height = 0;
 	}
 	
 	public void init() {
 		try( MemoryStack stack = MemoryStack.stackPush() ) {
-			IntBuffer widthBuffer = stack.mallocInt(1);
-			IntBuffer heightBuffer = stack.mallocInt(1);
-			IntBuffer channelsBuffer = stack.mallocInt(1);
-			
-			ByteBuffer textureBuffer = STBImage.stbi_load(
-				this.texturePath, widthBuffer, heightBuffer, channelsBuffer, 4
-			);
-			
-			if( textureBuffer == null ) {
-				DebugUtils.log(
-					this,
-					"ERROR: Unable to load texture: ",
-					this.texturePath,
-					"Reason: ",
-					STBImage.stbi_failure_reason()
-				);
-				
-				return;
-			}
-			
-			int width = widthBuffer.get();
-			int height = heightBuffer.get();
-			
 			this.handle = GL46.glGenTextures();
 			int target = GL46.GL_TEXTURE_2D;
 			this.bind();
@@ -54,16 +31,14 @@ public class Texture {
 				target, 
 				0, 
 				GL46.GL_RGBA, 
-				width, 
-				height, 
+				this.width, 
+				this.height, 
 				0, 
 				GL46.GL_RGBA, 
 				GL46.GL_UNSIGNED_BYTE, 
-				textureBuffer
+				this.pixels
 			);
 			GL46.glGenerateMipmap(target);
-			
-			STBImage.stbi_image_free(textureBuffer);
 			this.unbind();
 		}
 	}
@@ -74,5 +49,11 @@ public class Texture {
 	
 	public void unbind() {
 		GL46.glBindTexture(GL46.GL_TEXTURE_2D, this.handle);
+	}
+	
+	public void setPixels(ByteBuffer pixels, int width, int height) {
+		this.pixels = pixels;
+		this.width = width;
+		this.height = height;
 	}
 }

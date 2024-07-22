@@ -8,6 +8,7 @@ public class Mesh {
 	private float[] bitangents;
 	private float[] textureCoordinates;
 	private int[] indices;
+	private AnimationMeshData animationMeshData;
 	private int vertexCount;
 	
 	public Mesh() {
@@ -28,7 +29,8 @@ public class Mesh {
 			}, 
 			new int[] {
 				0, 1, 2
-			}
+			},
+			null
 		);
 	}
 	
@@ -38,7 +40,8 @@ public class Mesh {
 		float[] tangents,
 		float[] bitangents,
 		float[] textureCoordinates,
-		int[] indices
+		int[] indices,
+		AnimationMeshData animationMeshData
 	) {
 		this.positions = positions;
 		this.normals = normals;
@@ -46,6 +49,7 @@ public class Mesh {
 		this.bitangents = bitangents;
 		this.textureCoordinates = textureCoordinates;
 		this.indices = indices;
+		this.animationMeshData = animationMeshData;
 		this.vertexCount = this.positions.length / 3;
 	}
 	
@@ -71,6 +75,10 @@ public class Mesh {
 	
 	public float[] getTextureCoordinates() {
 		return this.textureCoordinates;
+	}
+	
+	public AnimationMeshData getAnimationMeshData() {
+		return this.animationMeshData;
 	}
 	
 	public int[] getIndices() {

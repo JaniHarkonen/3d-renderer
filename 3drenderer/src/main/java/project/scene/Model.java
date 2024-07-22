@@ -1,21 +1,33 @@
 package project.scene;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import project.asset.AnimationData;
 import project.asset.Mesh;
 import project.component.Material;
-import project.testing.TestAssets;
 
 public class Model extends ASceneObject {
 
-	private Mesh mesh;
-	private Material material;
+	private class MeshEntry {
+		private Mesh mesh;
+		private Material material;
+		
+		private MeshEntry(Mesh mesh, Material material) {
+			this.mesh = mesh;
+			this.material = material;
+		}
+	}
+	
+	private List<MeshEntry> meshMaterialTable;
+	private AnimationData animationData;
 	private float DEBUGangle;
+	private float DEBUGcounter;
 	
 	public Model(Scene scene) {
 		super(scene);
-		this.mesh = TestAssets.MESH_BRICK;
-		this.material = new Material();
-		this.material.setTexture(0, TestAssets.TEXTURE_BRICK);
-		this.material.setTexture(1, TestAssets.TEXTURE_BRICK_NORMAL);
+		this.meshMaterialTable = new ArrayList<>();
+		this.animationData = null;
 		
 		/*this.setPosition(
 			(float) Math.random() * 5, 
@@ -24,22 +36,44 @@ public class Model extends ASceneObject {
 		);*/
 		
 		this.DEBUGangle = 0.0f;
+		this.DEBUGcounter = 0.0f;
 	}
 	
 	
 	@Override
 	public void tick(float deltaTime) {
+		if( this.animationData != null && this.DEBUGcounter >= 0.5f ) {
+			this.animationData.nextFrame();
+			this.DEBUGcounter = 0;
+		}
+		this.DEBUGcounter += deltaTime;
 		//this.position.add(0, 0, -1.0f * deltaTime);
 		//this.setRotation(0, 1, 0, this.DEBUGangle);
 		//this.DEBUGangle += deltaTime;
 		//this.updateTransformMatrix();
 	}
 	
-	public Mesh getMesh() {
-		return this.mesh;
+	public void addMesh(Mesh mesh, Material material) {
+		this.meshMaterialTable.add(new MeshEntry(mesh, material));
 	}
 	
-	public Material getMaterial() {
-		return this.material;
+	public void setAnimationData(AnimationData animationData) {
+		this.animationData = animationData;
+	}
+	
+	public int getMeshCount() {
+		return this.meshMaterialTable.size();
+	}
+	
+	public Mesh getMesh(int meshIndex) {
+		return this.meshMaterialTable.get(meshIndex).mesh;
+	}
+	
+	public Material getMaterial(int meshIndex) {
+		return this.meshMaterialTable.get(meshIndex).material;
+	}
+	
+	public AnimationData getAnimationData() {
+		return this.animationData;
 	}
 }

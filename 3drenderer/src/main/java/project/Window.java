@@ -54,6 +54,10 @@ public class Window {
 	public void init() {
 		GLFW.glfwInit();
 		
+		/*GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 4);
+		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 4);
+		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 6);*/
+		
 			// Create the window
 		this.windowHandle = GLFW.glfwCreateWindow(
 			this.width, this.height, this.title, MemoryUtil.NULL, MemoryUtil.NULL
