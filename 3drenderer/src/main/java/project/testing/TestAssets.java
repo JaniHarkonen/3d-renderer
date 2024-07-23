@@ -1,6 +1,7 @@
 package project.testing;
 
 import project.asset.Animation;
+import project.asset.AnimationData;
 import project.asset.Font;
 import project.asset.FontLoadTask;
 import project.asset.Mesh;
@@ -8,6 +9,8 @@ import project.asset.SceneAssetLoadTask;
 import project.asset.TextureLoadTask;
 import project.component.Material;
 import project.opengl.Texture;
+import project.scene.Model;
+import project.scene.Scene;
 import project.utils.FileUtils;
 
 public final class TestAssets {
@@ -47,18 +50,6 @@ public final class TestAssets {
 	public static Animation ANIM_JUMP;
 	public static Animation ANIM_SOLDIER_IDLE;
 	static {
-		/*MESH_BRICK = new Mesh();
-		SceneAssetLoadTask task = new SceneAssetLoadTask(
-			FileUtils.getResourcePath("models/Brick.fbx")
-		);
-		task.expectMesh(MESH_BRICK);
-		task.load();*/
-		
-		/*MESH_OUTSIDE_PLACE = new Mesh[29];
-		for( int i = 0; i < MESH_OUTSIDE_PLACE.length; i++ ) {
-			MESH_OUTSIDE_PLACE[i] = new Mesh();
-		}*/
-		
 		MESH_OUTSIDE_PLACE = createMeshArray(29);
 		loadSceneAsset("models/Outside.fbx", MESH_OUTSIDE_PLACE);
 		
@@ -70,25 +61,6 @@ public final class TestAssets {
 		ANIM_RUN = new Animation();
 		loadSceneAsset("models/man.fbx", array, new Animation[] {ANIM_RUN});
 		MESH_MAN = array[0];
-		
-		
-		/*MESH_MAN = new Mesh();
-		SceneAssetLoadTask task = new SceneAssetLoadTask(
-			FileUtils.getResourcePath("models/man.fbx")
-		);
-		task.expectMesh(MESH_MAN);
-		ANIM_RUN = new Animation();
-		task.expectAnimation(ANIM_RUN);
-		task.load();*/
-		/*
-		MESH_JUMP = new Mesh();
-		task = new SceneAssetLoadTask(
-			FileUtils.getResourcePath("models/JUmp.fbx")
-		);
-		task.expectMesh(MESH_JUMP);
-		ANIM_JUMP = new Animation();
-		task.expectAnimation(ANIM_JUMP);
-		task.load();*/
 			// Will be initialized by VAOCache of Renderer
 	}
 	
@@ -144,33 +116,86 @@ public final class TestAssets {
 		MAT_SOLDIER_EYELASH = createMaterial("textures/soldier/eyelash_diff.png");
 		
 		MAT_TEST_RED = createMaterial("textures/test.png");
-		MAT_OUTSIDE_PAVEMENT1 = createMaterial("textures/outside/pavement1_diff.png");
-		MAT_OUTSIDE_CONCRETE_BLOCK1 = createMaterial("textures/outside/conrete_block1_diff.png");
-		MAT_OUTSIDE_METAL_DIRTYRUST = createMaterial("textures/outside/metal_dirtyrust_diff.png");
-		MAT_OUTSIDE_CONCRETE_WALL1 = createMaterial("textures/outside/concrete_wall1_diff.png");
-		MAT_OUTSIDE_CONCRETE_BARRIER_DIRTY = createMaterial("textures/outside/concrete_barrier_dirty_diff.png");
-		MAT_OUTSIDE_LAMPBOX_METAL = createMaterial("textures/outside/lampbox_metal_diff.png");
-		MAT_OUTSIDE_METAL_DOOR1 = createMaterial("textures/outside/metal_door1_diff.png");
-		MAT_OUTSIDE_CONCRETE_WALL2 = createMaterial("textures/outside/concrete_wall2_diff.png");
-		MAT_OUTSIDE_METAL_SKIRTING = createMaterial("textures/outside/metal_skirting_diff.png");
-		MAT_OUTSIDE_WINDOW_BLINDS1 = createMaterial("textures/outside/window_blinds1.png");
-		MAT_OUTSIDE_WOOD_PLANKS1 = createMaterial("textures/outside/wood_planks1_diff.png");
-		MAT_OUTSIDE_CONCRETE_BARRIER = createMaterial("textures/outside/concrete_barrier_diff.png");
-		MAT_OUTSIDE_BRICKS1 = createMaterial("textures/outside/bricks01_diff.png");
-		MAT_OUTSIDE_CONCRETE_MIX = createMaterial("textures/outside/concrete_mix_diff.png");
-		MAT_OUTSIDE_GRAVEL1 = createMaterial("textures/outside/gravel1_diff.png");
-		MAT_OUTSIDE_ASPHALT1 = createMaterial("textures/outside/asphalt1_diff.png");
-		MAT_OUTSIDE_LAMPPOST_METAL = createMaterial("textures/outside/lamppost_metal_diff.png");
-		MAT_OUTSIDE_WIRES = createMaterial("textures/outside/wires_diff.png");
-		MAT_OUTSIDE_TREE1 = createMaterial("textures/outside/tree1_diff.png");
-		MAT_OUTSIDE_GRAFFITI3 = createMaterial("textures/outside/graffiti3_alpha.png");
-		MAT_OUTSIDE_GRAFFITI1 = createMaterial("textures/outside/graffiti1_alpha.png");
-		MAT_OUTSIDE_GRAFFITI2 = createMaterial("textures/outside/graffiti2_alpha.png");
-		MAT_OUTSIDE_SNOW = createMaterial("textures/outside/snow_diff.png");
-		MAT_OUTSIDE_DIRT_DECAL2 = createMaterial("textures/outside/dirt_decal2_diff.png");
-		MAT_OUTSIDE_DIRT_DECAL1 = createMaterial("textures/outside/dirt_decal1_diff.png");
-		MAT_OUTSIDE_BARREL_METAL = createMaterial("textures/outside/barrel_metal_diff.png");
-		MAT_OUTSIDE_BARREL_TRASH = createMaterial("textures/outside/barrel_trash_diff.png"); 
+		MAT_OUTSIDE_PAVEMENT1 = createMaterial("textures/outside/diffuse/pavement1_diff.png");
+		MAT_OUTSIDE_CONCRETE_BLOCK1 = createMaterial("textures/outside/diffuse/conrete_block1_diff.png");
+		MAT_OUTSIDE_METAL_DIRTYRUST = createMaterial("textures/outside/diffuse/metal_dirtyrust_diff.png");
+		MAT_OUTSIDE_CONCRETE_WALL1 = createMaterial("textures/outside/diffuse/concrete_wall1_diff.png");
+		MAT_OUTSIDE_CONCRETE_BARRIER_DIRTY = createMaterial("textures/outside/diffuse/concrete_barrier_dirty_diff.png");
+		MAT_OUTSIDE_LAMPBOX_METAL = createMaterial("textures/outside/diffuse/lampbox_metal_diff.png");
+		MAT_OUTSIDE_METAL_DOOR1 = createMaterial("textures/outside/diffuse/metal_door1_diff.png");
+		MAT_OUTSIDE_CONCRETE_WALL2 = createMaterial("textures/outside/diffuse/concrete_wall2_diff.png");
+		MAT_OUTSIDE_METAL_SKIRTING = createMaterial("textures/outside/diffuse/metal_skirting_diff.png");
+		MAT_OUTSIDE_WINDOW_BLINDS1 = createMaterial("textures/outside/diffuse/window_blinds1.png");
+		MAT_OUTSIDE_WOOD_PLANKS1 = createMaterial("textures/outside/diffuse/wood_planks1_diff.png");
+		MAT_OUTSIDE_CONCRETE_BARRIER = createMaterial("textures/outside/diffuse/concrete_barrier_diff.png");
+		MAT_OUTSIDE_BRICKS1 = createMaterial("textures/outside/diffuse/bricks01_diff.png");
+		MAT_OUTSIDE_CONCRETE_MIX = createMaterial("textures/outside/diffuse/concrete_mix_diff.png");
+		MAT_OUTSIDE_GRAVEL1 = createMaterial("textures/outside/diffuse/gravel1_diff.png");
+		MAT_OUTSIDE_ASPHALT1 = createMaterial("textures/outside/diffuse/asphalt1_diff.png");
+		MAT_OUTSIDE_LAMPPOST_METAL = createMaterial("textures/outside/diffuse/lamppost_metal_diff.png");
+		MAT_OUTSIDE_WIRES = createMaterial("textures/outside/diffuse/wires_diff.png");
+		MAT_OUTSIDE_TREE1 = createMaterial("textures/outside/diffuse/tree1_diff.png");
+		MAT_OUTSIDE_GRAFFITI3 = createMaterial("textures/outside/diffuse/graffiti3_alpha.png");
+		MAT_OUTSIDE_GRAFFITI1 = createMaterial("textures/outside/diffuse/graffiti1_alpha.png");
+		MAT_OUTSIDE_GRAFFITI2 = createMaterial("textures/outside/diffuse/graffiti2_alpha.png");
+		MAT_OUTSIDE_SNOW = createMaterial("textures/outside/diffuse/snow_diff.png");
+		MAT_OUTSIDE_DIRT_DECAL2 = createMaterial("textures/outside/diffuse/dirt_decal2_diff.png");
+		MAT_OUTSIDE_DIRT_DECAL1 = createMaterial("textures/outside/diffuse/dirt_decal1_diff.png");
+		MAT_OUTSIDE_BARREL_METAL = createMaterial("textures/outside/diffuse/barrel_metal_diff.png");
+		MAT_OUTSIDE_BARREL_TRASH = createMaterial("textures/outside/diffuse/barrel_trash_diff.png"); 
+	}
+	
+	public static Model createTestSceneOutside(Scene hostScene) {
+		Model model = new Model(hostScene);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[0], TestAssets.MAT_OUTSIDE_PAVEMENT1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[1], TestAssets.MAT_OUTSIDE_CONCRETE_BLOCK1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[2], TestAssets.MAT_OUTSIDE_METAL_DIRTYRUST);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[3], TestAssets.MAT_OUTSIDE_CONCRETE_WALL1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[4], TestAssets.MAT_OUTSIDE_CONCRETE_BARRIER_DIRTY);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[5], TestAssets.MAT_OUTSIDE_LAMPBOX_METAL);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[6], TestAssets.MAT_OUTSIDE_METAL_DOOR1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[7], TestAssets.MAT_OUTSIDE_CONCRETE_WALL2);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[8], TestAssets.MAT_OUTSIDE_METAL_SKIRTING);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[9], TestAssets.MAT_OUTSIDE_WINDOW_BLINDS1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[10], TestAssets.MAT_OUTSIDE_WOOD_PLANKS1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[11], TestAssets.MAT_OUTSIDE_CONCRETE_BARRIER);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[12], TestAssets.MAT_TEST_RED);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[13], TestAssets.MAT_TEST_RED);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[14], TestAssets.MAT_OUTSIDE_BRICKS1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[15], TestAssets.MAT_OUTSIDE_CONCRETE_MIX);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[16], TestAssets.MAT_OUTSIDE_GRAVEL1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[17], TestAssets.MAT_OUTSIDE_ASPHALT1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[18], TestAssets.MAT_OUTSIDE_LAMPPOST_METAL);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[19], TestAssets.MAT_OUTSIDE_WIRES);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[20], TestAssets.MAT_OUTSIDE_TREE1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[21], TestAssets.MAT_OUTSIDE_GRAFFITI3);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[22], TestAssets.MAT_OUTSIDE_GRAFFITI1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[23], TestAssets.MAT_OUTSIDE_GRAFFITI1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[24], TestAssets.MAT_OUTSIDE_SNOW);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[25], TestAssets.MAT_OUTSIDE_DIRT_DECAL2);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[26], TestAssets.MAT_OUTSIDE_DIRT_DECAL1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[27], TestAssets.MAT_OUTSIDE_BARREL_METAL);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[28], TestAssets.MAT_OUTSIDE_BARREL_TRASH);
+		model.setPosition(0.0f, -1.0f, 0.0f);
+		model.setScale(0.001f, 0.001f, 0.001f);
+		
+		return model;
+	}
+	
+	public static Model createTestSoldier(Scene hostScene) {
+		Model model = new Model(hostScene);
+		//model.addMesh(TestAssets.MESH_SOLDIER[0], TestAssets.MAT_TEST_RED);
+		model.addMesh(TestAssets.MESH_SOLDIER[1], TestAssets.MAT_SOLDIER_HEAD);
+		model.addMesh(TestAssets.MESH_SOLDIER[2], TestAssets.MAT_SOLDIER_BODY);
+		model.addMesh(TestAssets.MESH_SOLDIER[3], TestAssets.MAT_SOLDIER_VEST);
+		model.addMesh(TestAssets.MESH_SOLDIER[4], TestAssets.MAT_SOLDIER_HELMET);
+		model.addMesh(TestAssets.MESH_SOLDIER[5], TestAssets.MAT_SOLDIER_GADGETS);
+		model.addMesh(TestAssets.MESH_SOLDIER[6], TestAssets.MAT_SOLDIER_EYES);
+		model.addMesh(TestAssets.MESH_SOLDIER[7], TestAssets.MAT_SOLDIER_EYELASH);
+		model.setScale(0.001f, 00.001f, 0.001f);
+		model.setRotation(-1, 0, 0, (float) Math.toRadians(85.0d));
+		model.setAnimationData(new AnimationData(TestAssets.ANIM_SOLDIER_IDLE));
+		return model;
 	}
 	
 	private static Mesh[] createMeshArray(int meshCount) {

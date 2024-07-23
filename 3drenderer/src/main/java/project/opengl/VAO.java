@@ -118,8 +118,8 @@ public class VAO {
 				// Bone weights
 			this.boneWeightVBO = GL46.glGenBuffers();
 			FloatBuffer weightsBuffer = MemoryUtil.memAllocFloat(boneWeights.length);
-			weightsBuffer.put(0, boneWeights);
-			//weightsBuffer.put(boneWeights).flip();
+			//weightsBuffer.put(0, boneWeights);
+			weightsBuffer.put(boneWeights).flip();
 			GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, this.boneWeightVBO);
 			GL46.glBufferData(GL46.GL_ARRAY_BUFFER, weightsBuffer, GL46.GL_STATIC_DRAW);
 			GL46.glEnableVertexAttribArray(5);
@@ -130,8 +130,8 @@ public class VAO {
 				// Bone indices
 			this.boneIndicesVBO = GL46.glGenBuffers();
 			IntBuffer boneIndicesBuffer = MemoryUtil.memAllocInt(boneIndices.length);
-			boneIndicesBuffer.put(0, boneIndices);
-			//boneIndicesBuffer.put(boneIndices).flip();
+			//boneIndicesBuffer.put(0, boneIndices);
+			boneIndicesBuffer.put(boneIndices).flip();
 			GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, this.boneIndicesVBO);
 			GL46.glBufferData(GL46.GL_ARRAY_BUFFER, boneIndicesBuffer, GL46.GL_STATIC_DRAW);
 			GL46.glEnableVertexAttribArray(6);
