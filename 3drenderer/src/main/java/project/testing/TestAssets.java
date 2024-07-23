@@ -107,13 +107,33 @@ public final class TestAssets {
 	public static Material MAT_SOLDIER_GADGETS;
 	public static Material MAT_SOLDIER_EYES;
 	static {
-		MAT_SOLDIER_HEAD = createMaterial("textures/soldier/head_diff.png");
-		MAT_SOLDIER_BODY = createMaterial("textures/soldier/body_diff.png");
-		MAT_SOLDIER_VEST = createMaterial("textures/soldier/vest_diff.png");
-		MAT_SOLDIER_HELMET = createMaterial("textures/soldier/helmet_diff.png");
-		MAT_SOLDIER_GADGETS = createMaterial("textures/soldier/gadgets_diff.png");
-		MAT_SOLDIER_EYES = createMaterial("textures/soldier/eyes_diff.png");
-		MAT_SOLDIER_EYELASH = createMaterial("textures/soldier/eyelash_diff.png");
+		MAT_SOLDIER_HEAD = createMaterial(
+			"textures/soldier/diffuse/head_diff.png",
+			"textures/soldier/normal/head_norm.png"
+		);
+		MAT_SOLDIER_BODY = createMaterial(
+			"textures/soldier/diffuse/body_diff.png",
+			"textures/soldier/normal/body_normal.png"
+		);
+		MAT_SOLDIER_VEST = createMaterial(
+			"textures/soldier/diffuse/vest_diff.png",
+			"textures/soldier/normal/vest_norm.png"
+		);
+		MAT_SOLDIER_HELMET = createMaterial(
+			"textures/soldier/diffuse/helmet_diff.png",
+			"textures/soldier/normal/helmet_norm.png"
+		);
+		MAT_SOLDIER_GADGETS = createMaterial(
+			"textures/soldier/diffuse/gadgets_diff.png",
+			"textures/soldier/normal/gadgets_norm.png"
+		);
+		MAT_SOLDIER_EYES = createMaterial(
+			"textures/soldier/diffuse/eyes_diff.png",
+			"textures/soldier/normal/eyes_norm.png"
+		);
+		MAT_SOLDIER_EYELASH = createMaterial(
+			"textures/soldier/diffuse/eyelash_diff.png"
+		);
 		
 		MAT_TEST_RED = createMaterial("textures/test.png");
 		MAT_OUTSIDE_PAVEMENT1 = createMaterial("textures/outside/diffuse/pavement1_diff.png");

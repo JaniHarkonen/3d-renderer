@@ -31,6 +31,7 @@ public class Scene {
 	private PointLight pointLight0;
 	private DebugModel floorBrick;
 	private Vector3f shadowLightPosition;
+	private boolean DEBUGareNormalsActive;
 	
 	public Scene(Application app, int tickRate) {
 		this.objects = null;
@@ -43,6 +44,7 @@ public class Scene {
 		this.pointLight0 = null;
 		this.floorBrick = null;
 		this.shadowLightPosition = null;
+		DEBUGareNormalsActive = true;
 	}
 	
 	public void init() {
@@ -183,7 +185,7 @@ public class Scene {
 					this.pointLight0.getColor().z +
 				")\n" +
 				"    intensity: " + this.pointLight0.getIntensity() + "\n" +
-				"    normal map: " + (this.floorBrick.isNormalMapActive() ? "ON" : "OFF") + "\n\n" +
+				"    normal map: " + (this.DEBUGareNormalsActive ? "ON" : "OFF") + "\n\n" +
 				"Controls: \n" + 
 				"    WASD to move\n" +
 				"    MOUSE to look around\n" +
@@ -209,6 +211,10 @@ public class Scene {
 			this.shadowLightPosition.add(0,1*deltaTime,0);
 		} else if( this.app.getWindow().getInputSnapshot().isKeyHeld(GLFW.GLFW_KEY_KP_2) ) {
 			this.shadowLightPosition.sub(0,1*deltaTime,0);
+		}
+		
+		if( this.app.getWindow().getInputSnapshot().isKeyPressed(GLFW.GLFW_KEY_N) ) {
+			this.DEBUGareNormalsActive = !this.DEBUGareNormalsActive;
 		}
 	}
 	
@@ -267,5 +273,9 @@ public class Scene {
 	
 	public Vector3f getShadowLightPosition() {
 		return this.shadowLightPosition;
+	}
+	
+	public boolean DEBUGareNormalsActive() {
+		return this.DEBUGareNormalsActive;
 	}
 }

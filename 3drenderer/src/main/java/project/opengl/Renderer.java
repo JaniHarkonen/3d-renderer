@@ -427,7 +427,7 @@ public class Renderer {
 						texture.bind();
 					}
 					
-					if( material.getTexture(1) != null ) {
+					if( material.getTexture(1) != null && this.scene.DEBUGareNormalsActive() ) {
 						activeShaderProgram.setInteger1Uniform(
 							U_MATERIAL_HAS_NORMAL_MAP, 1
 						);
