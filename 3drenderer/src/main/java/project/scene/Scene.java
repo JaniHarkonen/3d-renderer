@@ -8,8 +8,6 @@ import org.lwjgl.glfw.GLFW;
 
 import project.Application;
 import project.Window;
-import project.asset.AnimationData;
-import project.component.Material;
 import project.component.Projection;
 import project.controls.Controller;
 import project.gui.GUI;
@@ -67,12 +65,12 @@ public class Scene {
 		this.objects.add(this.pointLight0);
 		DebugUtils.log(this, "Added PointLight!");
 		
-		Material brickMaterial = new Material();
+		/*Material brickMaterial = new Material();
 		brickMaterial.setTexture(0, TestAssets.TEXTURE_BRICK);
-		brickMaterial.setTexture(1, TestAssets.TEXTURE_BRICK_NORMAL);
+		brickMaterial.setTexture(1, TestAssets.TEXTURE_BRICK_NORMAL);*/
 		
 		this.floorBrick = new DebugModel(this);
-		this.floorBrick.addMesh(TestAssets.MESH_BRICK, brickMaterial);
+		/*this.floorBrick.addMesh(TestAssets.MESH_BRICK, brickMaterial);
 		this.floorBrick.setPosition(0, -0.5f, 0);
 		this.floorBrick.setScale(0.1f, 0.01f, 0.1f);
 		this.objects.add(this.floorBrick);
@@ -94,27 +92,47 @@ public class Scene {
 		model.setAnimationData(animationData);
 		model.setRotation(0, 0, -1, (float) Math.toRadians(90.0d));
 		
-		this.objects.add(model);
+		this.objects.add(model);*/
 		
-		/*
+		Model model;
 		model = new Model(this);
-		Material outsideMaterial = new Material();
-		outsideMaterial.setTexture(0, TestAssets.TEXTURE_OUTSIDE_PAVEMENT1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[0], outsideMaterial);
-		outsideMaterial = new Material();
-		outsideMaterial.setTexture(0, TestAssets.TEXTURE_OUTSIDE_CONCRETE_BLOCK1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[1], outsideMaterial);
-		outsideMaterial = new Material();
-		outsideMaterial.setTexture(0, TestAssets.TEXTURE_OUTSIDE_METAL_DIRTYRUST);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[2], outsideMaterial);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[3], brickMaterial);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[0], TestAssets.MAT_OUTSIDE_PAVEMENT1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[1], TestAssets.MAT_OUTSIDE_CONCRETE_BLOCK1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[2], TestAssets.MAT_OUTSIDE_METAL_DIRTYRUST);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[3], TestAssets.MAT_OUTSIDE_CONCRETE_WALL1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[4], TestAssets.MAT_OUTSIDE_CONCRETE_BARRIER_DIRTY);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[5], TestAssets.MAT_OUTSIDE_LAMPBOX_METAL);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[6], TestAssets.MAT_OUTSIDE_METAL_DOOR1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[7], TestAssets.MAT_OUTSIDE_CONCRETE_WALL2);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[8], TestAssets.MAT_OUTSIDE_METAL_SKIRTING);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[9], TestAssets.MAT_OUTSIDE_WINDOW_BLINDS1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[10], TestAssets.MAT_OUTSIDE_WOOD_PLANKS1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[11], TestAssets.MAT_OUTSIDE_CONCRETE_BARRIER);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[12], TestAssets.MAT_TEST_RED);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[13], TestAssets.MAT_TEST_RED);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[14], TestAssets.MAT_OUTSIDE_BRICKS1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[15], TestAssets.MAT_OUTSIDE_CONCRETE_MIX);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[16], TestAssets.MAT_OUTSIDE_GRAVEL1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[17], TestAssets.MAT_OUTSIDE_ASPHALT1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[18], TestAssets.MAT_OUTSIDE_LAMPPOST_METAL);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[19], TestAssets.MAT_OUTSIDE_WIRES);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[20], TestAssets.MAT_OUTSIDE_TREE1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[21], TestAssets.MAT_OUTSIDE_GRAFFITI3);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[22], TestAssets.MAT_OUTSIDE_GRAFFITI1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[23], TestAssets.MAT_OUTSIDE_GRAFFITI1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[24], TestAssets.MAT_OUTSIDE_SNOW);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[25], TestAssets.MAT_OUTSIDE_DIRT_DECAL2);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[26], TestAssets.MAT_OUTSIDE_DIRT_DECAL1);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[27], TestAssets.MAT_OUTSIDE_BARREL_METAL);
+		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[28], TestAssets.MAT_OUTSIDE_BARREL_TRASH);
+		
 		model.setPosition(0.0f, -1.0f, 0.0f);
 		model.setScale(0.001f, 0.001f, 0.001f);
-		for( int i = 4; i < TestAssets.MESH_OUTSIDE_PLACE.length; i++ ) {
+		/*for( int i = 4; i < TestAssets.MESH_OUTSIDE_PLACE.length; i++ ) {
 			model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[i], brickMaterial);
-		}
+		}*/
 		this.objects.add(model);
-		*/
+		
 		
 			// GUI
 		this.createGUI();

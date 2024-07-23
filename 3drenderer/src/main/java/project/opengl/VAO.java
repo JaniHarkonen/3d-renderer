@@ -150,7 +150,7 @@ public class VAO {
 			MemoryUtil.memFree(indicesBuffer);
 		
 		this.unbind();
-		this.vertexCount = this.targetMesh.getVertexCount();
+		this.vertexCount = this.targetMesh.getVertexCount() * 2;
 	}
 	
 	public void bind() {

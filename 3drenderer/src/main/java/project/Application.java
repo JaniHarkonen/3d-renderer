@@ -26,10 +26,7 @@ public class Application {
 		window.setRenderer(renderer);
 		window.init();
 		
-		
-		
 		while( !window.isDestroyed() ) {
-			
 			window.refresh();
 			scene.update();
 		}
