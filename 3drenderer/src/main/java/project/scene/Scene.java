@@ -29,6 +29,7 @@ public class Scene {
 	private Text textAppStatistics;
 	private PointLight pointLight0;
 	private DebugModel floorBrick;
+	private Vector3f shadowLightPosition;
 	
 	public Scene(Application app, int tickRate) {
 		this.objects = null;
@@ -40,6 +41,7 @@ public class Scene {
 		this.textAppStatistics = null;
 		this.pointLight0 = null;
 		this.floorBrick = null;
+		this.shadowLightPosition = null;
 	}
 	
 	public void init() {
@@ -49,7 +51,7 @@ public class Scene {
 			// LIGHTS HAVE TO BE ADDED FIRST SO THAT THEY ARE UPDATED BEFORE SCENE RENDERING
 		this.objects = new ArrayList<>();
 		
-		this.activeCamera = new Camera(this, new Projection(60.0f, 0.01f, 1000.0f));
+		this.activeCamera = new Camera(this, new Projection(75.0f, 0.01f, 100.0f));
 		this.objects.add(this.activeCamera);
 		
 		AmbientLight ambientLight = new AmbientLight(
@@ -93,6 +95,8 @@ public class Scene {
 		model.setRotation(0, 0, -1, (float) Math.toRadians(90.0d));
 		
 		this.objects.add(model);*/
+		
+		this.shadowLightPosition = new Vector3f(0.0f, 0.5f, 0.5f);
 		
 		Model model;
 		model = new Model(this);
@@ -146,8 +150,6 @@ public class Scene {
 		.addBinding(ActionSet.MOVE_RIGHT, input.new KeyHeld(GLFW.GLFW_KEY_D))
 		.addBinding(ActionSet.LOOK_AROUND, input.new MouseMove());
 		this.activeCamera.setController(cameraController);
-		
-		
 		
 			// Point light controls here
 		Controller pointLightController = new Controller(input, this.pointLight0)
@@ -225,6 +227,12 @@ public class Scene {
 				this.gui = null;
 			}
 		}
+		
+		if( this.app.getWindow().getInputSnapshot().isKeyHeld(GLFW.GLFW_KEY_KP_8) ) {
+			this.shadowLightPosition.add(0,1*deltaTime,0);
+		} else if( this.app.getWindow().getInputSnapshot().isKeyHeld(GLFW.GLFW_KEY_KP_2) ) {
+			this.shadowLightPosition.sub(0,1*deltaTime,0);
+		}
 	}
 	
 	private String convertToLargestByte(long n) {
@@ -274,5 +282,9 @@ public class Scene {
 	
 	public GUI getGUI() {
 		return this.gui;
+	}
+	
+	public Vector3f getShadowLightPosition() {
+		return this.shadowLightPosition;
 	}
 }

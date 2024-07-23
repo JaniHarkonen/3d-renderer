@@ -25,8 +25,8 @@ public class Texture {
 			int target = GL46.GL_TEXTURE_2D;
 			this.bind();
 			GL46.glPixelStorei(GL46.GL_UNPACK_ALIGNMENT, 1);
-			GL46.glTexParameteri(target, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_NEAREST);
-			GL46.glTexParameteri(target, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_NEAREST);
+			GL46.glTexParameteri(target, GL46.GL_TEXTURE_MIN_FILTER, GL46.GL_LINEAR);
+			GL46.glTexParameteri(target, GL46.GL_TEXTURE_MAG_FILTER, GL46.GL_LINEAR);
 			GL46.glTexImage2D(
 				target, 
 				0, 

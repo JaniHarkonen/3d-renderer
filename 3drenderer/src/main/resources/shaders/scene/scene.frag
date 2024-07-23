@@ -5,7 +5,7 @@ const int MAX_POINT_LIGHTS = 5;
 const float SPECULAR_POWER = 10;
 
 const float BIAS = 0.0005;
-const float SHADOW_FACTOR = 0.25;
+const float SHADOW_FACTOR = 0.75;
 const int NUM_CASCADES = 3;
 
 /*
@@ -213,5 +213,5 @@ void main()
     */
 
     fragColor = ambient + diffuseSpecularComp;
-    //fragColor.rgb = fragColor.rgb * shadowFactor;
+    fragColor.rgb = fragColor.rgb * shadowFactor;
 }

@@ -54,9 +54,9 @@ public class Window {
 	public void init() {
 		GLFW.glfwInit();
 		
-		//GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 4);
-		//GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 4);
-		//GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 6);
+		GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 4);
+		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 4);
+		GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 6);
 		
 			// Create the window
 		this.windowHandle = GLFW.glfwCreateWindow(
@@ -87,6 +87,8 @@ public class Window {
 			// Bind input listener
 		this.input = new Input();
 		this.input.bind(this);
+		
+		GLFW.glfwSetWindowSizeCallback(this.windowHandle, (window, width, height) -> this.windowResizeListener(width, height));
 		
 		GLFW.glfwMakeContextCurrent(this.windowHandle);
 		GLFW.glfwSwapInterval(this.vsync); // v-sync
@@ -152,6 +154,11 @@ public class Window {
 		this.isDestroyed = true;
 		GLFW.glfwDestroyWindow(this.windowHandle);
 		GLFW.glfwTerminate();
+	}
+	
+	private void windowResizeListener(int width, int height) {
+		this.width = width;
+		this.height = height;
 	}
 	
 	public void setRenderer(Renderer renderer) {
