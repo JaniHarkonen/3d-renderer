@@ -41,9 +41,11 @@ public final class TestAssets {
 	public static Mesh[] MESH_OUTSIDE_PLACE;
 	public static Mesh MESH_MAN;
 	public static Mesh MESH_JUMP;
+	public static Mesh[] MESH_SOLDIER;
 	
 	public static Animation ANIM_RUN;
 	public static Animation ANIM_JUMP;
+	public static Animation ANIM_SOLDIER_IDLE;
 	static {
 		/*MESH_BRICK = new Mesh();
 		SceneAssetLoadTask task = new SceneAssetLoadTask(
@@ -52,21 +54,33 @@ public final class TestAssets {
 		task.expectMesh(MESH_BRICK);
 		task.load();*/
 		
-		MESH_OUTSIDE_PLACE = new Mesh[29];
+		/*MESH_OUTSIDE_PLACE = new Mesh[29];
 		for( int i = 0; i < MESH_OUTSIDE_PLACE.length; i++ ) {
 			MESH_OUTSIDE_PLACE[i] = new Mesh();
-		}
+		}*/
+		
+		MESH_OUTSIDE_PLACE = createMeshArray(29);
 		loadSceneAsset("models/Outside.fbx", MESH_OUTSIDE_PLACE);
 		
+		ANIM_SOLDIER_IDLE = new Animation();
+		MESH_SOLDIER = createMeshArray(8);
+		loadSceneAsset("models/soldier.fbx", MESH_SOLDIER, new Animation[] {ANIM_SOLDIER_IDLE});
+		
+		Mesh[] array = createMeshArray(1);
+		ANIM_RUN = new Animation();
+		loadSceneAsset("models/man.fbx", array, new Animation[] {ANIM_RUN});
+		MESH_MAN = array[0];
+		
+		
 		/*MESH_MAN = new Mesh();
-		task = new SceneAssetLoadTask(
+		SceneAssetLoadTask task = new SceneAssetLoadTask(
 			FileUtils.getResourcePath("models/man.fbx")
 		);
 		task.expectMesh(MESH_MAN);
 		ANIM_RUN = new Animation();
 		task.expectAnimation(ANIM_RUN);
-		task.load();
-		
+		task.load();*/
+		/*
 		MESH_JUMP = new Mesh();
 		task = new SceneAssetLoadTask(
 			FileUtils.getResourcePath("models/JUmp.fbx")
@@ -80,9 +94,11 @@ public final class TestAssets {
 	
 		// Materials
 	public static Material MAT_TEST_RED;
+	
 	public static Material MAT_CREEP;
 	public static Material MAT_BRICK;
 	public static Material MAT_BRICK_NORMAL;
+	
 	public static Material MAT_OUTSIDE_PAVEMENT1;
 	public static Material MAT_OUTSIDE_CONCRETE_BLOCK1;
 	public static Material MAT_OUTSIDE_METAL_DIRTYRUST;
@@ -110,7 +126,23 @@ public final class TestAssets {
 	public static Material MAT_OUTSIDE_DIRT_DECAL1;
 	public static Material MAT_OUTSIDE_BARREL_METAL;
 	public static Material MAT_OUTSIDE_BARREL_TRASH;
+	public static Material MAT_SOLDIER_EYELASH;
+	
+	public static Material MAT_SOLDIER_HEAD;
+	public static Material MAT_SOLDIER_BODY;
+	public static Material MAT_SOLDIER_VEST;
+	public static Material MAT_SOLDIER_HELMET;
+	public static Material MAT_SOLDIER_GADGETS;
+	public static Material MAT_SOLDIER_EYES;
 	static {
+		MAT_SOLDIER_HEAD = createMaterial("textures/soldier/head_diff.png");
+		MAT_SOLDIER_BODY = createMaterial("textures/soldier/body_diff.png");
+		MAT_SOLDIER_VEST = createMaterial("textures/soldier/vest_diff.png");
+		MAT_SOLDIER_HELMET = createMaterial("textures/soldier/helmet_diff.png");
+		MAT_SOLDIER_GADGETS = createMaterial("textures/soldier/gadgets_diff.png");
+		MAT_SOLDIER_EYES = createMaterial("textures/soldier/eyes_diff.png");
+		MAT_SOLDIER_EYELASH = createMaterial("textures/soldier/eyelash_diff.png");
+		
 		MAT_TEST_RED = createMaterial("textures/test.png");
 		MAT_OUTSIDE_PAVEMENT1 = createMaterial("textures/outside/pavement1_diff.png");
 		MAT_OUTSIDE_CONCRETE_BLOCK1 = createMaterial("textures/outside/conrete_block1_diff.png");
@@ -138,33 +170,16 @@ public final class TestAssets {
 		MAT_OUTSIDE_DIRT_DECAL2 = createMaterial("textures/outside/dirt_decal2_diff.png");
 		MAT_OUTSIDE_DIRT_DECAL1 = createMaterial("textures/outside/dirt_decal1_diff.png");
 		MAT_OUTSIDE_BARREL_METAL = createMaterial("textures/outside/barrel_metal_diff.png");
-		MAT_OUTSIDE_BARREL_TRASH = createMaterial("textures/outside/barrel_trash_diff.png");
+		MAT_OUTSIDE_BARREL_TRASH = createMaterial("textures/outside/barrel_trash_diff.png"); 
 	}
 	
-		// Textures
-	public static Texture TEXTURE_CREEP;
-	public static Texture TEXTURE_BRICK;
-	public static Texture TEXTURE_BRICK_NORMAL;
-	static {
-		/*TEXTURE_CREEP = loadTexture("textures/creep.png");
-		TEXTURE_BRICK = loadTexture("textures/brick/Bricks082B_4K_Color.jpg");
-		TEXTURE_BRICK_NORMAL = loadTexture("textures/brick/Bricks082B_4K_NormalDX.jpg");*/
-		
-		/*
-		TestAssets.TEXTURE_OUTSIDE_PAVEMENT1 = new Texture(
-			FileUtils.getResourcePath("textures/outside/pavement1_diff.png")
-		); 
-		TestAssets.TEXTURE_OUTSIDE_CONCRETE_BLOCK1 = new Texture(
-			FileUtils.getResourcePath("textures/outside/conrete_block1_diff.png")
-		);
-		TestAssets.TEXTURE_OUTSIDE_METAL_DIRTYRUST = new Texture(
-			FileUtils.getResourcePath("textures/outside/metal_dirtyrust_diff.png")
-		); */
-			// Will be initialized by TextureCache of Renderer
+	private static Mesh[] createMeshArray(int meshCount) {
+		Mesh[] result = new Mesh[meshCount];
+		for( int i = 0; i < result.length; i++ ) {
+			result[i] = new Mesh();
+		}
+		return result;
 	}
-	
-		// Materials
-	//public static Material MAT_
 	
 	private static Material createMaterial(String relativeDiffusePath, String relativeNormalPath) {
 		Texture diffuse = loadTexture(relativeDiffusePath);

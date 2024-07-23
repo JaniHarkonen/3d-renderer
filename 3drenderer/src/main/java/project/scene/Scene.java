@@ -8,6 +8,7 @@ import org.lwjgl.glfw.GLFW;
 
 import project.Application;
 import project.Window;
+import project.asset.AnimationData;
 import project.component.Projection;
 import project.controls.Controller;
 import project.gui.GUI;
@@ -99,6 +100,14 @@ public class Scene {
 		this.shadowLightPosition = new Vector3f(0.0f, 0.5f, 0.5f);
 		
 		Model model;
+		
+		model = new Model(this);
+		model.addMesh(TestAssets.MESH_MAN, TestAssets.MAT_TEST_RED);
+		model.setPosition(0.0f, 0.0f, 0.0f);
+		model.setScale(1.01f, 1.01f, 1.01f);
+		model.setAnimationData(new AnimationData(TestAssets.ANIM_RUN));
+		//this.objects.add(model);
+		
 		model = new Model(this);
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[0], TestAssets.MAT_OUTSIDE_PAVEMENT1);
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[1], TestAssets.MAT_OUTSIDE_CONCRETE_BLOCK1);
@@ -129,12 +138,23 @@ public class Scene {
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[26], TestAssets.MAT_OUTSIDE_DIRT_DECAL1);
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[27], TestAssets.MAT_OUTSIDE_BARREL_METAL);
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[28], TestAssets.MAT_OUTSIDE_BARREL_TRASH);
-		
 		model.setPosition(0.0f, -1.0f, 0.0f);
 		model.setScale(0.001f, 0.001f, 0.001f);
-		/*for( int i = 4; i < TestAssets.MESH_OUTSIDE_PLACE.length; i++ ) {
-			model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[i], brickMaterial);
-		}*/
+		this.objects.add(model);
+		
+		model = new Model(this);
+		//model.addMesh(TestAssets.MESH_SOLDIER[0], TestAssets.MAT_TEST_RED);
+		model.addMesh(TestAssets.MESH_SOLDIER[1], TestAssets.MAT_SOLDIER_HEAD);
+		model.addMesh(TestAssets.MESH_SOLDIER[2], TestAssets.MAT_SOLDIER_BODY);
+		model.addMesh(TestAssets.MESH_SOLDIER[3], TestAssets.MAT_SOLDIER_VEST);
+		model.addMesh(TestAssets.MESH_SOLDIER[4], TestAssets.MAT_SOLDIER_HELMET);
+		model.addMesh(TestAssets.MESH_SOLDIER[5], TestAssets.MAT_SOLDIER_GADGETS);
+		model.addMesh(TestAssets.MESH_SOLDIER[6], TestAssets.MAT_SOLDIER_EYES);
+		model.addMesh(TestAssets.MESH_SOLDIER[7], TestAssets.MAT_SOLDIER_EYELASH);
+		model.setPosition(1, -1, 0);
+		model.setScale(0.001f, 00.001f, 0.001f);
+		model.setRotation(-1, 0, 0, (float) Math.toRadians(85.0d));
+		model.setAnimationData(new AnimationData(TestAssets.ANIM_SOLDIER_IDLE));
 		this.objects.add(model);
 		
 		
