@@ -107,62 +107,110 @@ public final class TestAssets {
 	public static Material MAT_SOLDIER_GADGETS;
 	public static Material MAT_SOLDIER_EYES;
 	static {
-		MAT_SOLDIER_HEAD = createMaterial(
-			"textures/soldier/diffuse/head_diff.png",
-			"textures/soldier/normal/head_norm.png"
+		MAT_SOLDIER_HEAD = createMaterialWithNormal(
+			"textures/soldier",
+			"head"
 		);
 		MAT_SOLDIER_BODY = createMaterial(
 			"textures/soldier/diffuse/body_diff.png",
 			"textures/soldier/normal/body_normal.png"
 		);
-		MAT_SOLDIER_VEST = createMaterial(
-			"textures/soldier/diffuse/vest_diff.png",
-			"textures/soldier/normal/vest_norm.png"
+		MAT_SOLDIER_VEST = createMaterialWithNormal(
+			"textures/soldier",
+			"vest"
 		);
-		MAT_SOLDIER_HELMET = createMaterial(
-			"textures/soldier/diffuse/helmet_diff.png",
-			"textures/soldier/normal/helmet_norm.png"
+		MAT_SOLDIER_HELMET = createMaterialWithNormal(
+			"textures/soldier/",
+			"helmet"
 		);
-		MAT_SOLDIER_GADGETS = createMaterial(
-			"textures/soldier/diffuse/gadgets_diff.png",
-			"textures/soldier/normal/gadgets_norm.png"
+		MAT_SOLDIER_GADGETS = createMaterialWithNormal(
+			"textures/soldier",
+			"gadgets"
 		);
-		MAT_SOLDIER_EYES = createMaterial(
-			"textures/soldier/diffuse/eyes_diff.png",
-			"textures/soldier/normal/eyes_norm.png"
+		MAT_SOLDIER_EYES = createMaterialWithNormal(
+			"textures/soldier",
+			"eyes"
 		);
 		MAT_SOLDIER_EYELASH = createMaterial(
 			"textures/soldier/diffuse/eyelash_diff.png"
 		);
 		
 		MAT_TEST_RED = createMaterial("textures/test.png");
-		MAT_OUTSIDE_PAVEMENT1 = createMaterial("textures/outside/diffuse/pavement1_diff.png");
-		MAT_OUTSIDE_CONCRETE_BLOCK1 = createMaterial("textures/outside/diffuse/conrete_block1_diff.png");
-		MAT_OUTSIDE_METAL_DIRTYRUST = createMaterial("textures/outside/diffuse/metal_dirtyrust_diff.png");
-		MAT_OUTSIDE_CONCRETE_WALL1 = createMaterial("textures/outside/diffuse/concrete_wall1_diff.png");
+		MAT_OUTSIDE_PAVEMENT1 = createMaterialWithNormal(
+			"textures/outside",
+			"pavement1"
+		);
+		MAT_OUTSIDE_CONCRETE_BLOCK1 = createMaterialWithNormal(
+			"textures/outside",
+			"conrete_block1"
+		);
+		MAT_OUTSIDE_METAL_DIRTYRUST = createMaterialWithNormal(
+			"textures/outside",
+			"metal_dirtyrust"
+		);
+		MAT_OUTSIDE_CONCRETE_WALL1 = createMaterialWithNormal(
+			"textures/outside/",
+			"concrete_wall1"
+		);
 		MAT_OUTSIDE_CONCRETE_BARRIER_DIRTY = createMaterial("textures/outside/diffuse/concrete_barrier_dirty_diff.png");
 		MAT_OUTSIDE_LAMPBOX_METAL = createMaterial("textures/outside/diffuse/lampbox_metal_diff.png");
-		MAT_OUTSIDE_METAL_DOOR1 = createMaterial("textures/outside/diffuse/metal_door1_diff.png");
+		MAT_OUTSIDE_METAL_DOOR1 = createMaterialWithNormal(
+			"textures/outside",
+			"metal_door1"
+		);
 		MAT_OUTSIDE_CONCRETE_WALL2 = createMaterial("textures/outside/diffuse/concrete_wall2_diff.png");
 		MAT_OUTSIDE_METAL_SKIRTING = createMaterial("textures/outside/diffuse/metal_skirting_diff.png");
 		MAT_OUTSIDE_WINDOW_BLINDS1 = createMaterial("textures/outside/diffuse/window_blinds1.png");
-		MAT_OUTSIDE_WOOD_PLANKS1 = createMaterial("textures/outside/diffuse/wood_planks1_diff.png");
-		MAT_OUTSIDE_CONCRETE_BARRIER = createMaterial("textures/outside/diffuse/concrete_barrier_diff.png");
-		MAT_OUTSIDE_BRICKS1 = createMaterial("textures/outside/diffuse/bricks01_diff.png");
-		MAT_OUTSIDE_CONCRETE_MIX = createMaterial("textures/outside/diffuse/concrete_mix_diff.png");
-		MAT_OUTSIDE_GRAVEL1 = createMaterial("textures/outside/diffuse/gravel1_diff.png");
-		MAT_OUTSIDE_ASPHALT1 = createMaterial("textures/outside/diffuse/asphalt1_diff.png");
-		MAT_OUTSIDE_LAMPPOST_METAL = createMaterial("textures/outside/diffuse/lamppost_metal_diff.png");
+		MAT_OUTSIDE_WOOD_PLANKS1 = createMaterialWithNormal(
+			"textures/outside",
+			"wood_planks1"
+		);
+		MAT_OUTSIDE_CONCRETE_BARRIER = createMaterialWithNormal(
+			"textures/outside",
+			"concrete_barrier"
+		);
+		MAT_OUTSIDE_BRICKS1 = createMaterialWithNormal(
+			"textures/outside",
+			"bricks01"
+		);
+		MAT_OUTSIDE_CONCRETE_MIX = createMaterialWithNormal(
+			"textures/outside",
+			"concrete_mix"
+		);
+		MAT_OUTSIDE_GRAVEL1 = createMaterialWithNormal(
+			"textures/outside",
+			"gravel1"
+		);
+		MAT_OUTSIDE_ASPHALT1 = createMaterialWithNormal(
+			"textures/outside",
+			"asphalt1"
+		);
+		MAT_OUTSIDE_LAMPPOST_METAL = createMaterialWithNormal(
+			"textures/outside",
+			"lamppost_metal"
+		);
 		MAT_OUTSIDE_WIRES = createMaterial("textures/outside/diffuse/wires_diff.png");
-		MAT_OUTSIDE_TREE1 = createMaterial("textures/outside/diffuse/tree1_diff.png");
+		MAT_OUTSIDE_TREE1 = createMaterialWithNormal(
+			"textures/outside",
+			"tree1"
+		);
 		MAT_OUTSIDE_GRAFFITI3 = createMaterial("textures/outside/diffuse/graffiti3_alpha.png");
 		MAT_OUTSIDE_GRAFFITI1 = createMaterial("textures/outside/diffuse/graffiti1_alpha.png");
 		MAT_OUTSIDE_GRAFFITI2 = createMaterial("textures/outside/diffuse/graffiti2_alpha.png");
-		MAT_OUTSIDE_SNOW = createMaterial("textures/outside/diffuse/snow_diff.png");
+		MAT_OUTSIDE_SNOW = createMaterialWithNormal(
+			"textures/outside",
+			"snow"
+		);
 		MAT_OUTSIDE_DIRT_DECAL2 = createMaterial("textures/outside/diffuse/dirt_decal2_diff.png");
 		MAT_OUTSIDE_DIRT_DECAL1 = createMaterial("textures/outside/diffuse/dirt_decal1_diff.png");
-		MAT_OUTSIDE_BARREL_METAL = createMaterial("textures/outside/diffuse/barrel_metal_diff.png");
-		MAT_OUTSIDE_BARREL_TRASH = createMaterial("textures/outside/diffuse/barrel_trash_diff.png"); 
+		MAT_OUTSIDE_BARREL_METAL = createMaterialWithNormal(
+			"textures/outside",
+			"barrel_metal"
+		);
+		MAT_OUTSIDE_BARREL_TRASH = createMaterialWithNormal(
+			"textures/outside",
+			"barrel_trash"
+		); 
 	}
 	
 	public static Model createTestSceneOutside(Scene hostScene) {
@@ -212,7 +260,7 @@ public final class TestAssets {
 		model.addMesh(TestAssets.MESH_SOLDIER[5], TestAssets.MAT_SOLDIER_GADGETS);
 		model.addMesh(TestAssets.MESH_SOLDIER[6], TestAssets.MAT_SOLDIER_EYES);
 		model.addMesh(TestAssets.MESH_SOLDIER[7], TestAssets.MAT_SOLDIER_EYELASH);
-		model.setScale(0.001f, 00.001f, 0.001f);
+		model.setScale(0.001f, 0.001f, 0.001f);
 		model.setRotation(-1, 0, 0, (float) Math.toRadians(85.0d));
 		model.setAnimationData(new AnimationData(TestAssets.ANIM_SOLDIER_IDLE));
 		return model;
@@ -233,6 +281,13 @@ public final class TestAssets {
 		result.setTexture(0, diffuse);
 		result.setTexture(1, normal);
 		return result;
+	}
+	
+	private static Material createMaterialWithNormal(String relativePath, String name) {
+		return createMaterial(
+			relativePath + "/diffuse/" + name + "_diff.png", 
+			relativePath + "/normal/" + name + "_norm.png"
+		);
 	}
 	
 	private static Material createMaterial(String relativeDiffusePath) {

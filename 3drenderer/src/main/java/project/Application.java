@@ -14,7 +14,7 @@ public class Application {
 	}
 	
 	public void execute() {
-		final String TITLE = "3D Renderer";
+		final String TITLE = "3D Renderer - JOHNEngine";
 		final int FPS_MAX = 300;
 		final int TICK_RATE = 60;
 		
