@@ -1,5 +1,7 @@
 # 3D renderer
 
+This project is related to [JOHNEngine](https://github.com/JaniHarkonen/JOHNEngine), and will ultimately be integrated with it.
+
 This project will function as a simple testing ground for an OpenGL-based renderer written in Java. The ultimate goal is to have a renderer with at least the following features:
 - support for diffuse, normal maps and roughness maps
 - support for ambient, directional, point and spotlights
