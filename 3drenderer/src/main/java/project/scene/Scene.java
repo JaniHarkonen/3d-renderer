@@ -9,7 +9,6 @@ import org.lwjgl.glfw.GLFW;
 import project.Application;
 import project.Window;
 import project.asset.AnimationData;
-import project.component.Material;
 import project.component.Projection;
 import project.controls.Controller;
 import project.gui.GUI;
@@ -31,6 +30,8 @@ public class Scene {
 	private Text textAppStatistics;
 	private PointLight pointLight0;
 	private DebugModel floorBrick;
+	private Vector3f shadowLightPosition;
+	private boolean DEBUGareNormalsActive;
 	
 	public Scene(Application app, int tickRate) {
 		this.objects = null;
@@ -42,6 +43,8 @@ public class Scene {
 		this.textAppStatistics = null;
 		this.pointLight0 = null;
 		this.floorBrick = null;
+		this.shadowLightPosition = null;
+		DEBUGareNormalsActive = true;
 	}
 	
 	public void init() {
@@ -51,7 +54,7 @@ public class Scene {
 			// LIGHTS HAVE TO BE ADDED FIRST SO THAT THEY ARE UPDATED BEFORE SCENE RENDERING
 		this.objects = new ArrayList<>();
 		
-		this.activeCamera = new Camera(this, new Projection(60.0f, 0.01f, 1000.0f));
+		this.activeCamera = new Camera(this, new Projection(75.0f, 0.01f, 100.0f));
 		this.objects.add(this.activeCamera);
 		
 		AmbientLight ambientLight = new AmbientLight(
@@ -67,12 +70,12 @@ public class Scene {
 		this.objects.add(this.pointLight0);
 		DebugUtils.log(this, "Added PointLight!");
 		
-		Material brickMaterial = new Material();
+		/*Material brickMaterial = new Material();
 		brickMaterial.setTexture(0, TestAssets.TEXTURE_BRICK);
-		brickMaterial.setTexture(1, TestAssets.TEXTURE_BRICK_NORMAL);
+		brickMaterial.setTexture(1, TestAssets.TEXTURE_BRICK_NORMAL);*/
 		
 		this.floorBrick = new DebugModel(this);
-		this.floorBrick.addMesh(TestAssets.MESH_BRICK, brickMaterial);
+		/*this.floorBrick.addMesh(TestAssets.MESH_BRICK, brickMaterial);
 		this.floorBrick.setPosition(0, -0.5f, 0);
 		this.floorBrick.setScale(0.1f, 0.01f, 0.1f);
 		this.objects.add(this.floorBrick);
@@ -94,27 +97,25 @@ public class Scene {
 		model.setAnimationData(animationData);
 		model.setRotation(0, 0, -1, (float) Math.toRadians(90.0d));
 		
-		this.objects.add(model);
+		this.objects.add(model);*/
 		
-		/*
+		this.shadowLightPosition = new Vector3f(0.0f, 0.5f, 0.5f);
+		
+		Model model;
+		
 		model = new Model(this);
-		Material outsideMaterial = new Material();
-		outsideMaterial.setTexture(0, TestAssets.TEXTURE_OUTSIDE_PAVEMENT1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[0], outsideMaterial);
-		outsideMaterial = new Material();
-		outsideMaterial.setTexture(0, TestAssets.TEXTURE_OUTSIDE_CONCRETE_BLOCK1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[1], outsideMaterial);
-		outsideMaterial = new Material();
-		outsideMaterial.setTexture(0, TestAssets.TEXTURE_OUTSIDE_METAL_DIRTYRUST);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[2], outsideMaterial);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[3], brickMaterial);
-		model.setPosition(0.0f, -1.0f, 0.0f);
-		model.setScale(0.001f, 0.001f, 0.001f);
-		for( int i = 4; i < TestAssets.MESH_OUTSIDE_PLACE.length; i++ ) {
-			model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[i], brickMaterial);
-		}
-		this.objects.add(model);
-		*/
+		model.addMesh(TestAssets.MESH_MAN, TestAssets.MAT_TEST_RED);
+		model.setPosition(0.0f, 0.0f, 0.0f);
+		model.setScale(1.01f, 1.01f, 1.01f);
+		model.setAnimationData(new AnimationData(TestAssets.ANIM_RUN));
+		//this.objects.add(model);
+		
+		this.objects.add(TestAssets.createTestSceneOutside(this));
+		
+		Model soldier = TestAssets.createTestSoldier(this);
+		soldier.setPosition(1, -1, 0);
+		this.objects.add(soldier);
+		
 		
 			// GUI
 		this.createGUI();
@@ -128,8 +129,6 @@ public class Scene {
 		.addBinding(ActionSet.MOVE_RIGHT, input.new KeyHeld(GLFW.GLFW_KEY_D))
 		.addBinding(ActionSet.LOOK_AROUND, input.new MouseMove());
 		this.activeCamera.setController(cameraController);
-		
-		
 		
 			// Point light controls here
 		Controller pointLightController = new Controller(input, this.pointLight0)
@@ -186,7 +185,7 @@ public class Scene {
 					this.pointLight0.getColor().z +
 				")\n" +
 				"    intensity: " + this.pointLight0.getIntensity() + "\n" +
-				"    normal map: " + (this.floorBrick.isNormalMapActive() ? "ON" : "OFF") + "\n\n" +
+				"    normal map: " + (this.DEBUGareNormalsActive ? "ON" : "OFF") + "\n\n" +
 				"Controls: \n" + 
 				"    WASD to move\n" +
 				"    MOUSE to look around\n" +
@@ -206,6 +205,16 @@ public class Scene {
 			} else {
 				this.gui = null;
 			}
+		}
+		
+		if( this.app.getWindow().getInputSnapshot().isKeyHeld(GLFW.GLFW_KEY_KP_8) ) {
+			this.shadowLightPosition.add(0,1*deltaTime,0);
+		} else if( this.app.getWindow().getInputSnapshot().isKeyHeld(GLFW.GLFW_KEY_KP_2) ) {
+			this.shadowLightPosition.sub(0,1*deltaTime,0);
+		}
+		
+		if( this.app.getWindow().getInputSnapshot().isKeyPressed(GLFW.GLFW_KEY_N) ) {
+			this.DEBUGareNormalsActive = !this.DEBUGareNormalsActive;
 		}
 	}
 	
@@ -237,6 +246,10 @@ public class Scene {
 		this.gui.addElement(this.textAppStatistics);
 	}
 	
+	public void addObject(ASceneObject sceneObject) {
+		this.objects.add(sceneObject);
+	}
+	
 	public void setTickRate(int tickRate) {
 		this.tickRate = tickRate;
 		this.tickDelta = 1000000000 / this.tickRate;
@@ -256,5 +269,13 @@ public class Scene {
 	
 	public GUI getGUI() {
 		return this.gui;
+	}
+	
+	public Vector3f getShadowLightPosition() {
+		return this.shadowLightPosition;
+	}
+	
+	public boolean DEBUGareNormalsActive() {
+		return this.DEBUGareNormalsActive;
 	}
 }

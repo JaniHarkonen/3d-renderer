@@ -32,7 +32,7 @@ void main()
     vec4 initBitangent = vec4(bitangent, 0.0);
     */
 
-    vec4 initPos = vec4(10, 0, 0, 0);
+    vec4 initPos = vec4(0, 0, 0, 0);
     vec4 initNormal = vec4(0, 0, 0, 0);
     vec4 initTangent = vec4(0, 0, 0, 0);
     vec4 initBitangent = vec4(0, 0, 0, 0);

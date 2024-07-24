@@ -92,7 +92,7 @@ public class Renderer {
 	public void init() {
 		GL.createCapabilities();
 		//GL46.glClearColor(0.85f, 0.85f, 0.85f, 0.0f);
-		GL46.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		GL46.glClearColor(0.643f, 0.62f, 0.557f, 1.0f);
 		
 			// Scene shaders
 		this.shaderProgram = new ShaderProgram();
@@ -274,11 +274,13 @@ public class Renderer {
 		GL46.glEnable(GL46.GL_DEPTH_TEST);
 		GL46.glEnable(GL46.GL_BLEND);
 		GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);
-		//GL46.glEnable(GL46.GL_MULTISAMPLE);
+		GL46.glEnable(GL46.GL_MULTISAMPLE);
+		GL46.glEnable(GL46.GL_CULL_FACE);
+		GL46.glCullFace(GL46.GL_BACK);
         activeShaderProgram = this.shaderProgramShadows;
         activeShaderProgram.bind();
         
-        CascadeShadow.updateCascadeShadows(this.cascadeShadows, this.scene.getActiveCamera());
+        CascadeShadow.updateCascadeShadows(this.cascadeShadows, this.scene.getActiveCamera(), this.scene.getShadowLightPosition());
         GL46.glBindFramebuffer(GL46.GL_FRAMEBUFFER, this.shadowBuffer.getDepthMapFBO());
         GL46.glViewport(
     		0, 0, ShadowBuffer.DEFAULT_SHADOW_MAP_WIDTH, ShadowBuffer.DEFAULT_SHADOW_MAP_HEIGHT
@@ -425,7 +427,7 @@ public class Renderer {
 						texture.bind();
 					}
 					
-					if( material.getTexture(1) != null ) {
+					if( material.getTexture(1) != null && this.scene.DEBUGareNormalsActive() ) {
 						activeShaderProgram.setInteger1Uniform(
 							U_MATERIAL_HAS_NORMAL_MAP, 1
 						);
@@ -472,6 +474,7 @@ public class Renderer {
 		}
 		
 		//GL46.glBindVertexArray(0); // may not be needed
+		GL46.glDisable(GL46.GL_CULL_FACE);
 		//GL46.glDisable(GL46.GL_DEPTH_TEST);
 		//GL46.glDisable(GL46.GL_BLEND);
         //GL46.glBlendFunc(GL46.GL_SRC_ALPHA, GL46.GL_ONE_MINUS_SRC_ALPHA);

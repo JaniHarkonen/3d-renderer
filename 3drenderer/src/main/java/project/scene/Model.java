@@ -42,7 +42,7 @@ public class Model extends ASceneObject {
 	
 	@Override
 	public void tick(float deltaTime) {
-		if( this.animationData != null && this.DEBUGcounter >= 0.5f ) {
+		if( this.animationData != null && this.DEBUGcounter >= 0.05f ) {
 			this.animationData.nextFrame();
 			this.DEBUGcounter = 0;
 		}

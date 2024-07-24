@@ -16,7 +16,6 @@ public class ShadowBuffer {
 	public ShadowBuffer() {
 		this.depthMapFBO = -1;
 		this.depthMap = null;
-		
 	}
 	
 	

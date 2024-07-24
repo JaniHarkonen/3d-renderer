@@ -26,7 +26,7 @@ public class DebugModel extends Model implements IControllable {
 		if( this.isNormalMapActive ) {
 			this.getMaterial(0).setTexture(1, null);
 		} else {
-			this.getMaterial(0).setTexture(1, TestAssets.TEXTURE_BRICK_NORMAL);
+			//this.getMaterial(0).setTexture(1, TestAssets.TEXTURE_BRICK_NORMAL);
 		}
 		
 		this.isNormalMapActive = !this.isNormalMapActive;

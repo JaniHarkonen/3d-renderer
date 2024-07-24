@@ -38,7 +38,7 @@ public class SceneAssetLoadTask {
 		Assimp.aiProcess_LimitBoneWeights
 	);
 
-	public static final int MAX_BONE_COUNT = 150;
+	public static final int MAX_BONE_COUNT = 354;
 	public static final int MAX_WEIGHT_COUNT = 4;
 	private static final Matrix4f IDENTITY_MATRIX = new Matrix4f();
 	
@@ -123,29 +123,38 @@ public class SceneAssetLoadTask {
 			
 				// Extract tangents
 			AIVector3D.Buffer tangentBuffer = aiMesh.mTangents();
-			tangents = new float[tangentBuffer.remaining() * 3];
-			int tangentIndex = 0;
-			while( tangentBuffer.remaining() > 0 ) {
-				AIVector3D tangent = tangentBuffer.get();
-				tangents[tangentIndex++] = tangent.x();
-				tangents[tangentIndex++] = tangent.y();
-				tangents[tangentIndex++] = tangent.z();
+			if( tangentBuffer != null ) {
+				tangents = new float[tangentBuffer.remaining() * 3];
+				int tangentIndex = 0;
+				while( tangentBuffer.remaining() > 0 ) {
+					AIVector3D tangent = tangentBuffer.get();
+					tangents[tangentIndex++] = tangent.x();
+					tangents[tangentIndex++] = tangent.y();
+					tangents[tangentIndex++] = tangent.z();
+				}
+			} else {
+				tangents = new float[0];
 			}
 			
 			if( tangents.length == 0 ) {
 				tangents = new float[normals.length];
+				DebugUtils.log(this, "no tangents");
 			}
 			
 			
 				// Extract bitangents
 			AIVector3D.Buffer bitangentBuffer = aiMesh.mBitangents();
-			bitangents = new float[bitangentBuffer.remaining() * 3];
-			int bitangentIndex = 0;
-			while( bitangentBuffer.remaining() > 0 ) {
-				AIVector3D bitangent = bitangentBuffer.get();
-				bitangents[bitangentIndex++] = bitangent.x();
-				bitangents[bitangentIndex++] = bitangent.y();
-				bitangents[bitangentIndex++] = bitangent.z();
+			if( bitangentBuffer != null ) {
+				bitangents = new float[bitangentBuffer.remaining() * 3];
+				int bitangentIndex = 0;
+				while( bitangentBuffer.remaining() > 0 ) {
+					AIVector3D bitangent = bitangentBuffer.get();
+					bitangents[bitangentIndex++] = bitangent.x();
+					bitangents[bitangentIndex++] = bitangent.y();
+					bitangents[bitangentIndex++] = bitangent.z();
+				}
+			} else {
+				bitangents = new float[0];
 			}
 			
 			if( bitangents.length == 0 ) {
@@ -209,6 +218,7 @@ public class SceneAssetLoadTask {
 		}
 		
 		animationCount = Math.min(animationCount, expectedAnimationCount);
+		DebugUtils.log(this, "animationCount", animationCount);
 		
 		if( animationCount > 0 ) {
 			Node rootNode = this.buildNodesTree(aiScene.mRootNode(), null);

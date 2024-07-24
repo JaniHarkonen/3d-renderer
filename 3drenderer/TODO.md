@@ -5,6 +5,7 @@
 
 ### General
 - restrict visibilities of class to the lowest level needed
+- avoid using static blocks
 
 ### AGUIElement & ASceneObject
 - AGUIElement and ASceneObject are essentially the same, combine the two or create a new class
