@@ -194,7 +194,7 @@ public class Scene {
 				"    1/2 to change point light red value\n" +
 				"    3/4 to change point light green value\n" +
 				"    5/6 to change point light blue value\n" + 
-				"    N to toggle normal map" +
+				"    N to toggle normal map\n" +
 				"    H to toggle HUD"
 			);
 		}

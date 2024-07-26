@@ -6,6 +6,7 @@
 ### General
 - restrict visibilities of class to the lowest level needed
 - avoid using static blocks
+- make sure that each allocation done via MemoryUtil.memalloc is eventually freed 
 
 ### AGUIElement & ASceneObject
 - AGUIElement and ASceneObject are essentially the same, combine the two or create a new class
@@ -16,9 +17,14 @@
 
 ### Renderer
 - separate Renderer into different render passes, for example, color pass for scene rendering, shadow pass for shadows etc.
+- graphics assets (VAOs, textures) should be generated before rendering
+
+### SceneRenderPass
+- SceneRenderPass should not be dependent on the CascadeShadowRenderPass-instance, decouple once uniform architecture has been settled
 
 ### ShaderProgram
 - create classes for different types of uniforms, however, this should be done later when uniform objects come into play
+- consider using OpenGL's uniform buffer objects instead of plain uniforms
 
 ### Camera
 - Camera should utilize the transform provided by the SceneObject instead of having a separate rotation2D-field
