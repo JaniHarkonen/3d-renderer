@@ -44,8 +44,9 @@ public class Scene {
 		this.pointLight0 = null;
 		this.floorBrick = null;
 		this.shadowLightPosition = null;
-		DEBUGareNormalsActive = true;
+		this.DEBUGareNormalsActive = true;
 	}
+	
 	
 	public void init() {
 		
@@ -54,7 +55,7 @@ public class Scene {
 			// LIGHTS HAVE TO BE ADDED FIRST SO THAT THEY ARE UPDATED BEFORE SCENE RENDERING
 		this.objects = new ArrayList<>();
 		
-		this.activeCamera = new Camera(this, new Projection(75.0f, 0.01f, 100.0f));
+		this.activeCamera = new Camera(this, new Projection(75.0f, 5.0f, 5000.0f));
 		this.objects.add(this.activeCamera);
 		
 		AmbientLight ambientLight = new AmbientLight(
@@ -64,7 +65,7 @@ public class Scene {
 		DebugUtils.log(this, "Added AmbientLight!");
 		
 		this.pointLight0 = new PointLight(
-			this, new Vector3f(1.0f, 1.0f, 1.0f), 0.5f
+			this, new Vector3f(1.0f, 1.0f, 1.0f), 100.5f
 		);
 		this.pointLight0.setPosition(0.0f, 1.0f, 0.0f);
 		this.objects.add(this.pointLight0);
@@ -99,7 +100,7 @@ public class Scene {
 		
 		this.objects.add(model);*/
 		
-		this.shadowLightPosition = new Vector3f(0.0f, 0.5f, 0.5f);
+		this.shadowLightPosition = new Vector3f(0.05f, 0.5f, 0.5f);
 		
 		Model model;
 		
@@ -115,7 +116,6 @@ public class Scene {
 		Model soldier = TestAssets.createTestSoldier(this);
 		soldier.setPosition(1, -1, 0);
 		this.objects.add(soldier);
-		
 		
 			// GUI
 		this.createGUI();

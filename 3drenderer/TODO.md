@@ -6,7 +6,8 @@
 ### General
 - restrict visibilities of class to the lowest level needed
 - avoid using static blocks
-- make sure that each allocation done via MemoryUtil.memalloc is eventually freed 
+- make sure that each allocation done via MemoryUtil.memalloc is eventually freed
+- create disposal methods for all classes whose instances aren't dealt by GC (i.e. OpenGL, GLFW assets)
 
 ### AGUIElement & ASceneObject
 - AGUIElement and ASceneObject are essentially the same, combine the two or create a new class

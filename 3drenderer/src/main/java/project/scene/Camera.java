@@ -114,7 +114,7 @@ public class Camera extends ASceneObject implements IControllable {
 	@Override
 	public void control(Action action, float deltaTime) {
 		float sensitivity = 0.1f;
-		float speed = 1.0f;
+		float speed = 1000.0f;
 		
 		switch( action.getActionID() ) {
 			case ActionSet.LOOK_AROUND: {

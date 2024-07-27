@@ -31,7 +31,7 @@ public class SceneAssetLoadTask {
 
 	public static final int DEFAULT_FLAGS = (
 		Assimp.aiProcess_GenSmoothNormals | 
-		Assimp.aiProcess_JoinIdenticalVertices |
+		//Assimp.aiProcess_JoinIdenticalVertices |
 		Assimp.aiProcess_Triangulate | 
 		Assimp.aiProcess_FixInfacingNormals | 
 		Assimp.aiProcess_CalcTangentSpace | 

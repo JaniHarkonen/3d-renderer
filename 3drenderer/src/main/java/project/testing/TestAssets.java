@@ -245,7 +245,7 @@ public final class TestAssets {
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[27], TestAssets.MAT_OUTSIDE_BARREL_METAL);
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[28], TestAssets.MAT_OUTSIDE_BARREL_TRASH);
 		model.setPosition(0.0f, -1.0f, 0.0f);
-		model.setScale(0.001f, 0.001f, 0.001f);
+		model.setScale(1.000f, 1.000f, 1.000f);
 		
 		return model;
 	}
@@ -260,7 +260,7 @@ public final class TestAssets {
 		model.addMesh(TestAssets.MESH_SOLDIER[5], TestAssets.MAT_SOLDIER_GADGETS);
 		model.addMesh(TestAssets.MESH_SOLDIER[6], TestAssets.MAT_SOLDIER_EYES);
 		model.addMesh(TestAssets.MESH_SOLDIER[7], TestAssets.MAT_SOLDIER_EYELASH);
-		model.setScale(0.001f, 0.001f, 0.001f);
+		model.setScale(1.000f, 1.000f, 1.000f);
 		model.setRotation(-1, 0, 0, (float) Math.toRadians(85.0d));
 		model.setAnimationData(new AnimationData(TestAssets.ANIM_SOLDIER_IDLE));
 		return model;

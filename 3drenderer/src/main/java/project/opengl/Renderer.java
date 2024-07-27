@@ -35,6 +35,7 @@ public class Renderer {
 	public void init() {
 		GL.createCapabilities();
 		GL46.glClearColor(0.643f, 0.62f, 0.557f, 1.0f);
+		//GL46.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		
 		this.cascadeRenderPass.init();
 		this.sceneRenderPass.init();
