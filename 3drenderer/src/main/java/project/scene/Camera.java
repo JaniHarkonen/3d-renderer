@@ -5,12 +5,8 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import project.component.Projection;
-import project.controls.Action;
-import project.controls.Controller;
-import project.controls.IControllable;
-import project.testing.ActionSet;
 
-public class Camera extends ASceneObject implements IControllable {
+public class Camera extends ASceneObject {
 
 	private Projection projection;
 	private Vector3f direction;
@@ -18,8 +14,6 @@ public class Camera extends ASceneObject implements IControllable {
 	private Vector3f up;
 	private Vector2f rotation2D;
 	private Matrix4f cameraTransform;
-	
-	private Controller DEBUGcontroller;
 	
 	public Camera(Scene scene, Projection projection) {
 		super(scene);
@@ -29,15 +23,8 @@ public class Camera extends ASceneObject implements IControllable {
 		this.up = new Vector3f(0.0f);
 		this.rotation2D = new Vector2f(0.0f);
 		this.cameraTransform = new Matrix4f();
-		
-		this.DEBUGcontroller = null;
 	}
 	
-	
-	@Override
-	public void tick(float deltaTime) {
-		this.DEBUGcontroller.tick(deltaTime);
-	}
 	
 	public void rotate2D(float x, float y) {
 		this.rotation2D.add(x, y);
@@ -108,44 +95,5 @@ public class Camera extends ASceneObject implements IControllable {
 	
 	public Matrix4f getCameraTransform() {
 		return this.cameraTransform;
-	}
-
-
-	@Override
-	public void control(Action action, float deltaTime) {
-		float sensitivity = 0.1f;
-		float speed = 1000.0f;
-		
-		switch( action.getActionID() ) {
-			case ActionSet.LOOK_AROUND: {
-				this.rotate2D(
-					(float) Math.toRadians(sensitivity * action.getAxisIntensity(1)),
-					(float) Math.toRadians(sensitivity * action.getAxisIntensity(0))
-				);
-			} break;
-
-			case ActionSet.MOVE_FORWARD: {
-				this.moveForward(action.getAxisIntensity(0) * speed * deltaTime);
-			} break;
-
-			case ActionSet.MOVE_LEFT: {
-				this.moveLeft(action.getAxisIntensity(0) * speed * deltaTime);
-			} break;
-
-			case ActionSet.MOVE_BACKWARDS: {
-				this.moveBackwards(action.getAxisIntensity(0) * speed * deltaTime);
-			} break;
-
-			case ActionSet.MOVE_RIGHT: {
-				this.moveRight(action.getAxisIntensity(0) * speed * deltaTime);
-			} break;
-			
-		}
-	}
-
-
-	@Override
-	public void setController(Controller controller) {
-		this.DEBUGcontroller = controller;
 	}
 }

@@ -17,6 +17,7 @@ import project.scene.Model;
 import project.scene.Scene;
 import project.shader.Shader;
 import project.shader.ShaderProgram;
+import project.testing.TestDummy;
 
 public class CascadeShadowRenderPass implements IRenderPass {
 	private static final String U_LIGHT_VIEW = "uLightView";
@@ -84,15 +85,15 @@ public class CascadeShadowRenderPass implements IRenderPass {
 			);
 	
 	        for( ASceneObject object : scene.getObjects() ) {
-	        	if( object instanceof Model ) {
-	        		Model model = (Model) object;
+	        	if( object instanceof TestDummy ) {
+	        		Model model = ((TestDummy) object).getModel();
 	        		for( int j = 0; j < model.getMeshCount(); j++ ) {
 	        			Mesh mesh = model.getMesh(j);
 	            		VAO vao = vaoCache.getOrGenerate(mesh);
 	            		vao.bind();
 	            		
 	            		activeShaderProgram.setMatrix4fUniform(
-	        				U_OBJECT_TRANSFORM, model.getTransformMatrix()
+	        				U_OBJECT_TRANSFORM, object.getTransformMatrix()
 	    				);
 	            		AnimationData animationData = model.getAnimationData();
 						if( animationData == null ) {

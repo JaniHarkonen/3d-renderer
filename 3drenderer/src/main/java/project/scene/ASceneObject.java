@@ -1,5 +1,8 @@
 package project.scene;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -7,6 +10,7 @@ import org.joml.Vector3f;
 public abstract class ASceneObject {
 
 	protected final Scene scene;
+	protected final List<ASceneObject> children;
 	
 	protected Vector3f position;
 	protected Quaternionf rotation;
@@ -14,6 +18,7 @@ public abstract class ASceneObject {
 	protected Matrix4f transformMatrix;
 	
 	public ASceneObject(Scene scene) {
+		this.children = new ArrayList<>();
 		this.position = new Vector3f(0.0f);
 		this.rotation = new Quaternionf();
 		this.scale = new Vector3f(1.0f);
@@ -22,7 +27,9 @@ public abstract class ASceneObject {
 	}
 	
 	
-	public abstract void tick(float deltaTime);
+	public void tick(float deltaTime) {
+		
+	}
 	
 	public void updateTransformMatrix() {
 		this.transformMatrix.translationRotateScale(
@@ -30,8 +37,16 @@ public abstract class ASceneObject {
 		);
 	}
 	
+	public void addChild(ASceneObject child) {
+		this.children.add(child);
+	}
+	
 	public void setPosition(float x, float y, float z) {
 		this.position.set(x, y, z);
+	}
+	
+	public void setRotationXYZW(float x, float y, float z, float w) {
+		this.rotation.set(x, y, z, w);
 	}
 	
 	public void setRotation(float x, float y, float z, float angle) {

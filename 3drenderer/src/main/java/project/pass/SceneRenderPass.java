@@ -23,6 +23,8 @@ import project.scene.PointLight;
 import project.scene.Scene;
 import project.shader.Shader;
 import project.shader.ShaderProgram;
+import project.testing.TestDummy;
+import project.testing.TestPointLight;
 
 public class SceneRenderPass implements IRenderPass {
 	public static final int DEFAULT_FIRST_FREE_TEXTURE_INDEX = 2;
@@ -187,16 +189,16 @@ public class SceneRenderPass implements IRenderPass {
 				activeShaderProgram.setVector3fUniform(
 					U_AMBIENT_LIGHT_COLOR, ambientLight.getColor()
 				);
-			} else if( object instanceof PointLight ) {
+			} else if( object instanceof TestPointLight ) {
 					// WARNING! Using default point light index 0 here, other point lights are not calculated as of now
-				this.updatePointLight(scene, (PointLight) object, 0);
-			} else if( object instanceof Model ) {
+				this.updatePointLight(scene, ((TestPointLight) object).getPointLight(), 0);
+			} else if( object instanceof TestDummy ) {
 				object.updateTransformMatrix();
 				activeShaderProgram.setMatrix4fUniform(
 					U_OBJECT_TRANSFORM, object.getTransformMatrix()
 				);
 				
-				Model model = (Model) object;
+				Model model = ((TestDummy) object).getModel();
 				
 				for( int m = 0; m < model.getMeshCount(); m++ ) {
 					Material material = model.getMaterial(m);

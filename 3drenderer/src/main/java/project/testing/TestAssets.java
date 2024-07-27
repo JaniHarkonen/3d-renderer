@@ -10,7 +10,6 @@ import project.asset.TextureLoadTask;
 import project.component.Material;
 import project.opengl.Texture;
 import project.scene.Model;
-import project.scene.Scene;
 import project.utils.FileUtils;
 
 public final class TestAssets {
@@ -213,8 +212,8 @@ public final class TestAssets {
 		); 
 	}
 	
-	public static Model createTestSceneOutside(Scene hostScene) {
-		Model model = new Model(hostScene);
+	public static Model createTestSceneOutside() {
+		Model model = new Model();
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[0], TestAssets.MAT_OUTSIDE_PAVEMENT1);
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[1], TestAssets.MAT_OUTSIDE_CONCRETE_BLOCK1);
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[2], TestAssets.MAT_OUTSIDE_METAL_DIRTYRUST);
@@ -244,14 +243,11 @@ public final class TestAssets {
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[26], TestAssets.MAT_OUTSIDE_DIRT_DECAL1);
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[27], TestAssets.MAT_OUTSIDE_BARREL_METAL);
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[28], TestAssets.MAT_OUTSIDE_BARREL_TRASH);
-		model.setPosition(0.0f, -1.0f, 0.0f);
-		model.setScale(1.000f, 1.000f, 1.000f);
-		
 		return model;
 	}
 	
-	public static Model createTestSoldier(Scene hostScene) {
-		Model model = new Model(hostScene);
+	public static Model createTestSoldier() {
+		Model model = new Model();
 		//model.addMesh(TestAssets.MESH_SOLDIER[0], TestAssets.MAT_TEST_RED);
 		model.addMesh(TestAssets.MESH_SOLDIER[1], TestAssets.MAT_SOLDIER_HEAD);
 		model.addMesh(TestAssets.MESH_SOLDIER[2], TestAssets.MAT_SOLDIER_BODY);
@@ -260,8 +256,6 @@ public final class TestAssets {
 		model.addMesh(TestAssets.MESH_SOLDIER[5], TestAssets.MAT_SOLDIER_GADGETS);
 		model.addMesh(TestAssets.MESH_SOLDIER[6], TestAssets.MAT_SOLDIER_EYES);
 		model.addMesh(TestAssets.MESH_SOLDIER[7], TestAssets.MAT_SOLDIER_EYELASH);
-		model.setScale(1.000f, 1.000f, 1.000f);
-		model.setRotation(-1, 0, 0, (float) Math.toRadians(85.0d));
 		model.setAnimationData(new AnimationData(TestAssets.ANIM_SOLDIER_IDLE));
 		return model;
 	}
