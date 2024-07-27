@@ -138,7 +138,7 @@ public class SceneAssetLoadTask {
 			
 			if( tangents.length == 0 ) {
 				tangents = new float[normals.length];
-				DebugUtils.log(this, "no tangents");
+				DebugUtils.log(this, "WARNING: Scene asset contains no tangents!");
 			}
 			
 			
@@ -218,7 +218,6 @@ public class SceneAssetLoadTask {
 		}
 		
 		animationCount = Math.min(animationCount, expectedAnimationCount);
-		DebugUtils.log(this, "animationCount", animationCount);
 		
 		if( animationCount > 0 ) {
 			Node rootNode = this.buildNodesTree(aiScene.mRootNode(), null);

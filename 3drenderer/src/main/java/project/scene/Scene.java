@@ -27,6 +27,7 @@ public class Scene {
 	private long tickDelta;
 	private int tickRate;
 	private Application app;
+	
 	private Text DEBUGtextAppStatistics;
 	private TestPointLight DEBUGtestPointLight0;
 	private Vector3f DEBUGshadowLightPosition;
@@ -86,16 +87,19 @@ public class Scene {
 			// Outside scene
 		TestDummy outsideScene = new TestDummy(this, TestAssets.createTestSceneOutside());
 		this.objects.add(outsideScene);
+		DebugUtils.log(this, "Outside place TestDummy added!");
 		
 			// Soldier
 		TestDummy soldier = new TestDummy(this, TestAssets.createTestSoldier());
 		soldier.setPosition(1, -1, 0);
 		soldier.setRotation(1.0f, 0, 0, (float) Math.toRadians(-85.0d));
 		this.objects.add(soldier);
+		DebugUtils.log(this, "Soldier TestDummy added!");
 		
 			// GUI
 		this.createGUI();
-		
+		DebugUtils.log(this, "GUI created!");
+
 			// Camera
 		TestPlayer player = new TestPlayer(this);
 		this.objects.add(player);
@@ -131,6 +135,12 @@ public class Scene {
 				"FPS: " + appWindow.getFPS() + " / " + appWindow.getMaxFPS() + "\n" +
 				"TICK: " + this.tickRate + " (d: " + deltaTime + ")\n" +
 				"HEAP: " + this.convertToLargestByte(memoryUsage) + " (" + memoryUsage + " bytes)\n" +
+				"camera\n" + 
+				"    pos: (" + 
+					this.activeCamera.getPosition().x + ", " +
+					this.activeCamera.getPosition().y + ", " +
+					this.activeCamera.getPosition().z +
+				"    )\n" +
 				"pointLight0: \n" +
 				"    pos: (" + 
 					this.DEBUGtestPointLight0.getPosition().x + ", " + 
