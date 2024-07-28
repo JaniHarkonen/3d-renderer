@@ -4,9 +4,9 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL46;
 
 import project.Window;
-import project.pass.CascadeShadowRenderPass;
-import project.pass.GUIRenderPass;
-import project.pass.SceneRenderPass;
+import project.pass.cshadow.CascadeShadowRenderPass;
+import project.pass.gui.GUIRenderPass;
+import project.pass.scene.SceneRenderPass;
 import project.scene.Camera;
 import project.scene.Scene;
 

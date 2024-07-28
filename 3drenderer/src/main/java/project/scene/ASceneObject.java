@@ -76,4 +76,8 @@ public abstract class ASceneObject {
 	public Scene getScene() {
 		return this.scene;
 	}
+	
+	public List<ASceneObject> getChildren() {
+		return this.children;
+	}
 }

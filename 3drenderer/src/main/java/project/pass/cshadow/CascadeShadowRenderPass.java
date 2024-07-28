@@ -1,7 +1,9 @@
-package project.pass;
+package project.pass.cshadow;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.lwjgl.opengl.GL46;
 
@@ -12,6 +14,8 @@ import project.opengl.Renderer;
 import project.opengl.ShadowBuffer;
 import project.opengl.VAO;
 import project.opengl.VAOCache;
+import project.pass.IRenderPass;
+import project.pass.IRenderStrategy;
 import project.scene.ASceneObject;
 import project.scene.Model;
 import project.scene.Scene;
@@ -27,11 +31,13 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	private ShaderProgram shaderProgram;
 	private List<CascadeShadow> cascadeShadows;
 	private ShadowBuffer shadowBuffer;
+	private Map<Class<?>, IRenderStrategy<CascadeShadowRenderPass>> renderStrategies;
 	
 	public CascadeShadowRenderPass() {
 		this.shaderProgram = new ShaderProgram();
 		this.cascadeShadows = new ArrayList<>();
 		this.shadowBuffer = new ShadowBuffer();
+		this.renderStrategies = new HashMap<>();
 	}
 	
 	
@@ -68,7 +74,7 @@ public class CascadeShadowRenderPass implements IRenderPass {
 			0, 0, ShadowBuffer.DEFAULT_SHADOW_MAP_WIDTH, ShadowBuffer.DEFAULT_SHADOW_MAP_HEIGHT
 		);
 	
-	    for (int i = 0; i < CascadeShadow.SHADOW_MAP_CASCADE_COUNT; i++) {
+	    for( int i = 0; i < CascadeShadow.SHADOW_MAP_CASCADE_COUNT; i++ ) {
 	    	GL46.glFramebufferTexture2D(
 				GL46.GL_FRAMEBUFFER, 
 				GL46.GL_DEPTH_ATTACHMENT, 

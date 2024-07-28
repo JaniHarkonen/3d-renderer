@@ -1,4 +1,4 @@
-package project.pass;
+package project.pass.gui;
 
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
@@ -12,6 +12,7 @@ import project.opengl.Texture;
 import project.opengl.TextureCache;
 import project.opengl.VAO;
 import project.opengl.VAOCache;
+import project.pass.IRenderPass;
 import project.scene.Scene;
 import project.shader.Shader;
 import project.shader.ShaderProgram;

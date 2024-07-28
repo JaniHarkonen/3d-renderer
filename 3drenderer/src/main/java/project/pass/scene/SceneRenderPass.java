@@ -1,4 +1,4 @@
-package project.pass;
+package project.pass.scene;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -15,6 +15,8 @@ import project.opengl.Texture;
 import project.opengl.TextureCache;
 import project.opengl.VAO;
 import project.opengl.VAOCache;
+import project.pass.IRenderPass;
+import project.pass.cshadow.CascadeShadowRenderPass;
 import project.scene.ASceneObject;
 import project.scene.AmbientLight;
 import project.scene.Camera;
