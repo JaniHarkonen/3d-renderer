@@ -11,10 +11,11 @@ public class TestDummy extends ASceneObject {
 	public TestDummy(Scene scene, Model model) {
 		super(scene);
 		this.model = model;
+		this.children.add(model);
 	}
 	
 	public TestDummy(Scene scene) {
-		this(scene, new Model());
+		this(scene, new Model(scene));
 	}
 	
 	

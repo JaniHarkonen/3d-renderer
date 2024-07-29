@@ -10,6 +10,7 @@ import project.asset.TextureLoadTask;
 import project.component.Material;
 import project.opengl.Texture;
 import project.scene.Model;
+import project.scene.Scene;
 import project.utils.FileUtils;
 
 public final class TestAssets {
@@ -212,8 +213,8 @@ public final class TestAssets {
 		); 
 	}
 	
-	public static Model createTestSceneOutside() {
-		Model model = new Model();
+	public static Model createTestSceneOutside(Scene scene) {
+		Model model = new Model(scene);
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[0], TestAssets.MAT_OUTSIDE_PAVEMENT1);
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[1], TestAssets.MAT_OUTSIDE_CONCRETE_BLOCK1);
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[2], TestAssets.MAT_OUTSIDE_METAL_DIRTYRUST);
@@ -246,8 +247,8 @@ public final class TestAssets {
 		return model;
 	}
 	
-	public static Model createTestSoldier() {
-		Model model = new Model();
+	public static Model createTestSoldier(Scene scene) {
+		Model model = new Model(scene);
 		//model.addMesh(TestAssets.MESH_SOLDIER[0], TestAssets.MAT_TEST_RED);
 		model.addMesh(TestAssets.MESH_SOLDIER[1], TestAssets.MAT_SOLDIER_HEAD);
 		model.addMesh(TestAssets.MESH_SOLDIER[2], TestAssets.MAT_SOLDIER_BODY);

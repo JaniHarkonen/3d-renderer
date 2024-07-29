@@ -85,12 +85,12 @@ public class Scene {
 		this.DEBUGshadowLightPosition = new Vector3f(0.05f, 0.5f, 0.5f);
 		
 			// Outside scene
-		TestDummy outsideScene = new TestDummy(this, TestAssets.createTestSceneOutside());
+		TestDummy outsideScene = new TestDummy(this, TestAssets.createTestSceneOutside(this));
 		this.objects.add(outsideScene);
 		DebugUtils.log(this, "Outside place TestDummy added!");
 		
 			// Soldier
-		TestDummy soldier = new TestDummy(this, TestAssets.createTestSoldier());
+		TestDummy soldier = new TestDummy(this, TestAssets.createTestSoldier(this));
 		soldier.setPosition(1, -1, 0);
 		soldier.setRotation(1.0f, 0, 0, (float) Math.toRadians(-85.0d));
 		this.objects.add(soldier);

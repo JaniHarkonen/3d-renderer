@@ -1,43 +1,40 @@
 package project.pass.cshadow;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.lwjgl.opengl.GL46;
 
-import project.asset.AnimationData;
-import project.asset.Mesh;
 import project.component.CascadeShadow;
+import project.opengl.RenderStrategyManager;
 import project.opengl.Renderer;
 import project.opengl.ShadowBuffer;
-import project.opengl.VAO;
-import project.opengl.VAOCache;
 import project.pass.IRenderPass;
-import project.pass.IRenderStrategy;
+import project.pass.NullRenderStrategy;
 import project.scene.ASceneObject;
 import project.scene.Model;
 import project.scene.Scene;
 import project.shader.Shader;
 import project.shader.ShaderProgram;
-import project.testing.TestDummy;
 
 public class CascadeShadowRenderPass implements IRenderPass {
-	private static final String U_LIGHT_VIEW = "uLightView";
-	private static final String U_OBJECT_TRANSFORM = "uObjectTransform";
-	private static final String U_BONE_MATRICES = "uBoneMatrices";
+	static final String U_LIGHT_VIEW = "uLightView";
+	static final String U_OBJECT_TRANSFORM = "uObjectTransform";
+	static final String U_BONE_MATRICES = "uBoneMatrices";
 	
-	private ShaderProgram shaderProgram;
-	private List<CascadeShadow> cascadeShadows;
-	private ShadowBuffer shadowBuffer;
-	private Map<Class<?>, IRenderStrategy<CascadeShadowRenderPass>> renderStrategies;
+	ShaderProgram shaderProgram;
+	List<CascadeShadow> cascadeShadows;
+	ShadowBuffer shadowBuffer;
+	
+	private RenderStrategyManager<CascadeShadowRenderPass> renderStrategyManager;
 	
 	public CascadeShadowRenderPass() {
 		this.shaderProgram = new ShaderProgram();
 		this.cascadeShadows = new ArrayList<>();
 		this.shadowBuffer = new ShadowBuffer();
-		this.renderStrategies = new HashMap<>();
+		
+		this.renderStrategyManager = new RenderStrategyManager<>(new NullRenderStrategy<CascadeShadowRenderPass>())
+		.addStrategy(Model.class, new RenderModel());
 	}
 	
 	
@@ -63,7 +60,6 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	public void render(Renderer renderer) {
 		Scene scene = renderer.getActiveScene();
 		ShaderProgram activeShaderProgram = this.shaderProgram;
-		VAOCache vaoCache = renderer.getVAOCache();
 	    activeShaderProgram.bind();
 	    
 	    CascadeShadow.updateCascadeShadows(
@@ -91,37 +87,20 @@ public class CascadeShadowRenderPass implements IRenderPass {
 			);
 	
 	        for( ASceneObject object : scene.getObjects() ) {
-	        	if( object instanceof TestDummy ) {
-	        		Model model = ((TestDummy) object).getModel();
-	        		for( int j = 0; j < model.getMeshCount(); j++ ) {
-	        			Mesh mesh = model.getMesh(j);
-	            		VAO vao = vaoCache.getOrGenerate(mesh);
-	            		vao.bind();
-	            		
-	            		activeShaderProgram.setMatrix4fUniform(
-	        				U_OBJECT_TRANSFORM, object.getTransformMatrix()
-	    				);
-	            		AnimationData animationData = model.getAnimationData();
-						if( animationData == null ) {
-							activeShaderProgram.setMatrix4fArrayUniform(
-								U_BONE_MATRICES, AnimationData.DEFAULT_BONE_TRANSFORMS
-							);
-							
-						} else {
-							activeShaderProgram.setMatrix4fArrayUniform(
-								U_BONE_MATRICES, animationData.getCurrentFrame().getBoneTransforms()
-							);
-						}
-	            		GL46.glDrawElements(
-	        				GL46.GL_TRIANGLES, vao.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0
-	    				);
-	        		}
-	        	}
+	        	this.recursiveRender(renderer, object);
 	        }
 	    }
 	
 	    activeShaderProgram.unbind();
 	    GL46.glBindFramebuffer(GL46.GL_FRAMEBUFFER, 0);
+	}
+	
+	private void recursiveRender(Renderer renderer, ASceneObject object) {
+		for( ASceneObject child : object.getChildren() ) {
+			this.recursiveRender(renderer, child);
+		}
+		
+		this.renderStrategyManager.getStrategy(object.getClass()).execute(renderer, this, object);
 	}
 	
 	public CascadeShadow getCascadeShadow(int cascadeShadowIndex) {

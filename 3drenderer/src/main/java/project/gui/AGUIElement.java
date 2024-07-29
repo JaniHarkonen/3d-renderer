@@ -4,7 +4,9 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public abstract class AGUIElement {
+import project.scene.ASceneObject;
+
+public abstract class AGUIElement extends ASceneObject {
 	protected final GUI gui;
 	
 	protected Vector3f position;
@@ -13,6 +15,7 @@ public abstract class AGUIElement {
 	protected Matrix4f transformMatrix;
 	
 	public AGUIElement(GUI gui) {
+		super(null);
 		this.gui = gui;
 		
 		this.position = new Vector3f(0.0f);

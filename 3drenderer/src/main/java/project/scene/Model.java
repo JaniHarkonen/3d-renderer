@@ -7,7 +7,7 @@ import project.asset.AnimationData;
 import project.asset.Mesh;
 import project.component.Material;
 
-public class Model {
+public class Model extends ASceneObject {
 
 	private class MeshEntry {
 		private Mesh mesh;
@@ -22,7 +22,8 @@ public class Model {
 	private List<MeshEntry> meshMaterialTable;
 	private AnimationData animationData;
 	
-	public Model() {
+	public Model(Scene scene) {
+		super(scene);
 		this.meshMaterialTable = new ArrayList<>();
 		this.animationData = null;
 	}
