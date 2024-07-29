@@ -1,87 +1,97 @@
 package project.asset;
 
-public class Mesh {
+import org.joml.Vector3f;
 
-	private float[] positions;
-	private float[] normals;
-	private float[] tangents;
-	private float[] bitangents;
-	private float[] textureCoordinates;
-	private int[] indices;
+public class Mesh {
+	
+	/************************* Face-class **************************/
+	
+	public static class Face {
+		public static final int INDICES_PER_FACE = 3;
+		
+		private int[] indices;
+		
+		public Face(int[] indices) {
+			this.indices = indices;
+		}
+		
+		
+		public int getIndex(int index) {
+			return this.indices[index];
+		}
+	}
+	
+	
+	/************************* Mesh-class **************************/
+
+	private Vector3f[] vertices;
+	private Vector3f[] normals;
+	private Vector3f[] tangents;
+	private Vector3f[] bitangents;
+	private Vector3f[] UVs; // Stored as a 3-vector for consistency, change this if necessary
+	private Face[] faces;
 	private AnimationMeshData animationMeshData;
-	private int vertexCount;
 	
 	public Mesh() {
 			// Default config, TO BE REMOVED
 		this.populate(
-			new float[] {
-				0.0f, 0.5f, -1.0f,
-				-0.5f, -0.5f, -1.0f,
-				0.5f, -0.5f, -1.0f
-			}, 
-			new float[0],
-			new float[0],
-			new float[0],
-			new float[] {
-				0.5f, 0.0f,
-				0.0f, 1.0f,
-				1.0f, 1.0f
-			}, 
-			new int[] {
-				0, 1, 2
-			},
-			null
+				new Vector3f[0],
+				new Vector3f[0],
+				new Vector3f[0],
+				new Vector3f[0],
+				new Vector3f[0],
+				new Face[0],
+				null
 		);
 	}
 	
 	public void populate(
-		float[] positions, 
-		float[] normals, 
-		float[] tangents,
-		float[] bitangents,
-		float[] textureCoordinates,
-		int[] indices,
+		Vector3f[] vertices,
+		Vector3f[] normals,
+		Vector3f[] tangents,
+		Vector3f[] bitangents,
+		Vector3f[] UVs,
+		Face[] faces,
 		AnimationMeshData animationMeshData
 	) {
-		this.positions = positions;
+		this.vertices = vertices;
 		this.normals = normals;
 		this.tangents = tangents;
 		this.bitangents = bitangents;
-		this.textureCoordinates = textureCoordinates;
-		this.indices = indices;
+		this.UVs = UVs;
+		this.faces = faces;
 		this.animationMeshData = animationMeshData;
-		this.vertexCount = this.positions.length / 3;
 	}
 	
 	public int getVertexCount() {
-		return this.vertexCount;
+		return this.vertices.length;
 	}
 	
-	public float[] getPositions() {
-		return this.positions;
+	public Vector3f[] getVertices() {
+		return this.vertices;
 	}
 	
-	public float[] getNormals() {
+	public Vector3f[] getNormals() {
 		return this.normals;
 	}
 	
-	public float[] getTangents() {
+	public Vector3f[] getTangents() {
 		return this.tangents;
 	}
 	
-	public float[] getBitangents() {
+	public Vector3f[] getBitangents() {
 		return this.bitangents;
 	}
 	
-	public float[] getTextureCoordinates() {
-		return this.textureCoordinates;
+	public Vector3f[] getUVs() {
+		return this.UVs;
 	}
 	
 	public AnimationMeshData getAnimationMeshData() {
 		return this.animationMeshData;
 	}
 	
-	public int[] getIndices() {
-		return this.indices;
+	public Face[] getFaces() {
+		return this.faces;
 	}
 }

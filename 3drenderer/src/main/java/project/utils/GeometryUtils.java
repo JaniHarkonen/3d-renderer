@@ -1,7 +1,9 @@
 package project.utils;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.assimp.AIMatrix4x4;
+import org.lwjgl.assimp.AIVector3D;
 
 public final class GeometryUtils {
 
@@ -25,5 +27,19 @@ public final class GeometryUtils {
         result.m33(aiMatrix.d4());
 
         return result;
+	}
+	
+	public static Vector3f[] aiVector3DBufferToVector3fArray(AIVector3D.Buffer buffer) {
+		if( buffer == null ) {
+			return new Vector3f[0];
+		}
+		
+		Vector3f[] result = new Vector3f[buffer.remaining()];
+		for( int i = 0; buffer.remaining() > 0; i++ ) {
+			AIVector3D aiVector = buffer.get();
+			result[i] = new Vector3f(aiVector.x(), aiVector.y(), aiVector.z());
+		}
+		
+		return result;
 	}
 }

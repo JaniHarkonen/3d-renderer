@@ -3,6 +3,8 @@ package project.asset;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.joml.Vector3f;
+
 import project.opengl.Texture;
 
 public class Font {
@@ -165,24 +167,24 @@ public class Font {
             
             glyph.mesh = new Mesh();
             glyph.mesh.populate(
-        		new float[] {
-    				x, y, 0.0f,
-    				x + w, y, 0.0f,
-    				x + w, y + h, 0.0f,
-    				x, y + h, 0.0f
+        		new Vector3f[] {
+    				new Vector3f(x, y, 0.0f),
+    				new Vector3f(x + w, y, 0.0f),
+					new Vector3f(x + w, y + h, 0.0f),
+					new Vector3f(x, y + h, 0.0f)
         		}, 
-        		new float[0],
-        		new float[0],
-        		new float[0],
-        		new float[] {
-    				u0, v0,
-    				u1, v0,
-    				u1, v1,
-    				u0, v1
-        		}, 
-        		new int[] {
-    				0, 1, 2,
-    				2, 3, 0
+        		new Vector3f[0],
+        		new Vector3f[0],
+        		new Vector3f[0],
+        		new Vector3f[] {
+    				new Vector3f(u0, v0, 0),
+    				new Vector3f(u1, v0, 0),
+    				new Vector3f(u1, v1, 0),
+					new Vector3f(u0, v1, 0)
+        		},
+        		new Mesh.Face[] {
+    				new Mesh.Face(new int[] {0, 1, 2}),
+    				new Mesh.Face(new int[] {2, 3, 0})
         		},
         		null
     		);

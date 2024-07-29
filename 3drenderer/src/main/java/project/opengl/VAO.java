@@ -45,7 +45,6 @@ public class VAO {
 		this.vaoHandle = GL46.glGenVertexArrays();
 		this.bind();
 		
-			float[] positions = this.targetMesh.getPositions();
 			float[] boneWeights;
 			int[] boneIndices;
 			
@@ -53,13 +52,13 @@ public class VAO {
 				boneWeights = this.targetMesh.getAnimationMeshData().getBoneWeights();
 				boneIndices = this.targetMesh.getAnimationMeshData().getBoneIDs();
 			} else {
-				boneWeights = new float[SceneAssetLoadTask.MAX_WEIGHT_COUNT * positions.length / 3];
-				boneIndices = new int[SceneAssetLoadTask.MAX_WEIGHT_COUNT * positions.length / 3];
+				boneWeights = new float[SceneAssetLoadTask.MAX_WEIGHT_COUNT * this.targetMesh.getVertexCount()];
+				boneIndices = new int[SceneAssetLoadTask.MAX_WEIGHT_COUNT * this.targetMesh.getVertexCount()];
 			}
 		
 				// VBOs
 			this.positionsVBO = new VBO(0, 3);
-			this.positionsVBO.attach(positions);
+			this.positionsVBO.attach(this.targetMesh.getVertices());
 			
 			this.normalsVBO = new VBO(1, 3);
 			this.normalsVBO.attach(this.targetMesh.getNormals());
@@ -71,7 +70,7 @@ public class VAO {
 			this.bitangentsVBO.attach(this.targetMesh.getBitangents());
 			
 			this.textureCoordinatesVBO = new VBO(4, 2);
-			this.textureCoordinatesVBO.attach(this.targetMesh.getTextureCoordinates());
+			this.textureCoordinatesVBO.attach(this.targetMesh.getUVs(), 2);
 			
 			this.boneWeightVBO = new VBO(5, 4);
 			this.boneWeightVBO.attach(boneWeights);
@@ -80,7 +79,15 @@ public class VAO {
 			this.boneIndicesVBO.attach(boneIndices);
 			
 				// Indices
-			int[] indices = this.targetMesh.getIndices();
+			int[] indices = new int[this.targetMesh.getFaces().length * Mesh.Face.INDICES_PER_FACE];
+			Mesh.Face[] faces = this.targetMesh.getFaces();
+			for( int i = 0; i < faces.length; i++ ) {
+				Mesh.Face face = faces[i];
+				int j = i * 3;
+				indices[j] = face.getIndex(0);
+				indices[j + 1] = face.getIndex(1);
+				indices[j + 2] = face.getIndex(2);
+			}
 			this.indicesVBO = GL46.glGenBuffers();
 			IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);
 			indicesBuffer.put(0, indices);
