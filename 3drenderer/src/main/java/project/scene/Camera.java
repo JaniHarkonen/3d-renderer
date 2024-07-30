@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import project.component.Projection;
+import project.component.Rotation;
 
 public class Camera extends ASceneObject {
 
@@ -13,6 +14,7 @@ public class Camera extends ASceneObject {
 	private Vector3f up;
 	private Vector3f rotation2D;
 	private Matrix4f cameraTransform;
+	private Rotation DEBUGrotation = new Rotation();
 	
 	public Camera(Scene scene, Projection projection) {
 		super(scene);
@@ -26,13 +28,21 @@ public class Camera extends ASceneObject {
 	
 	
 	public void rotate2D(float x, float y) {
-		this.rotation2D.add(x, y, y);
+		//this.rotation2D.add(x, y, y);
+		//this.rotation.rotateAxis(x, new Vector3f(1,0,0));
+		//this.rotation.rotateAxis(y, new Vector3f(0,1,0));
+		//this.rotation.fromAxisAngleRad(new Vector3f(1,0,0), DEBUGx)
+		//.mul((new Quaternionf()).fromAxisAngleRad(new Vector3f(0,1,0), DEBUGy));
+		//this.rotation.fromAxisAngleRad(new Vector3f(1,0,0), x);
+		//this.rotation.fromAxisAngleRad(new Vector3f(0,1,0), y);
+		this.DEBUGrotation.rotate(x, y, 0);
 		this.updateCameraTransformMatrix();
 	}
 	
 	public void moveForward(float amount) {
-		this.cameraTransform.positiveZ(this.direction).negate().mul(amount);
-		this.position.add(this.direction);
+		//this.cameraTransform.positiveZ(this.direction).negate().mul(amount);
+		this.DEBUGrotation.getForwardVector(this.direction);
+		this.position.add(this.direction.mul(amount));
 		this.updateCameraTransformMatrix();
 	}
 	
@@ -68,8 +78,10 @@ public class Camera extends ASceneObject {
 	
 	private void updateCameraTransformMatrix() {
 		this.cameraTransform.identity()
-		.rotateX(this.rotation2D.x)
-		.rotateY(this.rotation2D.y)
+		//.rotate(this.rotation)
+		.rotate(this.DEBUGrotation.getAsQuaternion())
+		//.rotateX(this.rotation2D.x)
+		//.rotateY(this.rotation2D.y)
 		//.rotateZ(this.rotation2D.z)
 		.translate(-this.position.x, -this.position.y, -this.position.z);
 	}
@@ -89,9 +101,9 @@ public class Camera extends ASceneObject {
 		return this.projection;
 	}
 	
-	public Vector3f getRotation2D() {
+	/*public Vector3f getRotation2D() {
 		return this.rotation2D;
-	}
+	}*/
 	
 	public Matrix4f getCameraTransform() {
 		return this.cameraTransform;
