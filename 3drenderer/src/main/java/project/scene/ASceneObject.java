@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
+
+import project.component.Rotation;
 
 public abstract class ASceneObject {
 
@@ -13,14 +14,14 @@ public abstract class ASceneObject {
 	protected final List<ASceneObject> children;
 	
 	protected Vector3f position;
-	protected Quaternionf rotation;
+	protected Rotation rotationComponent;
 	protected Vector3f scale;
 	protected Matrix4f transformMatrix;
 	
 	public ASceneObject(Scene scene) {
 		this.children = new ArrayList<>();
 		this.position = new Vector3f(0.0f);
-		this.rotation = new Quaternionf();
+		this.rotationComponent = new Rotation();
 		this.scale = new Vector3f(1.0f);
 		this.transformMatrix = new Matrix4f();
 		this.scene = scene;
@@ -33,7 +34,7 @@ public abstract class ASceneObject {
 	
 	public void updateTransformMatrix() {
 		this.transformMatrix.translationRotateScale(
-			this.position, this.rotation, this.scale
+			this.position, this.rotationComponent.getAsQuaternion(), this.scale
 		);
 	}
 	
@@ -45,14 +46,6 @@ public abstract class ASceneObject {
 		this.position.set(x, y, z);
 	}
 	
-	public void setRotationXYZW(float x, float y, float z, float w) {
-		this.rotation.set(x, y, z, w);
-	}
-	
-	public void setRotation(float x, float y, float z, float angle) {
-		this.rotation.fromAxisAngleRad(x, y, z, angle);
-	}
-	
 	public void setScale(float x, float y, float z) {
 		this.scale.set(x, y, z);
 	}
@@ -61,8 +54,8 @@ public abstract class ASceneObject {
 		return this.position;
 	}
 	
-	public Quaternionf getRotation() {
-		return this.rotation;
+	public Rotation getRotationComponent() {
+		return this.rotationComponent;
 	}
 	
 	public Vector3f getScale() {

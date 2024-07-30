@@ -1,5 +1,6 @@
 package project.testing;
 
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import project.controls.Action;
@@ -25,8 +26,11 @@ public class TestPointLight extends ASceneObject implements IControllable {
 	public void tick(float deltaTime) {
 		this.controller.tick(deltaTime);
 		for( ASceneObject object : this.children ) {
+			Quaternionf rotationQuaternion = this.rotationComponent.getAsQuaternion();
 			object.setPosition(this.position.x, this.position.y, this.position.z);
-			object.setRotationXYZW(this.rotation.x, this.rotation.y, this.rotation.z, this.rotation.w);
+			object.getRotationComponent().setQuaternion(
+				rotationQuaternion.x, rotationQuaternion.y, rotationQuaternion.z, rotationQuaternion.w
+			);
 			object.setScale(this.scale.x, this.scale.y, this.scale.z);
 		}
 	}

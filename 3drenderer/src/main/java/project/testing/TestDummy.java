@@ -1,5 +1,7 @@
 package project.testing;
 
+import org.joml.Quaternionf;
+
 import project.scene.ASceneObject;
 import project.scene.Model;
 import project.scene.Scene;
@@ -36,7 +38,10 @@ public class TestDummy extends ASceneObject {
 		
 		for( ASceneObject object : this.children ) {
 			object.setPosition(this.position.x, this.position.y, this.position.z);
-			object.setRotationXYZW(this.rotation.x, this.rotation.y, this.rotation.z, this.rotation.w);
+			Quaternionf rotationQuaternion = this.rotationComponent.getAsQuaternion();
+			object.getRotationComponent().setQuaternion(
+				rotationQuaternion.x, rotationQuaternion.y, rotationQuaternion.z, rotationQuaternion.w
+			);
 			object.setScale(this.scale.x, this.scale.y, this.scale.z);
 		}
 	}

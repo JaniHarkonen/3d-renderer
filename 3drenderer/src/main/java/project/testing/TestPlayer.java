@@ -1,5 +1,7 @@
 package project.testing;
 
+import org.joml.Vector3f;
+
 import project.component.Projection;
 import project.controls.Action;
 import project.controls.Controller;
@@ -30,30 +32,40 @@ public class TestPlayer extends ASceneObject implements IControllable {
 	public void control(Action action, float deltaTime) {
 		float sensitivity = 0.1f;
 		float speed = 1000.0f;
+		float finalSpeed = speed * deltaTime * action.getAxisIntensity(0);
 		Camera camera = this.playerCamera;
 		
 		switch( action.getActionID() ) {
 			case ActionSet.LOOK_AROUND: {
-				camera.rotate2D(
+				camera.getRotationComponent().rotate(
 					(float) Math.toRadians(sensitivity * action.getAxisIntensity(1)),
-					(float) Math.toRadians(sensitivity * action.getAxisIntensity(0))
+					(float) Math.toRadians(sensitivity * action.getAxisIntensity(0)),
+					0
 				);
 			} break;
 
 			case ActionSet.MOVE_FORWARD: {
-				camera.moveForward(action.getAxisIntensity(0) * speed * deltaTime);
+				camera.getPosition().add(
+					camera.getRotationComponent().getForwardVector(new Vector3f(0.0f)).mul(finalSpeed)
+				);
 			} break;
 
 			case ActionSet.MOVE_LEFT: {
-				camera.moveLeft(action.getAxisIntensity(0) * speed * deltaTime);
+				camera.getPosition().add(
+					camera.getRotationComponent().getLeftVector(new Vector3f()).mul(finalSpeed)
+				);
 			} break;
 
 			case ActionSet.MOVE_BACKWARDS: {
-				camera.moveBackwards(action.getAxisIntensity(0) * speed * deltaTime);
+				camera.getPosition().add(
+					camera.getRotationComponent().getBackwardVector(new Vector3f()).mul(finalSpeed)
+				);
 			} break;
 
 			case ActionSet.MOVE_RIGHT: {
-				camera.moveRight(action.getAxisIntensity(0) * speed * deltaTime);
+				camera.getPosition().add(
+					camera.getRotationComponent().getRightVector(new Vector3f()).mul(finalSpeed)
+				);
 			} break;
 		}
 	}

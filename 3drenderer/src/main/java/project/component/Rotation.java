@@ -22,17 +22,18 @@ public class Rotation {
 	
 	
 	private void recalculate() {
-		this.rotationQuaternion
-		.fromAxisAngleRad(X_AXIS, this.angles.x)
+		this.rotationQuaternion.fromAxisAngleRad(X_AXIS, this.angles.x)
 		.mul(
 			this.rotationQuaternionTempY.fromAxisAngleRad(Y_AXIS, this.angles.y)
 		).mul(
-			this.rotationQuaternionTempY.fromAxisAngleRad(Z_AXIS, this.angles.z)
+			this.rotationQuaternionTempZ.fromAxisAngleRad(Z_AXIS, this.angles.z)
 		);
 	}
 	
 	public void rotate(float xAngle, float yAngle, float zAngle) {
-		this.setEulerAngles(this.angles.x + xAngle, this.angles.y + yAngle, this.angles.z + zAngle);
+		this.setEulerAngles(
+			this.angles.x + xAngle, this.angles.y + yAngle, this.angles.z + zAngle
+		);
 	}
 	
 	public void rotateX(float xAngle) {
@@ -92,30 +93,36 @@ public class Rotation {
 		return this.rotationQuaternion;
 	}
 	
-	public void getForwardVector(Vector3f result) {
+	public Vector3f getForwardVector(Vector3f result) {
 		this.getBackwardVector(result);
 		result.negate();
+		return result;
 	}
 	
-	public void getBackwardVector(Vector3f result) {
+	public Vector3f getBackwardVector(Vector3f result) {
 		this.rotationQuaternion.positiveZ(result);
+		return result;
 	}
 	
-	public void getLeftVector(Vector3f result) {
+	public Vector3f getLeftVector(Vector3f result) {
+		this.getRightVector(result);
+		result.negate();
+		return result;
+	}
+	
+	public Vector3f getRightVector(Vector3f result) {
 		this.rotationQuaternion.positiveX(result);
+		return result;
 	}
 	
-	public void getRightVector(Vector3f result) {
-		this.getLeftVector(result);
-		result.negate();
-	}
-	
-	public void getUpVector(Vector3f result) {
+	public Vector3f getDownVector(Vector3f result) {
 		this.rotationQuaternion.positiveY(result);
+		return result;
 	}
 	
-	public void getDownVector(Vector3f result) {
-		this.getUpVector(result);
+	public Vector3f getUpVector(Vector3f result) {
+		this.getDownVector(result);
 		result.negate();
+		return result;
 	}
 }

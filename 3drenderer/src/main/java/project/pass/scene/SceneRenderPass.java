@@ -168,12 +168,14 @@ public class SceneRenderPass implements IRenderPass {
 		this.cascadeShadowRenderPass.getShadowBuffer().bindTextures(GL46.GL_TEXTURE2);
 		
 		Camera activeCamera = scene.getActiveCamera();
+		activeCamera.updateTransformMatrix();
+		
 		activeShaderProgram.setMatrix4fUniform(
 			U_PROJECTION, activeCamera.getProjection().getMatrix()
 		);
 		
 		activeShaderProgram.setMatrix4fUniform(
-			U_CAMERA_TRANSFORM, activeCamera.getCameraTransform()
+			U_CAMERA_TRANSFORM, activeCamera.getTransformMatrix()
 		);
 		
 		for( ASceneObject object : scene.getObjects() ) {
@@ -194,7 +196,7 @@ public class SceneRenderPass implements IRenderPass {
 	void updatePointLight(Scene scene, PointLight pointLight, int index) {
         Vector4f aux = new Vector4f();
         
-        Matrix4f cameraTransform = scene.getActiveCamera().getCameraTransform();
+        Matrix4f cameraTransform = scene.getActiveCamera().getTransformMatrix();
         aux.set(pointLight.getPosition(), 1);
         aux.mul(cameraTransform);
         

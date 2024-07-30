@@ -28,10 +28,6 @@
 - create classes for different types of uniforms, however, this should be done later when uniform objects come into play
 - consider using OpenGL's uniform buffer objects instead of plain uniforms
 
-### Camera
-- Camera should utilize the transform provided by the SceneObject instead of having a separate rotation2D-field
-- Camera should not be controlled by a Controller, rather, it should be attached to a ASceneObject that is then controlled
-
 ### VAO
 - mesh info should not be represented by arrays, possibly
 - consider creating a VBO-class for VBO generation
