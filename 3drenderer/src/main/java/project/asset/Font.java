@@ -3,9 +3,8 @@ package project.asset;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.joml.Vector3f;
-
 import project.opengl.Texture;
+import project.utils.GeometryUtils;
 
 public class Font {
 	
@@ -165,7 +164,7 @@ public class Font {
             glyph.u1 = u1;
             glyph.v1 = v1;
             
-            glyph.mesh = new Mesh();
+            /*glyph.mesh = new Mesh();
             glyph.mesh.populate(
         		new Vector3f[] {
     				new Vector3f(x, y, 0.0f),
@@ -187,8 +186,8 @@ public class Font {
     				new Mesh.Face(new int[] {2, 3, 0})
         		},
         		null
-    		);
-            
+    		);*/
+            glyph.mesh = GeometryUtils.createPlaneMesh(x, y, w, h, u0, v0, u1, v1);
             glyph.font = this;
         }
         

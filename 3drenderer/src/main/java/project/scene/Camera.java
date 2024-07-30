@@ -1,7 +1,6 @@
 package project.scene;
 
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import project.component.Projection;
@@ -12,7 +11,7 @@ public class Camera extends ASceneObject {
 	private Vector3f direction;
 	private Vector3f right;
 	private Vector3f up;
-	private Vector2f rotation2D;
+	private Vector3f rotation2D;
 	private Matrix4f cameraTransform;
 	
 	public Camera(Scene scene, Projection projection) {
@@ -21,13 +20,13 @@ public class Camera extends ASceneObject {
 		this.direction = new Vector3f(0.0f);
 		this.right = new Vector3f(0.0f);
 		this.up = new Vector3f(0.0f);
-		this.rotation2D = new Vector2f(0.0f);
+		this.rotation2D = new Vector3f(0.0f);
 		this.cameraTransform = new Matrix4f();
 	}
 	
 	
 	public void rotate2D(float x, float y) {
-		this.rotation2D.add(x, y);
+		this.rotation2D.add(x, y, y);
 		this.updateCameraTransformMatrix();
 	}
 	
@@ -71,6 +70,7 @@ public class Camera extends ASceneObject {
 		this.cameraTransform.identity()
 		.rotateX(this.rotation2D.x)
 		.rotateY(this.rotation2D.y)
+		//.rotateZ(this.rotation2D.z)
 		.translate(-this.position.x, -this.position.y, -this.position.z);
 	}
 	
@@ -81,7 +81,7 @@ public class Camera extends ASceneObject {
 	}
 	
 	public void setRotation2D(float x, float y) {
-		this.rotation2D.set(x, y);
+		this.rotation2D.set(x, y, 0);
 		this.updateCameraTransformMatrix();
 	}
 	
@@ -89,7 +89,7 @@ public class Camera extends ASceneObject {
 		return this.projection;
 	}
 	
-	public Vector2f getRotation2D() {
+	public Vector3f getRotation2D() {
 		return this.rotation2D;
 	}
 	

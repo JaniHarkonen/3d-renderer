@@ -1,8 +1,11 @@
 package project.pass.gui;
 
+
 import org.lwjgl.opengl.GL46;
 
+import project.asset.Mesh;
 import project.gui.AGUIElement;
+import project.gui.Image;
 import project.gui.Text;
 import project.opengl.RenderStrategyManager;
 import project.opengl.Renderer;
@@ -12,8 +15,11 @@ import project.scene.ASceneObject;
 import project.scene.Scene;
 import project.shader.Shader;
 import project.shader.ShaderProgram;
+import project.utils.GeometryUtils;
 
 public class GUIRenderPass implements IRenderPass {
+	static final Mesh IMAGE_PLANE = GeometryUtils.createPlaneMesh(0, 0, 16, 16, 0, 0, 1, 1);
+	
 	static final String U_PROJECTION = "uProjection";
 	static final String U_DIFFUSE_SAMPLER= "uDiffuseSampler";
 	static final String U_OBJECT_TRANSFORM = "uObjectTransform";
@@ -31,7 +37,8 @@ public class GUIRenderPass implements IRenderPass {
 		this.baseLine = 16.0f;
 		
 		this.renderStrategyManager = new RenderStrategyManager<>(new NullRenderStrategy<GUIRenderPass>())
-		.addStrategy(Text.class, new RenderText());
+		.addStrategy(Text.class, new RenderText())
+		.addStrategy(Image.class, new RenderImage());
 	}
 	
 	@Override

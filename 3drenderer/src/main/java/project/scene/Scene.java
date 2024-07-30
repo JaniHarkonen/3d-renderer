@@ -10,6 +10,7 @@ import project.Application;
 import project.Window;
 import project.controls.Controller;
 import project.gui.GUI;
+import project.gui.Image;
 import project.gui.Text;
 import project.input.Input;
 import project.testing.ActionSet;
@@ -212,6 +213,11 @@ public class Scene {
 		this.gui = new GUI(this);
 		this.gui.init();
 		this.gui.addElement(this.DEBUGtextAppStatistics);
+		
+		Image crosshair = new Image(this.gui, TestAssets.TEX_GUI_CROSSHAIR);
+		crosshair.setPosition(400, 300, 0);
+		crosshair.setAnchor(8, 8);
+		this.gui.addElement(crosshair);
 	}
 	
 	public void addObject(ASceneObject sceneObject) {

@@ -213,6 +213,11 @@ public final class TestAssets {
 		); 
 	}
 	
+	public static Texture TEX_GUI_CROSSHAIR;
+	static {
+		TEX_GUI_CROSSHAIR = TestAssets.loadTexture("textures/crosshair.png");
+	}
+	
 	public static Model createTestSceneOutside(Scene scene) {
 		Model model = new Model(scene);
 		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[0], TestAssets.MAT_OUTSIDE_PAVEMENT1);

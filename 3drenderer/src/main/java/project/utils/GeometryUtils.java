@@ -5,6 +5,8 @@ import org.joml.Vector3f;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIVector3D;
 
+import project.asset.Mesh;
+
 public final class GeometryUtils {
 
 	public static Matrix4f aiMatrix4ToMatrix4f(AIMatrix4x4 aiMatrix) {
@@ -41,5 +43,33 @@ public final class GeometryUtils {
 		}
 		
 		return result;
+	}
+	
+	public static Mesh createPlaneMesh(float x, float y, float w, float h, float... UVs) {
+		Mesh mesh = new Mesh();
+        mesh.populate(
+    		new Vector3f[] {
+				new Vector3f(x, y, 0.0f),
+				new Vector3f(x + w, y, 0.0f),
+				new Vector3f(x + w, y + h, 0.0f),
+				new Vector3f(x, y + h, 0.0f)
+    		}, 
+    		new Vector3f[0],
+    		new Vector3f[0],
+    		new Vector3f[0],
+    		new Vector3f[] {
+				new Vector3f(UVs[0], UVs[1], 0),
+				new Vector3f(UVs[2], UVs[1], 0),
+				new Vector3f(UVs[2], UVs[3], 0),
+				new Vector3f(UVs[0], UVs[3], 0)
+    		},
+    		new Mesh.Face[] {
+				new Mesh.Face(new int[] {0, 1, 2}),
+				new Mesh.Face(new int[] {2, 3, 0})
+    		},
+    		null
+		);
+        
+        return mesh;
 	}
 }
