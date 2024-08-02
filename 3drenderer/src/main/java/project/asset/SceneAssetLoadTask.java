@@ -25,10 +25,11 @@ import org.lwjgl.assimp.AIVectorKey;
 import org.lwjgl.assimp.AIVertexWeight;
 import org.lwjgl.assimp.Assimp;
 
+import project.Globals;
 import project.utils.DebugUtils;
 import project.utils.GeometryUtils;
 
-public class SceneAssetLoadTask {
+public class SceneAssetLoadTask implements ILoadTask {
 
 	public static final int DEFAULT_FLAGS = (
 		Assimp.aiProcess_GenSmoothNormals | 
@@ -60,7 +61,8 @@ public class SceneAssetLoadTask {
 	}
 	
 	
-	public void load() {
+	@Override
+	public boolean load() {
 		int preTransformVerticesFlag = (
 			this.expectedAnimations.size() > 0 ? 
 			0 : Assimp.aiProcess_PreTransformVertices
@@ -72,7 +74,7 @@ public class SceneAssetLoadTask {
 		
 		if( aiScene == null ) {
 			DebugUtils.log(this, "ERROR: Failed to load scene from path: ", this.assetPath);
-			return;
+			return false;
 		}
 		
 			//////////////////////////// Extract meshes ////////////////////////////
@@ -132,7 +134,38 @@ public class SceneAssetLoadTask {
 				faces.add(new Mesh.Face(indices));
 			}
 			
-			this.expectedMeshes.get(i).populate(
+			Mesh.Data data = new Mesh.Data();
+			data.targetMesh = this.expectedMeshes.get(i);
+			data.vertices = vertices; 
+			data.normals = normals; 
+			data.tangents = tangents; 
+			data.bitangents = bitangents;
+			data.UVs = UVs;
+			data.faces = faces.toArray(new Mesh.Face[faces.size()]);
+			data.animationMeshData = this.processBones(aiMesh, boneList);
+			
+			Globals.ASSET_MANAGER.notifyResult(
+				data.targetMesh, 
+				data,
+				Globals.RENDERER
+			);
+			
+			//assetManager.notifyResult(
+			/*this.emit(
+				AssetEvent.ASSET_LOADED,
+				this.expectedMeshes.get(i),
+				new Mesh.Data(
+					vertices, 
+					normals, 
+					tangents, 
+					bitangents, 
+					UVs, 
+					faces.toArray(new Mesh.Face[faces.size()]), 
+					this.processBones(aiMesh, boneList)
+				)
+			);*/
+			
+			/*this.expectedMeshes.get(i).populate(
 				vertices,
 				normals, 
 				bitangents, 
@@ -140,7 +173,7 @@ public class SceneAssetLoadTask {
 				UVs, 
 				faces.toArray(new Mesh.Face[faces.size()]),
 				this.processBones(aiMesh, boneList) // Extract bones
-			);
+			);*/
 		}
 		
 			////////////////////////////Extract animations ////////////////////////////
@@ -166,6 +199,8 @@ public class SceneAssetLoadTask {
 		}
 		
 		Assimp.aiReleaseImport(aiScene);
+		
+		return true;
 	}
 	
 	private AnimationMeshData processBones(AIMesh aiMesh, List<Bone> boneList) {

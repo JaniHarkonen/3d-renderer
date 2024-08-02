@@ -7,6 +7,7 @@ import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import project.Application;
+import project.Globals;
 import project.Window;
 import project.controls.Controller;
 import project.gui.GUI;
@@ -95,14 +96,13 @@ public class Scene {
 			// Soldier
 		TestDummy soldier = new TestDummy(this, TestAssets.createTestSoldier(this));
 		soldier.setPosition(1, -1, 0);
-		//soldier.setRotation(1.0f, 0, 0, (float) Math.toRadians(-85.0d));
 		soldier.getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
-		this.objects.add(soldier);
-		DebugUtils.log(this, "Soldier TestDummy added!");
+		//this.objects.add(soldier);
+		//DebugUtils.log(this, "Soldier TestDummy added!");
 		
 			// GUI
-		this.createGUI();
-		DebugUtils.log(this, "GUI created!");
+		//this.createGUI();
+		//DebugUtils.log(this, "GUI created!");
 
 			// Camera
 		TestPlayer player = new TestPlayer(this);
@@ -127,6 +127,9 @@ public class Scene {
 		this.deltaTimer = System.nanoTime();
 		Window appWindow = this.app.getWindow();
 		
+		//Globals.ASSET_MANAGER.processResults(System.nanoTime());
+		Globals.ASSET_MANAGER.processTaskResults(System.nanoTime());
+		
 		appWindow.pollInput();
 		for( ASceneObject object : this.objects ) {
 			object.tick(deltaTime);
@@ -140,11 +143,11 @@ public class Scene {
 				"TICK: " + this.tickRate + " (d: " + deltaTime + ")\n" +
 				"HEAP: " + this.convertToLargestByte(memoryUsage) + " (" + memoryUsage + " bytes)\n" +
 				"camera\n" + 
-				"    pos: (" + 
+				"   pos: (" + 
 					this.activeCamera.getPosition().x + ", " +
 					this.activeCamera.getPosition().y + ", " +
 					this.activeCamera.getPosition().z +
-				"    )\n" +
+				")\n" +
 				"pointLight0: \n" +
 				"    pos: (" + 
 					this.DEBUGtestPointLight0.getPosition().x + ", " + 
@@ -188,6 +191,12 @@ public class Scene {
 		if( this.app.getWindow().getInputSnapshot().isKeyPressed(GLFW.GLFW_KEY_N) ) {
 			this.DEBUGareNormalsActive = !this.DEBUGareNormalsActive;
 		}
+		
+		for( ASceneObject object : this.objects ) {
+			object.submitState();
+		}
+		
+		Globals.RENDERER.submitGameState();
 	}
 	
 	private String convertToLargestByte(long n) {

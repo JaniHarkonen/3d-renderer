@@ -17,6 +17,19 @@ public class PointLight extends ASceneObject {
 		this.intensity = intensity;
 	}
 	
+	private PointLight(PointLight src) {
+		super(null);
+		this.attenuation = new Attenuation(src.attenuation);
+		this.position = new Vector3f(src.position);
+		this.lightColor = new Vector3f(src.lightColor);
+		this.intensity = src.intensity;
+	}
+	
+	
+	@Override
+	protected PointLight rendererCopy() {
+		return new PointLight(this);
+	}
 	
 	public void setAttenuation(Attenuation attenuation) {
 		this.attenuation = attenuation;

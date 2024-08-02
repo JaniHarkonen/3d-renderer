@@ -6,6 +6,7 @@ import java.util.List;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import project.Globals;
 import project.component.Rotation;
 
 public abstract class ASceneObject {
@@ -31,6 +32,12 @@ public abstract class ASceneObject {
 	public void tick(float deltaTime) {
 		
 	}
+	
+	public void submitState() {
+		Globals.RENDERER.submitRenderable(this.rendererCopy());
+	}
+	
+	protected abstract ASceneObject rendererCopy();
 	
 	public void updateTransformMatrix() {
 		this.transformMatrix.translationRotateScale(

@@ -26,6 +26,18 @@ public class TestDummy extends ASceneObject {
 	
 	
 	@Override
+	public void submitState() {
+		for( ASceneObject child : this.children ) {
+			child.submitState();
+		}
+	}
+	
+	@Override
+	protected TestDummy rendererCopy() {
+		return null;
+	}
+	
+	@Override
 	public void tick(float deltaTime) {
 		this.animationTimer += deltaTime;
 		if( this.animationTimer >= this.animationFrameTime ) {

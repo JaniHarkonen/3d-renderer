@@ -24,6 +24,18 @@ public class TestPlayer extends ASceneObject implements IControllable {
 
 	
 	@Override
+	public void submitState() {
+		for( ASceneObject child : this.children ) {
+			child.submitState();
+		}
+	}
+	
+	@Override
+	protected TestPlayer rendererCopy() {
+		return null;
+	}
+	
+	@Override
 	public void tick(float deltaTime) {
 		this.controller.tick(deltaTime);
 	}

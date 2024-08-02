@@ -1,5 +1,7 @@
 package project.scene;
 
+import org.joml.Matrix4f;
+
 import project.component.Projection;
 
 public class Camera extends ASceneObject {
@@ -11,6 +13,17 @@ public class Camera extends ASceneObject {
 		this.projection = projection;
 	}
 	
+	private Camera(Camera camera) {
+		super(null);
+		this.transformMatrix = new Matrix4f(camera.transformMatrix);
+		this.projection = new Projection(camera.projection);
+	}
+	
+	
+	@Override
+	protected Camera rendererCopy() {
+		return new Camera(this);
+	}
 	
 	@Override
 	public void updateTransformMatrix() {

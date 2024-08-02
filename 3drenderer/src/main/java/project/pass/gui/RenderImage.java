@@ -6,10 +6,8 @@ import org.lwjgl.opengl.GL46;
 
 import project.gui.Image;
 import project.opengl.Renderer;
-import project.opengl.Texture;
-import project.opengl.TextureCache;
+import project.opengl.TextureGL;
 import project.opengl.VAO;
-import project.opengl.VAOCache;
 import project.pass.IRenderStrategy;
 import project.scene.ASceneObject;
 import project.shader.ShaderProgram;
@@ -19,17 +17,14 @@ public class RenderImage implements IRenderStrategy<GUIRenderPass> {
 	@Override
 	public void execute(Renderer renderer, GUIRenderPass renderPass, ASceneObject target) {
 		ShaderProgram activeShaderProgram = renderPass.shaderProgram;
-		VAOCache vaoCache = renderer.getVAOCache();
-		TextureCache textureCache = renderer.getTextureCache();
 		Image element = (Image) target;
 		
-		Texture texture = element.getTexture();
+		TextureGL textureGL = (TextureGL) element.getTexture().getGraphics();
 		Vector4f color = element.getPrimaryColor();
 		
 		activeShaderProgram.setVector4fUniform(GUIRenderPass.U_TEXT_COLOR, color);
-		textureCache.generateIfNotEncountered(texture);
 		GL46.glActiveTexture(GL46.GL_TEXTURE0);
-		texture.bind();
+		textureGL.bind();
 
 		activeShaderProgram.setMatrix4fUniform(
 			GUIRenderPass.U_OBJECT_TRANSFORM, 
@@ -46,7 +41,9 @@ public class RenderImage implements IRenderStrategy<GUIRenderPass> {
 			)
 		);
 		
-		VAO vao = vaoCache.getOrGenerate(GUIRenderPass.IMAGE_PLANE);
+		//VAO vao = vaoCache.getOrGenerate(GUIRenderPass.IMAGE_PLANE);
+		//vao.bind();
+		VAO vao = (VAO) renderPass.IMAGE_PLANE.getGraphics();//GUIRenderPass.IMAGE_PLANE.getGraphics();
 		vao.bind();
 		GL46.glDrawElements(
 			GL46.GL_TRIANGLES, 

@@ -2,7 +2,9 @@ package project.asset;
 
 import org.joml.Vector3f;
 
-public class Mesh {
+import project.Default;
+
+public class Mesh implements IGraphicsAsset {
 	
 	/************************* Face-class **************************/
 	
@@ -22,8 +24,56 @@ public class Mesh {
 	}
 	
 	
-	/************************* Mesh-class **************************/
+	/************************* Data-class **************************/
+	
+	public static class Data implements IAssetData {
+		Mesh targetMesh;
+		Vector3f[] vertices;
+		Vector3f[] normals;
+		Vector3f[] tangents;
+		Vector3f[] bitangents;
+		Vector3f[] UVs; // Stored as a 3-vector for consistency, change this if necessary
+		Face[] faces;
+		AnimationMeshData animationMeshData;
 
+		@Override
+		public void assign(long timestamp) {
+			this.targetMesh.populate(
+				this.vertices, 
+				this.normals, 
+				this.tangents, 
+				this.bitangents, 
+				this.UVs, 
+				this.faces, 
+				this.animationMeshData
+			);
+			this.targetMesh.lastUpdateTimestamp = timestamp;
+		}
+	}
+	
+	
+	/************************* Mesh-class **************************/
+	
+	public static Mesh createMesh(
+		String name,
+		Vector3f[] vertices,
+		Vector3f[] normals,
+		Vector3f[] tangents,
+		Vector3f[] bitangents,
+		Vector3f[] UVs,
+		Face[] faces,
+		AnimationMeshData animationMeshData
+	) {
+		Mesh mesh = new Mesh(name, true);
+		mesh.populate(
+			vertices, normals, tangents, bitangents, UVs, faces, animationMeshData
+		);
+		return mesh;
+	}
+
+	private final String name;
+	private long lastUpdateTimestamp;
+	private IGraphics graphics;
 	private Vector3f[] vertices;
 	private Vector3f[] normals;
 	private Vector3f[] tangents;
@@ -32,17 +82,36 @@ public class Mesh {
 	private Face[] faces;
 	private AnimationMeshData animationMeshData;
 	
-	public Mesh() {
-			// Default config, TO BE REMOVED
-		this.populate(
-				new Vector3f[0],
-				new Vector3f[0],
-				new Vector3f[0],
-				new Vector3f[0],
-				new Vector3f[0],
-				new Face[0],
-				null
-		);
+	public Mesh(String name) {
+		this(name, false);
+	}
+	
+	private Mesh(String name, boolean isDefault) {
+		this.name = name;
+		this.lastUpdateTimestamp = -1;
+		this.graphics = null;
+		this.graphics = null;
+		this.vertices = null;
+		this.normals = null;
+		this.tangents = null;
+		this.bitangents = null;
+		this.UVs = null;
+		this.faces = null;
+		this.animationMeshData = null;
+		
+		if( !isDefault ) {
+			Mesh defaultMesh = Default.MESH;
+			this.graphics = defaultMesh.graphics;
+			this.populate(
+				defaultMesh.vertices, 
+				defaultMesh.normals, 
+				defaultMesh.tangents, 
+				defaultMesh.bitangents, 
+				defaultMesh.UVs, 
+				defaultMesh.faces, 
+				defaultMesh.animationMeshData
+			);
+		}
 	}
 	
 	public void populate(
@@ -93,5 +162,24 @@ public class Mesh {
 	
 	public Face[] getFaces() {
 		return this.faces;
+	}
+	
+	@Override
+	public void setGraphics(IGraphics graphics) {
+		this.graphics = graphics;
+	}
+
+	@Override
+	public IGraphics getGraphics() {
+		return this.graphics;
+	}
+	
+	public String getName() {
+		return this.name;
+	}
+	
+	@Override
+	public long getLastUpdateTimestamp() {
+		return this.lastUpdateTimestamp;
 	}
 }

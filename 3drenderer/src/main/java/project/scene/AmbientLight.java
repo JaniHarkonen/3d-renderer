@@ -12,11 +12,17 @@ public class AmbientLight extends ASceneObject {
 		this.lightColor = lightColor;
 		this.intensity = intensity;
 	}
+	
+	private AmbientLight(AmbientLight ambientLight) {
+		super(null);
+		this.lightColor = new Vector3f(ambientLight.lightColor);
+		this.intensity = ambientLight.intensity;
+	}
 
 
 	@Override
-	public void tick(float deltaTime) {
-		
+	protected AmbientLight rendererCopy() {
+		return new AmbientLight(this);
 	}
 	
 	public void setColor(float r, float g, float b) {

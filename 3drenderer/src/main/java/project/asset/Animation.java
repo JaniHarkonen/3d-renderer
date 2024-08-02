@@ -15,6 +15,12 @@ public class Animation {
 		this.frames = new ArrayList<>();
 	}
 	
+	public Animation(Animation src) {
+		this.animationName = new String(src.animationName);
+		this.duration = src.duration;
+		this.frames = src.frames; // NO DEEP COPY
+	}
+	
 	
 	public void setName(String name) {
 		this.animationName = name;

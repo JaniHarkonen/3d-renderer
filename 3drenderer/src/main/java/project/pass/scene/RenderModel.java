@@ -2,14 +2,14 @@ package project.pass.scene;
 
 import org.lwjgl.opengl.GL46;
 
+import project.Default;
 import project.asset.AnimationData;
 import project.asset.Mesh;
+import project.asset.Texture;
 import project.component.Material;
 import project.opengl.Renderer;
-import project.opengl.Texture;
-import project.opengl.TextureCache;
+import project.opengl.TextureGL;
 import project.opengl.VAO;
-import project.opengl.VAOCache;
 import project.pass.IRenderStrategy;
 import project.scene.ASceneObject;
 import project.scene.Model;
@@ -20,8 +20,6 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 	@Override
 	public void execute(Renderer renderer, SceneRenderPass renderPass, ASceneObject target) {
 		ShaderProgram activeShaderProgram = renderPass.shaderProgram;
-		VAOCache vaoCache = renderer.getVAOCache();
-		TextureCache textureCache = renderer.getTextureCache();
 		
 		target.updateTransformMatrix();
 		activeShaderProgram.setMatrix4fUniform(
@@ -36,13 +34,15 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 			
 			for( int i = 0; i < material.getTextures().length; i++ ) {
 				Texture texture = material.getTextures()[i];
+				
 				if( texture == null ) {
 					continue;
 				}
 				
-				textureCache.generateIfNotEncountered(texture);
+				TextureGL textureGL = (TextureGL) texture.getGraphics();
 				GL46.glActiveTexture(GL46.GL_TEXTURE0 + i);
-				texture.bind();
+				textureGL.bind();
+				//texture.bind();
 			}
 			
 			if( material.getTexture(1) != null && renderer.getActiveScene().DEBUGareNormalsActive() ) {
@@ -68,7 +68,13 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 				SceneRenderPass.U_MATERIAL_REFLECTANCE, material.getReflectance()
 			);
 			
-			VAO vao = vaoCache.getOrGenerate(mesh);
+			//VAO vao = vaoCache.getOrGenerate(mesh);
+			VAO vao = (VAO) mesh.getGraphics();
+			
+			if( vao == null ) {
+				vao = (VAO) Default.MESH.getGraphics();
+			}
+			
 			vao.bind();
 			
 			AnimationData animationData = model.getAnimationData();

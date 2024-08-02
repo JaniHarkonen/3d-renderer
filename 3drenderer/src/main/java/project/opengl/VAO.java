@@ -5,10 +5,12 @@ import java.nio.IntBuffer;
 import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryUtil;
 
+import project.asset.IGraphics;
+import project.asset.IGraphicsAsset;
 import project.asset.Mesh;
 import project.asset.SceneAssetLoadTask;
 
-public class VAO {
+public class VAO implements IGraphics {
 
 	private int vaoHandle;
 	private VBO positionsVBO;
@@ -41,36 +43,39 @@ public class VAO {
 	}
 	
 	
-	public void init() {
+	@Override
+	public boolean generate() {
 		this.vaoHandle = GL46.glGenVertexArrays();
 		this.bind();
 		
+			//Mesh.Data meshData = this.targetMesh.getData();
+			Mesh mesh = this.targetMesh;
 			float[] boneWeights;
 			int[] boneIndices;
 			
-			if( this.targetMesh.getAnimationMeshData() != null ) {
-				boneWeights = this.targetMesh.getAnimationMeshData().getBoneWeights();
-				boneIndices = this.targetMesh.getAnimationMeshData().getBoneIDs();
+			if( mesh.getAnimationMeshData() != null ) {
+				boneWeights = mesh.getAnimationMeshData().getBoneWeights();
+				boneIndices = mesh.getAnimationMeshData().getBoneIDs();
 			} else {
-				boneWeights = new float[SceneAssetLoadTask.MAX_WEIGHT_COUNT * this.targetMesh.getVertexCount()];
-				boneIndices = new int[SceneAssetLoadTask.MAX_WEIGHT_COUNT * this.targetMesh.getVertexCount()];
+				boneWeights = new float[SceneAssetLoadTask.MAX_WEIGHT_COUNT * mesh.getVertexCount()];
+				boneIndices = new int[SceneAssetLoadTask.MAX_WEIGHT_COUNT * mesh.getVertexCount()];
 			}
 		
 				// VBOs
 			this.positionsVBO = new VBO(0, 3);
-			this.positionsVBO.attach(this.targetMesh.getVertices());
+			this.positionsVBO.attach(mesh.getVertices());
 			
 			this.normalsVBO = new VBO(1, 3);
-			this.normalsVBO.attach(this.targetMesh.getNormals());
+			this.normalsVBO.attach(mesh.getNormals());
 			
 			this.tangentsVBO = new VBO(2, 3);
-			this.tangentsVBO.attach(this.targetMesh.getTangents());
+			this.tangentsVBO.attach(mesh.getTangents());
 			
 			this.bitangentsVBO = new VBO(3, 3);
-			this.bitangentsVBO.attach(this.targetMesh.getBitangents());
+			this.bitangentsVBO.attach(mesh.getBitangents());
 			
 			this.textureCoordinatesVBO = new VBO(4, 2);
-			this.textureCoordinatesVBO.attach(this.targetMesh.getUVs(), 2);
+			this.textureCoordinatesVBO.attach(mesh.getUVs(), 2);
 			
 			this.boneWeightVBO = new VBO(5, 4);
 			this.boneWeightVBO.attach(boneWeights);
@@ -79,8 +84,8 @@ public class VAO {
 			this.boneIndicesVBO.attach(boneIndices);
 			
 				// Indices
-			int[] indices = new int[this.targetMesh.getFaces().length * Mesh.Face.INDICES_PER_FACE];
-			Mesh.Face[] faces = this.targetMesh.getFaces();
+			int[] indices = new int[mesh.getFaces().length * Mesh.Face.INDICES_PER_FACE];
+			Mesh.Face[] faces = mesh.getFaces();
 			for( int i = 0; i < faces.length; i++ ) {
 				Mesh.Face face = faces[i];
 				int j = i * 3;
@@ -98,7 +103,15 @@ public class VAO {
 			MemoryUtil.memFree(indicesBuffer);
 		
 		this.unbind();
-		this.vertexCount = this.targetMesh.getVertexCount();
+		this.vertexCount = mesh.getVertexCount();
+		this.targetMesh.setGraphics(this);
+		return true;
+	}
+	
+	@Override
+	public boolean dispose() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	public void bind() {
@@ -115,5 +128,15 @@ public class VAO {
 	
 	public int getHandle() {
 		return this.vaoHandle;
+	}
+	
+	@Override
+	public IGraphicsAsset getGraphicsAsset() {
+		return this.targetMesh;
+	}
+	
+	@Override
+	public boolean isGenerated() {
+		return (this.vaoHandle >= 0);
 	}
 }

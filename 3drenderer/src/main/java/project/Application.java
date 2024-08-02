@@ -2,6 +2,7 @@ package project;
 
 import project.opengl.Renderer;
 import project.scene.Scene;
+import project.testing.TestAssets;
 import project.utils.DebugUtils;
 
 public class Application {
@@ -22,6 +23,8 @@ public class Application {
 		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);
 		this.window = window;
 		Renderer renderer = new Renderer(window, scene);
+		Globals.RENDERER = renderer;
+		TestAssets.initialize();
 		
 		window.setRenderer(renderer);
 		window.init();

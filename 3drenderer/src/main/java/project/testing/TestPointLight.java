@@ -23,6 +23,18 @@ public class TestPointLight extends ASceneObject implements IControllable {
 
 	
 	@Override
+	public void submitState() {
+		for( ASceneObject child : this.children ) {
+			child.submitState();
+		}
+	}
+	
+	@Override
+	protected TestPointLight rendererCopy() {
+		return null;
+	}
+	
+	@Override
 	public void tick(float deltaTime) {
 		this.controller.tick(deltaTime);
 		for( ASceneObject object : this.children ) {

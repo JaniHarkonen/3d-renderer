@@ -9,6 +9,18 @@
 - make sure that each allocation done via MemoryUtil.memalloc is eventually freed
 - create disposal methods for all classes whose instances aren't dealt by GC (i.e. OpenGL, GLFW assets)
 - there is still a lot of repetition among render passes, however, this should be further examined once instanced rendering is considered
+- examine package structure
+
+### Globals
+- globals should not contain non-final fields
+- consider merging fields in Globals with Application or other top-level classes
+
+### JMesh & JTexture
+- consider if JMesh and JTexture can be unified into a single class that functions as a container
+
+### ASceneObject
+- when deep copying scene objects for rendering, determine a way to skip unchanged objects
+- when deep copying scene objects for rendering, examine the degree to which fields need to be copied (for example, copying animations can be VERY costly)
 
 ### AGUIElement & ASceneObject
 - AGUIElement and ASceneObject are essentially the same, combine the two or create a new class
