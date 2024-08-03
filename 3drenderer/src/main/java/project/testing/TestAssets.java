@@ -2,7 +2,6 @@ package project.testing;
 
 import project.Globals;
 import project.asset.Animation;
-import project.asset.AnimationData;
 import project.asset.Font;
 import project.asset.FontLoadTask;
 import project.asset.Mesh;
@@ -77,10 +76,10 @@ public final class TestAssets {
 	public static Texture TEX_GUI_CROSSHAIR;
 	
 	public static void initialize() {
-		//initFonts();
+		initFonts();
 		initMeshes();
 		initMaterials();
-		//initTextures();
+		initTextures();
 	}
 	
 	public static void initFonts() {
@@ -411,7 +410,6 @@ public final class TestAssets {
 		Texture result = new Texture(name);
 		TextureLoadTask task = new TextureLoadTask(texturePath, result);
 		Globals.ASSET_MANAGER.scheduleLoadTask(task);
-		//assetManager.scheduleTask(task);
 		
 		return result;
 	}
@@ -425,7 +423,6 @@ public final class TestAssets {
 		task.expectMesh(expectedMeshes);
 		task.expectAnimation(expectedAnimations);
 		Globals.ASSET_MANAGER.scheduleLoadTask(task);
-		//assetManager.scheduleTask(task);
 	}
 	
 	private static void loadSceneAsset(String relativePath, Mesh[] expectedMeshes) {

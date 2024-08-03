@@ -101,8 +101,8 @@ public class Scene {
 		//DebugUtils.log(this, "Soldier TestDummy added!");
 		
 			// GUI
-		//this.createGUI();
-		//DebugUtils.log(this, "GUI created!");
+		this.createGUI();
+		DebugUtils.log(this, "GUI created!");
 
 			// Camera
 		TestPlayer player = new TestPlayer(this);

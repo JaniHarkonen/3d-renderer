@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
 
+import project.Default;
 import project.gui.Image;
 import project.opengl.Renderer;
 import project.opengl.TextureGL;
@@ -43,7 +44,12 @@ public class RenderImage implements IRenderStrategy<GUIRenderPass> {
 		
 		//VAO vao = vaoCache.getOrGenerate(GUIRenderPass.IMAGE_PLANE);
 		//vao.bind();
-		VAO vao = (VAO) renderPass.IMAGE_PLANE.getGraphics();//GUIRenderPass.IMAGE_PLANE.getGraphics();
+		VAO vao = (VAO) renderPass.imagePlane.getGraphics();//GUIRenderPass.IMAGE_PLANE.getGraphics();
+		
+		if( vao == null ) {
+			vao = (VAO) Default.MESH.getGraphics();
+		}
+		
 		vao.bind();
 		GL46.glDrawElements(
 			GL46.GL_TRIANGLES, 

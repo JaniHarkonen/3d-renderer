@@ -47,10 +47,10 @@ public class Renderer implements ISystem {
 		GL.createCapabilities();
 		GL46.glClearColor(0.643f, 0.62f, 0.557f, 1.0f);
 		
+		this.generateDefaults();
 		this.cascadeRenderPass.init();
 		this.sceneRenderPass.init();
 		this.guiRenderPass.init();
-		this.generateDefaults();
 		
 			// Initialize scene graphics assets
 		this.scene.init();

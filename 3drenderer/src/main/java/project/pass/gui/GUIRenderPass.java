@@ -25,7 +25,7 @@ public class GUIRenderPass implements IRenderPass {
 	static final String U_OBJECT_TRANSFORM = "uObjectTransform";
 	static final String U_TEXT_COLOR = "uTextColor";
 
-	final Mesh IMAGE_PLANE;
+	Mesh imagePlane;
 	ShaderProgram shaderProgram;
 	float lineHeight;
 	float baseLine;
@@ -33,7 +33,7 @@ public class GUIRenderPass implements IRenderPass {
 	private RenderStrategyManager<GUIRenderPass> renderStrategyManager;
 	
 	public GUIRenderPass() {
-		this.IMAGE_PLANE = GeometryUtils.createPlaneMesh("mesh-default-gui-plane", 0, 0, 16, 16, 0, 0, 1, 1);
+		this.imagePlane = null;
 		this.shaderProgram = new ShaderProgram();
 		this.lineHeight = 22.0f;
 		this.baseLine = 16.0f;
@@ -45,6 +45,7 @@ public class GUIRenderPass implements IRenderPass {
 	
 	@Override
 	public boolean init() {
+		this.imagePlane = GeometryUtils.createPlaneMesh("mesh-default-gui-plane", 0, 0, 16, 16, 0, 0, 1, 1);
 		this.shaderProgram = new ShaderProgram();
 		this.shaderProgram.declareUniform(U_PROJECTION);
 		this.shaderProgram.declareUniform(U_DIFFUSE_SAMPLER);

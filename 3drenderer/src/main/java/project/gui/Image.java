@@ -17,6 +17,18 @@ public class Image extends AGUIElement {
 		this.anchor = new Vector2f(0.0f, 0.0f);
 	}
 	
+	private Image(Image src) {
+		super(null);
+		this.imageTexture = src.imageTexture;
+		this.primaryColor = new Vector4f(src.primaryColor);
+		this.anchor = new Vector2f(src.anchor);
+	}
+	
+	
+	@Override
+	protected Image rendererCopy() {
+		return new Image(this);
+	}
 	
 	public void setAnchor(float anchorX, float anchorY) {
 		this.anchor.set(anchorX, anchorY);
