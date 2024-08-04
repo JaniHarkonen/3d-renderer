@@ -2,9 +2,7 @@ package project.asset;
 
 import java.nio.ByteBuffer;
 
-import org.lwjgl.system.MemoryUtil;
-
-import project.Default;
+import project.Globals;
 
 public class Texture implements IGraphicsAsset {
 	
@@ -26,7 +24,7 @@ public class Texture implements IGraphicsAsset {
         int width = 16;
         int height = 16;
         int channelCount = 4;
-        ByteBuffer pixels = MemoryUtil.memAlloc(bytes.length() * channelCount);
+        /*ByteBuffer pixels = MemoryUtil.memAlloc(bytes.length() * channelCount);
         
             // Populate pixels upside-down due to OpenGL
         for( int i = bytes.length() - 1; i >= 0; i-- )
@@ -39,14 +37,41 @@ public class Texture implements IGraphicsAsset {
             pixels.put((byte) 255);
         }
         
-        pixels.flip();
+        pixels.flip();*/
         
-        Texture texture = new Texture(name, true);
-        texture.populate(width, height, pixels);
+        Texture texture = new Texture(name, false);
+        texture.populate(width, height, AssetUtils.stringToPixels(bytes, width, height, channelCount));
         return texture;
 	}
 	
+	public static final Texture DEFAULT = new Texture("tex-default", true);
+	static {
+		DEFAULT.populate(
+			16, 16, 
+			AssetUtils.stringToPixels(
+				"0000000000000000" + 
+		        "0000000000000000" + 
+		        "0000000000000000" + 
+		        "0111110000111110" + 
+		        "0001000000001000" + 
+		        "0001000000001000" + 
+		        "0001000000001000" + 
+		        "0001000000001000" + 
+		        "0001000000001000" + 
+		        "0001000000001000" + 
+		        "0001000000001000" + 
+		        "0001000000001000" + 
+		        "0000011111100000" + 
+		        "0000000000000000" + 
+		        "0000000000000000" + 
+		        "0000000000000000", 
+				16, 16, 4
+			)
+		);
+	}
+	
 	private final String name;
+	
 	private long lastUpdateTimestamp;
 	private IGraphics graphics;
 	private ByteBuffer pixels;
@@ -60,19 +85,14 @@ public class Texture implements IGraphicsAsset {
 	private Texture(String name, boolean isDefault) {
 		this.name = name;
 		this.lastUpdateTimestamp = -1;
-		this.graphics = null;
 		this.width = 0;
 		this.height = 0;
 		this.pixels = null;
 		
 		if( !isDefault ) {
-			Texture defaultTexture = Default.TEXTURE;
-			this.graphics = defaultTexture.graphics;
-			this.populate(
-				defaultTexture.width, 
-				defaultTexture.height, 
-				defaultTexture.pixels
-			);
+			Globals.RENDERER.getDefaultTextureGraphics().createReference(this);
+		} else {
+			this.graphics = null;
 		}
 	}
 

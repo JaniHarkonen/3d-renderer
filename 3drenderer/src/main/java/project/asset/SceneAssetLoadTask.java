@@ -149,31 +149,6 @@ public class SceneAssetLoadTask implements ILoadTask {
 				data,
 				Globals.RENDERER
 			);
-			
-			//assetManager.notifyResult(
-			/*this.emit(
-				AssetEvent.ASSET_LOADED,
-				this.expectedMeshes.get(i),
-				new Mesh.Data(
-					vertices, 
-					normals, 
-					tangents, 
-					bitangents, 
-					UVs, 
-					faces.toArray(new Mesh.Face[faces.size()]), 
-					this.processBones(aiMesh, boneList)
-				)
-			);*/
-			
-			/*this.expectedMeshes.get(i).populate(
-				vertices,
-				normals, 
-				bitangents, 
-				tangents, 
-				UVs, 
-				faces.toArray(new Mesh.Face[faces.size()]),
-				this.processBones(aiMesh, boneList) // Extract bones
-			);*/
 		}
 		
 			////////////////////////////Extract animations ////////////////////////////

@@ -24,10 +24,12 @@ public class Application {
 		this.window = window;
 		Renderer renderer = new Renderer(window, scene);
 		Globals.RENDERER = renderer;
-		TestAssets.initialize();
-		
 		window.setRenderer(renderer);
 		window.init();
+		
+		TestAssets.initialize();
+		
+		scene.init();
 		
 		while( !window.isDestroyed() ) {
 			window.refresh();

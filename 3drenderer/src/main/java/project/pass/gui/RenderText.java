@@ -4,7 +4,6 @@ import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
 
-import project.Default;
 import project.asset.Font;
 import project.gui.Text;
 import project.opengl.Renderer;
@@ -31,7 +30,6 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 		activeShaderProgram.setVector4fUniform(GUIRenderPass.U_TEXT_COLOR, color);
 		GL46.glActiveTexture(GL46.GL_TEXTURE0);
 		textureGL.bind();
-		//texture.bind();
 
 		for( String line : text.getContent().split("\n") ) {
 			for( int i = 0; i < line.length(); i++ ) {
@@ -49,13 +47,7 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 					)
 				);
 				
-				//VAO vao = vaoCache.getOrGenerate(glyph.getMesh());
 				VAO vao = (VAO) glyph.getMesh().getGraphics();
-				
-				if( vao == null ) {
-					vao = (VAO) Default.MESH.getGraphics();
-				}
-				
 				vao.bind();
 				GL46.glDrawElements(
 					GL46.GL_TRIANGLES, 

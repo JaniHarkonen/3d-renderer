@@ -2,7 +2,7 @@ package project.asset;
 
 import org.joml.Vector3f;
 
-import project.Default;
+import project.Globals;
 
 public class Mesh implements IGraphicsAsset {
 	
@@ -54,6 +54,46 @@ public class Mesh implements IGraphicsAsset {
 	
 	/************************* Mesh-class **************************/
 	
+	public static final Mesh DEFAULT = new Mesh("mesh-default", true);
+	static {
+		DEFAULT.populate(new Vector3f[] {
+				new Vector3f(0, 0, 0),
+				new Vector3f(10, 0, 0),
+				new Vector3f(0, 10, 0),
+				new Vector3f(10, 10, 0),
+			}, 
+			new Vector3f[] {
+				new Vector3f(0, 0, 0),
+				new Vector3f(0, 0, 0),
+				new Vector3f(0, 0, 0),
+				new Vector3f(0, 0, 0),	
+			},
+			new Vector3f[] {
+				new Vector3f(0, 0, 0),
+				new Vector3f(0, 0, 0),
+				new Vector3f(0, 0, 0),
+				new Vector3f(0, 0, 0),	
+			},
+			new Vector3f[] {
+				new Vector3f(0, 0, 0),
+				new Vector3f(0, 0, 0),
+				new Vector3f(0, 0, 0),
+				new Vector3f(0, 0, 0),	
+			},
+			new Vector3f[] {
+				new Vector3f(0, 0, 0),
+				new Vector3f(1, 0, 0),
+				new Vector3f(0, 1, 0),
+				new Vector3f(1, 1, 0),
+			}, 
+			new Face[] {
+				new Face(new int[] { 0, 1, 3 } ),
+				new Face(new int[] { 0, 3, 2 } )
+			},
+			null
+		);
+	}
+	
 	public static Mesh createMesh(
 		String name,
 		Vector3f[] vertices,
@@ -64,7 +104,7 @@ public class Mesh implements IGraphicsAsset {
 		Face[] faces,
 		AnimationMeshData animationMeshData
 	) {
-		Mesh mesh = new Mesh(name, true);
+		Mesh mesh = new Mesh(name, false);
 		mesh.populate(
 			vertices, normals, tangents, bitangents, UVs, faces, animationMeshData
 		);
@@ -72,6 +112,7 @@ public class Mesh implements IGraphicsAsset {
 	}
 
 	private final String name;
+	
 	private long lastUpdateTimestamp;
 	private IGraphics graphics;
 	private Vector3f[] vertices;
@@ -89,8 +130,6 @@ public class Mesh implements IGraphicsAsset {
 	private Mesh(String name, boolean isDefault) {
 		this.name = name;
 		this.lastUpdateTimestamp = -1;
-		this.graphics = null;
-		this.graphics = null;
 		this.vertices = null;
 		this.normals = null;
 		this.tangents = null;
@@ -100,17 +139,9 @@ public class Mesh implements IGraphicsAsset {
 		this.animationMeshData = null;
 		
 		if( !isDefault ) {
-			Mesh defaultMesh = Default.MESH;
-			this.graphics = defaultMesh.graphics;
-			this.populate(
-				defaultMesh.vertices, 
-				defaultMesh.normals, 
-				defaultMesh.tangents, 
-				defaultMesh.bitangents, 
-				defaultMesh.UVs, 
-				defaultMesh.faces, 
-				defaultMesh.animationMeshData
-			);
+			Globals.RENDERER.getDefaultMeshGraphics().createReference(this);
+		} else {
+			this.graphics = null;
 		}
 	}
 	

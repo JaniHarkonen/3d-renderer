@@ -22,8 +22,6 @@ import project.testing.TestPointLight;
 import project.utils.DebugUtils;
 
 public class Scene {
-	//public static final 
-	
 	private List<ASceneObject> objects;
 	private Camera activeCamera;
 	private GUI gui;

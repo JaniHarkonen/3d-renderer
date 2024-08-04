@@ -6,9 +6,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL46;
 
-import project.Default;
 import project.Window;
 import project.asset.IAsset;
+import project.asset.IGraphics;
 import project.asset.IGraphicsAsset;
 import project.asset.ISystem;
 import project.asset.Mesh;
@@ -31,6 +31,9 @@ public class Renderer implements ISystem {
 	private SceneRenderPass sceneRenderPass;
 	private GUIRenderPass guiRenderPass;
 	
+	private IGraphics defaultMeshGraphics;
+	private IGraphics defaultTextureGraphics;
+	
 	private Scene scene;
 	
 	public Renderer(Window clientWindow, Scene scene) {
@@ -41,8 +44,12 @@ public class Renderer implements ISystem {
 		this.cascadeRenderPass = new CascadeShadowRenderPass();
 		this.sceneRenderPass = new SceneRenderPass();
 		this.guiRenderPass = new GUIRenderPass();
+		
+		this.defaultMeshGraphics = null;
+		this.defaultTextureGraphics = null;
 	}
 
+	
 	public void init() {
 		GL.createCapabilities();
 		GL46.glClearColor(0.643f, 0.62f, 0.557f, 1.0f);
@@ -51,16 +58,21 @@ public class Renderer implements ISystem {
 		this.cascadeRenderPass.init();
 		this.sceneRenderPass.init();
 		this.guiRenderPass.init();
-		
-			// Initialize scene graphics assets
-		this.scene.init();
 	}
 	
 	public void generateDefaults() {
 		
-			// Add generation requests for the default assets
-		this.backGameState.listGenerationRequest(Default.MESH);
-		this.backGameState.listGenerationRequest(Default.TEXTURE);
+			// Generate default mesh VAO
+		VAO vao = new VAO(Mesh.DEFAULT);
+		vao.generate();
+		vao.dropGraphicsAsset();
+		this.defaultMeshGraphics = vao;
+		
+			// Generate default TextureGL
+		TextureGL textureGL = new TextureGL(Texture.DEFAULT);
+		textureGL.generate();
+		textureGL.dropGraphicsAsset();
+		this.defaultTextureGraphics = textureGL;
 	}
 		
 	public void render() {
@@ -113,15 +125,7 @@ public class Renderer implements ISystem {
 	}
 	
 	private void processGenerationRequest(IGraphicsAsset graphicsAsset) {
-		if( graphicsAsset instanceof Mesh ) {
-			Mesh mesh = (Mesh) graphicsAsset;
-			VAO vao = new VAO(mesh);
-			vao.generate();
-		} else if( graphicsAsset instanceof Texture ) {
-			Texture texture = (Texture) graphicsAsset;
-			TextureGL textureGL = new TextureGL(texture);
-			textureGL.generate();
-		}
+		graphicsAsset.getGraphics().regenerate();
 	}
 	
 	private void processDisposalRequest(IGraphicsAsset graphicsAsset) {
@@ -153,5 +157,13 @@ public class Renderer implements ISystem {
 	
 	public Scene getActiveScene() {
 		return this.scene;
+	}
+	
+	public IGraphics getDefaultMeshGraphics() {
+		return this.defaultMeshGraphics;
+	}
+	
+	public IGraphics getDefaultTextureGraphics() {
+		return this.defaultTextureGraphics;
 	}
 }

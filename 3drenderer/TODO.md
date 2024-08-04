@@ -32,6 +32,7 @@
 ### Renderer
 - separate Renderer into different render passes, for example, color pass for scene rendering, shadow pass for shadows etc.
 - graphics assets (VAOs, textures) should be generated before rendering
+- Renderer should not reference a Scene all necessary information should be provided by the GameState
 
 ### SceneRenderPass
 - SceneRenderPass should not be dependent on the CascadeShadowRenderPass-instance, decouple once uniform architecture has been settled

@@ -3,9 +3,11 @@ package project.opengl;
 import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryStack;
 
+import project.Globals;
 import project.asset.IGraphics;
 import project.asset.IGraphicsAsset;
 import project.asset.Texture;
+import project.utils.DebugUtils;
 
 public class TextureGL implements IGraphics {
 
@@ -16,12 +18,15 @@ public class TextureGL implements IGraphics {
 		this.targetTexture = targetTexture;
 		this.handle = -1;
 	}
+	
+	private TextureGL(TextureGL src) {
+		this.targetTexture = src.targetTexture;
+		this.handle = src.handle;
+	}
 
 	
 	@Override
 	public boolean generate() {
-		//Texture.Data textureData = this.targetTexture.getData();
-		
 		try( MemoryStack stack = MemoryStack.stackPush() ) {
 			this.handle = GL46.glGenTextures();
 			int target = GL46.GL_TEXTURE_2D;
@@ -34,13 +39,10 @@ public class TextureGL implements IGraphics {
 				0, 
 				GL46.GL_RGBA, 
 				this.targetTexture.getWidth(),
-				//textureData.getWidth(), 
-				//textureData.getHeight(),
 				this.targetTexture.getHeight(),
 				0, 
 				GL46.GL_RGBA, 
 				GL46.GL_UNSIGNED_BYTE, 
-				//textureData.getPixels()
 				this.targetTexture.getPixels()
 			);
 			GL46.glGenerateMipmap(target);
@@ -52,8 +54,25 @@ public class TextureGL implements IGraphics {
 	}
 	
 	@Override
+	public boolean regenerate() {
+		if( !this.isNull() ) {
+			this.dispose();
+		}
+		
+		return new TextureGL(this.targetTexture).generate();
+	}
+
+	@Override
+	public TextureGL createReference(IGraphicsAsset graphicsAsset) {
+		TextureGL reference = new TextureGL(this);
+		reference.targetTexture = (Texture) graphicsAsset;
+		graphicsAsset.setGraphics(reference);
+		return reference;
+	}
+	
+	@Override
 	public boolean dispose() {
-		// TODO Auto-generated method stub
+		DebugUtils.log(this, "Disposing TextureGL of texture '" + this.targetTexture.getName() + "'!", "!NOT IMPLEMENTED!");
 		return false;
 	}
 	
@@ -63,6 +82,17 @@ public class TextureGL implements IGraphics {
 	
 	public void unbind() {
 		GL46.glBindTexture(GL46.GL_TEXTURE_2D, this.handle);
+	}
+	
+	@Override
+	public void dropGraphicsAsset() {
+		this.targetTexture = null;
+	}
+
+	@Override
+	public boolean isNull() {
+		TextureGL defaultTextureGL = (TextureGL) Globals.RENDERER.getDefaultTextureGraphics();
+		return (this.handle == defaultTextureGL.handle);
 	}
 	
 	public int getHandle() {

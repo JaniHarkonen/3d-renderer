@@ -18,8 +18,6 @@ import project.shader.ShaderProgram;
 import project.utils.GeometryUtils;
 
 public class GUIRenderPass implements IRenderPass {
-	//static final Mesh IMAGE_PLANE = GeometryUtils.createPlaneMesh("mesh-default-gui-plane", 0, 0, 16, 16, 0, 0, 1, 1);
-	
 	static final String U_PROJECTION = "uProjection";
 	static final String U_DIFFUSE_SAMPLER= "uDiffuseSampler";
 	static final String U_OBJECT_TRANSFORM = "uObjectTransform";

@@ -2,7 +2,6 @@ package project.pass.cshadow;
 
 import org.lwjgl.opengl.GL46;
 
-import project.Default;
 import project.asset.AnimationData;
 import project.asset.Mesh;
 import project.opengl.Renderer;
@@ -16,18 +15,11 @@ class RenderModel implements IRenderStrategy<CascadeShadowRenderPass> {
 
 	@Override
 	public void execute(Renderer renderer, CascadeShadowRenderPass renderPass, ASceneObject target) {
-		//VAOCache vaoCache = renderer.getVAOCache();
 		ShaderProgram activeShaderProgram = renderPass.shaderProgram;
 		Model model = (Model) target;
 		for( int j = 0; j < model.getMeshCount(); j++ ) {
 			Mesh mesh = model.getMesh(j);
 			VAO vao = (VAO) mesh.getGraphics();
-			
-			if( vao == null ) {
-				vao = (VAO) Default.MESH.getGraphics();
-			}
-			
-    		//VAO vao = vaoCache.getOrGenerate(mesh);
     		vao.bind();
     		
     		activeShaderProgram.setMatrix4fUniform(

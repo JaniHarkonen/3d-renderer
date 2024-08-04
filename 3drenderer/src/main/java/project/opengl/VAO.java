@@ -5,10 +5,12 @@ import java.nio.IntBuffer;
 import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryUtil;
 
+import project.Globals;
 import project.asset.IGraphics;
 import project.asset.IGraphicsAsset;
 import project.asset.Mesh;
 import project.asset.SceneAssetLoadTask;
+import project.utils.DebugUtils;
 
 public class VAO implements IGraphics {
 
@@ -42,13 +44,27 @@ public class VAO implements IGraphics {
 		this.vertexCount = -1;
 	}
 	
+	private VAO(VAO src) {
+		this.vaoHandle = src.vaoHandle;
+		this.positionsVBO = src.positionsVBO;
+		this.normalsVBO = src.normalsVBO;
+		this.tangentsVBO = src.tangentsVBO;
+		this.bitangentsVBO = src.bitangentsVBO;
+		this.textureCoordinatesVBO = src.textureCoordinatesVBO;
+		this.boneWeightVBO = src.boneWeightVBO;
+		this.boneIndicesVBO = src.boneIndicesVBO;
+		this.indicesVBO = src.indicesVBO;
+		
+		this.targetMesh = src.targetMesh;
+		this.vertexCount = src.vertexCount;
+	}
+	
 	
 	@Override
 	public boolean generate() {
 		this.vaoHandle = GL46.glGenVertexArrays();
 		this.bind();
 		
-			//Mesh.Data meshData = this.targetMesh.getData();
 			Mesh mesh = this.targetMesh;
 			float[] boneWeights;
 			int[] boneIndices;
@@ -109,8 +125,17 @@ public class VAO implements IGraphics {
 	}
 	
 	@Override
+	public boolean regenerate() {
+		if( !this.isNull() ) {
+			this.dispose();
+		}
+		
+		return new VAO(this.targetMesh).generate();
+	}
+	
+	@Override
 	public boolean dispose() {
-		// TODO Auto-generated method stub
+		DebugUtils.log(this, "Disposing VAO of mesh '" + this.targetMesh.getName() + "'!", "!NOT IMPLEMENTED!");
 		return false;
 	}
 	
@@ -120,6 +145,19 @@ public class VAO implements IGraphics {
 	
 	public void unbind() {
 		GL46.glBindVertexArray(0);
+	}
+
+	@Override
+	public VAO createReference(IGraphicsAsset graphicsAsset) {
+		VAO reference = new VAO(this);
+		reference.targetMesh = (Mesh) graphicsAsset;
+		graphicsAsset.setGraphics(reference);
+		return reference;
+	}
+
+	@Override
+	public void dropGraphicsAsset() {
+		this.targetMesh = null;
 	}
 	
 	public int getVertexCount() {
@@ -138,5 +176,11 @@ public class VAO implements IGraphics {
 	@Override
 	public boolean isGenerated() {
 		return (this.vaoHandle >= 0);
+	}
+	
+	@Override
+	public boolean isNull() {
+		VAO defaultVAO = (VAO) Globals.RENDERER.getDefaultMeshGraphics();
+		return (this.vaoHandle == defaultVAO.vaoHandle);
 	}
 }
