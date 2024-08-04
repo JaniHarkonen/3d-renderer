@@ -65,13 +65,13 @@ public class Renderer implements ISystem {
 			// Generate default mesh VAO
 		VAO vao = new VAO(Mesh.DEFAULT);
 		vao.generate();
-		vao.dropGraphicsAsset();
+		//vao.dropGraphicsAsset();
 		this.defaultMeshGraphics = vao;
 		
 			// Generate default TextureGL
 		TextureGL textureGL = new TextureGL(Texture.DEFAULT);
 		textureGL.generate();
-		textureGL.dropGraphicsAsset();
+		//textureGL.dropGraphicsAsset();
 		this.defaultTextureGraphics = textureGL;
 	}
 		

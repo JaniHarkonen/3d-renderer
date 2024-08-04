@@ -3,9 +3,9 @@ package project.asset;
 import java.util.HashMap;
 import java.util.Map;
 
-import project.utils.GeometryUtils;
+import org.json.JSONObject;
 
-public class Font {
+public class Font implements IAsset {
 	
 	/************************* Glyph-class *************************/
     
@@ -37,7 +37,7 @@ public class Font {
             float advance
         ) {
             this.character = character;
-            this.mesh = null;
+            this.mesh = Mesh.DEFAULT;
             this.font = null;
             
             this.x = x;
@@ -119,10 +119,45 @@ public class Font {
     }
     
     
+    /************************* Data-class *************************/
+    
+    public static class Data implements IAssetData {
+    	Font targetFont;
+    	JSONObject charactersJson;
+
+		@Override
+		public void assign(long timestamp) {
+			for( String characterKey : this.charactersJson.keySet() ) {
+				JSONObject characterJson = this.charactersJson.getJSONObject(characterKey);
+				char character = characterKey.charAt(0);
+				Font.Glyph glyph = new Font.Glyph(
+					character,
+					characterJson.getFloat("x"),
+					characterJson.getFloat("y"),
+					characterJson.getFloat("width"),
+					characterJson.getFloat("height"),
+					characterJson.getFloat("originX"),
+					characterJson.getFloat("originY"),
+					characterJson.getFloat("advance")
+				);
+				this.targetFont.addGlyph(character, glyph);
+			}
+			
+			this.targetFont.initialize();
+			this.targetFont.lastUpdateTimestamp = timestamp;
+		}
+    }
+    
+    
     /************************* Font-class *************************/
     
+    
+    
     private final String name;
-    private Map<Character, Font.Glyph> glyphs;
+    
+    private long lastUpdateTimestamp;
+    private Map<Character, Glyph> glyphs;
+    private Glyph defaultGlyph;
     private Texture fontTexture;
     private float textureWidth;
     private float textureHeight;
@@ -134,16 +169,17 @@ public class Font {
         float textureHeight
     ) {
     	this.name = name;
+    	this.lastUpdateTimestamp = -1;
+    	this.glyphs = new HashMap<>();
+    	this.defaultGlyph = new Glyph((char) 0, 0, 0, 16, 16, 0, 0, 16);
         this.fontTexture = fontTexture;
-        this.glyphs = new HashMap<>();
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;
     }
     
     
-    public boolean init() {
-        for( Map.Entry<Character, Font.Glyph> en : this.glyphs.entrySet() )
-        {
+    public void initialize() {
+        for( Map.Entry<Character, Glyph> en : this.glyphs.entrySet() ) {
             Font.Glyph glyph = en.getValue();
             
             float glyphX = glyph.getX();
@@ -166,11 +202,11 @@ public class Font {
             glyph.u1 = u1;
             glyph.v1 = v1;
             
-            glyph.mesh = GeometryUtils.createPlaneMesh("font-mesh-" + this.name, x, y, w, h, u0, v0, u1, v1);
+            glyph.mesh = AssetUtils.createPlaneMesh(
+        		"font-mesh-" + this.name, x, y, w, h, u0, v0, u1, v1
+    		);
             glyph.font = this;
         }
-        
-        return true;
     }
     
     public void addGlyph(char glyphCharacter, Font.Glyph glyph) {
@@ -178,25 +214,23 @@ public class Font {
         this.glyphs.put(glyphCharacter, glyph);
     }
     
-    
-    /************************ SETTERS ************************/
-    
-    public void setTexture(Texture fontTexture) {
-        this.fontTexture = fontTexture;
-    }
-    
-    
     /************************ GETTERS ************************/
     
     public Font.Glyph getGlyph(char character) {
-        return this.glyphs.get(character);
+        return this.glyphs.getOrDefault(character, this.defaultGlyph);
     }
     
     public Texture getTexture() {
         return this.fontTexture;
     }
     
+    @Override
     public String getName() {
     	return this.name;
+    }
+    
+    @Override
+    public long getLastUpdateTimestamp() {
+    	return this.lastUpdateTimestamp;
     }
 }

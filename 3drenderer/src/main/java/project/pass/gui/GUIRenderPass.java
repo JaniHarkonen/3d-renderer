@@ -3,6 +3,7 @@ package project.pass.gui;
 
 import org.lwjgl.opengl.GL46;
 
+import project.asset.AssetUtils;
 import project.asset.Mesh;
 import project.gui.AGUIElement;
 import project.gui.Image;
@@ -15,7 +16,6 @@ import project.scene.ASceneObject;
 import project.scene.Scene;
 import project.shader.Shader;
 import project.shader.ShaderProgram;
-import project.utils.GeometryUtils;
 
 public class GUIRenderPass implements IRenderPass {
 	static final String U_PROJECTION = "uProjection";
@@ -43,7 +43,7 @@ public class GUIRenderPass implements IRenderPass {
 	
 	@Override
 	public boolean init() {
-		this.imagePlane = GeometryUtils.createPlaneMesh("mesh-default-gui-plane", 0, 0, 16, 16, 0, 0, 1, 1);
+		this.imagePlane = AssetUtils.createPlaneMesh("mesh-default-gui-plane", 0, 0, 16, 16, 0, 0, 1, 1);
 		this.shaderProgram = new ShaderProgram();
 		this.shaderProgram.declareUniform(U_PROJECTION);
 		this.shaderProgram.declareUniform(U_DIFFUSE_SAMPLER);

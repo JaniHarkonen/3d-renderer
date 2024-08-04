@@ -83,23 +83,8 @@ public final class TestAssets {
 	}
 	
 	public static void initFonts() {
-			// Arial, normal, size 20
-		FONT_ARIAL_20 = new Font("font-arial-20", loadTexture("tex-font-arial-20", "fonts/arial/size20/font_arial20.png"), 230, 89);
-		FontLoadTask fontTask = new FontLoadTask(
-			FileUtils.getResourcePath("fonts/arial/size20/arial20.json"), 
-			FONT_ARIAL_20
-		);
-		fontTask.load();
-		FONT_ARIAL_20.init();
-		
-			// Arial, normal, size 16
-		FONT_ARIAL_16 = new Font("font-arial-16", loadTexture("tex-font-arial-16", "fonts/arial/size16/arial16.png"), 178, 76);
-		fontTask = new FontLoadTask(
-			FileUtils.getResourcePath("fonts/arial/size16/arial16.json"), 
-			FONT_ARIAL_16
-		);
-		fontTask.load();
-		FONT_ARIAL_16.init();
+		FONT_ARIAL_20 = loadFont("font-arial-20", "fonts/arial/size20/arial20", 230, 89);
+		FONT_ARIAL_16 = loadFont("font-arial-16", "fonts/arial/size16/arial16", 178, 76);
 	}
 	
 	public static void initMeshes() {
@@ -432,6 +417,17 @@ public final class TestAssets {
 	private static Mesh loadMesh(String name, String relativePath) {
 		Mesh result = new Mesh(name);
 		loadSceneAsset(relativePath, new Mesh[] {result});
+		return result;
+	}
+	
+	private static Font loadFont(String name, String relativePath, int textureWidth, int textureHeight) {
+		Font result = new Font(name, loadTexture("tex-" + name, relativePath + ".png"), textureWidth, textureHeight);
+		
+		FontLoadTask task = new FontLoadTask(
+			FileUtils.getResourcePath(relativePath + ".json"), 
+			result
+		);
+		Globals.ASSET_MANAGER.scheduleLoadTask(task);
 		return result;
 	}
 }

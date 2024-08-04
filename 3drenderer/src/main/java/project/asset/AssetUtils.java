@@ -2,7 +2,10 @@ package project.asset;
 
 import java.nio.ByteBuffer;
 
+import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
+
+import project.Globals;
 
 public final class AssetUtils {
 
@@ -25,5 +28,34 @@ public final class AssetUtils {
         pixels.flip();
         
         return pixels;
+	}
+	
+	public static Mesh createPlaneMesh(String name, float x, float y, float w, float h, float... UVs) {
+		Mesh mesh = Mesh.createMesh(
+			name,
+			new Vector3f[] {
+				new Vector3f(x, y, 0.0f),
+				new Vector3f(x + w, y, 0.0f),
+				new Vector3f(x + w, y + h, 0.0f),
+				new Vector3f(x, y + h, 0.0f)
+    		}, 
+    		new Vector3f[0],
+    		new Vector3f[0],
+    		new Vector3f[0],
+    		new Vector3f[] {
+				new Vector3f(UVs[0], UVs[1], 0),
+				new Vector3f(UVs[2], UVs[1], 0),
+				new Vector3f(UVs[2], UVs[3], 0),
+				new Vector3f(UVs[0], UVs[3], 0)
+    		},
+    		new Mesh.Face[] {
+				new Mesh.Face(new int[] {0, 1, 2}),
+				new Mesh.Face(new int[] {2, 3, 0})
+    		},
+    		null
+		);
+		
+		Globals.RENDERER.assetLoaded(mesh);
+		return mesh;
 	}
 }

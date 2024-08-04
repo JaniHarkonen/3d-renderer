@@ -5,6 +5,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class AssetManager {
 
+	/************************* LoadProcess-class *************************/
+	
 	private class LoadProcess extends Thread {
 		private ILoadTask loadTask;
 		
@@ -20,6 +22,9 @@ public class AssetManager {
 		}
 	}
 	
+	
+	/************************* TaskResult-class *************************/
+	
 	private class TaskResult {
 		private IAsset targetAsset;
 		private IAssetData assetData;
@@ -33,7 +38,9 @@ public class AssetManager {
 	}
 	
 	
-	private Queue<TaskResult> taskResults;
+	/************************* AssetManager-class *************************/
+	
+	private final Queue<TaskResult> taskResults;
 	
 	public AssetManager() {
 		this.taskResults = new ConcurrentLinkedQueue<>();
@@ -62,5 +69,9 @@ public class AssetManager {
 	
 	public void notifyResult(IAsset targetAsset, IAssetData assetData, ISystem system) {
 		this.taskResults.add(new TaskResult(targetAsset, assetData, system));
+	}
+	
+	public void notifyResult(IAsset targetAsset, IAssetData assetData) {
+		this.notifyResult(targetAsset, assetData, null);
 	}
 }

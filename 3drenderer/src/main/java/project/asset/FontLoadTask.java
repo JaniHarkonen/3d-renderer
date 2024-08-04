@@ -2,9 +2,10 @@ package project.asset;
 
 import org.json.JSONObject;
 
+import project.Globals;
 import project.utils.FileUtils;
 
-public class FontLoadTask {
+public class FontLoadTask implements ILoadTask {
 
 	private String fontConfigurationPath;
 	private Font targetFont;
@@ -15,25 +16,16 @@ public class FontLoadTask {
 	}
 	
 	
-	public void load() {
+	@Override
+	public boolean load() {
 		String jsonString = FileUtils.readTextFile(this.fontConfigurationPath);
 		JSONObject fontJson = new JSONObject(jsonString);
-		JSONObject charactersJson = fontJson.getJSONObject("characters");
 		
-		for( String characterKey : charactersJson.keySet() ) {
-			JSONObject characterJson = charactersJson.getJSONObject(characterKey);
-			char character = characterKey.charAt(0);
-			Font.Glyph glyph = new Font.Glyph(
-				character,
-				characterJson.getFloat("x"),
-				characterJson.getFloat("y"),
-				characterJson.getFloat("width"),
-				characterJson.getFloat("height"),
-				characterJson.getFloat("originX"),
-				characterJson.getFloat("originY"),
-				characterJson.getFloat("advance")
-			);
-			this.targetFont.addGlyph(character, glyph);
-		}
+		Font.Data data = new Font.Data();
+		data.targetFont = this.targetFont;
+		data.charactersJson = fontJson.getJSONObject("characters");
+		Globals.ASSET_MANAGER.notifyResult(this.targetFont, data);
+		
+		return true;
 	}
 }

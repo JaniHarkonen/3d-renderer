@@ -5,7 +5,6 @@ import project.opengl.Renderer;
 
 public final class Globals {
 
-	//public static final AssetManager ASSET_MANAGER = new AssetManager();
 	public static final AssetManager ASSET_MANAGER = new AssetManager();
 	public static Renderer RENDERER = null;
 }

@@ -22,13 +22,12 @@ public class Application {
 		Scene scene = new Scene(this, TICK_RATE);
 		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);
 		this.window = window;
-		Renderer renderer = new Renderer(window, scene);
-		Globals.RENDERER = renderer;
-		window.setRenderer(renderer);
+			Renderer renderer = new Renderer(window, scene);
+			Globals.RENDERER = renderer;
+			window.setRenderer(renderer);
 		window.init();
 		
 		TestAssets.initialize();
-		
 		scene.init();
 		
 		while( !window.isDestroyed() ) {
