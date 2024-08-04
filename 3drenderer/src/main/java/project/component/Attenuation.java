@@ -12,6 +12,12 @@ public class Attenuation {
 		this.linear = linear;
 	}
 	
+	public Attenuation(Attenuation src) {
+		this.constant = src.constant;
+		this.exponent = src.exponent;
+		this.linear = src.linear;
+	}
+	
 	
 	public void setConstant(float constant) {
 		this.constant = constant;

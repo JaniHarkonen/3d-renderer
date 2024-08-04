@@ -3,7 +3,7 @@ package project.asset;
 import java.util.HashMap;
 import java.util.Map;
 
-import project.opengl.Texture;
+import project.utils.GeometryUtils;
 
 public class Font {
 	
@@ -121,16 +121,19 @@ public class Font {
     
     /************************* Font-class *************************/
     
+    private final String name;
     private Map<Character, Font.Glyph> glyphs;
     private Texture fontTexture;
     private float textureWidth;
     private float textureHeight;
     
     public Font(
+		String name,
         Texture fontTexture,
         float textureWidth,
         float textureHeight
     ) {
+    	this.name = name;
         this.fontTexture = fontTexture;
         this.glyphs = new HashMap<>();
         this.textureWidth = textureWidth;
@@ -163,30 +166,7 @@ public class Font {
             glyph.u1 = u1;
             glyph.v1 = v1;
             
-            glyph.mesh = new Mesh();
-            glyph.mesh.populate(
-        		new float[] {
-    				x, y, 0.0f,
-    				x + w, y, 0.0f,
-    				x + w, y + h, 0.0f,
-    				x, y + h, 0.0f
-        		}, 
-        		new float[0],
-        		new float[0],
-        		new float[0],
-        		new float[] {
-    				u0, v0,
-    				u1, v0,
-    				u1, v1,
-    				u0, v1
-        		}, 
-        		new int[] {
-    				0, 1, 2,
-    				2, 3, 0
-        		},
-        		null
-    		);
-            
+            glyph.mesh = GeometryUtils.createPlaneMesh("font-mesh-" + this.name, x, y, w, h, u0, v0, u1, v1);
             glyph.font = this;
         }
         
@@ -214,5 +194,9 @@ public class Font {
     
     public Texture getTexture() {
         return this.fontTexture;
+    }
+    
+    public String getName() {
+    	return this.name;
     }
 }

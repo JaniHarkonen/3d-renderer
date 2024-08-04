@@ -20,6 +20,11 @@ public class AnimationData {
 		this.currentAnimation = currentAnimation;
 	}
 	
+	public AnimationData(AnimationData src) {
+		this.currentAnimation = new Animation(src.currentAnimation);
+		this.currentFrameIndex = src.currentFrameIndex;
+	}
+	
 	
 	public void nextFrame() {
 		int nextFrame = this.currentFrameIndex + 1;

@@ -17,6 +17,18 @@ public class Text extends AGUIElement {
 		this.textColor = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	
+	private Text(Text src) {
+		super(null);
+		this.font = src.font;
+		this.content = new String(src.content);
+		this.textColor = new Vector4f(src.textColor);
+	}
+	
+	
+	@Override
+	protected Text rendererCopy() {
+		return new Text(this);
+	}
 	
 	public void setContent(String content) {
 		this.content = content;

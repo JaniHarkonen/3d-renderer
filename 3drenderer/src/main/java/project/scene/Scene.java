@@ -7,16 +7,18 @@ import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import project.Application;
+import project.Globals;
 import project.Window;
-import project.asset.AnimationData;
-import project.component.Projection;
 import project.controls.Controller;
 import project.gui.GUI;
+import project.gui.Image;
 import project.gui.Text;
 import project.input.Input;
 import project.testing.ActionSet;
-import project.testing.DebugModel;
 import project.testing.TestAssets;
+import project.testing.TestDummy;
+import project.testing.TestPlayer;
+import project.testing.TestPointLight;
 import project.utils.DebugUtils;
 
 public class Scene {
@@ -27,10 +29,10 @@ public class Scene {
 	private long tickDelta;
 	private int tickRate;
 	private Application app;
-	private Text textAppStatistics;
-	private PointLight pointLight0;
-	private DebugModel floorBrick;
-	private Vector3f shadowLightPosition;
+	
+	private Text DEBUGtextAppStatistics;
+	private TestPointLight DEBUGtestPointLight0;
+	private Vector3f DEBUGshadowLightPosition;
 	private boolean DEBUGareNormalsActive;
 	
 	public Scene(Application app, int tickRate) {
@@ -40,98 +42,32 @@ public class Scene {
 		this.deltaTimer = System.nanoTime();
 		this.setTickRate(tickRate);
 		this.app = app;
-		this.textAppStatistics = null;
-		this.pointLight0 = null;
-		this.floorBrick = null;
-		this.shadowLightPosition = null;
-		DEBUGareNormalsActive = true;
+		this.DEBUGtextAppStatistics = null;
+		this.DEBUGtestPointLight0 = null;
+		this.DEBUGshadowLightPosition = null;
+		this.DEBUGareNormalsActive = true;
 	}
 	
+	
 	public void init() {
-		
 			// Scene
 			// WARNING: ORDER IN WHICH SCENE OBJECTS ARE ADDED IS IMPORTANT FOR DRAW CALLS
 			// LIGHTS HAVE TO BE ADDED FIRST SO THAT THEY ARE UPDATED BEFORE SCENE RENDERING
+		Input input = this.app.getWindow().getInput();
 		this.objects = new ArrayList<>();
 		
-		this.activeCamera = new Camera(this, new Projection(75.0f, 0.01f, 100.0f));
-		this.objects.add(this.activeCamera);
-		
+			// Ambient light
 		AmbientLight ambientLight = new AmbientLight(
 			this, new Vector3f(1.0f, 1.0f, 1.0f), 0.5f
 		);
 		this.objects.add(ambientLight);
 		DebugUtils.log(this, "Added AmbientLight!");
 		
-		this.pointLight0 = new PointLight(
-			this, new Vector3f(1.0f, 1.0f, 1.0f), 0.5f
-		);
-		this.pointLight0.setPosition(0.0f, 1.0f, 0.0f);
-		this.objects.add(this.pointLight0);
-		DebugUtils.log(this, "Added PointLight!");
-		
-		/*Material brickMaterial = new Material();
-		brickMaterial.setTexture(0, TestAssets.TEXTURE_BRICK);
-		brickMaterial.setTexture(1, TestAssets.TEXTURE_BRICK_NORMAL);*/
-		
-		this.floorBrick = new DebugModel(this);
-		/*this.floorBrick.addMesh(TestAssets.MESH_BRICK, brickMaterial);
-		this.floorBrick.setPosition(0, -0.5f, 0);
-		this.floorBrick.setScale(0.1f, 0.01f, 0.1f);
-		this.objects.add(this.floorBrick);
-		
-		Model model = new Model(this);
-		model.addMesh(TestAssets.MESH_BRICK, brickMaterial);
-		model.setPosition(-0.5f, 0.5f, -0.5f);
-		model.setScale(0.01f, 0.01f, 0.01f);
-		this.objects.add(model);
-		
-		AnimationData animationData = new AnimationData(TestAssets.ANIM_RUN);
-		Material manMaterial = new Material();
-		manMaterial.setTexture(0, TestAssets.TEXTURE_BRICK);
-		manMaterial.setTexture(1, TestAssets.TEXTURE_BRICK_NORMAL);
-		model = new Model(this);
-		model.addMesh(TestAssets.MESH_MAN, manMaterial);
-		model.setPosition(0.0f, 0.0f, 0.0f);
-		model.setScale(0.01f, 0.01f, 0.01f);
-		model.setAnimationData(animationData);
-		model.setRotation(0, 0, -1, (float) Math.toRadians(90.0d));
-		
-		this.objects.add(model);*/
-		
-		this.shadowLightPosition = new Vector3f(0.0f, 0.5f, 0.5f);
-		
-		Model model;
-		
-		model = new Model(this);
-		model.addMesh(TestAssets.MESH_MAN, TestAssets.MAT_TEST_RED);
-		model.setPosition(0.0f, 0.0f, 0.0f);
-		model.setScale(1.01f, 1.01f, 1.01f);
-		model.setAnimationData(new AnimationData(TestAssets.ANIM_RUN));
-		//this.objects.add(model);
-		
-		this.objects.add(TestAssets.createTestSceneOutside(this));
-		
-		Model soldier = TestAssets.createTestSoldier(this);
-		soldier.setPosition(1, -1, 0);
-		this.objects.add(soldier);
-		
-		
-			// GUI
-		this.createGUI();
-		
-			// Camera controls here
-		Input input = this.app.getWindow().getInput();
-		Controller cameraController = new Controller(input, this.activeCamera)
-		.addBinding(ActionSet.MOVE_FORWARD, input.new KeyHeld(GLFW.GLFW_KEY_W))
-		.addBinding(ActionSet.MOVE_LEFT, input.new KeyHeld(GLFW.GLFW_KEY_A))
-		.addBinding(ActionSet.MOVE_BACKWARDS, input.new KeyHeld(GLFW.GLFW_KEY_S))
-		.addBinding(ActionSet.MOVE_RIGHT, input.new KeyHeld(GLFW.GLFW_KEY_D))
-		.addBinding(ActionSet.LOOK_AROUND, input.new MouseMove());
-		this.activeCamera.setController(cameraController);
-		
-			// Point light controls here
-		Controller pointLightController = new Controller(input, this.pointLight0)
+			// Point light
+		this.DEBUGtestPointLight0 = new TestPointLight(this);
+		this.DEBUGtestPointLight0.setPosition(0.0f, 100.0f, 0.0f);
+		this.objects.add(this.DEBUGtestPointLight0);
+		Controller pointLightController = new Controller(input, this.DEBUGtestPointLight0)
 		.addBinding(ActionSet.MOVE_FORWARD, input.new KeyHeld(GLFW.GLFW_KEY_UP))
 		.addBinding(ActionSet.MOVE_BACKWARDS, input.new KeyHeld(GLFW.GLFW_KEY_DOWN))
 		.addBinding(ActionSet.MOVE_LEFT, input.new KeyHeld(GLFW.GLFW_KEY_LEFT))
@@ -144,12 +80,40 @@ public class Scene {
 		.addBinding(ActionSet.LIGHT_DECREASE_GREEN, input.new KeyHeld(GLFW.GLFW_KEY_4))
 		.addBinding(ActionSet.LIGHT_INCREASE_BLUE, input.new KeyHeld(GLFW.GLFW_KEY_5))
 		.addBinding(ActionSet.LIGHT_DECREASE_BLUE, input.new KeyHeld(GLFW.GLFW_KEY_6));
-		this.pointLight0.setController(pointLightController);
+		this.DEBUGtestPointLight0.setController(pointLightController);
+		DebugUtils.log(this, "Added TestPointLight!");
 		
-			// Floor brick controls
-		Controller floorBrickController = new Controller(input, this.floorBrick)
-		.addBinding(ActionSet.NORMAL_MAP_TOGGLE, input.new KeyPressed(GLFW.GLFW_KEY_N));
-		this.floorBrick.setController(floorBrickController);
+			// Shadow position
+		this.DEBUGshadowLightPosition = new Vector3f(0.05f, 0.5f, 0.5f);
+		
+			// Outside scene
+		TestDummy outsideScene = new TestDummy(this, TestAssets.createTestSceneOutside(this));
+		this.objects.add(outsideScene);
+		DebugUtils.log(this, "Outside place TestDummy added!");
+		
+			// Soldier
+		TestDummy soldier = new TestDummy(this, TestAssets.createTestSoldier(this));
+		soldier.setPosition(1, -1, 0);
+		soldier.getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
+		//this.objects.add(soldier);
+		//DebugUtils.log(this, "Soldier TestDummy added!");
+		
+			// GUI
+		this.createGUI();
+		DebugUtils.log(this, "GUI created!");
+
+			// Camera
+		TestPlayer player = new TestPlayer(this);
+		this.objects.add(player);
+		this.activeCamera = player.getCamera();
+		Controller playerController = new Controller(input, player)
+		.addBinding(ActionSet.MOVE_FORWARD, input.new KeyHeld(GLFW.GLFW_KEY_W))
+		.addBinding(ActionSet.MOVE_LEFT, input.new KeyHeld(GLFW.GLFW_KEY_A))
+		.addBinding(ActionSet.MOVE_BACKWARDS, input.new KeyHeld(GLFW.GLFW_KEY_S))
+		.addBinding(ActionSet.MOVE_RIGHT, input.new KeyHeld(GLFW.GLFW_KEY_D))
+		.addBinding(ActionSet.LOOK_AROUND, input.new MouseMove());
+		player.setController(playerController);
+		DebugUtils.log(this, "Added TestPlayer!");
 	}
 
 	public void update() {
@@ -161,6 +125,9 @@ public class Scene {
 		this.deltaTimer = System.nanoTime();
 		Window appWindow = this.app.getWindow();
 		
+		//Globals.ASSET_MANAGER.processResults(System.nanoTime());
+		Globals.ASSET_MANAGER.processTaskResults(System.nanoTime());
+		
 		appWindow.pollInput();
 		for( ASceneObject object : this.objects ) {
 			object.tick(deltaTime);
@@ -169,22 +136,28 @@ public class Scene {
 		long memoryUsage = Runtime.getRuntime().totalMemory();
 		
 		if( this.gui != null ) {
-			this.textAppStatistics.setContent(
+			this.DEBUGtextAppStatistics.setContent(
 				"FPS: " + appWindow.getFPS() + " / " + appWindow.getMaxFPS() + "\n" +
 				"TICK: " + this.tickRate + " (d: " + deltaTime + ")\n" +
 				"HEAP: " + this.convertToLargestByte(memoryUsage) + " (" + memoryUsage + " bytes)\n" +
+				"camera\n" + 
+				"   pos: (" + 
+					this.activeCamera.getPosition().x + ", " +
+					this.activeCamera.getPosition().y + ", " +
+					this.activeCamera.getPosition().z +
+				")\n" +
 				"pointLight0: \n" +
 				"    pos: (" + 
-					this.pointLight0.getPosition().x + ", " + 
-					this.pointLight0.getPosition().y + ", " + 
-					this.pointLight0.getPosition().z + 
+					this.DEBUGtestPointLight0.getPosition().x + ", " + 
+					this.DEBUGtestPointLight0.getPosition().y + ", " + 
+					this.DEBUGtestPointLight0.getPosition().z + 
 				")\n" +
 				"    rgb: (" +
-					this.pointLight0.getColor().x + ", " +
-					this.pointLight0.getColor().y + ", " +
-					this.pointLight0.getColor().z +
+					this.DEBUGtestPointLight0.getPointLight().getColor().x + ", " +
+					this.DEBUGtestPointLight0.getPointLight().getColor().y + ", " +
+					this.DEBUGtestPointLight0.getPointLight().getColor().z +
 				")\n" +
-				"    intensity: " + this.pointLight0.getIntensity() + "\n" +
+				"    intensity: " + this.DEBUGtestPointLight0.getPointLight().getIntensity() + "\n" +
 				"    normal map: " + (this.DEBUGareNormalsActive ? "ON" : "OFF") + "\n\n" +
 				"Controls: \n" + 
 				"    WASD to move\n" +
@@ -194,7 +167,7 @@ public class Scene {
 				"    1/2 to change point light red value\n" +
 				"    3/4 to change point light green value\n" +
 				"    5/6 to change point light blue value\n" + 
-				"    N to toggle normal map" +
+				"    N to toggle normal map\n" +
 				"    H to toggle HUD"
 			);
 		}
@@ -208,14 +181,20 @@ public class Scene {
 		}
 		
 		if( this.app.getWindow().getInputSnapshot().isKeyHeld(GLFW.GLFW_KEY_KP_8) ) {
-			this.shadowLightPosition.add(0,1*deltaTime,0);
+			this.DEBUGshadowLightPosition.add(0,1*deltaTime,0);
 		} else if( this.app.getWindow().getInputSnapshot().isKeyHeld(GLFW.GLFW_KEY_KP_2) ) {
-			this.shadowLightPosition.sub(0,1*deltaTime,0);
+			this.DEBUGshadowLightPosition.sub(0,1*deltaTime,0);
 		}
 		
 		if( this.app.getWindow().getInputSnapshot().isKeyPressed(GLFW.GLFW_KEY_N) ) {
 			this.DEBUGareNormalsActive = !this.DEBUGareNormalsActive;
 		}
+		
+		for( ASceneObject object : this.objects ) {
+			object.submitState();
+		}
+		
+		Globals.RENDERER.submitGameState();
 	}
 	
 	private String convertToLargestByte(long n) {
@@ -240,10 +219,15 @@ public class Scene {
 	}
 	
 	private void createGUI() {
-		this.textAppStatistics = new Text(this.gui, "");
+		this.DEBUGtextAppStatistics = new Text(this.gui, "");
 		this.gui = new GUI(this);
 		this.gui.init();
-		this.gui.addElement(this.textAppStatistics);
+		this.gui.addElement(this.DEBUGtextAppStatistics);
+		
+		Image crosshair = new Image(this.gui, TestAssets.TEX_GUI_CROSSHAIR);
+		crosshair.setPosition(400, 300, 0);
+		crosshair.setAnchor(8, 8);
+		this.gui.addElement(crosshair);
 	}
 	
 	public void addObject(ASceneObject sceneObject) {
@@ -272,7 +256,7 @@ public class Scene {
 	}
 	
 	public Vector3f getShadowLightPosition() {
-		return this.shadowLightPosition;
+		return this.DEBUGshadowLightPosition;
 	}
 	
 	public boolean DEBUGareNormalsActive() {

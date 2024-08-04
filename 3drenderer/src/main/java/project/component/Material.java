@@ -2,7 +2,7 @@ package project.component;
 
 import org.joml.Vector4f;
 
-import project.opengl.Texture;
+import project.asset.Texture;
 
 public class Material {
 	
@@ -14,13 +14,16 @@ public class Material {
 	public static final Vector4f DEFAULT_SPECULAR_COLOR = 
 		new Vector4f(1.0f, 1.0f, 1.0f, 1.0f); // pulled from fbx via Assimp
 
+	
+	private final String name;
 	private Texture[] textureSlot;
 	private Vector4f ambientColor;
 	private Vector4f diffuseColor;
 	private Vector4f specularColor;
 	private float reflectance;
 	
-	public Material() {
+	public Material(String name) {
+		this.name = name;
 		this.textureSlot = new Texture[Material.DEFAULT_TEXTURE_SLOT_COUNT];
 		this.ambientColor = Material.DEFAULT_AMBIENT_COLOR;
 		this.diffuseColor = Material.DEFAULT_DIFFUSE_COLOR;
@@ -71,5 +74,9 @@ public class Material {
 	
 	public float getReflectance() {
 		return this.reflectance;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 }

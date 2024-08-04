@@ -16,6 +16,13 @@ public class Projection {
 		this.zFar = zFar;
 	}
 	
+	public Projection(Projection projection) {
+		this.projectionMatrix = new Matrix4f(projection.projectionMatrix);
+		this.fieldOfView = projection.fieldOfView;
+		this.zNear = projection.zNear;
+		this.zFar = projection.zFar;
+	}
+	
 	
 	public void update(int width, int height) {
 		this.projectionMatrix.setPerspective(

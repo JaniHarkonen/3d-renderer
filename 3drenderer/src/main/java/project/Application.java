@@ -2,6 +2,7 @@ package project;
 
 import project.opengl.Renderer;
 import project.scene.Scene;
+import project.testing.TestAssets;
 import project.utils.DebugUtils;
 
 public class Application {
@@ -15,16 +16,20 @@ public class Application {
 	
 	public void execute() {
 		final String TITLE = "3D Renderer - JOHNEngine";
-		final int FPS_MAX = 300;
+		final int FPS_MAX = 60;
 		final int TICK_RATE = 60;
 		
 		Scene scene = new Scene(this, TICK_RATE);
 		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);
 		this.window = window;
 		Renderer renderer = new Renderer(window, scene);
-		
+		Globals.RENDERER = renderer;
 		window.setRenderer(renderer);
 		window.init();
+		
+		TestAssets.initialize();
+		
+		scene.init();
 		
 		while( !window.isDestroyed() ) {
 			window.refresh();

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIAnimation;
 import org.lwjgl.assimp.AIBone;
@@ -24,14 +25,15 @@ import org.lwjgl.assimp.AIVectorKey;
 import org.lwjgl.assimp.AIVertexWeight;
 import org.lwjgl.assimp.Assimp;
 
+import project.Globals;
 import project.utils.DebugUtils;
 import project.utils.GeometryUtils;
 
-public class SceneAssetLoadTask {
+public class SceneAssetLoadTask implements ILoadTask {
 
 	public static final int DEFAULT_FLAGS = (
 		Assimp.aiProcess_GenSmoothNormals | 
-		Assimp.aiProcess_JoinIdenticalVertices |
+		//Assimp.aiProcess_JoinIdenticalVertices |
 		Assimp.aiProcess_Triangulate | 
 		Assimp.aiProcess_FixInfacingNormals | 
 		Assimp.aiProcess_CalcTangentSpace | 
@@ -59,7 +61,8 @@ public class SceneAssetLoadTask {
 	}
 	
 	
-	public void load() {
+	@Override
+	public boolean load() {
 		int preTransformVerticesFlag = (
 			this.expectedAnimations.size() > 0 ? 
 			0 : Assimp.aiProcess_PreTransformVertices
@@ -71,7 +74,7 @@ public class SceneAssetLoadTask {
 		
 		if( aiScene == null ) {
 			DebugUtils.log(this, "ERROR: Failed to load scene from path: ", this.assetPath);
-			return;
+			return false;
 		}
 		
 			//////////////////////////// Extract meshes ////////////////////////////
@@ -91,117 +94,60 @@ public class SceneAssetLoadTask {
 		int s = Math.min(meshCount, expectedMeshCount);
 		for( int i = 0; i < s; i++ ) {
 			AIMesh aiMesh = AIMesh.create(aiMeshBuffer.get(i));
-			
-			float[] positions;
-			float[] normals;
-			float[] bitangents;
-			float[] tangents;
-			float[] textureCoordinates = new float[0];
-			int[] indices;
-			
-				// Extract vertices
-			AIVector3D.Buffer vertexBuffer = aiMesh.mVertices();
-			positions = new float[vertexBuffer.remaining() * 3];
-			int vertexIndex = 0;
-			while( vertexBuffer.remaining() > 0 ) {
-				AIVector3D vertex = vertexBuffer.get();
-				positions[vertexIndex++] = vertex.x();
-				positions[vertexIndex++] = vertex.y();
-				positions[vertexIndex++] = vertex.z();
-			}
-			
-				// Extract normals
-			AIVector3D.Buffer normalBuffer = aiMesh.mNormals();
-			normals = new float[normalBuffer.remaining() * 3];
-			int normalIndex = 0;
-			while( normalBuffer.remaining() > 0 ) {
-				AIVector3D normal = normalBuffer.get();
-				normals[normalIndex++] = normal.x();
-				normals[normalIndex++] = normal.y();
-				normals[normalIndex++] = normal.z();
-			}
-			
-				// Extract tangents
-			AIVector3D.Buffer tangentBuffer = aiMesh.mTangents();
-			if( tangentBuffer != null ) {
-				tangents = new float[tangentBuffer.remaining() * 3];
-				int tangentIndex = 0;
-				while( tangentBuffer.remaining() > 0 ) {
-					AIVector3D tangent = tangentBuffer.get();
-					tangents[tangentIndex++] = tangent.x();
-					tangents[tangentIndex++] = tangent.y();
-					tangents[tangentIndex++] = tangent.z();
-				}
-			} else {
-				tangents = new float[0];
-			}
-			
+			Vector3f[] vertices = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mVertices());
+			Vector3f[] normals = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mNormals());
+			Vector3f[] tangents = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mTangents());
+			Vector3f[] bitangents = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mBitangents());
+			Vector3f[] UVs = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mTextureCoords(0));
+
+				// By default, set tangents array should be the same length as the normals array
 			if( tangents.length == 0 ) {
-				tangents = new float[normals.length];
-				DebugUtils.log(this, "no tangents");
+				tangents = new Vector3f[normals.length];
+				DebugUtils.log(this, "WARNING: Scene asset contains no tangents!");
 			}
 			
-			
-				// Extract bitangents
-			AIVector3D.Buffer bitangentBuffer = aiMesh.mBitangents();
-			if( bitangentBuffer != null ) {
-				bitangents = new float[bitangentBuffer.remaining() * 3];
-				int bitangentIndex = 0;
-				while( bitangentBuffer.remaining() > 0 ) {
-					AIVector3D bitangent = bitangentBuffer.get();
-					bitangents[bitangentIndex++] = bitangent.x();
-					bitangents[bitangentIndex++] = bitangent.y();
-					bitangents[bitangentIndex++] = bitangent.z();
-				}
-			} else {
-				bitangents = new float[0];
-			}
-			
+				// By default, set bitangents array should be the same length as the normals array
 			if( bitangents.length == 0 ) {
-				bitangents = new float[normals.length];
+				bitangents = new Vector3f[normals.length];
+				DebugUtils.log(this, "WARNING: Scene asset contains no bitangents!");
 			}
 			
-				// Extract texture coordinates
-			AIVector3D.Buffer textureCoordinateBuffer = aiMesh.mTextureCoords(0);
-			if( textureCoordinateBuffer != null ) {
-				textureCoordinates = new float[textureCoordinateBuffer.remaining() * 2];
-				int coordinateIndex = 0;
-				while( textureCoordinateBuffer.remaining() > 0 ) {
-					AIVector3D textureCoordinate = textureCoordinateBuffer.get();
-					textureCoordinates[coordinateIndex++] = textureCoordinate.x();
-					textureCoordinates[coordinateIndex++] = 1 - textureCoordinate.y();
-				}
+				// Fix UV-coordinates
+			for( Vector3f uv : UVs ) {
+				uv.y = 1 - uv.y;
 			}
 			
 				// Extract indices
-			List<Integer> indexList = new ArrayList<>();
+			List<Mesh.Face> faces = new ArrayList<>();
 			int faceCount = aiMesh.mNumFaces();
 			AIFace.Buffer aiFaceBuffer = aiMesh.mFaces();
+			
 			for( int j = 0; j < faceCount; j++ ) {
 				AIFace aiFace = aiFaceBuffer.get(j);
 				IntBuffer indexBuffer = aiFace.mIndices();
+				int[] indices = new int[Mesh.Face.INDICES_PER_FACE];
+				int index = 0;
 				while( indexBuffer.remaining() > 0 ) {
-					indexList.add(indexBuffer.get());
+					indices[index++] = indexBuffer.get();
 				}
+				
+				faces.add(new Mesh.Face(indices));
 			}
 			
-			if( tangents.length == 0 ) {
-				tangents = new float[normals.length];
-			}
+			Mesh.Data data = new Mesh.Data();
+			data.targetMesh = this.expectedMeshes.get(i);
+			data.vertices = vertices; 
+			data.normals = normals; 
+			data.tangents = tangents; 
+			data.bitangents = bitangents;
+			data.UVs = UVs;
+			data.faces = faces.toArray(new Mesh.Face[faces.size()]);
+			data.animationMeshData = this.processBones(aiMesh, boneList);
 			
-			indices = new int[indexList.size()];
-			for( int j = 0; j < indexList.size(); j++ ) {
-				indices[j] = indexList.get(j);
-			}
-			
-			this.expectedMeshes.get(i).populate(
-				positions, 
-				normals, 
-				bitangents, 
-				tangents, 
-				textureCoordinates, 
-				indices, 
-				this.processBones(aiMesh, boneList) // Extract bones
+			Globals.ASSET_MANAGER.notifyResult(
+				data.targetMesh, 
+				data,
+				Globals.RENDERER
 			);
 		}
 		
@@ -218,7 +164,6 @@ public class SceneAssetLoadTask {
 		}
 		
 		animationCount = Math.min(animationCount, expectedAnimationCount);
-		DebugUtils.log(this, "animationCount", animationCount);
 		
 		if( animationCount > 0 ) {
 			Node rootNode = this.buildNodesTree(aiScene.mRootNode(), null);
@@ -229,6 +174,8 @@ public class SceneAssetLoadTask {
 		}
 		
 		Assimp.aiReleaseImport(aiScene);
+		
+		return true;
 	}
 	
 	private AnimationMeshData processBones(AIMesh aiMesh, List<Bone> boneList) {
