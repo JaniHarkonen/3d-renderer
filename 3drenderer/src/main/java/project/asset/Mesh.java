@@ -110,6 +110,9 @@ public class Mesh implements IGraphicsAsset {
 		);
 		return mesh;
 	}
+	
+	
+	/************************* Class body **************************/
 
 	private final String name;
 	
@@ -145,6 +148,7 @@ public class Mesh implements IGraphicsAsset {
 		}
 	}
 	
+	
 	public void populate(
 		Vector3f[] vertices,
 		Vector3f[] normals,
@@ -161,6 +165,23 @@ public class Mesh implements IGraphicsAsset {
 		this.UVs = UVs;
 		this.faces = faces;
 		this.animationMeshData = animationMeshData;
+	}
+	
+	@Override
+	public boolean deload() {
+		if( this != DEFAULT ) {
+			Globals.RENDERER.assetDeloaded(this);
+			
+			this.vertices = null;
+			this.normals = null;
+			this.tangents = null;
+			this.bitangents = null;
+			this.UVs = null;
+			this.faces = null;
+			this.animationMeshData = null;
+			return true;
+		}
+		return false;
 	}
 	
 	public int getVertexCount() {

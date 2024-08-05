@@ -20,6 +20,7 @@ import project.scene.ASceneObject;
 import project.scene.Camera;
 import project.scene.GameState;
 import project.scene.Scene;
+import project.utils.DebugUtils;
 
 public class Renderer implements ISystem {
 	
@@ -65,13 +66,11 @@ public class Renderer implements ISystem {
 			// Generate default mesh VAO
 		VAO vao = new VAO(Mesh.DEFAULT);
 		vao.generate();
-		//vao.dropGraphicsAsset();
 		this.defaultMeshGraphics = vao;
 		
 			// Generate default TextureGL
 		TextureGL textureGL = new TextureGL(Texture.DEFAULT);
 		textureGL.generate();
-		//textureGL.dropGraphicsAsset();
 		this.defaultTextureGraphics = textureGL;
 	}
 		
@@ -125,11 +124,25 @@ public class Renderer implements ISystem {
 	}
 	
 	private void processGenerationRequest(IGraphicsAsset graphicsAsset) {
-		graphicsAsset.getGraphics().regenerate();
+		if( !graphicsAsset.getGraphics().regenerate() ) {
+			DebugUtils.log(
+				this, 
+				"WARNING: Unable to generate a graphics representation for graphics asset '" + 
+				graphicsAsset.getName() + "'!", 
+				"Using default instead."
+			);
+		}
 	}
 	
 	private void processDisposalRequest(IGraphicsAsset graphicsAsset) {
-		graphicsAsset.getGraphics().dispose();
+		if( !graphicsAsset.getGraphics().dispose() ) {
+			DebugUtils.log(
+				this, 
+				"WARNING: Unable to dispose the graphics representation of graphics asset '" + 
+				graphicsAsset.getName() + "'!", 
+				"Possibly attempting to dispose a default graphics representation."
+			);
+		}
 	}
 	
 	public void submitGameState() {

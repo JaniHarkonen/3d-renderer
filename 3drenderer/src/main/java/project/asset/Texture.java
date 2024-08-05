@@ -6,6 +6,8 @@ import project.Globals;
 
 public class Texture implements IGraphicsAsset {
 	
+	/************************* Data-class **************************/
+	
 	public static class Data implements IAssetData {
 		Texture targetTexture;
 		int width;
@@ -19,25 +21,13 @@ public class Texture implements IGraphicsAsset {
 		}
 	}
 	
+	
+	/************************* Texture-class **************************/
 
 	public static Texture createTexture(String name, String bytes) {
         int width = 16;
         int height = 16;
         int channelCount = 4;
-        /*ByteBuffer pixels = MemoryUtil.memAlloc(bytes.length() * channelCount);
-        
-            // Populate pixels upside-down due to OpenGL
-        for( int i = bytes.length() - 1; i >= 0; i-- )
-        {
-            byte value = (bytes.charAt(i) == '1') ? (byte) 255 : 0;
-            
-            pixels.put((byte) value);
-            pixels.put((byte) value);
-            pixels.put((byte) value);
-            pixels.put((byte) 255);
-        }
-        
-        pixels.flip();*/
         
         Texture texture = new Texture(name, false);
         texture.populate(width, height, AssetUtils.stringToPixels(bytes, width, height, channelCount));
@@ -69,6 +59,9 @@ public class Texture implements IGraphicsAsset {
 			)
 		);
 	}
+	
+	
+	/************************* Class body **************************/
 	
 	private final String name;
 	
@@ -103,14 +96,24 @@ public class Texture implements IGraphicsAsset {
 		this.pixels = pixels;
 	}
 	
-	public String getName() {
-		return this.name;
+	@Override
+	public boolean deload() {
+		if( this != DEFAULT ) {
+			this.pixels = null;
+			Globals.RENDERER.assetDeloaded(this);
+			return true;
+		}
+		return false;
 	}
-
 	
 	@Override
 	public void setGraphics(IGraphics graphics) {
 		this.graphics = graphics;
+	}
+	
+	@Override
+	public String getName() {
+		return this.name;
 	}
 
 	@Override

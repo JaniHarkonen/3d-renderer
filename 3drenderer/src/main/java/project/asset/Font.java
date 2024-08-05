@@ -130,7 +130,7 @@ public class Font implements IAsset {
 			for( String characterKey : this.charactersJson.keySet() ) {
 				JSONObject characterJson = this.charactersJson.getJSONObject(characterKey);
 				char character = characterKey.charAt(0);
-				Font.Glyph glyph = new Font.Glyph(
+				Glyph glyph = new Glyph(
 					character,
 					characterJson.getFloat("x"),
 					characterJson.getFloat("y"),
@@ -150,8 +150,6 @@ public class Font implements IAsset {
     
     
     /************************* Font-class *************************/
-    
-    
     
     private final String name;
     
@@ -180,7 +178,7 @@ public class Font implements IAsset {
     
     public void initialize() {
         for( Map.Entry<Character, Glyph> en : this.glyphs.entrySet() ) {
-            Font.Glyph glyph = en.getValue();
+            Glyph glyph = en.getValue();
             
             float glyphX = glyph.getX();
             float glyphY = glyph.getY();
@@ -209,14 +207,23 @@ public class Font implements IAsset {
         }
     }
     
-    public void addGlyph(char glyphCharacter, Font.Glyph glyph) {
+    public void addGlyph(char glyphCharacter, Glyph glyph) {
         glyph.font = this;
         this.glyphs.put(glyphCharacter, glyph);
     }
     
+    @Override
+    public boolean deload() {
+    	for( Map.Entry<Character, Glyph> en : this.glyphs.entrySet() ) {
+    		en.getValue().getMesh().deload();
+    	}
+    	this.glyphs.clear();
+    	return true;
+    }
+    
     /************************ GETTERS ************************/
     
-    public Font.Glyph getGlyph(char character) {
+    public Glyph getGlyph(char character) {
         return this.glyphs.getOrDefault(character, this.defaultGlyph);
     }
     

@@ -10,7 +10,6 @@ import project.asset.IGraphics;
 import project.asset.IGraphicsAsset;
 import project.asset.Mesh;
 import project.asset.SceneAssetLoadTask;
-import project.utils.DebugUtils;
 
 public class VAO implements IGraphics {
 
@@ -135,8 +134,16 @@ public class VAO implements IGraphics {
 	
 	@Override
 	public boolean dispose() {
-		DebugUtils.log(this, "Disposing VAO of mesh '" + this.targetMesh.getName() + "'!", "!NOT IMPLEMENTED!");
-		return false;
+		this.positionsVBO.dispose();
+		this.normalsVBO.dispose();
+		this.tangentsVBO.dispose();
+		this.bitangentsVBO.dispose();
+		this.textureCoordinatesVBO.dispose();
+		this.boneWeightVBO.dispose();
+		this.boneIndicesVBO.dispose();
+		GL46.glDeleteBuffers(this.indicesVBO);
+		GL46.glDeleteVertexArrays(this.vaoHandle);
+		return true;
 	}
 	
 	public void bind() {

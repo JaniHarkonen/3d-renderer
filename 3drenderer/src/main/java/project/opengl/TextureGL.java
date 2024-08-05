@@ -7,7 +7,6 @@ import project.Globals;
 import project.asset.IGraphics;
 import project.asset.IGraphicsAsset;
 import project.asset.Texture;
-import project.utils.DebugUtils;
 
 public class TextureGL implements IGraphics {
 
@@ -72,8 +71,8 @@ public class TextureGL implements IGraphics {
 	
 	@Override
 	public boolean dispose() {
-		DebugUtils.log(this, "Disposing TextureGL of texture '" + this.targetTexture.getName() + "'!", "!NOT IMPLEMENTED!");
-		return false;
+		GL46.glDeleteTextures(this.handle);
+		return true;
 	}
 	
 	public void bind() {
