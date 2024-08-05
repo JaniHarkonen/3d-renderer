@@ -42,6 +42,7 @@ public class Scene {
 		this.deltaTimer = System.nanoTime();
 		this.setTickRate(tickRate);
 		this.app = app;
+		
 		this.DEBUGtextAppStatistics = null;
 		this.DEBUGtestPointLight0 = null;
 		this.DEBUGshadowLightPosition = null;
@@ -93,10 +94,10 @@ public class Scene {
 		
 			// Soldier
 		TestDummy soldier = new TestDummy(this, TestAssets.createTestSoldier(this));
-		soldier.setPosition(1, -1, 0);
-		soldier.getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
-		//this.objects.add(soldier);
-		//DebugUtils.log(this, "Soldier TestDummy added!");
+		soldier.setPosition(1, -10, -100);
+		//soldier.getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
+		this.objects.add(soldier);
+		DebugUtils.log(this, "Soldier TestDummy added!");
 		
 			// GUI
 		this.createGUI();
@@ -125,7 +126,6 @@ public class Scene {
 		this.deltaTimer = System.nanoTime();
 		Window appWindow = this.app.getWindow();
 		
-		//Globals.ASSET_MANAGER.processResults(System.nanoTime());
 		Globals.ASSET_MANAGER.processTaskResults(System.nanoTime());
 		
 		appWindow.pollInput();

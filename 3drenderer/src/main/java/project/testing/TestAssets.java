@@ -2,6 +2,7 @@ package project.testing;
 
 import project.Globals;
 import project.asset.Animation;
+import project.asset.AnimationData;
 import project.asset.Font;
 import project.asset.FontLoadTask;
 import project.asset.Mesh;
@@ -92,13 +93,13 @@ public final class TestAssets {
 		loadSceneAsset("models/Outside.fbx", MESH_OUTSIDE_PLACE);
 		
 		ANIM_SOLDIER_IDLE = new Animation();
-		//MESH_SOLDIER = createMeshArray("mesh-soldier", 8);
-		//loadSceneAsset("models/soldier.fbx", MESH_SOLDIER, new Animation[] {ANIM_SOLDIER_IDLE});
+		MESH_SOLDIER = createMeshArray("mesh-soldier", 8);
+		loadSceneAsset("models/soldier.fbx", MESH_SOLDIER/*, new Animation[] {ANIM_SOLDIER_IDLE}*/);
 		
-		Mesh[] array = createMeshArray("mesh-man", 1);
-		ANIM_RUN = new Animation();
+		//Mesh[] array = createMeshArray("mesh-man", 1);
+		//ANIM_RUN = new Animation();
 		//loadSceneAsset("models/man.fbx", array, new Animation[] {ANIM_RUN});
-		MESH_MAN = array[0];
+		//MESH_MAN = array[0];
 	}
 	
 	public static void initMaterials() {
@@ -344,14 +345,14 @@ public final class TestAssets {
 	public static Model createTestSoldier(Scene scene) {
 		Model model = new Model(scene);
 		//model.addMesh(TestAssets.MESH_SOLDIER[0], TestAssets.MAT_TEST_RED);
-		/*model.addMesh(TestAssets.MESH_SOLDIER[1], TestAssets.MAT_SOLDIER_HEAD);
+		model.addMesh(TestAssets.MESH_SOLDIER[1], TestAssets.MAT_SOLDIER_HEAD);
 		model.addMesh(TestAssets.MESH_SOLDIER[2], TestAssets.MAT_SOLDIER_BODY);
 		model.addMesh(TestAssets.MESH_SOLDIER[3], TestAssets.MAT_SOLDIER_VEST);
 		model.addMesh(TestAssets.MESH_SOLDIER[4], TestAssets.MAT_SOLDIER_HELMET);
 		model.addMesh(TestAssets.MESH_SOLDIER[5], TestAssets.MAT_SOLDIER_GADGETS);
 		model.addMesh(TestAssets.MESH_SOLDIER[6], TestAssets.MAT_SOLDIER_EYES);
 		model.addMesh(TestAssets.MESH_SOLDIER[7], TestAssets.MAT_SOLDIER_EYELASH);
-		model.setAnimationData(new AnimationData(TestAssets.ANIM_SOLDIER_IDLE));*/
+		//model.setAnimationData(new AnimationData(TestAssets.ANIM_SOLDIER_IDLE));
 		return model;
 	}
 	

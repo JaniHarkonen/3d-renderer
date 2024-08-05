@@ -103,12 +103,14 @@ public class SceneAssetLoadTask implements ILoadTask {
 				// By default, set tangents array should be the same length as the normals array
 			if( tangents.length == 0 ) {
 				tangents = new Vector3f[normals.length];
+				Arrays.fill(tangents, new Vector3f(0.0f));
 				DebugUtils.log(this, "WARNING: Scene asset contains no tangents!");
 			}
 			
 				// By default, set bitangents array should be the same length as the normals array
 			if( bitangents.length == 0 ) {
 				bitangents = new Vector3f[normals.length];
+				Arrays.fill(bitangents, new Vector3f(0.0f));
 				DebugUtils.log(this, "WARNING: Scene asset contains no bitangents!");
 			}
 			
