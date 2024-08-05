@@ -6,8 +6,8 @@ import java.util.List;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import project.asset.AnimationData;
-import project.asset.Mesh;
+import project.asset.sceneasset.AnimationData;
+import project.asset.sceneasset.Mesh;
 import project.component.Material;
 
 public class Model extends ASceneObject {

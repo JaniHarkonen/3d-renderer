@@ -1,13 +1,13 @@
 package project.testing;
 
 import project.Application;
-import project.asset.Animation;
-import project.asset.Font;
-import project.asset.FontLoadTask;
-import project.asset.Mesh;
-import project.asset.SceneAssetLoadTask;
-import project.asset.Texture;
-import project.asset.TextureLoadTask;
+import project.asset.font.Font;
+import project.asset.font.FontLoadTask;
+import project.asset.sceneasset.Animation;
+import project.asset.sceneasset.Mesh;
+import project.asset.sceneasset.SceneAssetLoadTask;
+import project.asset.texture.Texture;
+import project.asset.texture.TextureLoadTask;
 import project.component.Material;
 import project.scene.Model;
 import project.scene.Scene;

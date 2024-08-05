@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
 
 import project.Application;
+import project.asset.sceneasset.Mesh;
 
 public final class AssetUtils {
 

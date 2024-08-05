@@ -4,9 +4,9 @@ import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryStack;
 
 import project.Application;
-import project.asset.IGraphics;
-import project.asset.IGraphicsAsset;
-import project.asset.Texture;
+import project.asset.texture.Texture;
+import project.core.asset.IGraphics;
+import project.core.asset.IGraphicsAsset;
 
 public class TextureGL implements IGraphics {
 

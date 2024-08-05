@@ -3,8 +3,8 @@ package project.opengl;
 import java.util.HashMap;
 import java.util.Map;
 
-import project.pass.IRenderPass;
-import project.pass.IRenderStrategy;
+import project.core.renderer.IRenderPass;
+import project.core.renderer.IRenderStrategy;
 
 public class RenderStrategyManager<T extends IRenderPass> {
 

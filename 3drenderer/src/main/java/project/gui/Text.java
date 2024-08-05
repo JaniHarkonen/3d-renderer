@@ -2,7 +2,7 @@ package project.gui;
 
 import org.joml.Vector4f;
 
-import project.asset.Font;
+import project.asset.font.Font;
 import project.testing.TestAssets;
 
 public class Text extends AGUIElement {

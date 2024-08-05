@@ -6,10 +6,10 @@ import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryUtil;
 
 import project.Application;
-import project.asset.IGraphics;
-import project.asset.IGraphicsAsset;
-import project.asset.Mesh;
-import project.asset.SceneAssetLoadTask;
+import project.asset.sceneasset.Mesh;
+import project.asset.sceneasset.SceneAssetLoadTask;
+import project.core.asset.IGraphics;
+import project.core.asset.IGraphicsAsset;
 
 public class VAO implements IGraphics {
 

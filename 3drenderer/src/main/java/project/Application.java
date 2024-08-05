@@ -1,7 +1,7 @@
 package project;
 
-import project.asset.AssetManager;
-import project.opengl.IRenderer;
+import project.core.asset.AssetManager;
+import project.core.renderer.IRenderer;
 import project.opengl.Renderer;
 import project.scene.Scene;
 import project.testing.TestAssets;
