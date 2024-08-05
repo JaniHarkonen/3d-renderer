@@ -1,13 +1,13 @@
 package project.testing;
 
-import project.Globals;
-import project.asset.Animation;
-import project.asset.Font;
-import project.asset.FontLoadTask;
-import project.asset.Mesh;
-import project.asset.SceneAssetLoadTask;
-import project.asset.Texture;
-import project.asset.TextureLoadTask;
+import project.Application;
+import project.asset.font.Font;
+import project.asset.font.FontLoadTask;
+import project.asset.sceneasset.Animation;
+import project.asset.sceneasset.Mesh;
+import project.asset.sceneasset.SceneAssetLoadTask;
+import project.asset.texture.Texture;
+import project.asset.texture.TextureLoadTask;
 import project.component.Material;
 import project.scene.Model;
 import project.scene.Scene;
@@ -83,23 +83,8 @@ public final class TestAssets {
 	}
 	
 	public static void initFonts() {
-			// Arial, normal, size 20
-		FONT_ARIAL_20 = new Font("font-arial-20", loadTexture("tex-font-arial-20", "fonts/arial/size20/font_arial20.png"), 230, 89);
-		FontLoadTask fontTask = new FontLoadTask(
-			FileUtils.getResourcePath("fonts/arial/size20/arial20.json"), 
-			FONT_ARIAL_20
-		);
-		fontTask.load();
-		FONT_ARIAL_20.init();
-		
-			// Arial, normal, size 16
-		FONT_ARIAL_16 = new Font("font-arial-16", loadTexture("tex-font-arial-16", "fonts/arial/size16/arial16.png"), 178, 76);
-		fontTask = new FontLoadTask(
-			FileUtils.getResourcePath("fonts/arial/size16/arial16.json"), 
-			FONT_ARIAL_16
-		);
-		fontTask.load();
-		FONT_ARIAL_16.init();
+		FONT_ARIAL_20 = loadFont("font-arial-20", "fonts/arial/size20/arial20", 230, 89);
+		FONT_ARIAL_16 = loadFont("font-arial-16", "fonts/arial/size16/arial16", 178, 76);
 	}
 	
 	public static void initMeshes() {
@@ -107,13 +92,13 @@ public final class TestAssets {
 		loadSceneAsset("models/Outside.fbx", MESH_OUTSIDE_PLACE);
 		
 		ANIM_SOLDIER_IDLE = new Animation();
-		//MESH_SOLDIER = createMeshArray("mesh-soldier", 8);
-		//loadSceneAsset("models/soldier.fbx", MESH_SOLDIER, new Animation[] {ANIM_SOLDIER_IDLE});
+		MESH_SOLDIER = createMeshArray("mesh-soldier", 8);
+		loadSceneAsset("models/soldier.fbx", MESH_SOLDIER/*, new Animation[] {ANIM_SOLDIER_IDLE}*/);
 		
-		Mesh[] array = createMeshArray("mesh-man", 1);
-		ANIM_RUN = new Animation();
+		//Mesh[] array = createMeshArray("mesh-man", 1);
+		//ANIM_RUN = new Animation();
 		//loadSceneAsset("models/man.fbx", array, new Animation[] {ANIM_RUN});
-		MESH_MAN = array[0];
+		//MESH_MAN = array[0];
 	}
 	
 	public static void initMaterials() {
@@ -359,14 +344,14 @@ public final class TestAssets {
 	public static Model createTestSoldier(Scene scene) {
 		Model model = new Model(scene);
 		//model.addMesh(TestAssets.MESH_SOLDIER[0], TestAssets.MAT_TEST_RED);
-		/*model.addMesh(TestAssets.MESH_SOLDIER[1], TestAssets.MAT_SOLDIER_HEAD);
+		model.addMesh(TestAssets.MESH_SOLDIER[1], TestAssets.MAT_SOLDIER_HEAD);
 		model.addMesh(TestAssets.MESH_SOLDIER[2], TestAssets.MAT_SOLDIER_BODY);
 		model.addMesh(TestAssets.MESH_SOLDIER[3], TestAssets.MAT_SOLDIER_VEST);
 		model.addMesh(TestAssets.MESH_SOLDIER[4], TestAssets.MAT_SOLDIER_HELMET);
 		model.addMesh(TestAssets.MESH_SOLDIER[5], TestAssets.MAT_SOLDIER_GADGETS);
 		model.addMesh(TestAssets.MESH_SOLDIER[6], TestAssets.MAT_SOLDIER_EYES);
 		model.addMesh(TestAssets.MESH_SOLDIER[7], TestAssets.MAT_SOLDIER_EYELASH);
-		model.setAnimationData(new AnimationData(TestAssets.ANIM_SOLDIER_IDLE));*/
+		//model.setAnimationData(new AnimationData(TestAssets.ANIM_SOLDIER_IDLE));
 		return model;
 	}
 	
@@ -409,7 +394,7 @@ public final class TestAssets {
 		String texturePath = FileUtils.getResourcePath(relativePath);
 		Texture result = new Texture(name);
 		TextureLoadTask task = new TextureLoadTask(texturePath, result);
-		Globals.ASSET_MANAGER.scheduleLoadTask(task);
+		Application.getApp().getAssetManager().scheduleLoadTask(task);
 		
 		return result;
 	}
@@ -422,7 +407,7 @@ public final class TestAssets {
 		);
 		task.expectMesh(expectedMeshes);
 		task.expectAnimation(expectedAnimations);
-		Globals.ASSET_MANAGER.scheduleLoadTask(task);
+		Application.getApp().getAssetManager().scheduleLoadTask(task);
 	}
 	
 	private static void loadSceneAsset(String relativePath, Mesh[] expectedMeshes) {
@@ -432,6 +417,17 @@ public final class TestAssets {
 	private static Mesh loadMesh(String name, String relativePath) {
 		Mesh result = new Mesh(name);
 		loadSceneAsset(relativePath, new Mesh[] {result});
+		return result;
+	}
+	
+	private static Font loadFont(String name, String relativePath, int textureWidth, int textureHeight) {
+		Font result = new Font(name, loadTexture("tex-" + name, relativePath + ".png"), textureWidth, textureHeight);
+		
+		FontLoadTask task = new FontLoadTask(
+			FileUtils.getResourcePath(relativePath + ".json"), 
+			result
+		);
+		Application.getApp().getAssetManager().scheduleLoadTask(task);
 		return result;
 	}
 }

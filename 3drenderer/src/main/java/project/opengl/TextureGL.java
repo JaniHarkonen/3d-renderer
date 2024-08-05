@@ -3,11 +3,10 @@ package project.opengl;
 import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryStack;
 
-import project.Globals;
-import project.asset.IGraphics;
-import project.asset.IGraphicsAsset;
-import project.asset.Texture;
-import project.utils.DebugUtils;
+import project.Application;
+import project.asset.texture.Texture;
+import project.core.asset.IGraphics;
+import project.core.asset.IGraphicsAsset;
 
 public class TextureGL implements IGraphics {
 
@@ -72,8 +71,8 @@ public class TextureGL implements IGraphics {
 	
 	@Override
 	public boolean dispose() {
-		DebugUtils.log(this, "Disposing TextureGL of texture '" + this.targetTexture.getName() + "'!", "!NOT IMPLEMENTED!");
-		return false;
+		GL46.glDeleteTextures(this.handle);
+		return true;
 	}
 	
 	public void bind() {
@@ -91,7 +90,7 @@ public class TextureGL implements IGraphics {
 
 	@Override
 	public boolean isNull() {
-		TextureGL defaultTextureGL = (TextureGL) Globals.RENDERER.getDefaultTextureGraphics();
+		TextureGL defaultTextureGL = (TextureGL) Application.getApp().getRenderer().getDefaultTextureGraphics();
 		return (this.handle == defaultTextureGL.handle);
 	}
 	

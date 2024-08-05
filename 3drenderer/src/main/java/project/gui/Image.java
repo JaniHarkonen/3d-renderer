@@ -3,7 +3,7 @@ package project.gui;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
-import project.asset.Texture;
+import project.asset.texture.Texture;
 
 public class Image extends AGUIElement {
 	private Texture imageTexture;

@@ -6,7 +6,7 @@ import java.util.List;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import project.Globals;
+import project.Application;
 import project.component.Rotation;
 
 public abstract class ASceneObject {
@@ -34,7 +34,7 @@ public abstract class ASceneObject {
 	}
 	
 	public void submitState() {
-		Globals.RENDERER.submitRenderable(this.rendererCopy());
+		Application.getApp().getRenderer().submitRenderable(this.rendererCopy());
 	}
 	
 	protected abstract ASceneObject rendererCopy();

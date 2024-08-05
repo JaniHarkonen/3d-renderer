@@ -3,7 +3,7 @@ package project.scene;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import project.asset.IGraphicsAsset;
+import project.core.asset.IGraphicsAsset;
 
 public class GameState {
 

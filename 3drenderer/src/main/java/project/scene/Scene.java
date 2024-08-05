@@ -7,7 +7,6 @@ import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import project.Application;
-import project.Globals;
 import project.Window;
 import project.controls.Controller;
 import project.gui.GUI;
@@ -42,6 +41,7 @@ public class Scene {
 		this.deltaTimer = System.nanoTime();
 		this.setTickRate(tickRate);
 		this.app = app;
+		
 		this.DEBUGtextAppStatistics = null;
 		this.DEBUGtestPointLight0 = null;
 		this.DEBUGshadowLightPosition = null;
@@ -93,10 +93,10 @@ public class Scene {
 		
 			// Soldier
 		TestDummy soldier = new TestDummy(this, TestAssets.createTestSoldier(this));
-		soldier.setPosition(1, -1, 0);
-		soldier.getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
-		//this.objects.add(soldier);
-		//DebugUtils.log(this, "Soldier TestDummy added!");
+		soldier.setPosition(1, -10, -100);
+		//soldier.getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
+		this.objects.add(soldier);
+		DebugUtils.log(this, "Soldier TestDummy added!");
 		
 			// GUI
 		this.createGUI();
@@ -125,8 +125,7 @@ public class Scene {
 		this.deltaTimer = System.nanoTime();
 		Window appWindow = this.app.getWindow();
 		
-		//Globals.ASSET_MANAGER.processResults(System.nanoTime());
-		Globals.ASSET_MANAGER.processTaskResults(System.nanoTime());
+		Application.getApp().getAssetManager().processTaskResults(System.nanoTime());
 		
 		appWindow.pollInput();
 		for( ASceneObject object : this.objects ) {
@@ -194,7 +193,7 @@ public class Scene {
 			object.submitState();
 		}
 		
-		Globals.RENDERER.submitGameState();
+		Application.getApp().getRenderer().submitGameState();
 	}
 	
 	private String convertToLargestByte(long n) {

@@ -94,7 +94,7 @@ public class Window {
 		GLFW.glfwSwapInterval(this.vsync); // v-sync
 		this.isDestroyed = false;
 		
-		this.renderer.init();
+		this.renderer.initialize();
 	}
 	
 	public void refresh() {

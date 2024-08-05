@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.net.URL;
 
-import project.opengl.Renderer;
+import project.Application;
 
 public final class FileUtils {
 
@@ -36,7 +36,7 @@ public final class FileUtils {
 	}
 	
 	public static String getResourcePath(String relativePath) {
-		URL url = Renderer.class.getResource("/" + relativePath);
+		URL url = Application.class.getResource("/" + relativePath);
 		
 		if( url == null ) {
 			DebugUtils.log(

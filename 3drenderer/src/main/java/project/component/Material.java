@@ -2,7 +2,7 @@ package project.component;
 
 import org.joml.Vector4f;
 
-import project.asset.Texture;
+import project.asset.texture.Texture;
 
 public class Material {
 	
