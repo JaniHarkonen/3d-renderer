@@ -1,9 +1,9 @@
 package project.pass;
 
-import project.opengl.Renderer;
+import project.opengl.IRenderer;
 
 public interface IRenderPass {
 
 	public boolean init();
-	public void render(Renderer renderer);
+	public void render(IRenderer renderer);
 }

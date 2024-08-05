@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL46;
 
 import project.asset.AnimationData;
 import project.asset.Mesh;
-import project.opengl.Renderer;
+import project.opengl.IRenderer;
 import project.opengl.VAO;
 import project.pass.IRenderStrategy;
 import project.scene.ASceneObject;
@@ -14,7 +14,7 @@ import project.shader.ShaderProgram;
 class RenderModel implements IRenderStrategy<CascadeShadowRenderPass> {
 
 	@Override
-	public void execute(Renderer renderer, CascadeShadowRenderPass renderPass, ASceneObject target) {
+	public void execute(IRenderer renderer, CascadeShadowRenderPass renderPass, ASceneObject target) {
 		ShaderProgram activeShaderProgram = renderPass.shaderProgram;
 		Model model = (Model) target;
 		for( int j = 0; j < model.getMeshCount(); j++ ) {

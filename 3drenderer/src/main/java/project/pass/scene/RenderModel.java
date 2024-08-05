@@ -6,6 +6,7 @@ import project.asset.AnimationData;
 import project.asset.Mesh;
 import project.asset.Texture;
 import project.component.Material;
+import project.opengl.IRenderer;
 import project.opengl.Renderer;
 import project.opengl.TextureGL;
 import project.opengl.VAO;
@@ -17,7 +18,7 @@ import project.shader.ShaderProgram;
 class RenderModel implements IRenderStrategy<SceneRenderPass> {
 
 	@Override
-	public void execute(Renderer renderer, SceneRenderPass renderPass, ASceneObject target) {
+	public void execute(IRenderer renderer, SceneRenderPass renderPass, ASceneObject target) {
 		ShaderProgram activeShaderProgram = renderPass.shaderProgram;
 		
 		target.updateTransformMatrix();
@@ -43,7 +44,7 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 				textureGL.bind();
 			}
 			
-			if( material.getTexture(1) != null && renderer.getActiveScene().DEBUGareNormalsActive() ) {
+			if( material.getTexture(1) != null && ((Renderer) renderer).getActiveScene().DEBUGareNormalsActive() ) {
 				activeShaderProgram.setInteger1Uniform(
 					SceneRenderPass.U_MATERIAL_HAS_NORMAL_MAP, 1
 				);

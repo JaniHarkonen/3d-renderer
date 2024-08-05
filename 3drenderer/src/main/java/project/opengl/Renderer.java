@@ -10,7 +10,6 @@ import project.Window;
 import project.asset.IAsset;
 import project.asset.IGraphics;
 import project.asset.IGraphicsAsset;
-import project.asset.ISystem;
 import project.asset.Mesh;
 import project.asset.Texture;
 import project.pass.cshadow.CascadeShadowRenderPass;
@@ -22,7 +21,7 @@ import project.scene.GameState;
 import project.scene.Scene;
 import project.utils.DebugUtils;
 
-public class Renderer implements ISystem {
+public class Renderer implements IRenderer {
 	
 	private Window clientWindow;
 	
@@ -51,7 +50,8 @@ public class Renderer implements ISystem {
 	}
 
 	
-	public void init() {
+	@Override
+	public boolean initialize() {
 		GL.createCapabilities();
 		GL46.glClearColor(0.643f, 0.62f, 0.557f, 1.0f);
 		
@@ -59,9 +59,12 @@ public class Renderer implements ISystem {
 		this.cascadeRenderPass.init();
 		this.sceneRenderPass.init();
 		this.guiRenderPass.init();
+		
+		return true;
 	}
 	
-	public void generateDefaults() {
+	@Override
+	public boolean generateDefaults() {
 		
 			// Generate default mesh VAO
 		VAO vao = new VAO(Mesh.DEFAULT);
@@ -72,8 +75,11 @@ public class Renderer implements ISystem {
 		TextureGL textureGL = new TextureGL(Texture.DEFAULT);
 		textureGL.generate();
 		this.defaultTextureGraphics = textureGL;
+		
+		return true;
 	}
 		
+	@Override
 	public void render() {
 		GameState gameState;
 		while( (gameState = this.gameStateQueue.poll()) != null ) {
@@ -145,11 +151,13 @@ public class Renderer implements ISystem {
 		}
 	}
 	
+	@Override
 	public void submitGameState() {
 		this.gameStateQueue.add(this.backGameState);
 		this.backGameState = new GameState();
 	}
 	
+	@Override
 	public void submitRenderable(ASceneObject object) {
 		this.backGameState.listRenderable(object);
 	}
@@ -164,6 +172,7 @@ public class Renderer implements ISystem {
 		this.backGameState.listDisposalRequest((IGraphicsAsset) asset);
 	}
 	
+	@Override
 	public Window getClientWindow() {
 		return this.clientWindow;
 	}
@@ -172,10 +181,12 @@ public class Renderer implements ISystem {
 		return this.scene;
 	}
 	
+	@Override
 	public IGraphics getDefaultMeshGraphics() {
 		return this.defaultMeshGraphics;
 	}
 	
+	@Override
 	public IGraphics getDefaultTextureGraphics() {
 		return this.defaultTextureGraphics;
 	}

@@ -5,7 +5,7 @@ import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
 
 import project.gui.Image;
-import project.opengl.Renderer;
+import project.opengl.IRenderer;
 import project.opengl.TextureGL;
 import project.opengl.VAO;
 import project.pass.IRenderStrategy;
@@ -15,7 +15,7 @@ import project.shader.ShaderProgram;
 public class RenderImage implements IRenderStrategy<GUIRenderPass> {
 
 	@Override
-	public void execute(Renderer renderer, GUIRenderPass renderPass, ASceneObject target) {
+	public void execute(IRenderer renderer, GUIRenderPass renderPass, ASceneObject target) {
 		ShaderProgram activeShaderProgram = renderPass.shaderProgram;
 		Image element = (Image) target;
 		

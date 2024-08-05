@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL46;
 
 import project.asset.Font;
 import project.gui.Text;
-import project.opengl.Renderer;
+import project.opengl.IRenderer;
 import project.opengl.TextureGL;
 import project.opengl.VAO;
 import project.pass.IRenderStrategy;
@@ -16,7 +16,7 @@ import project.shader.ShaderProgram;
 public class RenderText implements IRenderStrategy<GUIRenderPass> {
 
 	@Override
-	public void execute(Renderer renderer, GUIRenderPass renderPass, ASceneObject target) {
+	public void execute(IRenderer renderer, GUIRenderPass renderPass, ASceneObject target) {
 		ShaderProgram activeShaderProgram = renderPass.shaderProgram;
 		Text element = (Text) target;
 		

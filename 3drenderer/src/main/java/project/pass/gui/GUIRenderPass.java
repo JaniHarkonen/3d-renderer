@@ -8,6 +8,7 @@ import project.asset.Mesh;
 import project.gui.AGUIElement;
 import project.gui.Image;
 import project.gui.Text;
+import project.opengl.IRenderer;
 import project.opengl.RenderStrategyManager;
 import project.opengl.Renderer;
 import project.pass.IRenderPass;
@@ -61,8 +62,8 @@ public class GUIRenderPass implements IRenderPass {
 	}
 
 	@Override
-	public void render(Renderer renderer) {
-		Scene scene = renderer.getActiveScene();
+	public void render(IRenderer renderer) {
+		Scene scene = ((Renderer) renderer).getActiveScene();
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 		
         activeShaderProgram.bind();
@@ -79,7 +80,7 @@ public class GUIRenderPass implements IRenderPass {
 		activeShaderProgram.unbind();
 	}
 	
-	private void recursiveRender(Renderer renderer, ASceneObject object) {
+	private void recursiveRender(IRenderer renderer, ASceneObject object) {
 		for( ASceneObject child : object.getChildren() ) {
 			this.recursiveRender(renderer, child);
 		}

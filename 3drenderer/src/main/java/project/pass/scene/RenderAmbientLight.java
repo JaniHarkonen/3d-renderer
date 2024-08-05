@@ -1,6 +1,6 @@
 package project.pass.scene;
 
-import project.opengl.Renderer;
+import project.opengl.IRenderer;
 import project.pass.IRenderStrategy;
 import project.scene.ASceneObject;
 import project.scene.AmbientLight;
@@ -9,7 +9,7 @@ import project.shader.ShaderProgram;
 public class RenderAmbientLight implements IRenderStrategy<SceneRenderPass> {
 
 	@Override
-	public void execute(Renderer renderer, SceneRenderPass renderPass, ASceneObject target) {
+	public void execute(IRenderer renderer, SceneRenderPass renderPass, ASceneObject target) {
 		ShaderProgram activeShaderProgram = renderPass.shaderProgram;
 		AmbientLight ambientLight = (AmbientLight) target;
 		activeShaderProgram.setFloat1Uniform(

@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL46;
 
 import project.component.Attenuation;
 import project.component.CascadeShadow;
+import project.opengl.IRenderer;
 import project.opengl.RenderStrategyManager;
 import project.opengl.Renderer;
 import project.pass.IRenderPass;
@@ -140,12 +141,12 @@ public class SceneRenderPass implements IRenderPass {
 	}
 
 	@Override
-	public void render(Renderer renderer) {
+	public void render(IRenderer renderer) {
 		final int DIFFUSE_SAMPLER = 0;
 		final int NORMAL_SAMPLER = 1;
 		final int SHADOW_MAP_FIRST = DEFAULT_FIRST_FREE_TEXTURE_INDEX;
 		
-		Scene scene = renderer.getActiveScene();
+		Scene scene = ((Renderer) renderer).getActiveScene();
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 		
 		activeShaderProgram.bind();
@@ -185,7 +186,7 @@ public class SceneRenderPass implements IRenderPass {
 		activeShaderProgram.unbind();
 	}
 	
-	private void recursiveRender(Renderer renderer, ASceneObject object) {
+	private void recursiveRender(IRenderer renderer, ASceneObject object) {
 		for( ASceneObject child : object.getChildren() ) {
 			this.recursiveRender(renderer, child);
 		}

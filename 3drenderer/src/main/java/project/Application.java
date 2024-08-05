@@ -1,6 +1,7 @@
 package project;
 
 import project.asset.AssetManager;
+import project.opengl.IRenderer;
 import project.opengl.Renderer;
 import project.scene.Scene;
 import project.testing.TestAssets;
@@ -11,7 +12,7 @@ public class Application {
 	private static Application APPLICATION;
 	private AssetManager assetManager;
 	private Window window;
-	private Renderer renderer;
+	private IRenderer renderer;
 
 	public static void main(String[] args) {
 		if( APPLICATION != null )
@@ -32,7 +33,7 @@ public class Application {
 		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);
 		this.window = window;
 			this.renderer = new Renderer(window, scene);
-			window.setRenderer(this.renderer);
+			window.setRenderer((Renderer) this.renderer);
 		window.init();
 		
 		TestAssets.initialize();
@@ -58,7 +59,7 @@ public class Application {
 		return this.window;
 	}
 	
-	public Renderer getRenderer() {
+	public IRenderer getRenderer() {
 		return this.renderer;
 	}
 }

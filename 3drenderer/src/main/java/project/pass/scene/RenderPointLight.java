@@ -1,5 +1,6 @@
 package project.pass.scene;
 
+import project.opengl.IRenderer;
 import project.opengl.Renderer;
 import project.pass.IRenderStrategy;
 import project.scene.ASceneObject;
@@ -8,8 +9,8 @@ import project.scene.PointLight;
 public class RenderPointLight implements IRenderStrategy<SceneRenderPass> {
 
 	@Override
-	public void execute(Renderer renderer, SceneRenderPass renderPass, ASceneObject target) {
+	public void execute(IRenderer renderer, SceneRenderPass renderPass, ASceneObject target) {
 			// Currently only supports a single point light, CHANGE THIS LATER
-		renderPass.updatePointLight(renderer.getActiveScene(), (PointLight) target, 0);
+		renderPass.updatePointLight(((Renderer) renderer).getActiveScene(), (PointLight) target, 0);
 	}
 }

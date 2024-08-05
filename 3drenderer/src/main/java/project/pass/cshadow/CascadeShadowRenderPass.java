@@ -6,6 +6,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL46;
 
 import project.component.CascadeShadow;
+import project.opengl.IRenderer;
 import project.opengl.RenderStrategyManager;
 import project.opengl.Renderer;
 import project.opengl.ShadowBuffer;
@@ -57,8 +58,8 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	}
 	
 	@Override
-	public void render(Renderer renderer) {
-		Scene scene = renderer.getActiveScene();
+	public void render(IRenderer renderer) {
+		Scene scene = ((Renderer) renderer).getActiveScene();
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 	    activeShaderProgram.bind();
 	    
@@ -95,7 +96,7 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	    GL46.glBindFramebuffer(GL46.GL_FRAMEBUFFER, 0);
 	}
 	
-	private void recursiveRender(Renderer renderer, ASceneObject object) {
+	private void recursiveRender(IRenderer renderer, ASceneObject object) {
 		for( ASceneObject child : object.getChildren() ) {
 			this.recursiveRender(renderer, child);
 		}
