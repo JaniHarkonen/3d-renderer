@@ -3,7 +3,7 @@ package project.opengl;
 import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryStack;
 
-import project.Globals;
+import project.Application;
 import project.asset.IGraphics;
 import project.asset.IGraphicsAsset;
 import project.asset.Texture;
@@ -90,7 +90,7 @@ public class TextureGL implements IGraphics {
 
 	@Override
 	public boolean isNull() {
-		TextureGL defaultTextureGL = (TextureGL) Globals.RENDERER.getDefaultTextureGraphics();
+		TextureGL defaultTextureGL = (TextureGL) Application.getApp().getRenderer().getDefaultTextureGraphics();
 		return (this.handle == defaultTextureGL.handle);
 	}
 	

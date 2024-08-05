@@ -25,7 +25,7 @@ import org.lwjgl.assimp.AIVectorKey;
 import org.lwjgl.assimp.AIVertexWeight;
 import org.lwjgl.assimp.Assimp;
 
-import project.Globals;
+import project.Application;
 import project.utils.DebugUtils;
 import project.utils.GeometryUtils;
 
@@ -146,10 +146,10 @@ public class SceneAssetLoadTask implements ILoadTask {
 			data.faces = faces.toArray(new Mesh.Face[faces.size()]);
 			data.animationMeshData = this.processBones(aiMesh, boneList);
 			
-			Globals.ASSET_MANAGER.notifyResult(
+			Application.getApp().getAssetManager().notifyResult(
 				data.targetMesh, 
 				data,
-				Globals.RENDERER
+				Application.getApp().getRenderer()
 			);
 		}
 		

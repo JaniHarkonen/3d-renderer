@@ -2,7 +2,7 @@ package project.asset;
 
 import java.nio.ByteBuffer;
 
-import project.Globals;
+import project.Application;
 
 public class Texture implements IGraphicsAsset {
 	
@@ -83,7 +83,7 @@ public class Texture implements IGraphicsAsset {
 		this.pixels = null;
 		
 		if( !isDefault ) {
-			Globals.RENDERER.getDefaultTextureGraphics().createReference(this);
+			Application.getApp().getRenderer().getDefaultTextureGraphics().createReference(this);
 		} else {
 			this.graphics = null;
 		}
@@ -100,7 +100,7 @@ public class Texture implements IGraphicsAsset {
 	public boolean deload() {
 		if( this != DEFAULT ) {
 			this.pixels = null;
-			Globals.RENDERER.assetDeloaded(this);
+			Application.getApp().getRenderer().assetDeloaded(this);
 			return true;
 		}
 		return false;

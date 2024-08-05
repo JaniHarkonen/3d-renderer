@@ -2,7 +2,7 @@ package project.asset;
 
 import org.joml.Vector3f;
 
-import project.Globals;
+import project.Application;
 
 public class Mesh implements IGraphicsAsset {
 	
@@ -142,7 +142,7 @@ public class Mesh implements IGraphicsAsset {
 		this.animationMeshData = null;
 		
 		if( !isDefault ) {
-			Globals.RENDERER.getDefaultMeshGraphics().createReference(this);
+			Application.getApp().getRenderer().getDefaultMeshGraphics().createReference(this);
 		} else {
 			this.graphics = null;
 		}
@@ -170,7 +170,7 @@ public class Mesh implements IGraphicsAsset {
 	@Override
 	public boolean deload() {
 		if( this != DEFAULT ) {
-			Globals.RENDERER.assetDeloaded(this);
+			Application.getApp().getRenderer().assetDeloaded(this);
 			
 			this.vertices = null;
 			this.normals = null;

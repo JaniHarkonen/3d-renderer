@@ -2,7 +2,7 @@ package project.asset;
 
 import org.json.JSONObject;
 
-import project.Globals;
+import project.Application;
 import project.utils.FileUtils;
 
 public class FontLoadTask implements ILoadTask {
@@ -24,7 +24,7 @@ public class FontLoadTask implements ILoadTask {
 		Font.Data data = new Font.Data();
 		data.targetFont = this.targetFont;
 		data.charactersJson = fontJson.getJSONObject("characters");
-		Globals.ASSET_MANAGER.notifyResult(this.targetFont, data);
+		Application.getApp().getAssetManager().notifyResult(this.targetFont, data);
 		
 		return true;
 	}

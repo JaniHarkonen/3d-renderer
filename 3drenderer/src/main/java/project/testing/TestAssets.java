@@ -1,8 +1,7 @@
 package project.testing;
 
-import project.Globals;
+import project.Application;
 import project.asset.Animation;
-import project.asset.AnimationData;
 import project.asset.Font;
 import project.asset.FontLoadTask;
 import project.asset.Mesh;
@@ -395,7 +394,7 @@ public final class TestAssets {
 		String texturePath = FileUtils.getResourcePath(relativePath);
 		Texture result = new Texture(name);
 		TextureLoadTask task = new TextureLoadTask(texturePath, result);
-		Globals.ASSET_MANAGER.scheduleLoadTask(task);
+		Application.getApp().getAssetManager().scheduleLoadTask(task);
 		
 		return result;
 	}
@@ -408,7 +407,7 @@ public final class TestAssets {
 		);
 		task.expectMesh(expectedMeshes);
 		task.expectAnimation(expectedAnimations);
-		Globals.ASSET_MANAGER.scheduleLoadTask(task);
+		Application.getApp().getAssetManager().scheduleLoadTask(task);
 	}
 	
 	private static void loadSceneAsset(String relativePath, Mesh[] expectedMeshes) {
@@ -428,7 +427,7 @@ public final class TestAssets {
 			FileUtils.getResourcePath(relativePath + ".json"), 
 			result
 		);
-		Globals.ASSET_MANAGER.scheduleLoadTask(task);
+		Application.getApp().getAssetManager().scheduleLoadTask(task);
 		return result;
 	}
 }

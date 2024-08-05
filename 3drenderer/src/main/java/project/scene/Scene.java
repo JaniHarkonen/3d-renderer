@@ -7,7 +7,6 @@ import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 import project.Application;
-import project.Globals;
 import project.Window;
 import project.controls.Controller;
 import project.gui.GUI;
@@ -126,7 +125,7 @@ public class Scene {
 		this.deltaTimer = System.nanoTime();
 		Window appWindow = this.app.getWindow();
 		
-		Globals.ASSET_MANAGER.processTaskResults(System.nanoTime());
+		Application.getApp().getAssetManager().processTaskResults(System.nanoTime());
 		
 		appWindow.pollInput();
 		for( ASceneObject object : this.objects ) {
@@ -194,7 +193,7 @@ public class Scene {
 			object.submitState();
 		}
 		
-		Globals.RENDERER.submitGameState();
+		Application.getApp().getRenderer().submitGameState();
 	}
 	
 	private String convertToLargestByte(long n) {

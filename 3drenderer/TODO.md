@@ -6,17 +6,8 @@
 ### General
 - restrict visibilities of class to the lowest level needed
 - avoid using static blocks
-- make sure that each allocation done via MemoryUtil.memalloc is eventually freed
-- create disposal methods for all classes whose instances aren't dealt by GC (i.e. OpenGL, GLFW assets)
 - there is still a lot of repetition among render passes, however, this should be further examined once instanced rendering is considered
 - examine package structure
-
-### Globals
-- globals should not contain non-final fields
-- consider merging fields in Globals with Application or other top-level classes
-
-### JMesh & JTexture
-- consider if JMesh and JTexture can be unified into a single class that functions as a container
 
 ### ASceneObject
 - when deep copying scene objects for rendering, determine a way to skip unchanged objects
@@ -42,7 +33,7 @@
 - consider using OpenGL's uniform buffer objects instead of plain uniforms
 
 ### VAO
-- mesh info should not be represented by arrays, possibly
+- consider switching back to primitive arrays instead of Vector3f-arrays for lower memory consumption
 - consider creating a VBO-class for VBO generation
 
 ### Controller
@@ -67,10 +58,7 @@
 - Font and color probably shouldn't be a part of Text (maybe set a draw font for draw calls), consider this when implementing GUI further
 
 ### SceneAssetLoadTask
-- separate extractions (mesh extraction, material extraction) into separate methods or classes
-
-### PointLight
-- PointLight should not be controlled by a Controller, rather, it should be attached to a ASceneObject that is then controlled
+- re-think animation & bone architecture
 
 ### DepthTexture
 - should this be called something other than texture as it is essentially an array of textures

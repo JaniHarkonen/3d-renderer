@@ -5,7 +5,7 @@ import java.nio.IntBuffer;
 import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryUtil;
 
-import project.Globals;
+import project.Application;
 import project.asset.IGraphics;
 import project.asset.IGraphicsAsset;
 import project.asset.Mesh;
@@ -187,7 +187,7 @@ public class VAO implements IGraphics {
 	
 	@Override
 	public boolean isNull() {
-		VAO defaultVAO = (VAO) Globals.RENDERER.getDefaultMeshGraphics();
+		VAO defaultVAO = (VAO) Application.getApp().getRenderer().getDefaultMeshGraphics();
 		return (this.vaoHandle == defaultVAO.vaoHandle);
 	}
 }

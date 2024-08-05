@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
 
-import project.Globals;
+import project.Application;
 
 public final class AssetUtils {
 
@@ -55,7 +55,7 @@ public final class AssetUtils {
     		null
 		);
 		
-		Globals.RENDERER.assetLoaded(mesh);
+		Application.getApp().getRenderer().assetLoaded(mesh);
 		return mesh;
 	}
 }
