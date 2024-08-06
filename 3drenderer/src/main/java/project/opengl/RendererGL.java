@@ -22,7 +22,7 @@ import project.scene.GameState;
 import project.scene.Scene;
 import project.utils.DebugUtils;
 
-public class Renderer implements IRenderer {
+public class RendererGL implements IRenderer {
 	
 	private Window clientWindow;
 	
@@ -37,7 +37,7 @@ public class Renderer implements IRenderer {
 	
 	private Scene scene;
 	
-	public Renderer(Window clientWindow, Scene scene) {
+	public RendererGL(Window clientWindow, Scene scene) {
 		this.gameStateQueue = new ConcurrentLinkedQueue<>();
 		this.backGameState = new GameState();
 		this.clientWindow = clientWindow;

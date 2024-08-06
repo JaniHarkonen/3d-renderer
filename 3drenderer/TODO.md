@@ -1,5 +1,11 @@
 ## TO DO
 
+### Priority
+- improve architecture of uniforms
+- implement roughness maps, alpha maps
+- integrate GameStates into the rendering process
+- get rid of RendererGL casts inside 'opengl' package
+
 ### Formatting
 - switch from using ClassName.STATIC_FINAL_FIELD or ClassName.STATIC_METHOD to simply STATIC_FINAL_FIELD or STATIC_METHOD to make refactoring easier
 

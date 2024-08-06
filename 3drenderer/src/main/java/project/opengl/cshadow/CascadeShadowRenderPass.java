@@ -9,8 +9,8 @@ import project.component.CascadeShadow;
 import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
-import project.opengl.RenderStrategyManager;
-import project.opengl.Renderer;
+import project.core.renderer.RenderStrategyManager;
+import project.opengl.RendererGL;
 import project.opengl.ShadowBuffer;
 import project.opengl.shader.Shader;
 import project.opengl.shader.ShaderProgram;
@@ -59,7 +59,7 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	
 	@Override
 	public void render(IRenderer renderer) {
-		Scene scene = ((Renderer) renderer).getActiveScene();
+		Scene scene = ((RendererGL) renderer).getActiveScene();
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 	    activeShaderProgram.bind();
 	    

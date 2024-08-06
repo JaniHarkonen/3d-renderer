@@ -8,7 +8,7 @@ import project.asset.texture.Texture;
 import project.component.Material;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
-import project.opengl.Renderer;
+import project.opengl.RendererGL;
 import project.opengl.TextureGL;
 import project.opengl.VAO;
 import project.opengl.shader.ShaderProgram;
@@ -44,7 +44,7 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 				textureGL.bind();
 			}
 			
-			if( material.getTexture(1) != null && ((Renderer) renderer).getActiveScene().DEBUGareNormalsActive() ) {
+			if( material.getTexture(1) != null && ((RendererGL) renderer).getActiveScene().DEBUGareNormalsActive() ) {
 				activeShaderProgram.setInteger1Uniform(
 					SceneRenderPass.U_MATERIAL_HAS_NORMAL_MAP, 1
 				);

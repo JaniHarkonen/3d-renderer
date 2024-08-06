@@ -10,8 +10,8 @@ import project.component.CascadeShadow;
 import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
-import project.opengl.RenderStrategyManager;
-import project.opengl.Renderer;
+import project.core.renderer.RenderStrategyManager;
+import project.opengl.RendererGL;
 import project.opengl.cshadow.CascadeShadowRenderPass;
 import project.opengl.shader.Shader;
 import project.opengl.shader.ShaderProgram;
@@ -146,7 +146,7 @@ public class SceneRenderPass implements IRenderPass {
 		final int NORMAL_SAMPLER = 1;
 		final int SHADOW_MAP_FIRST = DEFAULT_FIRST_FREE_TEXTURE_INDEX;
 		
-		Scene scene = ((Renderer) renderer).getActiveScene();
+		Scene scene = ((RendererGL) renderer).getActiveScene();
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 		
 		activeShaderProgram.bind();

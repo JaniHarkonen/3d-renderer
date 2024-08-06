@@ -8,11 +8,11 @@ import project.asset.sceneasset.Mesh;
 import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
+import project.core.renderer.RenderStrategyManager;
 import project.gui.AGUIElement;
 import project.gui.Image;
 import project.gui.Text;
-import project.opengl.RenderStrategyManager;
-import project.opengl.Renderer;
+import project.opengl.RendererGL;
 import project.opengl.shader.Shader;
 import project.opengl.shader.ShaderProgram;
 import project.scene.ASceneObject;
@@ -63,7 +63,7 @@ public class GUIRenderPass implements IRenderPass {
 
 	@Override
 	public void render(IRenderer renderer) {
-		Scene scene = ((Renderer) renderer).getActiveScene();
+		Scene scene = ((RendererGL) renderer).getActiveScene();
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 		
         activeShaderProgram.bind();

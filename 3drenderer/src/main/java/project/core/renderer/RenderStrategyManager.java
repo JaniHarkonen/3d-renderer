@@ -1,10 +1,7 @@
-package project.opengl;
+package project.core.renderer;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import project.core.renderer.IRenderPass;
-import project.core.renderer.IRenderStrategy;
 
 public class RenderStrategyManager<T extends IRenderPass> {
 
