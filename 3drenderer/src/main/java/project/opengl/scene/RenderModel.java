@@ -12,9 +12,9 @@ import project.opengl.RendererGL;
 import project.opengl.TextureGL;
 import project.opengl.VAO;
 import project.opengl.shader.ShaderProgram;
-import project.opengl.shader.custom.material.SSMaterial;
-import project.opengl.shader.custom.material.UMaterial;
 import project.opengl.shader.uniform.UAMatrix4f;
+import project.opengl.shader.uniform.object.material.SSMaterial;
+import project.opengl.shader.uniform.object.material.UMaterial;
 import project.scene.ASceneObject;
 import project.scene.Model;
 

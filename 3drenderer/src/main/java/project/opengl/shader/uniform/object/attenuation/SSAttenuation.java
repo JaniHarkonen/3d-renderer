@@ -1,4 +1,4 @@
-package project.opengl.shader.custom.attenuation;
+package project.opengl.shader.uniform.object.attenuation;
 
 import project.opengl.shader.uniform.IShaderStruct;
 

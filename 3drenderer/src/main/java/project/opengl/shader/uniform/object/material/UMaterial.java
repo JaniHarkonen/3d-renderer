@@ -1,4 +1,4 @@
-package project.opengl.shader.custom.material;
+package project.opengl.shader.uniform.object.material;
 
 import project.opengl.shader.uniform.AUniformObject;
 import project.opengl.shader.uniform.UFloat1;

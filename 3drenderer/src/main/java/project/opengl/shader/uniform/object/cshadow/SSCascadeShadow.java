@@ -1,4 +1,4 @@
-package project.opengl.shader.custom.cshadow;
+package project.opengl.shader.uniform.object.cshadow;
 
 import org.joml.Matrix4f;
 

@@ -1,4 +1,4 @@
-package project.opengl.shader.custom.material;
+package project.opengl.shader.uniform.object.material;
 
 import org.joml.Vector4f;
 

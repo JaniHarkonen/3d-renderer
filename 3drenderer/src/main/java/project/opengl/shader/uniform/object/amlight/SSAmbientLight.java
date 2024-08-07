@@ -1,4 +1,4 @@
-package project.opengl.shader.custom.amlight;
+package project.opengl.shader.uniform.object.amlight;
 
 import org.joml.Vector3f;
 

@@ -3,8 +3,8 @@ package project.opengl.scene;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
 import project.opengl.shader.ShaderProgram;
-import project.opengl.shader.custom.amlight.SSAmbientLight;
-import project.opengl.shader.custom.amlight.UAmbientLight;
+import project.opengl.shader.uniform.object.amlight.SSAmbientLight;
+import project.opengl.shader.uniform.object.amlight.UAmbientLight;
 import project.scene.ASceneObject;
 import project.scene.AmbientLight;
 
