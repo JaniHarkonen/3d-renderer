@@ -9,4 +9,6 @@ public interface IUniform<T> {
 	public void update(T value);
 	
 	public void setName(String name);
+	
+	public String getName();
 }

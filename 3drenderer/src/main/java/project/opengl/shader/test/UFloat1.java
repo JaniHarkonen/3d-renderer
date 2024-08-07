@@ -17,9 +17,4 @@ public class UFloat1 extends AUniformPrimitive<Float> {
 	public void update(Float value) {
 		GL46.glUniform1f(this.location, value);
 	}
-
-	@Override
-	public void setName(String name) {
-		this.name = name;
-	}
 }

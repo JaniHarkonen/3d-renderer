@@ -6,31 +6,16 @@ import project.opengl.shader.ShaderProgram;
 import project.utils.DebugUtils;
 
 public class UArray<T> implements IUniform<T[]> {
-	
-	private enum ArrayType {
-		PRIMITIVE,
-		OBJECT,
-		ARRAY
-	}
-	
-	private int location;
 	private String name;
 	private IUniform<T>[] array;
-	private ArrayType arrayType;
 	
-	public UArray(int size, IUniform<T>[] array) {
-		this.location = -1;
-		this.name = "";
+	public UArray(String name, IUniform<T>[] array) {
+		this.name = name;
 		this.array = array;
-		
-			// Cache array type as it will determine, how the UArray is initialized
-		if( array instanceof AUniformObject[] ) {
-			this.arrayType = ArrayType.OBJECT;
-		} else if( array instanceof UArray[] ) {
-			this.arrayType = ArrayType.ARRAY;
-		} else {
-			this.arrayType = ArrayType.PRIMITIVE;
-		}
+	}
+	
+	public UArray(IUniform<T>[] array) {
+		this("", array);
 	}
 
 	
@@ -59,6 +44,10 @@ public class UArray<T> implements IUniform<T[]> {
 		}
 	}
 	
+	public void update(T value, int index) {
+		this.array[index].update(value);
+	}
+	
 	public void fill(Supplier<IUniform<T>> generator) {
 		for( int i = 0; i < this.array.length; i++ ) {
 			this.array[i] = generator.get();
@@ -70,4 +59,8 @@ public class UArray<T> implements IUniform<T[]> {
 		this.name = name;
 	}
 
+	@Override
+	public String getName() {
+		return this.name;
+	}
 }

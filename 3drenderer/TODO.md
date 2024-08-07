@@ -17,6 +17,7 @@
 - restrict visibilities of class to the lowest level needed
 - avoid using static blocks
 - there is still a lot of repetition among render passes, however, this should be further examined once instanced rendering is considered
+- get rid of uniform casting in render strategies
 
 ### ASceneObject
 - when deep copying scene objects for rendering, determine a way to skip unchanged objects

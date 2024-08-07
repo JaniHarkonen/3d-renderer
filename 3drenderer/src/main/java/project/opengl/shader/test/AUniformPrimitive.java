@@ -22,12 +22,16 @@ public abstract class AUniformPrimitive<T> implements IUniform<T> {
 				"Uniform name violates naming convention by not starting with 'u'."
 			);
 		}
-		
 		this.location = GL46.glGetUniformLocation(shaderProgram.getHandle(), this.name);
 	}
 	
 	@Override
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	@Override
+	public String getName() {
+		return this.name;
 	}
 }

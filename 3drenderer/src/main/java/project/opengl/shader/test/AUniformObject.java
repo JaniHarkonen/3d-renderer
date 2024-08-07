@@ -16,13 +16,11 @@ public abstract class AUniformObject<T extends IShaderStruct> implements IUnifor
 		}
 	}
 	
-	private int location;
 	private String name;
 	private List<ObjectField> fields;
 	
-	public AUniformObject() {
-		this.location = -1;
-		this.name = "";
+	public AUniformObject(String name) {
+		this.name = name;
 		this.fields = new ArrayList<>();
 	}
 	
@@ -35,12 +33,18 @@ public abstract class AUniformObject<T extends IShaderStruct> implements IUnifor
 		}
 	}
 	
-	public void addField(String fieldName, IUniform<?> uniform) {
+	public AUniformObject<?> addField(String fieldName, IUniform<?> uniform) {
 		this.fields.add(new ObjectField(fieldName, uniform));
+		return this;
 	}
 
 	@Override
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	@Override
+	public String getName() {
+		return this.name;
 	}
 }

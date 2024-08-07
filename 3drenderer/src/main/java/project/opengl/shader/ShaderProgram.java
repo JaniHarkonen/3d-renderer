@@ -12,17 +12,20 @@ import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryStack;
 
+import project.opengl.shader.test.IUniform;
 import project.utils.DebugUtils;
 
 public class ShaderProgram {
 
 	private int programHandle;
 	private Map<String, Integer> uniformLocationMap;
+	private Map<String, IUniform<?>> uniforms;
 	private List<Shader> shaders;
 
 	public ShaderProgram() {
 		this.programHandle = -1;
 		this.uniformLocationMap = new HashMap<>();
+		this.uniforms = new HashMap<>();
 		this.shaders = new ArrayList<>();
 	}
 	
@@ -51,6 +54,15 @@ public class ShaderProgram {
 				key, GL46.glGetUniformLocation(this.programHandle, key)
 			);
 		}
+		
+		for( Map.Entry<String, IUniform<?>> en : this.uniforms.entrySet() ) {
+			en.getValue().initialize(this);
+		}
+	}
+	
+	public ShaderProgram declareUniform(IUniform<?> uniform) {
+		this.uniforms.put(uniform.getName(), uniform);
+		return this;
 	}
 	
 	public ShaderProgram declareUniform(String uniformName) {
@@ -139,5 +151,9 @@ public class ShaderProgram {
 	
 	public int getHandle() {
 		return this.programHandle;
+	}
+	
+	public IUniform<?> getUniform(String name) {
+		return this.uniforms.get(name);
 	}
 }
