@@ -12,7 +12,7 @@ import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
 import org.lwjgl.system.MemoryStack;
 
-import project.opengl.shader.test.IUniform;
+import project.opengl.shader.uniform.IUniform;
 import project.utils.DebugUtils;
 
 public class ShaderProgram {

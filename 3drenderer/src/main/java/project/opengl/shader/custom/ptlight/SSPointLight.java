@@ -3,7 +3,7 @@ package project.opengl.shader.custom.ptlight;
 import org.joml.Vector3f;
 
 import project.opengl.shader.custom.attenuation.SSAttenuation;
-import project.opengl.shader.test.IShaderStruct;
+import project.opengl.shader.uniform.IShaderStruct;
 
 public class SSPointLight implements IShaderStruct {
 

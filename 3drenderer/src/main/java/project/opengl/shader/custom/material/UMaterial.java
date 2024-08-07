@@ -1,9 +1,9 @@
 package project.opengl.shader.custom.material;
 
-import project.opengl.shader.test.AUniformObject;
-import project.opengl.shader.test.UFloat1;
-import project.opengl.shader.test.UInteger1;
-import project.opengl.shader.test.UVector4f;
+import project.opengl.shader.uniform.AUniformObject;
+import project.opengl.shader.uniform.UFloat1;
+import project.opengl.shader.uniform.UInteger1;
+import project.opengl.shader.uniform.UVector4f;
 
 public class UMaterial extends AUniformObject<SSMaterial> {
 

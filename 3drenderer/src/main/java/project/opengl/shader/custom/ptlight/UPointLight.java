@@ -1,9 +1,9 @@
 package project.opengl.shader.custom.ptlight;
 
 import project.opengl.shader.custom.attenuation.UAttenuation;
-import project.opengl.shader.test.AUniformObject;
-import project.opengl.shader.test.UFloat1;
-import project.opengl.shader.test.UVector3f;
+import project.opengl.shader.uniform.AUniformObject;
+import project.opengl.shader.uniform.UFloat1;
+import project.opengl.shader.uniform.UVector3f;
 
 public class UPointLight extends AUniformObject<SSPointLight> {
 

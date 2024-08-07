@@ -1,4 +1,4 @@
-package project.opengl.shader.test;
+package project.opengl.shader.uniform;
 
 import java.util.ArrayList;
 import java.util.List;

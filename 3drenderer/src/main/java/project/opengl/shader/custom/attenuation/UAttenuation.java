@@ -1,7 +1,7 @@
 package project.opengl.shader.custom.attenuation;
 
-import project.opengl.shader.test.AUniformObject;
-import project.opengl.shader.test.UFloat1;
+import project.opengl.shader.uniform.AUniformObject;
+import project.opengl.shader.uniform.UFloat1;
 
 public class UAttenuation extends AUniformObject<SSAttenuation> {
 

@@ -1,8 +1,8 @@
 package project.opengl.shader.custom.amlight;
 
-import project.opengl.shader.test.AUniformObject;
-import project.opengl.shader.test.UFloat1;
-import project.opengl.shader.test.UVector3f;
+import project.opengl.shader.uniform.AUniformObject;
+import project.opengl.shader.uniform.UFloat1;
+import project.opengl.shader.uniform.UVector3f;
 
 public class UAmbientLight extends AUniformObject<SSAmbientLight> {
 

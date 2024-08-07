@@ -2,7 +2,7 @@ package project.opengl.shader.custom.material;
 
 import org.joml.Vector4f;
 
-import project.opengl.shader.test.IShaderStruct;
+import project.opengl.shader.uniform.IShaderStruct;
 
 public class SSMaterial implements IShaderStruct {
 

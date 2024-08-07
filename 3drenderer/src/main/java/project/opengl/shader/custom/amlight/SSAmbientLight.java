@@ -2,7 +2,7 @@ package project.opengl.shader.custom.amlight;
 
 import org.joml.Vector3f;
 
-import project.opengl.shader.test.IShaderStruct;
+import project.opengl.shader.uniform.IShaderStruct;
 
 public class SSAmbientLight implements IShaderStruct {
 

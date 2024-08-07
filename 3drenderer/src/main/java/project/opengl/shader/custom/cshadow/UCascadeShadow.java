@@ -1,8 +1,8 @@
 package project.opengl.shader.custom.cshadow;
 
-import project.opengl.shader.test.AUniformObject;
-import project.opengl.shader.test.UAMatrix4f;
-import project.opengl.shader.test.UFloat1;
+import project.opengl.shader.uniform.AUniformObject;
+import project.opengl.shader.uniform.UAMatrix4f;
+import project.opengl.shader.uniform.UFloat1;
 
 public class UCascadeShadow extends AUniformObject<SSCascadeShadow>{
 

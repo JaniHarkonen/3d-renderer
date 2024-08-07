@@ -14,7 +14,7 @@ import project.opengl.VAO;
 import project.opengl.shader.ShaderProgram;
 import project.opengl.shader.custom.material.SSMaterial;
 import project.opengl.shader.custom.material.UMaterial;
-import project.opengl.shader.test.UAMatrix4f;
+import project.opengl.shader.uniform.UAMatrix4f;
 import project.scene.ASceneObject;
 import project.scene.Model;
 

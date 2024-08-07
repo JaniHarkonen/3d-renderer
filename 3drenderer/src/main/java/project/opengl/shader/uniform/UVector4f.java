@@ -1,4 +1,4 @@
-package project.opengl.shader.test;
+package project.opengl.shader.uniform;
 
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
