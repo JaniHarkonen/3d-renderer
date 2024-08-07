@@ -15,6 +15,8 @@ import project.opengl.RendererGL;
 import project.opengl.cshadow.CascadeShadowRenderPass;
 import project.opengl.shader.Shader;
 import project.opengl.shader.ShaderProgram;
+import project.opengl.shader.test.UAMatrix4f;
+import project.opengl.shader.test.UInteger1;
 import project.scene.ASceneObject;
 import project.scene.AmbientLight;
 import project.scene.Camera;
@@ -25,11 +27,11 @@ import project.scene.Scene;
 public class SceneRenderPass implements IRenderPass {
 	public static final int DEFAULT_FIRST_FREE_TEXTURE_INDEX = 2;
 	
-	static final String U_DIFFUSE_SAMPLER = "uDiffuseSampler";
+	/*static final String U_DIFFUSE_SAMPLER = "uDiffuseSampler";
 	static final String U_NORMAL_SAMPLER = "uNormalSampler";
 	static final String U_PROJECTION = "uProjection";
 	static final String U_CAMERA_TRANSFORM = "uCameraTransform";
-	static final String U_OBJECT_TRANSFORM = "uObjectTransform";
+	static final String U_OBJECT_TRANSFORM = "uObjectTransform";*/
 	
 	static final String U_MATERIAL_AMBIENT = "uMaterial.ambient";
 	static final String U_MATERIAL_DIFFUSE = "uMaterial.diffuse";
@@ -49,6 +51,12 @@ public class SceneRenderPass implements IRenderPass {
 	ShaderProgram shaderProgram;
 	CascadeShadowRenderPass cascadeShadowRenderPass;
 	
+	UInteger1 uDiffuseSampler;
+	UInteger1 uNormalSampler;
+	UAMatrix4f uProjection;
+	UAMatrix4f uCameraTransform;
+	UAMatrix4f uObjectTransform;
+	
 	private RenderStrategyManager<SceneRenderPass> renderStrategyManager;
 	
 	public SceneRenderPass() {
@@ -59,16 +67,22 @@ public class SceneRenderPass implements IRenderPass {
 		.addStrategy(Model.class, new RenderModel())
 		.addStrategy(PointLight.class, new RenderPointLight())
 		.addStrategy(AmbientLight.class, new RenderAmbientLight());
+		
+		this.uDiffuseSampler = new UInteger1("uDiffuseSampler");
+		this.uNormalSampler = new UInteger1("uNormalSampler");
+		this.uProjection = new UAMatrix4f("uProjection");
+		this.uCameraTransform = new UAMatrix4f("uCameraTransform");
+		this.uObjectTransform = new UAMatrix4f("uObjectTransform");
 	}
 	
 	
 	@Override
 	public boolean init() {
-		this.shaderProgram.declareUniform(U_DIFFUSE_SAMPLER);
+		/*this.shaderProgram.declareUniform(U_DIFFUSE_SAMPLER);
 		this.shaderProgram.declareUniform(U_NORMAL_SAMPLER);
 		this.shaderProgram.declareUniform(U_PROJECTION);
 		this.shaderProgram.declareUniform(U_CAMERA_TRANSFORM);
-		this.shaderProgram.declareUniform(U_OBJECT_TRANSFORM);
+		this.shaderProgram.declareUniform(U_OBJECT_TRANSFORM);*/
 		
 		this.shaderProgram.declareUniform(U_MATERIAL_AMBIENT);
 		this.shaderProgram.declareUniform(U_MATERIAL_DIFFUSE);
@@ -137,6 +151,12 @@ public class SceneRenderPass implements IRenderPass {
 			);
 		}
 		
+		this.uDiffuseSampler.initialize(this.shaderProgram);
+		this.uNormalSampler.initialize(this.shaderProgram);
+		this.uProjection.initialize(this.shaderProgram);
+		this.uCameraTransform.initialize(this.shaderProgram);
+		this.uObjectTransform.initialize(this.shaderProgram);
+		
 		return true;
 	}
 
@@ -150,8 +170,10 @@ public class SceneRenderPass implements IRenderPass {
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 		
 		activeShaderProgram.bind();
-		activeShaderProgram.setInteger1Uniform(U_DIFFUSE_SAMPLER, DIFFUSE_SAMPLER);
-		activeShaderProgram.setInteger1Uniform(U_NORMAL_SAMPLER, NORMAL_SAMPLER);
+		//activeShaderProgram.setInteger1Uniform(U_DIFFUSE_SAMPLER, DIFFUSE_SAMPLER);
+		//activeShaderProgram.setInteger1Uniform(U_NORMAL_SAMPLER, NORMAL_SAMPLER);
+		this.uDiffuseSampler.update(DIFFUSE_SAMPLER);
+		this.uNormalSampler.update(NORMAL_SAMPLER);
 		
 		for( int i = 0; i < CascadeShadow.SHADOW_MAP_CASCADE_COUNT; i++ ) {
 			CascadeShadow cascadeShadow = this.cascadeShadowRenderPass.getCascadeShadow(i);
@@ -171,13 +193,16 @@ public class SceneRenderPass implements IRenderPass {
 		Camera activeCamera = scene.getActiveCamera();
 		activeCamera.updateTransformMatrix();
 		
-		activeShaderProgram.setMatrix4fUniform(
+		/*activeShaderProgram.setMatrix4fUniform(
 			U_PROJECTION, activeCamera.getProjection().getMatrix()
 		);
 		
 		activeShaderProgram.setMatrix4fUniform(
 			U_CAMERA_TRANSFORM, activeCamera.getTransformMatrix()
-		);
+		);*/
+		
+		this.uProjection.update(activeCamera.getProjection().getMatrix());
+		this.uCameraTransform.update(activeCamera.getTransformMatrix());
 		
 		for( ASceneObject object : scene.getObjects() ) {
 			this.recursiveRender(renderer, object);

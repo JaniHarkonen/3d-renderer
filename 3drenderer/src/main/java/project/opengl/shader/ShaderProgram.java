@@ -133,8 +133,6 @@ public class ShaderProgram {
 				mat4fArray[i].get(16 * i, arrayBuffer);
 			}
 			
-			
-			//DebugUtils.log(this, "setting mat4 array", name, mat4fArray[0]);
 			GL46.glUniformMatrix4fv(this.getUniformOrError(name), false, arrayBuffer);
 		}
 	}

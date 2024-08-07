@@ -5,6 +5,10 @@
 - implement roughness maps, alpha maps
 - integrate GameStates into the rendering process
 - get rid of RendererGL casts inside 'opengl' package
+- consider AAsset
+- resolve AGUIElement vs ASceneObject conflict
+- ensure consistent code style in shaders
+- re-think animation & bone architecture
 
 ### Formatting
 - switch from using ClassName.STATIC_FINAL_FIELD or ClassName.STATIC_METHOD to simply STATIC_FINAL_FIELD or STATIC_METHOD to make refactoring easier
@@ -28,7 +32,7 @@
 ### Renderer
 - separate Renderer into different render passes, for example, color pass for scene rendering, shadow pass for shadows etc.
 - graphics assets (VAOs, textures) should be generated before rendering
-- Renderer should not reference a Scene all necessary information should be provided by the GameState
+- Renderer should not reference a Scene, all necessary information should be provided by the GameState
 
 ### SceneRenderPass
 - SceneRenderPass should not be dependent on the CascadeShadowRenderPass-instance, decouple once uniform architecture has been settled

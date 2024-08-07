@@ -22,9 +22,10 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 		ShaderProgram activeShaderProgram = renderPass.shaderProgram;
 		
 		target.updateTransformMatrix();
-		activeShaderProgram.setMatrix4fUniform(
+		/*activeShaderProgram.setMatrix4fUniform(
 			SceneRenderPass.U_OBJECT_TRANSFORM, target.getTransformMatrix()
-		);
+		);*/
+		renderPass.uObjectTransform.update(target.getTransformMatrix());
 		
 		Model model = (Model) target;
 		
