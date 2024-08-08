@@ -1,7 +1,6 @@
 ## TO DO
 
 ### Priority
-- improve architecture of uniforms
 - implement roughness maps, alpha maps
 - integrate GameStates into the rendering process
 - get rid of RendererGL casts inside 'opengl' package

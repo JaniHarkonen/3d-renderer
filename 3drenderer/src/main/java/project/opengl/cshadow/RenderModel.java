@@ -8,6 +8,7 @@ import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
 import project.opengl.VAO;
 import project.opengl.shader.ShaderProgram;
+import project.opengl.shader.uniform.UAMatrix4f;
 import project.scene.ASceneObject;
 import project.scene.Model;
 
@@ -22,19 +23,16 @@ class RenderModel implements IRenderStrategy<CascadeShadowRenderPass> {
 			VAO vao = (VAO) mesh.getGraphics();
     		vao.bind();
     		
-    		activeShaderProgram.setMatrix4fUniform(
-				CascadeShadowRenderPass.U_OBJECT_TRANSFORM, target.getTransformMatrix()
-			);
+    		UAMatrix4f.class.cast(activeShaderProgram.getUniform("uObjectTransform"))
+    		.update(target.getTransformMatrix());
+    		
     		AnimationData animationData = model.getAnimationData();
 			if( animationData == null ) {
-				activeShaderProgram.setMatrix4fArrayUniform(
-					CascadeShadowRenderPass.U_BONE_MATRICES, AnimationData.DEFAULT_BONE_TRANSFORMS
-				);
+				UAMatrix4f.class.cast(activeShaderProgram.getUniform("uBoneMatrices"))
+				.update(AnimationData.DEFAULT_BONE_TRANSFORMS);
 			} else {
-				activeShaderProgram.setMatrix4fArrayUniform(
-					CascadeShadowRenderPass.U_BONE_MATRICES, 
-					animationData.getCurrentFrame().getBoneTransforms()
-				);
+				UAMatrix4f.class.cast(activeShaderProgram.getUniform("uBoneMatrices"))
+				.update(animationData.getCurrentFrame().getBoneTransforms());
 			}
     		GL46.glDrawElements(
 				GL46.GL_TRIANGLES, vao.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0
