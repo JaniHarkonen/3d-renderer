@@ -10,6 +10,8 @@ import project.gui.Image;
 import project.opengl.TextureGL;
 import project.opengl.VAO;
 import project.opengl.shader.ShaderProgram;
+import project.opengl.shader.uniform.UAMatrix4f;
+import project.opengl.shader.uniform.UVector4f;
 import project.scene.ASceneObject;
 
 public class RenderImage implements IRenderStrategy<GUIRenderPass> {
@@ -22,12 +24,11 @@ public class RenderImage implements IRenderStrategy<GUIRenderPass> {
 		TextureGL textureGL = (TextureGL) element.getTexture().getGraphics();
 		Vector4f color = element.getPrimaryColor();
 		
-		activeShaderProgram.setVector4fUniform(GUIRenderPass.U_TEXT_COLOR, color);
+		UVector4f.class.cast(activeShaderProgram.getUniform("uTextColor")).update(color);
 		GL46.glActiveTexture(GL46.GL_TEXTURE0);
 		textureGL.bind();
-
-		activeShaderProgram.setMatrix4fUniform(
-			GUIRenderPass.U_OBJECT_TRANSFORM, 
+		UAMatrix4f.class.cast(activeShaderProgram.getUniform("uObjectTransform"))
+		.update(
 			new Matrix4f()
 			.translationRotateScale(
 				element.getPosition().x - element.getAnchor().x, 

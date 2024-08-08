@@ -2,7 +2,7 @@ package project;
 
 import project.core.asset.AssetManager;
 import project.core.renderer.IRenderer;
-import project.opengl.Renderer;
+import project.opengl.RendererGL;
 import project.scene.Scene;
 import project.testing.TestAssets;
 import project.utils.DebugUtils;
@@ -32,8 +32,8 @@ public class Application {
 		Scene scene = new Scene(this, TICK_RATE);
 		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);
 		this.window = window;
-			this.renderer = new Renderer(window, scene);
-			window.setRenderer((Renderer) this.renderer);
+			this.renderer = new RendererGL(window, scene);
+			window.setRenderer((RendererGL) this.renderer);
 		window.init();
 		
 		TestAssets.initialize();

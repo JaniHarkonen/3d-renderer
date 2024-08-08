@@ -6,7 +6,7 @@ import org.lwjgl.system.MemoryUtil;
 
 import project.input.Input;
 import project.input.InputSnapshot;
-import project.opengl.Renderer;
+import project.opengl.RendererGL;
 import project.utils.DebugUtils;
 
 public class Window {
@@ -26,7 +26,7 @@ public class Window {
 	private long frameDelta;
 	private long frameTimer;
 	
-	private Renderer renderer;
+	private RendererGL renderer;
 	private Input input;
 	private InputSnapshot latestInputSnapshot;
 	
@@ -161,7 +161,7 @@ public class Window {
 		this.height = height;
 	}
 	
-	public void setRenderer(Renderer renderer) {
+	public void setRenderer(RendererGL renderer) {
 		this.renderer = renderer;
 	}
 	

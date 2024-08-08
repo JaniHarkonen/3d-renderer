@@ -11,6 +11,8 @@ import project.gui.Text;
 import project.opengl.TextureGL;
 import project.opengl.VAO;
 import project.opengl.shader.ShaderProgram;
+import project.opengl.shader.uniform.UAMatrix4f;
+import project.opengl.shader.uniform.UVector4f;
 import project.scene.ASceneObject;
 
 public class RenderText implements IRenderStrategy<GUIRenderPass> {
@@ -27,15 +29,15 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 		TextureGL textureGL = (TextureGL) font.getTexture().getGraphics();
 		Vector4f color = text.getTextColor();
 		
-		activeShaderProgram.setVector4fUniform(GUIRenderPass.U_TEXT_COLOR, color);
+		UVector4f.class.cast(activeShaderProgram.getUniform("uTextColor")).update(color);
 		GL46.glActiveTexture(GL46.GL_TEXTURE0);
 		textureGL.bind();
 
 		for( String line : text.getContent().split("\n") ) {
 			for( int i = 0; i < line.length(); i++ ) {
 				Font.Glyph glyph = font.getGlyph(line.charAt(i));
-				activeShaderProgram.setMatrix4fUniform(
-					GUIRenderPass.U_OBJECT_TRANSFORM, 
+				UAMatrix4f.class.cast(activeShaderProgram.getUniform("uObjectTransform"))
+				.update(
 					new Matrix4f()
 					.translationRotateScale(
 						textX, textY + renderPass.baseLine - glyph.getOriginY(), 0.0f, 

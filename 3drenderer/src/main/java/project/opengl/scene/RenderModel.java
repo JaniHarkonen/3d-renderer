@@ -8,22 +8,31 @@ import project.asset.texture.Texture;
 import project.component.Material;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
-import project.opengl.Renderer;
+import project.opengl.RendererGL;
 import project.opengl.TextureGL;
 import project.opengl.VAO;
 import project.opengl.shader.ShaderProgram;
+import project.opengl.shader.uniform.UAMatrix4f;
+import project.opengl.shader.uniform.object.material.SSMaterial;
+import project.opengl.shader.uniform.object.material.UMaterial;
 import project.scene.ASceneObject;
 import project.scene.Model;
 
 class RenderModel implements IRenderStrategy<SceneRenderPass> {
+	
+	private SSMaterial materialStruct;
+	
+	RenderModel() {
+		this.materialStruct = new SSMaterial();
+	}
 
 	@Override
 	public void execute(IRenderer renderer, SceneRenderPass renderPass, ASceneObject target) {
 		ShaderProgram activeShaderProgram = renderPass.shaderProgram;
 		
 		target.updateTransformMatrix();
-		activeShaderProgram.setMatrix4fUniform(
-			SceneRenderPass.U_OBJECT_TRANSFORM, target.getTransformMatrix()
+		UAMatrix4f.class.cast(
+			activeShaderProgram.getUniform("uObjectTransform")).update(target.getTransformMatrix()
 		);
 		
 		Model model = (Model) target;
@@ -44,28 +53,18 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 				textureGL.bind();
 			}
 			
-			if( material.getTexture(1) != null && ((Renderer) renderer).getActiveScene().DEBUGareNormalsActive() ) {
-				activeShaderProgram.setInteger1Uniform(
-					SceneRenderPass.U_MATERIAL_HAS_NORMAL_MAP, 1
-				);
+			if( material.getTexture(1) != null && ((RendererGL) renderer).getActiveScene().DEBUGareNormalsActive() ) {
+				this.materialStruct.hasNormalMap = 1;
 			} else {
-				activeShaderProgram.setInteger1Uniform(
-					SceneRenderPass.U_MATERIAL_HAS_NORMAL_MAP, 0
-				);
+				this.materialStruct.hasNormalMap = 0;
 			}
 			
-			activeShaderProgram.setVector4fUniform(
-				SceneRenderPass.U_MATERIAL_AMBIENT, material.getAmbientColor()
-			);
-			activeShaderProgram.setVector4fUniform(
-				SceneRenderPass.U_MATERIAL_DIFFUSE, material.getDiffuseColor()
-			);
-			activeShaderProgram.setVector4fUniform(
-				SceneRenderPass.U_MATERIAL_SPECULAR, material.getSpecularColor()
-			);
-			activeShaderProgram.setFloat1Uniform(
-				SceneRenderPass.U_MATERIAL_REFLECTANCE, material.getReflectance()
-			);
+			this.materialStruct.ambient = material.getAmbientColor();
+			this.materialStruct.diffuse = material.getDiffuseColor();
+			this.materialStruct.specular = material.getSpecularColor();
+			this.materialStruct.reflectance = material.getReflectance();
+			
+			UMaterial.class.cast(activeShaderProgram.getUniform("uMaterial")).update(this.materialStruct);
 			
 			VAO vao = (VAO) mesh.getGraphics();
 			vao.bind();
@@ -73,14 +72,18 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 			AnimationData animationData = model.getAnimationData();
 			
 			if( animationData == null ) {
-				activeShaderProgram.setMatrix4fArrayUniform(
+				UAMatrix4f.class.cast(activeShaderProgram.getUniform("uBoneMatrices"))
+				.update(AnimationData.DEFAULT_BONE_TRANSFORMS);
+				/*activeShaderProgram.setMatrix4fArrayUniform(
 					SceneRenderPass.U_BONE_MATRICES, AnimationData.DEFAULT_BONE_TRANSFORMS
-				);
+				);*/
 				
 			} else {
-				activeShaderProgram.setMatrix4fArrayUniform(
+				UAMatrix4f.class.cast(activeShaderProgram.getUniform("uBoneMatrices"))
+				.update(animationData.getCurrentFrame().getBoneTransforms());
+				/*activeShaderProgram.setMatrix4fArrayUniform(
 					SceneRenderPass.U_BONE_MATRICES, animationData.getCurrentFrame().getBoneTransforms()
-				);
+				);*/
 			}
 
 			GL46.glDrawElements(
