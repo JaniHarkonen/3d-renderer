@@ -1,6 +1,7 @@
 package project.core.renderer;
 
 import project.Window;
+import project.core.GameState;
 import project.core.asset.IGraphics;
 import project.core.asset.ISystem;
 import project.scene.ASceneObject;
@@ -22,4 +23,6 @@ public interface IRenderer extends ISystem {
 	public IGraphics getDefaultMeshGraphics();
 	
 	public IGraphics getDefaultTextureGraphics();
+	
+	public GameState getBackGameState();
 }

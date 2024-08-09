@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL46;
 
 import project.asset.AssetUtils;
 import project.asset.sceneasset.Mesh;
+import project.core.GameState;
 import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
@@ -12,7 +13,6 @@ import project.core.renderer.RenderStrategyManager;
 import project.gui.AGUIElement;
 import project.gui.Image;
 import project.gui.Text;
-import project.opengl.RendererGL;
 import project.opengl.shader.Shader;
 import project.opengl.shader.ShaderProgram;
 import project.opengl.shader.uniform.UAMatrix4f;
@@ -27,11 +27,13 @@ public class GUIRenderPass implements IRenderPass {
 	float lineHeight;
 	float baseLine;
 	
+	private GameState gameState;
 	private UAMatrix4f uProjection;
 	private UInteger1 uDiffuseSampler;
 	private RenderStrategyManager<GUIRenderPass> renderStrategyManager;
 	
 	public GUIRenderPass() {
+		this.gameState = null;
 		this.imagePlane = null;
 		this.shaderProgram = new ShaderProgram();
 		this.lineHeight = 22.0f;
@@ -67,8 +69,9 @@ public class GUIRenderPass implements IRenderPass {
 	}
 
 	@Override
-	public void render(IRenderer renderer) {
-		Scene scene = ((RendererGL) renderer).getActiveScene();
+	public void render(IRenderer renderer, GameState gameState) {
+		this.gameState = gameState;
+		Scene scene = this.gameState.DEBUGgetActiveScene();
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 		
         activeShaderProgram.bind();
@@ -88,5 +91,10 @@ public class GUIRenderPass implements IRenderPass {
 		}
 		
 		this.renderStrategyManager.getStrategy(object.getClass()).execute(renderer, this, object);
+	}
+	
+	@Override
+	public GameState getGameState() {
+		return this.gameState;
 	}
 }

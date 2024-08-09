@@ -8,7 +8,6 @@ import project.asset.texture.Texture;
 import project.component.Material;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
-import project.opengl.RendererGL;
 import project.opengl.TextureGL;
 import project.opengl.VAO;
 import project.opengl.shader.ShaderProgram;
@@ -17,6 +16,7 @@ import project.opengl.shader.uniform.object.material.SSMaterial;
 import project.opengl.shader.uniform.object.material.UMaterial;
 import project.scene.ASceneObject;
 import project.scene.Model;
+import project.testing.TestDebugDataHandles;
 
 class RenderModel implements IRenderStrategy<SceneRenderPass> {
 	
@@ -53,7 +53,7 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 				textureGL.bind();
 			}
 			
-			if( material.getTexture(1) != null && ((RendererGL) renderer).getActiveScene().DEBUGareNormalsActive() ) {
+			if( material.getTexture(1) != null && (boolean) renderPass.getGameState().getDebugData(TestDebugDataHandles.NORMALS_ACTIVE) ) {
 				this.materialStruct.hasNormalMap = 1;
 			} else {
 				this.materialStruct.hasNormalMap = 0;
@@ -74,16 +74,10 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 			if( animationData == null ) {
 				UAMatrix4f.class.cast(activeShaderProgram.getUniform("uBoneMatrices"))
 				.update(AnimationData.DEFAULT_BONE_TRANSFORMS);
-				/*activeShaderProgram.setMatrix4fArrayUniform(
-					SceneRenderPass.U_BONE_MATRICES, AnimationData.DEFAULT_BONE_TRANSFORMS
-				);*/
 				
 			} else {
 				UAMatrix4f.class.cast(activeShaderProgram.getUniform("uBoneMatrices"))
 				.update(animationData.getCurrentFrame().getBoneTransforms());
-				/*activeShaderProgram.setMatrix4fArrayUniform(
-					SceneRenderPass.U_BONE_MATRICES, animationData.getCurrentFrame().getBoneTransforms()
-				);*/
 			}
 
 			GL46.glDrawElements(

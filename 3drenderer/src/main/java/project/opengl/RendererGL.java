@@ -35,13 +35,10 @@ public class RendererGL implements IRenderer {
 	private IGraphics defaultMeshGraphics;
 	private IGraphics defaultTextureGraphics;
 	
-	private Scene scene;
-	
 	public RendererGL(Window clientWindow, Scene scene) {
 		this.gameStateQueue = new ConcurrentLinkedQueue<>();
 		this.backGameState = new GameState();
 		this.clientWindow = clientWindow;
-		this.scene = scene;
 		this.cascadeRenderPass = new CascadeShadowRenderPass();
 		this.sceneRenderPass = new SceneRenderPass();
 		this.guiRenderPass = new GUIRenderPass();
@@ -105,10 +102,10 @@ public class RendererGL implements IRenderer {
 			GL46.glEnable(GL46.GL_CULL_FACE);
 			GL46.glCullFace(GL46.GL_BACK);
 			
-			this.cascadeRenderPass.render(this);
+			this.cascadeRenderPass.render(this, gameState);
 	        
 				// Scene render pass
-			Camera activeCamera = this.scene.getActiveCamera();
+			Camera activeCamera = gameState.DEBUGgetActiveCamera();
 			
 			GL46.glViewport(
 				0, 0, this.clientWindow.getWidth(), this.clientWindow.getHeight()
@@ -118,14 +115,14 @@ public class RendererGL implements IRenderer {
 			);
 			this.sceneRenderPass.setCascadeShadowRenderPass(this.cascadeRenderPass);
 			
-			this.sceneRenderPass.render(this);
+			this.sceneRenderPass.render(this, gameState);
 			
 				// GUI render pass
-			if( this.scene.getGUI() != null ) {
+			if( gameState.DEBUGgetActiveScene() != null ) {
 				GL46.glDisable(GL46.GL_CULL_FACE); // Ignores which direction GUI elements are facing
 			  	GL46.glDisable(GL46.GL_DEPTH_TEST); // Prevents close faces from overlapping with GUI
 			  	
-			  	this.guiRenderPass.render(this);
+			  	this.guiRenderPass.render(this, gameState);
 			}
 		}
 	}
@@ -178,10 +175,6 @@ public class RendererGL implements IRenderer {
 		return this.clientWindow;
 	}
 	
-	public Scene getActiveScene() {
-		return this.scene;
-	}
-	
 	@Override
 	public IGraphics getDefaultMeshGraphics() {
 		return this.defaultMeshGraphics;
@@ -190,5 +183,10 @@ public class RendererGL implements IRenderer {
 	@Override
 	public IGraphics getDefaultTextureGraphics() {
 		return this.defaultTextureGraphics;
+	}
+	
+	@Override
+	public GameState getBackGameState() {
+		return this.backGameState;
 	}
 }

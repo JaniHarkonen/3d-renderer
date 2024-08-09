@@ -9,12 +9,14 @@ import org.lwjgl.glfw.GLFW;
 import project.Application;
 import project.Window;
 import project.controls.Controller;
+import project.core.GameState;
 import project.gui.GUI;
 import project.gui.Image;
 import project.gui.Text;
 import project.input.Input;
 import project.testing.ActionSet;
 import project.testing.TestAssets;
+import project.testing.TestDebugDataHandles;
 import project.testing.TestDummy;
 import project.testing.TestPlayer;
 import project.testing.TestPointLight;
@@ -193,6 +195,10 @@ public class Scene {
 			object.submitState();
 		}
 		
+		GameState back = Application.getApp().getRenderer().getBackGameState();
+		back.DEBUGsetActiveCamera(this.activeCamera);
+		back.DEBUGsetActiveScene(this);
+		back.setDebugData(TestDebugDataHandles.NORMALS_ACTIVE, this.DEBUGareNormalsActive);
 		Application.getApp().getRenderer().submitGameState();
 	}
 	
@@ -242,9 +248,9 @@ public class Scene {
 		return this.objects;
 	}
 	
-	public Camera getActiveCamera() {
+	/*public Camera getActiveCamera() {
 		return this.activeCamera;
-	}
+	}*/
 	
 	public Application getApp() {
 		return this.app;

@@ -7,11 +7,11 @@ import org.lwjgl.opengl.GL46;
 
 import project.component.Attenuation;
 import project.component.CascadeShadow;
+import project.core.GameState;
 import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
 import project.core.renderer.RenderStrategyManager;
-import project.opengl.RendererGL;
 import project.opengl.cshadow.CascadeShadowRenderPass;
 import project.opengl.shader.Shader;
 import project.opengl.shader.ShaderProgram;
@@ -49,11 +49,15 @@ public class SceneRenderPass implements IRenderPass {
 	private UArray<SSPointLight> uPointLights;
 	private UArray<SSCascadeShadow> uCascadeShadows;
 	
+	private GameState gameState;
+	private Camera activeCamera;
 	private RenderStrategyManager<SceneRenderPass> renderStrategyManager;
 	
 	public SceneRenderPass() {
+		this.gameState = null;
 		this.shaderProgram = new ShaderProgram();
 		this.cascadeShadowRenderPass = null;
+		this.activeCamera = null;
 		
 		this.renderStrategyManager = new RenderStrategyManager<>(new NullRenderStrategy<SceneRenderPass>())
 		.addStrategy(Model.class, new RenderModel())
@@ -120,12 +124,13 @@ public class SceneRenderPass implements IRenderPass {
 	}
 
 	@Override
-	public void render(IRenderer renderer) {
+	public void render(IRenderer renderer, GameState gameState) {
 		final int DIFFUSE_SAMPLER = 0;
 		final int NORMAL_SAMPLER = 1;
 		final int SHADOW_MAP_FIRST = DEFAULT_FIRST_FREE_TEXTURE_INDEX;
 		
-		Scene scene = ((RendererGL) renderer).getActiveScene();
+		this.gameState = gameState;
+		Scene scene = this.gameState.DEBUGgetActiveScene();
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 		
 		activeShaderProgram.bind();
@@ -143,12 +148,11 @@ public class SceneRenderPass implements IRenderPass {
 		}
 		
 		this.cascadeShadowRenderPass.getShadowBuffer().bindTextures(GL46.GL_TEXTURE2);
+		this.activeCamera = this.gameState.DEBUGgetActiveCamera();
+		this.activeCamera.updateTransformMatrix();
 		
-		Camera activeCamera = scene.getActiveCamera();
-		activeCamera.updateTransformMatrix();
-		
-		this.uProjection.update(activeCamera.getProjection().getMatrix());
-		this.uCameraTransform.update(activeCamera.getTransformMatrix());
+		this.uProjection.update(this.activeCamera.getProjection().getMatrix());
+		this.uCameraTransform.update(this.activeCamera.getTransformMatrix());
 		
 		for( ASceneObject object : scene.getObjects() ) {
 			this.recursiveRender(renderer, object);
@@ -165,10 +169,10 @@ public class SceneRenderPass implements IRenderPass {
 		this.renderStrategyManager.getStrategy(object.getClass()).execute(renderer, this, object);
 	}
 	
-	void updatePointLight(Scene scene, PointLight pointLight, int index) {
+	void updatePointLight(PointLight pointLight, int index) {
         Vector4f aux = new Vector4f();
         
-        Matrix4f cameraTransform = scene.getActiveCamera().getTransformMatrix();
+        Matrix4f cameraTransform = this.activeCamera.getTransformMatrix();
         aux.set(pointLight.getPosition(), 1);
         aux.mul(cameraTransform);
         
@@ -196,5 +200,10 @@ public class SceneRenderPass implements IRenderPass {
 	
 	public void setCascadeShadowRenderPass(CascadeShadowRenderPass cascadeShadowRenderPass) {
 		this.cascadeShadowRenderPass = cascadeShadowRenderPass;
+	}
+	
+	@Override
+	public GameState getGameState() {
+		return this.gameState;
 	}
 }
