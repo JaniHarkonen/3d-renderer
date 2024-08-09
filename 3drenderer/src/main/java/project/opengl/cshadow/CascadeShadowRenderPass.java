@@ -11,7 +11,6 @@ import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
 import project.core.renderer.RenderStrategyManager;
-import project.opengl.ShadowBuffer;
 import project.opengl.shader.Shader;
 import project.opengl.shader.ShaderProgram;
 import project.opengl.shader.uniform.UAMatrix4f;
