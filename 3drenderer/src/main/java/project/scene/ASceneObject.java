@@ -33,7 +33,7 @@ public abstract class ASceneObject {
 		
 	}
 	
-	public void submitState() {
+	public void submitToRenderer() {
 		Application.getApp().getRenderer().submitRenderable(this.rendererCopy());
 	}
 	

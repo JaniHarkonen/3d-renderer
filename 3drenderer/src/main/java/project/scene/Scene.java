@@ -193,12 +193,14 @@ public class Scene {
 		}
 		
 		for( ASceneObject object : this.objects ) {
-			object.submitState();
+			object.submitToRenderer();
 		}
 		
 		GameState back = Application.getApp().getRenderer().getBackGameState();
 		back.DEBUGsetActiveScene(this);
-		back.setDebugData(TestDebugDataHandles.NORMALS_ACTIVE, this.DEBUGareNormalsActive);
+		back
+		.setDebugData(TestDebugDataHandles.NORMALS_ACTIVE, this.DEBUGareNormalsActive)
+		.setDebugData(TestDebugDataHandles.CASCADE_SHADOW_LIGHT, this.DEBUGshadowLightPosition);
 		Application.getApp().getRenderer().submitGameState();
 	}
 	

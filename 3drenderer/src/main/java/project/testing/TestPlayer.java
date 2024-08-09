@@ -24,9 +24,9 @@ public class TestPlayer extends ASceneObject implements IControllable {
 
 	
 	@Override
-	public void submitState() {
+	public void submitToRenderer() {
 		for( ASceneObject child : this.children ) {
-			child.submitState();
+			child.submitToRenderer();
 		}
 	}
 	

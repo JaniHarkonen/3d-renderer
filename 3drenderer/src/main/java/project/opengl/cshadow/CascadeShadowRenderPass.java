@@ -3,6 +3,7 @@ package project.opengl.cshadow;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL46;
 
 import project.component.CascadeShadow;
@@ -17,6 +18,7 @@ import project.opengl.shader.uniform.UAMatrix4f;
 import project.scene.ASceneObject;
 import project.scene.Model;
 import project.scene.Scene;
+import project.testing.TestDebugDataHandles;
 
 public class CascadeShadowRenderPass implements IRenderPass {
 	ShaderProgram shaderProgram;
@@ -65,7 +67,9 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	    activeShaderProgram.bind();
 	    
 	    CascadeShadow.updateCascadeShadows(
-	    		this.cascadeShadows, this.gameState.DEBUGgetActiveCamera(), scene.getShadowLightPosition()
+    		this.cascadeShadows, 
+    		this.gameState.DEBUGgetActiveCamera(), 
+    		(Vector3f) this.gameState.getDebugData(TestDebugDataHandles.CASCADE_SHADOW_LIGHT)
 		);
 	    GL46.glBindFramebuffer(GL46.GL_FRAMEBUFFER, this.shadowBuffer.getDepthMapFBO());
 	    GL46.glViewport(

@@ -114,8 +114,9 @@ public class GameState {
 		return this.graphicsDisposalRequests.poll();
 	} 
 	
-	public void setDebugData(String key, Object data) {
+	public GameState setDebugData(String key, Object data) {
 		this.debugData.put(key, data);
+		return this;
 	}
 
 	public Object getDebugData(String key) {

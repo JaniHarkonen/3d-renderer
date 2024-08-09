@@ -26,9 +26,9 @@ public class TestDummy extends ASceneObject {
 	
 	
 	@Override
-	public void submitState() {
+	public void submitToRenderer() {
 		for( ASceneObject child : this.children ) {
-			child.submitState();
+			child.submitToRenderer();
 		}
 	}
 	
