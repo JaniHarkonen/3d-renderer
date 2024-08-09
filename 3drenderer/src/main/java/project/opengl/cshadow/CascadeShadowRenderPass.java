@@ -3,27 +3,28 @@ package project.opengl.cshadow;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL46;
 
 import project.component.CascadeShadow;
+import project.core.GameState;
 import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
 import project.core.renderer.RenderStrategyManager;
-import project.opengl.RendererGL;
-import project.opengl.ShadowBuffer;
 import project.opengl.shader.Shader;
 import project.opengl.shader.ShaderProgram;
 import project.opengl.shader.uniform.UAMatrix4f;
 import project.scene.ASceneObject;
 import project.scene.Model;
-import project.scene.Scene;
+import project.testing.TestDebugDataHandles;
 
 public class CascadeShadowRenderPass implements IRenderPass {
 	ShaderProgram shaderProgram;
 	List<CascadeShadow> cascadeShadows;
 	ShadowBuffer shadowBuffer;
 	
+	private GameState gameState;
 	private UAMatrix4f uLightView;
 	private RenderStrategyManager<CascadeShadowRenderPass> renderStrategyManager;
 	
@@ -42,11 +43,11 @@ public class CascadeShadowRenderPass implements IRenderPass {
 		this.shaderProgram.addShader(
 			new Shader("shaders/cshadow/cshadow.vert", GL46.GL_VERTEX_SHADER)
 		);
-		this.uLightView = new UAMatrix4f("uLightView");
+		this.uLightView = new UAMatrix4f(Uniforms.LIGHT_VIEW);
 		
 		this.shaderProgram.declareUniform(this.uLightView)
-		.declareUniform(new UAMatrix4f("uObjectTransform"))
-		.declareUniform(new UAMatrix4f("uBoneMatrices"));
+		.declareUniform(new UAMatrix4f(Uniforms.OBJECT_TRANSFORM))
+		.declareUniform(new UAMatrix4f(Uniforms.BONE_MATRICES));
 		this.shaderProgram.init();
 		this.shadowBuffer.init();
 		
@@ -58,13 +59,15 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	}
 	
 	@Override
-	public void render(IRenderer renderer) {
-		Scene scene = ((RendererGL) renderer).getActiveScene();
+	public void render(IRenderer renderer, GameState gameState) {
+		this.gameState = gameState;
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 	    activeShaderProgram.bind();
 	    
 	    CascadeShadow.updateCascadeShadows(
-    		this.cascadeShadows, scene.getActiveCamera(), scene.getShadowLightPosition()
+    		this.cascadeShadows, 
+    		this.gameState.getActiveCamera(), 
+    		(Vector3f) this.gameState.getDebugData(TestDebugDataHandles.CASCADE_SHADOW_LIGHT)
 		);
 	    GL46.glBindFramebuffer(GL46.GL_FRAMEBUFFER, this.shadowBuffer.getDepthMapFBO());
 	    GL46.glViewport(
@@ -83,7 +86,10 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	    	GL46.glClear(GL46.GL_DEPTH_BUFFER_BIT);
 	        this.uLightView.update(this.cascadeShadows.get(i).getLightViewMatrix());
 	
-	        for( ASceneObject object : scene.getObjects() ) {
+	        gameState.resetQueue();
+	        
+	        ASceneObject object;
+	        while( (object = gameState.pollRenderable()) != null ) {
 	        	this.recursiveRender(renderer, object);
 	        }
 	    }
@@ -106,5 +112,10 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	
 	public ShadowBuffer getShadowBuffer() {
 		return this.shadowBuffer;
+	}
+	
+	@Override
+	public GameState getGameState() {
+		return this.gameState;
 	}
 }

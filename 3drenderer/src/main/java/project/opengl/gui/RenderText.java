@@ -27,16 +27,16 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 		Text text = (Text) element;
 		Font font = text.getFont();
 		TextureGL textureGL = (TextureGL) font.getTexture().getGraphics();
-		Vector4f color = text.getTextColor();
+		Vector4f primaryColor = text.getPrimaryColor();
 		
-		UVector4f.class.cast(activeShaderProgram.getUniform("uTextColor")).update(color);
+		UVector4f.class.cast(activeShaderProgram.getUniform(Uniforms.PRIMARY_COLOR)).update(primaryColor);
 		GL46.glActiveTexture(GL46.GL_TEXTURE0);
 		textureGL.bind();
 
 		for( String line : text.getContent().split("\n") ) {
 			for( int i = 0; i < line.length(); i++ ) {
 				Font.Glyph glyph = font.getGlyph(line.charAt(i));
-				UAMatrix4f.class.cast(activeShaderProgram.getUniform("uObjectTransform"))
+				UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.OBJECT_TRANSFORM))
 				.update(
 					new Matrix4f()
 					.translationRotateScale(

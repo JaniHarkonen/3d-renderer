@@ -214,4 +214,19 @@ void main()
 
     fragColor = ambient + diffuseSpecularComp;
     fragColor.rgb = fragColor.rgb * shadowFactor;
+
+            /*switch (cascadeIndex) {
+            case 0:
+            fragColor.rgb *= vec3(1.0f, 0.25f, 0.25f);
+            break;
+            case 1:
+            fragColor.rgb *= vec3(0.25f, 1.0f, 0.25f);
+            break;
+            case 2:
+            fragColor.rgb *= vec3(0.25f, 0.25f, 1.0f);
+            break;
+            default :
+            fragColor.rgb *= vec3(1.0f, 1.0f, 0.25f);
+            break;
+        }*/
 }

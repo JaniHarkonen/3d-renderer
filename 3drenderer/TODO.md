@@ -2,7 +2,6 @@
 
 ### Priority
 - implement roughness maps, alpha maps
-- integrate GameStates into the rendering process
 - get rid of RendererGL casts inside 'opengl' package
 - consider AAsset
 - resolve AGUIElement vs ASceneObject conflict

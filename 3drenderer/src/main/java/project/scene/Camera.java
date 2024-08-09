@@ -1,22 +1,23 @@
 package project.scene;
 
-import org.joml.Matrix4f;
-
+import project.component.CameraTransform;
 import project.component.Projection;
 
 public class Camera extends ASceneObject {
 
 	private Projection projection;
+	private CameraTransform transformComponent;
 	
 	public Camera(Scene scene, Projection projection) {
 		super(scene);
 		this.projection = projection;
+		this.transformComponent = new CameraTransform();
 	}
 	
-	private Camera(Camera camera) {
+	private Camera(Camera src) {
 		super(null);
-		this.transformMatrix = new Matrix4f(camera.transformMatrix);
-		this.projection = new Projection(camera.projection);
+		this.transformComponent = new CameraTransform(src.transformComponent);
+		this.projection = new Projection(src.projection);
 	}
 	
 	
@@ -26,10 +27,8 @@ public class Camera extends ASceneObject {
 	}
 	
 	@Override
-	public void updateTransformMatrix() {
-		this.transformMatrix.identity()
-		.rotate(this.rotationComponent.getAsQuaternion())
-		.translate(-this.position.x, -this.position.y, -this.position.z);
+	public CameraTransform getTransformComponent() {
+		return this.transformComponent;
 	}
 	
 	public Projection getProjection() {

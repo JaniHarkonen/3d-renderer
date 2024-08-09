@@ -22,11 +22,10 @@ public class CascadeShadow {
 	
 	
     public static void updateCascadeShadows(List<CascadeShadow> cascadeShadows, Camera activeCamera, Vector3f light) {
-    	activeCamera.updateTransformMatrix();
     	activeCamera.getProjection().update(800, 600);
-        Matrix4f viewMatrix = activeCamera.getTransformMatrix();//scene.getCamera().getViewMatrix();
-        Matrix4f projMatrix = activeCamera.getProjection().getMatrix();//scene.getProjection().getProjMatrix();
-        Vector4f lightPos = new Vector4f(light.x, light.y, light.z, 0);//new Vector4f(scene.getSceneLights().getDirLight().getDirection(), 0);
+        Matrix4f viewMatrix = activeCamera.getTransformComponent().getAsMatrix();
+        Matrix4f projMatrix = activeCamera.getProjection().getMatrix();
+        Vector4f lightPos = new Vector4f(light.x, light.y, light.z, 0);
 
         float cascadeSplitLambda = 0.95f;
 
@@ -44,7 +43,7 @@ public class CascadeShadow {
 
         // Calculate split depths based on view camera frustum
         // Based on method presented in https://developer.nvidia.com/gpugems/GPUGems3/gpugems3_ch10.html
-        for (int i = 0; i < SHADOW_MAP_CASCADE_COUNT; i++) {
+        for( int i = 0; i < SHADOW_MAP_CASCADE_COUNT; i++ ) {
             float p = (i + 1) / (float) (SHADOW_MAP_CASCADE_COUNT);
             float log = (float) (minZ * java.lang.Math.pow(ratio, p));
             float uniform = minZ + range * p;
@@ -54,7 +53,7 @@ public class CascadeShadow {
 
         // Calculate orthographic projection matrix for each cascade
         float lastSplitDist = 0.0f;
-        for (int i = 0; i < SHADOW_MAP_CASCADE_COUNT; i++) {
+        for( int i = 0; i < SHADOW_MAP_CASCADE_COUNT; i++ ) {
             float splitDist = cascadeSplits[i];
 
             Vector3f[] frustumCorners = new Vector3f[]{
@@ -70,12 +69,12 @@ public class CascadeShadow {
 
             // Project frustum corners into world space
             Matrix4f invCam = (new Matrix4f(projMatrix).mul(viewMatrix)).invert();
-            for (int j = 0; j < 8; j++) {
+            for( int j = 0; j < 8; j++ ) {
                 Vector4f invCorner = new Vector4f(frustumCorners[j], 1.0f).mul(invCam);
                 frustumCorners[j] = new Vector3f(invCorner.x / invCorner.w, invCorner.y / invCorner.w, invCorner.z / invCorner.w);
             }
 
-            for (int j = 0; j < 4; j++) {
+            for( int j = 0; j < 4; j++ ) {
                 Vector3f dist = new Vector3f(frustumCorners[j + 4]).sub(frustumCorners[j]);
                 frustumCorners[j + 4] = new Vector3f(frustumCorners[j]).add(new Vector3f(dist).mul(splitDist));
                 frustumCorners[j] = new Vector3f(frustumCorners[j]).add(new Vector3f(dist).mul(lastSplitDist));
@@ -83,17 +82,17 @@ public class CascadeShadow {
 
             // Get frustum center
             Vector3f frustumCenter = new Vector3f(0.0f);
-            for (int j = 0; j < 8; j++) {
+            for( int j = 0; j < 8; j++ ) {
                 frustumCenter.add(frustumCorners[j]);
             }
             frustumCenter.div(8.0f);
 
             float radius = 0.0f;
-            for (int j = 0; j < 8; j++) {
+            for( int j = 0; j < 8; j++ ) {
                 float distance = (new Vector3f(frustumCorners[j]).sub(frustumCenter)).length();
                 radius = java.lang.Math.max(radius, distance);
             }
-            radius = (float) java.lang.Math.ceil(radius * 16.0f) / 16.0f;
+            radius = (float) Math.ceil(radius * 16.0f) / 16.0f;
 
             Vector3f maxExtents = new Vector3f(radius);
             Vector3f minExtents = new Vector3f(maxExtents).mul(-1);

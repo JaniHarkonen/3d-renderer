@@ -8,20 +8,18 @@ import project.testing.TestAssets;
 public class Text extends AGUIElement {
 	private Font font;
 	private String content;
-	private Vector4f textColor;
 	
 	public Text(GUI gui, String content) {
 		super(gui);
 		this.font = TestAssets.FONT_ARIAL_16;
 		this.content = content;
-		this.textColor = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+		this.primaryColor = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	
 	private Text(Text src) {
 		super(null);
 		this.font = src.font;
 		this.content = new String(src.content);
-		this.textColor = new Vector4f(src.textColor);
 	}
 	
 	
@@ -40,9 +38,5 @@ public class Text extends AGUIElement {
 	
 	public Font getFont() {
 		return this.font;
-	}
-	
-	public Vector4f getTextColor() {
-		return this.textColor;
 	}
 }

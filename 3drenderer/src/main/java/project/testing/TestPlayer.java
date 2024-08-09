@@ -24,9 +24,9 @@ public class TestPlayer extends ASceneObject implements IControllable {
 
 	
 	@Override
-	public void submitState() {
+	public void submitToRenderer() {
 		for( ASceneObject child : this.children ) {
-			child.submitState();
+			child.submitToRenderer();
 		}
 	}
 	
@@ -49,7 +49,7 @@ public class TestPlayer extends ASceneObject implements IControllable {
 		
 		switch( action.getActionID() ) {
 			case ActionSet.LOOK_AROUND: {
-				camera.getRotationComponent().rotate(
+				camera.getTransformComponent().getRotationComponent().rotate(
 					(float) Math.toRadians(sensitivity * action.getAxisIntensity(1)),
 					(float) Math.toRadians(sensitivity * action.getAxisIntensity(0)),
 					0
@@ -57,26 +57,26 @@ public class TestPlayer extends ASceneObject implements IControllable {
 			} break;
 
 			case ActionSet.MOVE_FORWARD: {
-				camera.getPosition().add(
-					camera.getRotationComponent().getForwardVector(new Vector3f(0.0f)).mul(finalSpeed)
+				camera.getTransformComponent().getPosition().add(
+					camera.getTransformComponent().getRotationComponent().getForwardVector(new Vector3f(0.0f)).mul(finalSpeed)
 				);
 			} break;
 
 			case ActionSet.MOVE_LEFT: {
-				camera.getPosition().add(
-					camera.getRotationComponent().getLeftVector(new Vector3f()).mul(finalSpeed)
+				camera.getTransformComponent().getPosition().add(
+					camera.getTransformComponent().getRotationComponent().getLeftVector(new Vector3f()).mul(finalSpeed)
 				);
 			} break;
 
 			case ActionSet.MOVE_BACKWARDS: {
-				camera.getPosition().add(
-					camera.getRotationComponent().getBackwardVector(new Vector3f()).mul(finalSpeed)
+				camera.getTransformComponent().getPosition().add(
+					camera.getTransformComponent().getRotationComponent().getBackwardVector(new Vector3f()).mul(finalSpeed)
 				);
 			} break;
 
 			case ActionSet.MOVE_RIGHT: {
-				camera.getPosition().add(
-					camera.getRotationComponent().getRightVector(new Vector3f()).mul(finalSpeed)
+				camera.getTransformComponent().getPosition().add(
+					camera.getTransformComponent().getRotationComponent().getRightVector(new Vector3f()).mul(finalSpeed)
 				);
 			} break;
 		}

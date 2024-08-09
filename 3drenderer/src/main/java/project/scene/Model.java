@@ -3,12 +3,10 @@ package project.scene;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-
 import project.asset.sceneasset.AnimationData;
 import project.asset.sceneasset.Mesh;
 import project.component.Material;
+import project.component.Transform;
 
 public class Model extends ASceneObject {
 
@@ -31,16 +29,16 @@ public class Model extends ASceneObject {
 		this.animationData = null;
 	}
 	
-	private Model(Model model) {
+	private Model(Model src) {
 		super(null);
-		this.position = new Vector3f(model.position);
-		this.transformMatrix = new Matrix4f(model.transformMatrix);
-		if( model.animationData != null ) {
-			this.animationData = new AnimationData(model.animationData);
+		src.transformComponent.updateTransformMatrix();
+		this.transformComponent = new Transform(src.transformComponent);
+		if( src.animationData != null ) {
+			this.animationData = new AnimationData(src.animationData);
 		} else {
 			this.animationData = null;
 		}
-		this.meshMaterialTable = model.meshMaterialTable; // NOT DEEP COPIED (assumed to stay the same for now)
+		this.meshMaterialTable = src.meshMaterialTable; // NOT DEEP COPIED (assumed to stay the same for now)
 	}
 	
 	

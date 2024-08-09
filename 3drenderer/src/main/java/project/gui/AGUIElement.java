@@ -3,6 +3,7 @@ package project.gui;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import project.scene.ASceneObject;
 
@@ -13,6 +14,8 @@ public abstract class AGUIElement extends ASceneObject {
 	protected Quaternionf rotation;
 	protected Vector3f scale;
 	protected Matrix4f transformMatrix;
+	protected Vector4f primaryColor;
+	protected Vector4f secondaryColor;
 	
 	public AGUIElement(GUI gui) {
 		super(null);
@@ -22,6 +25,8 @@ public abstract class AGUIElement extends ASceneObject {
 		this.rotation = new Quaternionf();
 		this.scale = new Vector3f(1.0f);
 		this.transformMatrix = new Matrix4f();
+		this.primaryColor = new Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
+		this.secondaryColor = new Vector4f(1.0f, 1.0f, 1.0f, 0.0f);
 	}
 	
 	
@@ -55,5 +60,13 @@ public abstract class AGUIElement extends ASceneObject {
 	
 	public GUI getGUI() {
 		return this.gui;
+	}
+	
+	public Vector4f getPrimaryColor() {
+		return this.primaryColor;
+	}
+	
+	public Vector4f getSecondaryColor() {
+		return this.secondaryColor;
 	}
 }

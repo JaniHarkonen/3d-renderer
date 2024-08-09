@@ -9,12 +9,15 @@ import org.lwjgl.glfw.GLFW;
 import project.Application;
 import project.Window;
 import project.controls.Controller;
+import project.core.GameState;
 import project.gui.GUI;
 import project.gui.Image;
 import project.gui.Text;
 import project.input.Input;
+import project.input.InputSnapshot;
 import project.testing.ActionSet;
 import project.testing.TestAssets;
+import project.testing.TestDebugDataHandles;
 import project.testing.TestDummy;
 import project.testing.TestPlayer;
 import project.testing.TestPointLight;
@@ -33,6 +36,7 @@ public class Scene {
 	private TestPointLight DEBUGtestPointLight0;
 	private Vector3f DEBUGshadowLightPosition;
 	private boolean DEBUGareNormalsActive;
+	private boolean DEBUGcascadeShadowEnabled;
 	
 	public Scene(Application app, int tickRate) {
 		this.objects = null;
@@ -46,6 +50,7 @@ public class Scene {
 		this.DEBUGtestPointLight0 = null;
 		this.DEBUGshadowLightPosition = null;
 		this.DEBUGareNormalsActive = true;
+		this.DEBUGcascadeShadowEnabled = false;
 	}
 	
 	
@@ -65,7 +70,8 @@ public class Scene {
 		
 			// Point light
 		this.DEBUGtestPointLight0 = new TestPointLight(this);
-		this.DEBUGtestPointLight0.setPosition(0.0f, 100.0f, 0.0f);
+		//this.DEBUGtestPointLight0.setPosition(0.0f, 100.0f, 0.0f);
+		this.DEBUGtestPointLight0.getTransformComponent().setPosition(0.0f, 100.0f, 0.0f);
 		this.objects.add(this.DEBUGtestPointLight0);
 		Controller pointLightController = new Controller(input, this.DEBUGtestPointLight0)
 		.addBinding(ActionSet.MOVE_FORWARD, input.new KeyHeld(GLFW.GLFW_KEY_UP))
@@ -93,7 +99,7 @@ public class Scene {
 		
 			// Soldier
 		TestDummy soldier = new TestDummy(this, TestAssets.createTestSoldier(this));
-		soldier.setPosition(1, -10, -100);
+		soldier.getTransformComponent().setPosition(1, -10, -100);
 		//soldier.getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
 		this.objects.add(soldier);
 		DebugUtils.log(this, "Soldier TestDummy added!");
@@ -134,6 +140,10 @@ public class Scene {
 		
 		long memoryUsage = Runtime.getRuntime().totalMemory();
 		
+		Vector3f cameraPosition = this.activeCamera.getTransformComponent().getPosition();
+		Vector3f pl0Position = this.DEBUGtestPointLight0.getTransformComponent().getPosition();
+		Vector3f pl0Color = this.DEBUGtestPointLight0.getPointLight().getColor();
+		
 		if( this.gui != null ) {
 			this.DEBUGtextAppStatistics.setContent(
 				"FPS: " + appWindow.getFPS() + " / " + appWindow.getMaxFPS() + "\n" +
@@ -141,20 +151,20 @@ public class Scene {
 				"HEAP: " + this.convertToLargestByte(memoryUsage) + " (" + memoryUsage + " bytes)\n" +
 				"camera\n" + 
 				"   pos: (" + 
-					this.activeCamera.getPosition().x + ", " +
-					this.activeCamera.getPosition().y + ", " +
-					this.activeCamera.getPosition().z +
+					cameraPosition.x + ", " +
+					cameraPosition.y + ", " +
+					cameraPosition.z +
 				")\n" +
 				"pointLight0: \n" +
 				"    pos: (" + 
-					this.DEBUGtestPointLight0.getPosition().x + ", " + 
-					this.DEBUGtestPointLight0.getPosition().y + ", " + 
-					this.DEBUGtestPointLight0.getPosition().z + 
+					pl0Position.x + ", " + 
+					pl0Position.y + ", " + 
+					pl0Position.z + 
 				")\n" +
 				"    rgb: (" +
-					this.DEBUGtestPointLight0.getPointLight().getColor().x + ", " +
-					this.DEBUGtestPointLight0.getPointLight().getColor().y + ", " +
-					this.DEBUGtestPointLight0.getPointLight().getColor().z +
+					pl0Color.x + ", " +
+					pl0Color.y + ", " +
+					pl0Color.z +
 				")\n" +
 				"    intensity: " + this.DEBUGtestPointLight0.getPointLight().getIntensity() + "\n" +
 				"    normal map: " + (this.DEBUGareNormalsActive ? "ON" : "OFF") + "\n\n" +
@@ -167,11 +177,13 @@ public class Scene {
 				"    3/4 to change point light green value\n" +
 				"    5/6 to change point light blue value\n" + 
 				"    N to toggle normal map\n" +
-				"    H to toggle HUD"
+				"    H to toggle HUD\n"
 			);
 		}
 		
-		if( this.app.getWindow().getInputSnapshot().isKeyPressed(GLFW.GLFW_KEY_H) ) {
+		InputSnapshot inputSnapshot = this.app.getWindow().getInputSnapshot();
+		
+		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_H) ) {
 			if( this.gui == null ) {
 				this.createGUI();
 			} else {
@@ -179,20 +191,30 @@ public class Scene {
 			}
 		}
 		
-		if( this.app.getWindow().getInputSnapshot().isKeyHeld(GLFW.GLFW_KEY_KP_8) ) {
+		if( inputSnapshot.isKeyHeld(GLFW.GLFW_KEY_KP_8) ) {
 			this.DEBUGshadowLightPosition.add(0,1*deltaTime,0);
-		} else if( this.app.getWindow().getInputSnapshot().isKeyHeld(GLFW.GLFW_KEY_KP_2) ) {
+		} else if( inputSnapshot.isKeyHeld(GLFW.GLFW_KEY_KP_2) ) {
 			this.DEBUGshadowLightPosition.sub(0,1*deltaTime,0);
 		}
 		
-		if( this.app.getWindow().getInputSnapshot().isKeyPressed(GLFW.GLFW_KEY_N) ) {
+		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_N) ) {
 			this.DEBUGareNormalsActive = !this.DEBUGareNormalsActive;
 		}
 		
-		for( ASceneObject object : this.objects ) {
-			object.submitState();
+		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_C) ) {
+			this.DEBUGcascadeShadowEnabled = !this.DEBUGcascadeShadowEnabled;
 		}
 		
+		for( ASceneObject object : this.objects ) {
+			object.submitToRenderer();
+		}
+		
+		GameState back = Application.getApp().getRenderer().getBackGameState();
+		back.DEBUGsetGUI(this.gui);
+		back
+		.setDebugData(TestDebugDataHandles.NORMALS_ACTIVE, this.DEBUGareNormalsActive)
+		.setDebugData(TestDebugDataHandles.CASCADE_SHADOW_LIGHT, this.DEBUGshadowLightPosition)
+		.setDebugData(TestDebugDataHandles.CASCADE_SHADOW_ENABLED, this.DEBUGcascadeShadowEnabled);
 		Application.getApp().getRenderer().submitGameState();
 	}
 	
@@ -242,9 +264,9 @@ public class Scene {
 		return this.objects;
 	}
 	
-	public Camera getActiveCamera() {
+	/*public Camera getActiveCamera() {
 		return this.activeCamera;
-	}
+	}*/
 	
 	public Application getApp() {
 		return this.app;

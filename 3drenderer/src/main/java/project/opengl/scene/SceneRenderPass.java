@@ -7,11 +7,11 @@ import org.lwjgl.opengl.GL46;
 
 import project.component.Attenuation;
 import project.component.CascadeShadow;
+import project.core.GameState;
 import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
 import project.core.renderer.RenderStrategyManager;
-import project.opengl.RendererGL;
 import project.opengl.cshadow.CascadeShadowRenderPass;
 import project.opengl.shader.Shader;
 import project.opengl.shader.ShaderProgram;
@@ -30,7 +30,7 @@ import project.scene.AmbientLight;
 import project.scene.Camera;
 import project.scene.Model;
 import project.scene.PointLight;
-import project.scene.Scene;
+import project.testing.TestDebugDataHandles;
 
 public class SceneRenderPass implements IRenderPass {
 	public static final int DEFAULT_FIRST_FREE_TEXTURE_INDEX = 2;
@@ -48,12 +48,17 @@ public class SceneRenderPass implements IRenderPass {
 	private UArray<Integer> uShadowMap;
 	private UArray<SSPointLight> uPointLights;
 	private UArray<SSCascadeShadow> uCascadeShadows;
+	private UInteger1 uDebugShowShadowCascades;
 	
+	private GameState gameState;
+	private Camera activeCamera;
 	private RenderStrategyManager<SceneRenderPass> renderStrategyManager;
 	
 	public SceneRenderPass() {
+		this.gameState = null;
 		this.shaderProgram = new ShaderProgram();
 		this.cascadeShadowRenderPass = null;
+		this.activeCamera = null;
 		
 		this.renderStrategyManager = new RenderStrategyManager<>(new NullRenderStrategy<SceneRenderPass>())
 		.addStrategy(Model.class, new RenderModel())
@@ -64,18 +69,19 @@ public class SceneRenderPass implements IRenderPass {
 	
 	@Override
 	public boolean init() {
-		this.uDiffuseSampler = new UInteger1("uDiffuseSampler");
-		this.uNormalSampler = new UInteger1("uNormalSampler");
-		this.uProjection = new UAMatrix4f("uProjection");
-		this.uCameraTransform = new UAMatrix4f("uCameraTransform");
+		this.uDiffuseSampler = new UInteger1(Uniforms.DIFFUSE_SAMPLER);
+		this.uNormalSampler = new UInteger1(Uniforms.NORMAL_SAMPLER);
+		this.uProjection = new UAMatrix4f(Uniforms.PROJECTION);
+		this.uCameraTransform = new UAMatrix4f(Uniforms.CAMERA_TRANSFORM);
+		this.uDebugShowShadowCascades = new UInteger1(Uniforms.DEBUG_SHOW_SHADOW_CASCADES);
 		
-		this.uShadowMap = new UArray<>("uShadowMap", new UInteger1[CascadeShadow.SHADOW_MAP_CASCADE_COUNT]);
+		this.uShadowMap = new UArray<>(Uniforms.SHADOW_MAP, new UInteger1[CascadeShadow.SHADOW_MAP_CASCADE_COUNT]);
 		this.uShadowMap.fill(() -> new UInteger1());
 		
-		this.uPointLights = new UArray<>("uPointLights", new UPointLight[MAX_POINT_LIGHTS]);
+		this.uPointLights = new UArray<>(Uniforms.POINT_LIGHTS, new UPointLight[MAX_POINT_LIGHTS]);
 		this.uPointLights.fill(() -> new UPointLight());
 		
-		this.uCascadeShadows = new UArray<>("uCascadeShadows", new UCascadeShadow[CascadeShadow.SHADOW_MAP_CASCADE_COUNT]);
+		this.uCascadeShadows = new UArray<>(Uniforms.CASCADE_SHADOWS, new UCascadeShadow[CascadeShadow.SHADOW_MAP_CASCADE_COUNT]);
 		this.uCascadeShadows.fill(() -> new UCascadeShadow());
 		
 		this.shaderProgram
@@ -86,10 +92,11 @@ public class SceneRenderPass implements IRenderPass {
 		.declareUniform(this.uShadowMap)
 		.declareUniform(this.uPointLights)
 		.declareUniform(this.uCascadeShadows)
-		.declareUniform(new UAMatrix4f("uObjectTransform"))
-		.declareUniform(new UMaterial("uMaterial"))
-		.declareUniform(new UAmbientLight("uAmbientLight"))
-		.declareUniform(new UAMatrix4f("uBoneMatrices"));
+		.declareUniform(this.uDebugShowShadowCascades)
+		.declareUniform(new UAMatrix4f(Uniforms.OBJECT_TRANSFORM))
+		.declareUniform(new UMaterial(Uniforms.MATERIAL))
+		.declareUniform(new UAmbientLight(Uniforms.AMBIENT_LIGHT))
+		.declareUniform(new UAMatrix4f(Uniforms.BONE_MATRICES));
 
 			// Spot light uniform declarations here
 		this.shaderProgram.addShader(
@@ -120,12 +127,12 @@ public class SceneRenderPass implements IRenderPass {
 	}
 
 	@Override
-	public void render(IRenderer renderer) {
+	public void render(IRenderer renderer, GameState gameState) {
 		final int DIFFUSE_SAMPLER = 0;
 		final int NORMAL_SAMPLER = 1;
 		final int SHADOW_MAP_FIRST = DEFAULT_FIRST_FREE_TEXTURE_INDEX;
 		
-		Scene scene = ((RendererGL) renderer).getActiveScene();
+		this.gameState = gameState;
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 		
 		activeShaderProgram.bind();
@@ -143,14 +150,20 @@ public class SceneRenderPass implements IRenderPass {
 		}
 		
 		this.cascadeShadowRenderPass.getShadowBuffer().bindTextures(GL46.GL_TEXTURE2);
+		this.activeCamera = this.gameState.getActiveCamera();
 		
-		Camera activeCamera = scene.getActiveCamera();
-		activeCamera.updateTransformMatrix();
 		
-		this.uProjection.update(activeCamera.getProjection().getMatrix());
-		this.uCameraTransform.update(activeCamera.getTransformMatrix());
+		this.uProjection.update(this.activeCamera.getProjection().getMatrix());
+		this.uCameraTransform.update(this.activeCamera.getTransformComponent().getAsMatrix());
 		
-		for( ASceneObject object : scene.getObjects() ) {
+		this.uDebugShowShadowCascades.update(
+			(boolean) gameState.getDebugData(TestDebugDataHandles.CASCADE_SHADOW_ENABLED) ? 1 : 0
+		);
+		
+		gameState.resetQueue();
+		
+		ASceneObject object;
+		while( (object = gameState.pollRenderable()) != null ) {
 			this.recursiveRender(renderer, object);
 		}
 		
@@ -165,11 +178,11 @@ public class SceneRenderPass implements IRenderPass {
 		this.renderStrategyManager.getStrategy(object.getClass()).execute(renderer, this, object);
 	}
 	
-	void updatePointLight(Scene scene, PointLight pointLight, int index) {
+	void updatePointLight(PointLight pointLight, int index) {
         Vector4f aux = new Vector4f();
         
-        Matrix4f cameraTransform = scene.getActiveCamera().getTransformMatrix();
-        aux.set(pointLight.getPosition(), 1);
+        Matrix4f cameraTransform = this.activeCamera.getTransformComponent().getAsMatrix();
+        aux.set(pointLight.getTransformComponent().getPosition(), 1);
         aux.mul(cameraTransform);
         
         Vector3f lightPosition = new Vector3f();
@@ -196,5 +209,10 @@ public class SceneRenderPass implements IRenderPass {
 	
 	public void setCascadeShadowRenderPass(CascadeShadowRenderPass cascadeShadowRenderPass) {
 		this.cascadeShadowRenderPass = cascadeShadowRenderPass;
+	}
+	
+	@Override
+	public GameState getGameState() {
+		return this.gameState;
 	}
 }

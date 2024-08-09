@@ -1,8 +1,9 @@
-package project.opengl;
+package project.opengl.cshadow;
 
 import org.lwjgl.opengl.GL46;
 
 import project.component.CascadeShadow;
+import project.opengl.DepthTexture;
 import project.utils.DebugUtils;
 
 public class ShadowBuffer {

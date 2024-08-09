@@ -23,15 +23,15 @@ class RenderModel implements IRenderStrategy<CascadeShadowRenderPass> {
 			VAO vao = (VAO) mesh.getGraphics();
     		vao.bind();
     		
-    		UAMatrix4f.class.cast(activeShaderProgram.getUniform("uObjectTransform"))
-    		.update(target.getTransformMatrix());
+    		UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.OBJECT_TRANSFORM))
+    		.update(target.getTransformComponent().getAsMatrix());
     		
     		AnimationData animationData = model.getAnimationData();
 			if( animationData == null ) {
-				UAMatrix4f.class.cast(activeShaderProgram.getUniform("uBoneMatrices"))
+				UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.BONE_MATRICES))
 				.update(AnimationData.DEFAULT_BONE_TRANSFORMS);
 			} else {
-				UAMatrix4f.class.cast(activeShaderProgram.getUniform("uBoneMatrices"))
+				UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.BONE_MATRICES))
 				.update(animationData.getCurrentFrame().getBoneTransforms());
 			}
     		GL46.glDrawElements(

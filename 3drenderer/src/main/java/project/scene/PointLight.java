@@ -19,8 +19,9 @@ public class PointLight extends ASceneObject {
 	
 	private PointLight(PointLight src) {
 		super(null);
+		src.transformComponent.updateTransformMatrix();
+		this.transformComponent = src.transformComponent;
 		this.attenuation = new Attenuation(src.attenuation);
-		this.position = new Vector3f(src.position);
 		this.lightColor = new Vector3f(src.lightColor);
 		this.intensity = src.intensity;
 	}
