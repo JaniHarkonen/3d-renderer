@@ -19,7 +19,7 @@ public class GameState {
 	 * with the assumption that the caller is a new render pass, and that the pass must 
 	 * iterate over all the renderables.
 	 * 
-	 * @author User
+	 * @author Jani Härkönen
 	 */
 	private class SceneObjectQueue {
 		private class Node {
@@ -64,6 +64,9 @@ public class GameState {
 		}
 	}
 
+	
+	/************************* GameState-class *************************/
+	
 	private SceneObjectQueue renderedObjects;
 	private Deque<IGraphicsAsset> graphicsGenerationRequests;
 	private Deque<IGraphicsAsset> graphicsDisposalRequests;
@@ -84,7 +87,11 @@ public class GameState {
 	
 	
 	public void listRenderable(ASceneObject object) {
-		this.renderedObjects.add(object);
+		if( object instanceof Camera ) {
+			this.DEBUGactiveCamera = (Camera) object;
+		} else {
+			this.renderedObjects.add(object);
+		}
 	}
 	
 	public void listGenerationRequest(IGraphicsAsset asset) {

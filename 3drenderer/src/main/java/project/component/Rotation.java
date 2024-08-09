@@ -20,6 +20,11 @@ public class Rotation {
 		this.rotationQuaternionTempZ = new Quaternionf();
 	}
 	
+	public Rotation(Rotation src) {
+		this.angles = new Vector3f(src.angles);
+		this.rotationQuaternion = new Quaternionf(src.rotationQuaternion);
+	}
+	
 	
 	private void recalculate() {
 		this.rotationQuaternion.fromAxisAngleRad(X_AXIS, this.angles.x)

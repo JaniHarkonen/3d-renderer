@@ -1,8 +1,10 @@
 package project.scene;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import project.component.Projection;
+import project.component.Rotation;
 
 public class Camera extends ASceneObject {
 
@@ -13,10 +15,12 @@ public class Camera extends ASceneObject {
 		this.projection = projection;
 	}
 	
-	private Camera(Camera camera) {
+	private Camera(Camera src) {
 		super(null);
-		this.transformMatrix = new Matrix4f(camera.transformMatrix);
-		this.projection = new Projection(camera.projection);
+		this.position = new Vector3f(src.position);
+		this.rotationComponent = new Rotation(src.rotationComponent);
+		this.transformMatrix = new Matrix4f(src.transformMatrix);
+		this.projection = new Projection(src.projection);
 	}
 	
 	
