@@ -29,14 +29,14 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 		TextureGL textureGL = (TextureGL) font.getTexture().getGraphics();
 		Vector4f color = text.getTextColor();
 		
-		UVector4f.class.cast(activeShaderProgram.getUniform("uTextColor")).update(color);
+		UVector4f.class.cast(activeShaderProgram.getUniform(Uniforms.TEXT_COLOR)).update(color);
 		GL46.glActiveTexture(GL46.GL_TEXTURE0);
 		textureGL.bind();
 
 		for( String line : text.getContent().split("\n") ) {
 			for( int i = 0; i < line.length(); i++ ) {
 				Font.Glyph glyph = font.getGlyph(line.charAt(i));
-				UAMatrix4f.class.cast(activeShaderProgram.getUniform("uObjectTransform"))
+				UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.OBJECT_TRANSFORM))
 				.update(
 					new Matrix4f()
 					.translationRotateScale(

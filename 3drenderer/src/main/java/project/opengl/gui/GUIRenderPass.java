@@ -48,14 +48,14 @@ public class GUIRenderPass implements IRenderPass {
 	public boolean init() {
 		this.imagePlane = AssetUtils.createPlaneMesh("mesh-default-gui-plane", 0, 0, 16, 16, 0, 0, 1, 1);
 		this.shaderProgram = new ShaderProgram();
-		this.uProjection = new UAMatrix4f("uProjection");
-		this.uDiffuseSampler = new UInteger1("uDiffuseSampler");
+		this.uProjection = new UAMatrix4f(Uniforms.PROJECTION);
+		this.uDiffuseSampler = new UInteger1(Uniforms.DIFFUSE_SAMPLER);
 		
 		this.shaderProgram
 		.declareUniform(this.uProjection)
 		.declareUniform(this.uDiffuseSampler)
-		.declareUniform(new UAMatrix4f("uObjectTransform"))
-		.declareUniform(new UVector4f("uTextColor"));
+		.declareUniform(new UAMatrix4f(Uniforms.OBJECT_TRANSFORM))
+		.declareUniform(new UVector4f(Uniforms.TEXT_COLOR));
 		
 		this.shaderProgram.addShader(
 			new Shader("shaders/gui/gui.vert", GL46.GL_VERTEX_SHADER)

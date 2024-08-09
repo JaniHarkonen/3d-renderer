@@ -23,7 +23,7 @@ public class RenderAmbientLight implements IRenderStrategy<SceneRenderPass> {
 		this.ambientLightStruct.factor = ambientLight.getIntensity();
 		this.ambientLightStruct.color = ambientLight.getColor();
 		UAmbientLight.class.cast(
-			activeShaderProgram.getUniform("uAmbientLight")).update(this.ambientLightStruct
+			activeShaderProgram.getUniform(Uniforms.AMBIENT_LIGHT)).update(this.ambientLightStruct
 		);
 	}
 }

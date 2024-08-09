@@ -68,18 +68,18 @@ public class SceneRenderPass implements IRenderPass {
 	
 	@Override
 	public boolean init() {
-		this.uDiffuseSampler = new UInteger1("uDiffuseSampler");
-		this.uNormalSampler = new UInteger1("uNormalSampler");
-		this.uProjection = new UAMatrix4f("uProjection");
-		this.uCameraTransform = new UAMatrix4f("uCameraTransform");
+		this.uDiffuseSampler = new UInteger1(Uniforms.DIFFUSE_SAMPLER);
+		this.uNormalSampler = new UInteger1(Uniforms.NORMAL_SAMPLER);
+		this.uProjection = new UAMatrix4f(Uniforms.PROJECTION);
+		this.uCameraTransform = new UAMatrix4f(Uniforms.CAMERA_TRANSFORM);
 		
-		this.uShadowMap = new UArray<>("uShadowMap", new UInteger1[CascadeShadow.SHADOW_MAP_CASCADE_COUNT]);
+		this.uShadowMap = new UArray<>(Uniforms.SHADOW_MAP, new UInteger1[CascadeShadow.SHADOW_MAP_CASCADE_COUNT]);
 		this.uShadowMap.fill(() -> new UInteger1());
 		
-		this.uPointLights = new UArray<>("uPointLights", new UPointLight[MAX_POINT_LIGHTS]);
+		this.uPointLights = new UArray<>(Uniforms.POINT_LIGHTS, new UPointLight[MAX_POINT_LIGHTS]);
 		this.uPointLights.fill(() -> new UPointLight());
 		
-		this.uCascadeShadows = new UArray<>("uCascadeShadows", new UCascadeShadow[CascadeShadow.SHADOW_MAP_CASCADE_COUNT]);
+		this.uCascadeShadows = new UArray<>(Uniforms.CASCADE_SHADOWS, new UCascadeShadow[CascadeShadow.SHADOW_MAP_CASCADE_COUNT]);
 		this.uCascadeShadows.fill(() -> new UCascadeShadow());
 		
 		this.shaderProgram
@@ -90,10 +90,10 @@ public class SceneRenderPass implements IRenderPass {
 		.declareUniform(this.uShadowMap)
 		.declareUniform(this.uPointLights)
 		.declareUniform(this.uCascadeShadows)
-		.declareUniform(new UAMatrix4f("uObjectTransform"))
-		.declareUniform(new UMaterial("uMaterial"))
-		.declareUniform(new UAmbientLight("uAmbientLight"))
-		.declareUniform(new UAMatrix4f("uBoneMatrices"));
+		.declareUniform(new UAMatrix4f(Uniforms.OBJECT_TRANSFORM))
+		.declareUniform(new UMaterial(Uniforms.MATERIAL))
+		.declareUniform(new UAmbientLight(Uniforms.AMBIENT_LIGHT))
+		.declareUniform(new UAMatrix4f(Uniforms.BONE_MATRICES));
 
 			// Spot light uniform declarations here
 		this.shaderProgram.addShader(

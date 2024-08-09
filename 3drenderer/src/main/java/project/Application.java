@@ -40,8 +40,8 @@ public class Application {
 		scene.init();
 		
 		while( !window.isDestroyed() ) {
-			scene.update();
 			window.refresh();
+			scene.update();
 		}
 		
 		DebugUtils.log(this, "main loop terminated!");

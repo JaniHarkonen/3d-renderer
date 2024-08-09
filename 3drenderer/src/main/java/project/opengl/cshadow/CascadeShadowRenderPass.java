@@ -42,11 +42,11 @@ public class CascadeShadowRenderPass implements IRenderPass {
 		this.shaderProgram.addShader(
 			new Shader("shaders/cshadow/cshadow.vert", GL46.GL_VERTEX_SHADER)
 		);
-		this.uLightView = new UAMatrix4f("uLightView");
+		this.uLightView = new UAMatrix4f(Uniforms.LIGHT_VIEW);
 		
 		this.shaderProgram.declareUniform(this.uLightView)
-		.declareUniform(new UAMatrix4f("uObjectTransform"))
-		.declareUniform(new UAMatrix4f("uBoneMatrices"));
+		.declareUniform(new UAMatrix4f(Uniforms.OBJECT_TRANSFORM))
+		.declareUniform(new UAMatrix4f(Uniforms.BONE_MATRICES));
 		this.shaderProgram.init();
 		this.shadowBuffer.init();
 		

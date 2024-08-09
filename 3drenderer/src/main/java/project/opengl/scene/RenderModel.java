@@ -32,7 +32,7 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 		
 		target.updateTransformMatrix();
 		UAMatrix4f.class.cast(
-			activeShaderProgram.getUniform("uObjectTransform")).update(target.getTransformMatrix()
+			activeShaderProgram.getUniform(Uniforms.OBJECT_TRANSFORM)).update(target.getTransformMatrix()
 		);
 		
 		Model model = (Model) target;
@@ -64,7 +64,7 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 			this.materialStruct.specular = material.getSpecularColor();
 			this.materialStruct.reflectance = material.getReflectance();
 			
-			UMaterial.class.cast(activeShaderProgram.getUniform("uMaterial")).update(this.materialStruct);
+			UMaterial.class.cast(activeShaderProgram.getUniform(Uniforms.MATERIAL)).update(this.materialStruct);
 			
 			VAO vao = (VAO) mesh.getGraphics();
 			vao.bind();
@@ -72,11 +72,11 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 			AnimationData animationData = model.getAnimationData();
 			
 			if( animationData == null ) {
-				UAMatrix4f.class.cast(activeShaderProgram.getUniform("uBoneMatrices"))
+				UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.BONE_MATRICES))
 				.update(AnimationData.DEFAULT_BONE_TRANSFORMS);
 				
 			} else {
-				UAMatrix4f.class.cast(activeShaderProgram.getUniform("uBoneMatrices"))
+				UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.BONE_MATRICES))
 				.update(animationData.getCurrentFrame().getBoneTransforms());
 			}
 
