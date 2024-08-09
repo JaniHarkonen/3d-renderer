@@ -40,9 +40,12 @@ public abstract class ASceneObject {
 	protected abstract ASceneObject rendererCopy();
 	
 	public void updateTransformMatrix() {
-		this.transformMatrix.translationRotateScale(
+		this.transformMatrix.translation(this.position);
+		this.transformMatrix.rotate(this.rotationComponent.getAsQuaternion());
+		this.transformMatrix.scale(this.scale);
+		/*this.transformMatrix.translationRotateScale(
 			this.position, this.rotationComponent.getAsQuaternion(), this.scale
-		);
+		);*/
 	}
 	
 	public void addChild(ASceneObject child) {

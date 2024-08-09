@@ -22,11 +22,10 @@ public class CascadeShadow {
 	
 	
     public static void updateCascadeShadows(List<CascadeShadow> cascadeShadows, Camera activeCamera, Vector3f light) {
-    	activeCamera.updateTransformMatrix();
     	activeCamera.getProjection().update(800, 600);
-        Matrix4f viewMatrix = activeCamera.getTransformMatrix();//scene.getCamera().getViewMatrix();
-        Matrix4f projMatrix = activeCamera.getProjection().getMatrix();//scene.getProjection().getProjMatrix();
-        Vector4f lightPos = new Vector4f(light.x, light.y, light.z, 0);//new Vector4f(scene.getSceneLights().getDirLight().getDirection(), 0);
+        Matrix4f viewMatrix = activeCamera.getTransformMatrix();
+        Matrix4f projMatrix = activeCamera.getProjection().getMatrix();
+        Vector4f lightPos = new Vector4f(light.x, light.y, light.z, 0);
 
         float cascadeSplitLambda = 0.95f;
 

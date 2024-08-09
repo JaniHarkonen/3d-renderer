@@ -149,7 +149,7 @@ public class SceneRenderPass implements IRenderPass {
 		
 		this.cascadeShadowRenderPass.getShadowBuffer().bindTextures(GL46.GL_TEXTURE2);
 		this.activeCamera = this.gameState.DEBUGgetActiveCamera();
-		this.activeCamera.updateTransformMatrix();
+		
 		
 		this.uProjection.update(this.activeCamera.getProjection().getMatrix());
 		this.uCameraTransform.update(this.activeCamera.getTransformMatrix());

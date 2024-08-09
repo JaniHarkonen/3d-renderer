@@ -19,6 +19,7 @@ public class Camera extends ASceneObject {
 		super(null);
 		this.position = new Vector3f(src.position);
 		this.rotationComponent = new Rotation(src.rotationComponent);
+		src.updateTransformMatrix();
 		this.transformMatrix = new Matrix4f(src.transformMatrix);
 		this.projection = new Projection(src.projection);
 	}
