@@ -79,6 +79,7 @@ uniform Material uMaterial; //uniform Material material;
 uniform AmbientLight uAmbientLight; //uniform AmbientLight ambientLight;
 uniform PointLight uPointLights[MAX_POINT_LIGHTS]; //uniform PointLight pointLights[MAX_POINT_LIGHTS];
 uniform CascadeShadow uCascadeShadows[NUM_CASCADES];
+uniform int uDebugShowShadowCascades;
 // uniform SpotLight spotLights[MAX_SPOT_LIGHTS]; // UNUSED AS OF NOW
 //uniform DirLight dirLight; // UNUSED AS OF NOW
 
@@ -215,7 +216,8 @@ void main()
     fragColor = ambient + diffuseSpecularComp;
     fragColor.rgb = fragColor.rgb * shadowFactor;
 
-            /*switch (cascadeIndex) {
+    if( uDebugShowShadowCascades == 1 ) {
+        switch (cascadeIndex) {
             case 0:
             fragColor.rgb *= vec3(1.0f, 0.25f, 0.25f);
             break;
@@ -228,5 +230,6 @@ void main()
             default :
             fragColor.rgb *= vec3(1.0f, 1.0f, 0.25f);
             break;
-        }*/
+        }
+    }
 }
