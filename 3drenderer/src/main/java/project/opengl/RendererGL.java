@@ -118,7 +118,6 @@ public class RendererGL implements IRenderer {
 			this.sceneRenderPass.render(this, gameState);
 			
 				// GUI render pass
-			//if( gameState.DEBUGgetActiveScene() != null ) {
 			if( gameState.DEBUGgetGUI() != null ) {
 				GL46.glDisable(GL46.GL_CULL_FACE); // Ignores which direction GUI elements are facing
 			  	GL46.glDisable(GL46.GL_DEPTH_TEST); // Prevents close faces from overlapping with GUI

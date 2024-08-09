@@ -67,7 +67,8 @@ public class Scene {
 		
 			// Point light
 		this.DEBUGtestPointLight0 = new TestPointLight(this);
-		this.DEBUGtestPointLight0.setPosition(0.0f, 100.0f, 0.0f);
+		//this.DEBUGtestPointLight0.setPosition(0.0f, 100.0f, 0.0f);
+		this.DEBUGtestPointLight0.getTransformComponent().setPosition(0.0f, 100.0f, 0.0f);
 		this.objects.add(this.DEBUGtestPointLight0);
 		Controller pointLightController = new Controller(input, this.DEBUGtestPointLight0)
 		.addBinding(ActionSet.MOVE_FORWARD, input.new KeyHeld(GLFW.GLFW_KEY_UP))
@@ -95,7 +96,7 @@ public class Scene {
 		
 			// Soldier
 		TestDummy soldier = new TestDummy(this, TestAssets.createTestSoldier(this));
-		soldier.setPosition(1, -10, -100);
+		soldier.getTransformComponent().setPosition(1, -10, -100);
 		//soldier.getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
 		this.objects.add(soldier);
 		DebugUtils.log(this, "Soldier TestDummy added!");
@@ -143,15 +144,15 @@ public class Scene {
 				"HEAP: " + this.convertToLargestByte(memoryUsage) + " (" + memoryUsage + " bytes)\n" +
 				"camera\n" + 
 				"   pos: (" + 
-					this.activeCamera.getPosition().x + ", " +
-					this.activeCamera.getPosition().y + ", " +
-					this.activeCamera.getPosition().z +
+					this.activeCamera.getTransformComponent().getPosition().x + ", " +
+					this.activeCamera.getTransformComponent().getPosition().y + ", " +
+					this.activeCamera.getTransformComponent().getPosition().z +
 				")\n" +
 				"pointLight0: \n" +
 				"    pos: (" + 
-					this.DEBUGtestPointLight0.getPosition().x + ", " + 
-					this.DEBUGtestPointLight0.getPosition().y + ", " + 
-					this.DEBUGtestPointLight0.getPosition().z + 
+					this.DEBUGtestPointLight0.getTransformComponent().getPosition().x + ", " + 
+					this.DEBUGtestPointLight0.getTransformComponent().getPosition().y + ", " + 
+					this.DEBUGtestPointLight0.getTransformComponent().getPosition().z + 
 				")\n" +
 				"    rgb: (" +
 					this.DEBUGtestPointLight0.getPointLight().getColor().x + ", " +
@@ -196,7 +197,6 @@ public class Scene {
 		}
 		
 		GameState back = Application.getApp().getRenderer().getBackGameState();
-		//back.DEBUGsetActiveScene(this);
 		back.DEBUGsetGUI(this.gui);
 		back
 		.setDebugData(TestDebugDataHandles.NORMALS_ACTIVE, this.DEBUGareNormalsActive)

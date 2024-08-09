@@ -9,10 +9,22 @@ import project.core.asset.IGraphicsAsset;
 import project.gui.GUI;
 import project.scene.ASceneObject;
 import project.scene.Camera;
-import project.scene.Scene;
 
 public class GameState {
 
+	/**
+	 * Special purpose linked list that is designed to be used by the GameState
+	 * to store scene objects that are to be rendered. Renderables can be added
+	 * to the queue via add(), and polled via next(). Unlike with typical 
+	 * queues, polling the SceneObjectQueue doesn't remove elements from it, 
+	 * rather the queue simply moves the pointer to the next scene object. 
+	 * Before polling the queue, reset() should be called to move the pointer
+	 * back to the head of the queue. Otherwise, the queue will continue to 
+	 * return NULL.
+	 * 
+	 * @author Jani Härkönen
+	 *
+	 */
 	private class SceneObjectQueue {
 		private class Node {
 			private Node next;
@@ -62,8 +74,6 @@ public class GameState {
 	private Map<String, Object> debugData;
 	private Camera activeCamera;
 	
-	private Scene DEBUGscene;
-	private Camera DEBUGactiveCamera;
 	private GUI DEBUGgui;
 	
 	public GameState() {
@@ -128,17 +138,4 @@ public class GameState {
 	public GUI DEBUGgetGUI() {
 		return this.DEBUGgui;
 	}
-	
-	/*public void DEBUGsetActiveScene(Scene scene) {
-		this.DEBUGscene = scene;
-	}
-	public Scene DEBUGgetActiveScene() {
-		return this.DEBUGscene;
-	}*/
-	/*public void DEBUGsetActiveCamera(Camera cam) {
-		this.DEBUGactiveCamera = cam;
-	}
-	public Camera DEBUGgetActiveCamera() {
-		return this.DEBUGactiveCamera;
-	}*/
 }

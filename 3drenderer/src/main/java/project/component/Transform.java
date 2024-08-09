@@ -4,11 +4,10 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class Transform {
-	
-	private Vector3f position;
-	private Rotation rotationComponent;
-	private Vector3f scale;
-	private Matrix4f transformMatrix;
+	protected Vector3f position;
+	protected Rotation rotationComponent;
+	protected Vector3f scale;
+	protected Matrix4f transformMatrix;
 	
 	public Transform() {
 		this.position = new Vector3f(0.0f);
@@ -27,9 +26,9 @@ public class Transform {
 	
 	
 	public void updateTransformMatrix() {
-		this.transformMatrix.identity()
-		.rotate(this.rotationComponent.getAsQuaternion())
-		.translate(-this.position.x, -this.position.y, -this.position.z);
+		this.transformMatrix.translationRotateScale(
+			this.position, this.rotationComponent.getAsQuaternion(), this.scale
+		);
 	}
 	
 	public void setPosition(float x, float y, float z) {

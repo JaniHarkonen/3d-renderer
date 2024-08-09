@@ -150,7 +150,7 @@ public class SceneRenderPass implements IRenderPass {
 		
 		
 		this.uProjection.update(this.activeCamera.getProjection().getMatrix());
-		this.uCameraTransform.update(this.activeCamera.getTransformMatrix());
+		this.uCameraTransform.update(this.activeCamera.getTransformComponent().getAsMatrix());
 		
 		gameState.resetQueue();
 		
@@ -173,8 +173,8 @@ public class SceneRenderPass implements IRenderPass {
 	void updatePointLight(PointLight pointLight, int index) {
         Vector4f aux = new Vector4f();
         
-        Matrix4f cameraTransform = this.activeCamera.getTransformMatrix();
-        aux.set(pointLight.getPosition(), 1);
+        Matrix4f cameraTransform = this.activeCamera.getTransformComponent().getAsMatrix();
+        aux.set(pointLight.getTransformComponent().getPosition(), 1);
         aux.mul(cameraTransform);
         
         Vector3f lightPosition = new Vector3f();

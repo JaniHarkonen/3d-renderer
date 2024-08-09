@@ -3,13 +3,10 @@ package project.scene;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-
 import project.asset.sceneasset.AnimationData;
 import project.asset.sceneasset.Mesh;
 import project.component.Material;
-import project.component.Rotation;
+import project.component.Transform;
 
 public class Model extends ASceneObject {
 
@@ -34,11 +31,8 @@ public class Model extends ASceneObject {
 	
 	private Model(Model src) {
 		super(null);
-		this.position = new Vector3f(src.position);
-		this.rotationComponent = new Rotation(src.rotationComponent);
-		this.scale = new Vector3f(src.scale);
-		src.updateTransformMatrix();
-		this.transformMatrix = new Matrix4f(src.transformMatrix);
+		src.transformComponent.updateTransformMatrix();
+		this.transformComponent = new Transform(src.transformComponent);
 		if( src.animationData != null ) {
 			this.animationData = new AnimationData(src.animationData);
 		} else {
