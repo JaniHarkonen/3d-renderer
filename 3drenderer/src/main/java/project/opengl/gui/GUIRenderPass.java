@@ -19,7 +19,6 @@ import project.opengl.shader.uniform.UAMatrix4f;
 import project.opengl.shader.uniform.UInteger1;
 import project.opengl.shader.uniform.UVector4f;
 import project.scene.ASceneObject;
-import project.scene.Scene;
 
 public class GUIRenderPass implements IRenderPass {
 	Mesh imagePlane;
@@ -71,14 +70,13 @@ public class GUIRenderPass implements IRenderPass {
 	@Override
 	public void render(IRenderer renderer, GameState gameState) {
 		this.gameState = gameState;
-		Scene scene = this.gameState.DEBUGgetActiveScene();
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 		
         activeShaderProgram.bind();
         this.uDiffuseSampler.update(0);
-        this.uProjection.update(scene.getGUI().calculateAndGetProjection());
-		
-		for( AGUIElement element : scene.getGUI().getElements() ) {
+        this.uProjection.update(gameState.DEBUGgetGUI().calculateAndGetProjection());
+        
+        for( AGUIElement element : gameState.DEBUGgetGUI().getElements() ) {
 			this.recursiveRender(renderer, element);
 		}
 		

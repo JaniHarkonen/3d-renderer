@@ -30,7 +30,6 @@ import project.scene.AmbientLight;
 import project.scene.Camera;
 import project.scene.Model;
 import project.scene.PointLight;
-import project.scene.Scene;
 
 public class SceneRenderPass implements IRenderPass {
 	public static final int DEFAULT_FIRST_FREE_TEXTURE_INDEX = 2;
@@ -130,7 +129,6 @@ public class SceneRenderPass implements IRenderPass {
 		final int SHADOW_MAP_FIRST = DEFAULT_FIRST_FREE_TEXTURE_INDEX;
 		
 		this.gameState = gameState;
-		Scene scene = this.gameState.DEBUGgetActiveScene();
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 		
 		activeShaderProgram.bind();
@@ -148,13 +146,16 @@ public class SceneRenderPass implements IRenderPass {
 		}
 		
 		this.cascadeShadowRenderPass.getShadowBuffer().bindTextures(GL46.GL_TEXTURE2);
-		this.activeCamera = this.gameState.DEBUGgetActiveCamera();
+		this.activeCamera = this.gameState.getActiveCamera();
 		
 		
 		this.uProjection.update(this.activeCamera.getProjection().getMatrix());
 		this.uCameraTransform.update(this.activeCamera.getTransformMatrix());
 		
-		for( ASceneObject object : scene.getObjects() ) {
+		gameState.resetQueue();
+		
+		ASceneObject object;
+		while( (object = gameState.pollRenderable()) != null ) {
 			this.recursiveRender(renderer, object);
 		}
 		

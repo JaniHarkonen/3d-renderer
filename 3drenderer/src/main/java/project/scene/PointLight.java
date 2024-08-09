@@ -1,8 +1,10 @@
 package project.scene;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import project.component.Attenuation;
+import project.component.Rotation;
 
 public class PointLight extends ASceneObject {
 
@@ -19,8 +21,11 @@ public class PointLight extends ASceneObject {
 	
 	private PointLight(PointLight src) {
 		super(null);
-		this.attenuation = new Attenuation(src.attenuation);
 		this.position = new Vector3f(src.position);
+		this.rotationComponent = new Rotation(src.rotationComponent);
+		this.scale = new Vector3f(src.scale);
+		this.transformMatrix = new Matrix4f(src.transformMatrix);
+		this.attenuation = new Attenuation(src.attenuation);
 		this.lightColor = new Vector3f(src.lightColor);
 		this.intensity = src.intensity;
 	}

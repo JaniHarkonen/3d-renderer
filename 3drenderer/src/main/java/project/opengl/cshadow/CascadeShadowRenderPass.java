@@ -17,7 +17,6 @@ import project.opengl.shader.ShaderProgram;
 import project.opengl.shader.uniform.UAMatrix4f;
 import project.scene.ASceneObject;
 import project.scene.Model;
-import project.scene.Scene;
 import project.testing.TestDebugDataHandles;
 
 public class CascadeShadowRenderPass implements IRenderPass {
@@ -62,13 +61,12 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	@Override
 	public void render(IRenderer renderer, GameState gameState) {
 		this.gameState = gameState;
-		Scene scene = this.gameState.DEBUGgetActiveScene();
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 	    activeShaderProgram.bind();
 	    
 	    CascadeShadow.updateCascadeShadows(
     		this.cascadeShadows, 
-    		this.gameState.DEBUGgetActiveCamera(), 
+    		this.gameState.getActiveCamera(), 
     		(Vector3f) this.gameState.getDebugData(TestDebugDataHandles.CASCADE_SHADOW_LIGHT)
 		);
 	    GL46.glBindFramebuffer(GL46.GL_FRAMEBUFFER, this.shadowBuffer.getDepthMapFBO());
@@ -88,7 +86,10 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	    	GL46.glClear(GL46.GL_DEPTH_BUFFER_BIT);
 	        this.uLightView.update(this.cascadeShadows.get(i).getLightViewMatrix());
 	
-	        for( ASceneObject object : scene.getObjects() ) {
+	        gameState.resetQueue();
+	        
+	        ASceneObject object;
+	        while( (object = gameState.pollRenderable()) != null ) {
 	        	this.recursiveRender(renderer, object);
 	        }
 	    }

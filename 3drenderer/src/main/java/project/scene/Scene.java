@@ -169,8 +169,7 @@ public class Scene {
 				"    3/4 to change point light green value\n" +
 				"    5/6 to change point light blue value\n" + 
 				"    N to toggle normal map\n" +
-				"    H to toggle HUD\n" +
-				"    " + Application.getApp().getRenderer().getBackGameState().DEBUGgetActiveCamera()
+				"    H to toggle HUD\n"
 			);
 		}
 		
@@ -197,7 +196,8 @@ public class Scene {
 		}
 		
 		GameState back = Application.getApp().getRenderer().getBackGameState();
-		back.DEBUGsetActiveScene(this);
+		//back.DEBUGsetActiveScene(this);
+		back.DEBUGsetGUI(this.gui);
 		back
 		.setDebugData(TestDebugDataHandles.NORMALS_ACTIVE, this.DEBUGareNormalsActive)
 		.setDebugData(TestDebugDataHandles.CASCADE_SHADOW_LIGHT, this.DEBUGshadowLightPosition);

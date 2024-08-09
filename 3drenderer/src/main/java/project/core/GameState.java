@@ -6,21 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import project.core.asset.IGraphicsAsset;
+import project.gui.GUI;
 import project.scene.ASceneObject;
 import project.scene.Camera;
 import project.scene.Scene;
 
 public class GameState {
-	/**
-	 * Special purpose linked list that is used to store the renderables (typically scene 
-	 * objects) of a game state. The queue is first populated by the active scene via add(), 
-	 * and eventually polled via next(). In order to poll the queue, the caller must pass
-	 * itself as an argument. This resets the node pointer back to the head of the queue 
-	 * with the assumption that the caller is a new render pass, and that the pass must 
-	 * iterate over all the renderables.
-	 * 
-	 * @author Jani Härkönen
-	 */
+
 	private class SceneObjectQueue {
 		private class Node {
 			private Node next;
@@ -33,12 +25,10 @@ public class GameState {
 		
 		private Node head;
 		private Node next;
-		private Object lastPoller;
 		
 		private SceneObjectQueue() {
 			this.head = new Node(null);
 			this.next = this.head;
-			this.lastPoller = null;
 		}
 		
 		
@@ -48,12 +38,11 @@ public class GameState {
 			this.next = this.next.next;
 		}
 		
-		public ASceneObject next(Object poller) {
-			if( poller != this.lastPoller ) {
-				this.lastPoller = poller;
-				this.next = this.head;
-			}
-			
+		public void reset() {
+			this.next = this.head;
+		}
+		
+		public ASceneObject next() {
 			if( this.next.value == null ) {
 				return null;
 			}
@@ -71,24 +60,26 @@ public class GameState {
 	private Deque<IGraphicsAsset> graphicsGenerationRequests;
 	private Deque<IGraphicsAsset> graphicsDisposalRequests;
 	private Map<String, Object> debugData;
+	private Camera activeCamera;
 	
 	private Scene DEBUGscene;
 	private Camera DEBUGactiveCamera;
+	private GUI DEBUGgui;
 	
 	public GameState() {
 		this.renderedObjects = new SceneObjectQueue();
 		this.graphicsGenerationRequests = new ArrayDeque<>();
 		this.graphicsDisposalRequests = new ArrayDeque<>();
 		this.debugData = new HashMap<>();
+		this.activeCamera = null;
 		
-		this.DEBUGscene = null;
-		this.DEBUGactiveCamera = null;
+		this.DEBUGgui = null;
 	}
 	
 	
 	public void listRenderable(ASceneObject object) {
 		if( object instanceof Camera ) {
-			this.DEBUGactiveCamera = (Camera) object;
+			this.activeCamera = (Camera) object;
 		} else {
 			this.renderedObjects.add(object);
 		}
@@ -102,8 +93,12 @@ public class GameState {
 		this.graphicsDisposalRequests.add(asset);
 	}
 	
-	public ASceneObject pollRenderable(Object me) {
-		return this.renderedObjects.next(me);
+	public void resetQueue() {
+		this.renderedObjects.reset();
+	}
+	
+	public ASceneObject pollRenderable() {
+		return this.renderedObjects.next();
 	}
 	
 	public IGraphicsAsset pollGenerationRequest() {
@@ -123,18 +118,27 @@ public class GameState {
 		return this.debugData.get(key);
 	}
 	
+	public Camera getActiveCamera() {
+		return this.activeCamera;
+	}
 	
+	public void DEBUGsetGUI(GUI gui) {
+		this.DEBUGgui = gui;
+	}
+	public GUI DEBUGgetGUI() {
+		return this.DEBUGgui;
+	}
 	
-	public void DEBUGsetActiveScene(Scene scene) {
+	/*public void DEBUGsetActiveScene(Scene scene) {
 		this.DEBUGscene = scene;
 	}
 	public Scene DEBUGgetActiveScene() {
 		return this.DEBUGscene;
-	}
-	public void DEBUGsetActiveCamera(Camera cam) {
+	}*/
+	/*public void DEBUGsetActiveCamera(Camera cam) {
 		this.DEBUGactiveCamera = cam;
 	}
 	public Camera DEBUGgetActiveCamera() {
 		return this.DEBUGactiveCamera;
-	}
+	}*/
 }
