@@ -14,6 +14,7 @@ import project.gui.GUI;
 import project.gui.Image;
 import project.gui.Text;
 import project.input.Input;
+import project.input.InputSnapshot;
 import project.testing.ActionSet;
 import project.testing.TestAssets;
 import project.testing.TestDebugDataHandles;
@@ -35,6 +36,7 @@ public class Scene {
 	private TestPointLight DEBUGtestPointLight0;
 	private Vector3f DEBUGshadowLightPosition;
 	private boolean DEBUGareNormalsActive;
+	private boolean DEBUGcascadeShadowEnabled;
 	
 	public Scene(Application app, int tickRate) {
 		this.objects = null;
@@ -48,6 +50,7 @@ public class Scene {
 		this.DEBUGtestPointLight0 = null;
 		this.DEBUGshadowLightPosition = null;
 		this.DEBUGareNormalsActive = true;
+		this.DEBUGcascadeShadowEnabled = false;
 	}
 	
 	
@@ -137,6 +140,10 @@ public class Scene {
 		
 		long memoryUsage = Runtime.getRuntime().totalMemory();
 		
+		Vector3f cameraPosition = this.activeCamera.getTransformComponent().getPosition();
+		Vector3f pl0Position = this.DEBUGtestPointLight0.getTransformComponent().getPosition();
+		Vector3f pl0Color = this.DEBUGtestPointLight0.getPointLight().getColor();
+		
 		if( this.gui != null ) {
 			this.DEBUGtextAppStatistics.setContent(
 				"FPS: " + appWindow.getFPS() + " / " + appWindow.getMaxFPS() + "\n" +
@@ -144,20 +151,20 @@ public class Scene {
 				"HEAP: " + this.convertToLargestByte(memoryUsage) + " (" + memoryUsage + " bytes)\n" +
 				"camera\n" + 
 				"   pos: (" + 
-					this.activeCamera.getTransformComponent().getPosition().x + ", " +
-					this.activeCamera.getTransformComponent().getPosition().y + ", " +
-					this.activeCamera.getTransformComponent().getPosition().z +
+					cameraPosition.x + ", " +
+					cameraPosition.y + ", " +
+					cameraPosition.z +
 				")\n" +
 				"pointLight0: \n" +
 				"    pos: (" + 
-					this.DEBUGtestPointLight0.getTransformComponent().getPosition().x + ", " + 
-					this.DEBUGtestPointLight0.getTransformComponent().getPosition().y + ", " + 
-					this.DEBUGtestPointLight0.getTransformComponent().getPosition().z + 
+					pl0Position.x + ", " + 
+					pl0Position.y + ", " + 
+					pl0Position.z + 
 				")\n" +
 				"    rgb: (" +
-					this.DEBUGtestPointLight0.getPointLight().getColor().x + ", " +
-					this.DEBUGtestPointLight0.getPointLight().getColor().y + ", " +
-					this.DEBUGtestPointLight0.getPointLight().getColor().z +
+					pl0Color.x + ", " +
+					pl0Color.y + ", " +
+					pl0Color.z +
 				")\n" +
 				"    intensity: " + this.DEBUGtestPointLight0.getPointLight().getIntensity() + "\n" +
 				"    normal map: " + (this.DEBUGareNormalsActive ? "ON" : "OFF") + "\n\n" +
@@ -174,7 +181,9 @@ public class Scene {
 			);
 		}
 		
-		if( this.app.getWindow().getInputSnapshot().isKeyPressed(GLFW.GLFW_KEY_H) ) {
+		InputSnapshot inputSnapshot = this.app.getWindow().getInputSnapshot();
+		
+		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_H) ) {
 			if( this.gui == null ) {
 				this.createGUI();
 			} else {
@@ -182,14 +191,18 @@ public class Scene {
 			}
 		}
 		
-		if( this.app.getWindow().getInputSnapshot().isKeyHeld(GLFW.GLFW_KEY_KP_8) ) {
+		if( inputSnapshot.isKeyHeld(GLFW.GLFW_KEY_KP_8) ) {
 			this.DEBUGshadowLightPosition.add(0,1*deltaTime,0);
-		} else if( this.app.getWindow().getInputSnapshot().isKeyHeld(GLFW.GLFW_KEY_KP_2) ) {
+		} else if( inputSnapshot.isKeyHeld(GLFW.GLFW_KEY_KP_2) ) {
 			this.DEBUGshadowLightPosition.sub(0,1*deltaTime,0);
 		}
 		
-		if( this.app.getWindow().getInputSnapshot().isKeyPressed(GLFW.GLFW_KEY_N) ) {
+		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_N) ) {
 			this.DEBUGareNormalsActive = !this.DEBUGareNormalsActive;
+		}
+		
+		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_C) ) {
+			this.DEBUGcascadeShadowEnabled = !this.DEBUGcascadeShadowEnabled;
 		}
 		
 		for( ASceneObject object : this.objects ) {
@@ -200,7 +213,8 @@ public class Scene {
 		back.DEBUGsetGUI(this.gui);
 		back
 		.setDebugData(TestDebugDataHandles.NORMALS_ACTIVE, this.DEBUGareNormalsActive)
-		.setDebugData(TestDebugDataHandles.CASCADE_SHADOW_LIGHT, this.DEBUGshadowLightPosition);
+		.setDebugData(TestDebugDataHandles.CASCADE_SHADOW_LIGHT, this.DEBUGshadowLightPosition)
+		.setDebugData(TestDebugDataHandles.CASCADE_SHADOW_ENABLED, this.DEBUGcascadeShadowEnabled);
 		Application.getApp().getRenderer().submitGameState();
 	}
 	

@@ -14,4 +14,5 @@ final class Uniforms {
 	static final String MATERIAL = "uMaterial";
 	static final String AMBIENT_LIGHT = "uAmbientLight";
 	static final String BONE_MATRICES = "uBoneMatrices";
+	static final String DEBUG_SHOW_SHADOW_CASCADES = "uDebugShowShadowCascades";
 }

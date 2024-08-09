@@ -30,6 +30,7 @@ import project.scene.AmbientLight;
 import project.scene.Camera;
 import project.scene.Model;
 import project.scene.PointLight;
+import project.testing.TestDebugDataHandles;
 
 public class SceneRenderPass implements IRenderPass {
 	public static final int DEFAULT_FIRST_FREE_TEXTURE_INDEX = 2;
@@ -47,6 +48,7 @@ public class SceneRenderPass implements IRenderPass {
 	private UArray<Integer> uShadowMap;
 	private UArray<SSPointLight> uPointLights;
 	private UArray<SSCascadeShadow> uCascadeShadows;
+	private UInteger1 uDebugShowShadowCascades;
 	
 	private GameState gameState;
 	private Camera activeCamera;
@@ -71,6 +73,7 @@ public class SceneRenderPass implements IRenderPass {
 		this.uNormalSampler = new UInteger1(Uniforms.NORMAL_SAMPLER);
 		this.uProjection = new UAMatrix4f(Uniforms.PROJECTION);
 		this.uCameraTransform = new UAMatrix4f(Uniforms.CAMERA_TRANSFORM);
+		this.uDebugShowShadowCascades = new UInteger1(Uniforms.DEBUG_SHOW_SHADOW_CASCADES);
 		
 		this.uShadowMap = new UArray<>(Uniforms.SHADOW_MAP, new UInteger1[CascadeShadow.SHADOW_MAP_CASCADE_COUNT]);
 		this.uShadowMap.fill(() -> new UInteger1());
@@ -89,6 +92,7 @@ public class SceneRenderPass implements IRenderPass {
 		.declareUniform(this.uShadowMap)
 		.declareUniform(this.uPointLights)
 		.declareUniform(this.uCascadeShadows)
+		.declareUniform(this.uDebugShowShadowCascades)
 		.declareUniform(new UAMatrix4f(Uniforms.OBJECT_TRANSFORM))
 		.declareUniform(new UMaterial(Uniforms.MATERIAL))
 		.declareUniform(new UAmbientLight(Uniforms.AMBIENT_LIGHT))
@@ -151,6 +155,10 @@ public class SceneRenderPass implements IRenderPass {
 		
 		this.uProjection.update(this.activeCamera.getProjection().getMatrix());
 		this.uCameraTransform.update(this.activeCamera.getTransformComponent().getAsMatrix());
+		
+		this.uDebugShowShadowCascades.update(
+			(boolean) gameState.getDebugData(TestDebugDataHandles.CASCADE_SHADOW_ENABLED) ? 1 : 0
+		);
 		
 		gameState.resetQueue();
 		

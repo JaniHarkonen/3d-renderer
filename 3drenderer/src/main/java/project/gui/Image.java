@@ -7,20 +7,18 @@ import project.asset.texture.Texture;
 
 public class Image extends AGUIElement {
 	private Texture imageTexture;
-	private Vector4f primaryColor;
 	private Vector2f anchor;
 	
 	public Image(GUI gui, Texture imageTexture) {
 		super(gui);
 		this.imageTexture = imageTexture;
-		this.primaryColor = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+		this.primaryColor = new Vector4f(1.0f, 1.0f, 1.0f, 0.85f);
 		this.anchor = new Vector2f(0.0f, 0.0f);
 	}
 	
 	private Image(Image src) {
 		super(null);
 		this.imageTexture = src.imageTexture;
-		this.primaryColor = new Vector4f(src.primaryColor);
 		this.anchor = new Vector2f(src.anchor);
 	}
 	
@@ -32,10 +30,6 @@ public class Image extends AGUIElement {
 	
 	public void setAnchor(float anchorX, float anchorY) {
 		this.anchor.set(anchorX, anchorY);
-	}
-	
-	public Vector4f getPrimaryColor() {
-		return this.primaryColor;
 	}
 	
 	public Texture getTexture() {

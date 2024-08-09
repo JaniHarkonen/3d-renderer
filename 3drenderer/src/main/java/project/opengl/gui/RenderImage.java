@@ -22,9 +22,9 @@ public class RenderImage implements IRenderStrategy<GUIRenderPass> {
 		Image element = (Image) target;
 		
 		TextureGL textureGL = (TextureGL) element.getTexture().getGraphics();
-		Vector4f color = element.getPrimaryColor();
+		Vector4f primaryColor = element.getPrimaryColor();
 		
-		UVector4f.class.cast(activeShaderProgram.getUniform(Uniforms.TEXT_COLOR)).update(color);
+		UVector4f.class.cast(activeShaderProgram.getUniform(Uniforms.PRIMARY_COLOR)).update(primaryColor);
 		GL46.glActiveTexture(GL46.GL_TEXTURE0);
 		textureGL.bind();
 		UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.OBJECT_TRANSFORM))

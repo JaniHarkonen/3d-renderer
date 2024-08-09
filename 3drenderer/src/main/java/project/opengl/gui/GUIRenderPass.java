@@ -54,7 +54,7 @@ public class GUIRenderPass implements IRenderPass {
 		.declareUniform(this.uProjection)
 		.declareUniform(this.uDiffuseSampler)
 		.declareUniform(new UAMatrix4f(Uniforms.OBJECT_TRANSFORM))
-		.declareUniform(new UVector4f(Uniforms.TEXT_COLOR));
+		.declareUniform(new UVector4f(Uniforms.PRIMARY_COLOR));
 		
 		this.shaderProgram.addShader(
 			new Shader("shaders/gui/gui.vert", GL46.GL_VERTEX_SHADER)
