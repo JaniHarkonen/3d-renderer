@@ -1,9 +1,11 @@
-package project.scene;
+package project.core;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 
 import project.core.asset.IGraphicsAsset;
+import project.scene.ASceneObject;
+import project.scene.Camera;
 
 public class GameState {
 

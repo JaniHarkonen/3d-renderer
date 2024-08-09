@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL46;
 import project.Window;
 import project.asset.sceneasset.Mesh;
 import project.asset.texture.Texture;
+import project.core.GameState;
 import project.core.asset.IAsset;
 import project.core.asset.IGraphics;
 import project.core.asset.IGraphicsAsset;
@@ -18,7 +19,6 @@ import project.opengl.gui.GUIRenderPass;
 import project.opengl.scene.SceneRenderPass;
 import project.scene.ASceneObject;
 import project.scene.Camera;
-import project.scene.GameState;
 import project.scene.Scene;
 import project.utils.DebugUtils;
 
