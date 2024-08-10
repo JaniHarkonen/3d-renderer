@@ -4,7 +4,7 @@ import project.core.GameState;
 
 public interface IRenderPass {
 
-	public boolean init();
+	public boolean initialize();
 	public void render(IRenderer renderer, GameState gameState);
 	public GameState getGameState();
 }

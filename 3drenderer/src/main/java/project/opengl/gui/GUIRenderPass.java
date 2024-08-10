@@ -45,7 +45,7 @@ public class GUIRenderPass implements IRenderPass {
 	}
 	
 	@Override
-	public boolean init() {
+	public boolean initialize() {
 		this.imagePlane = AssetUtils.createPlaneMesh("mesh-default-gui-plane", 0, 0, 16, 16, 0, 0, 1, 1);
 		this.shaderProgram = new ShaderProgram();
 		this.uProjection = new UAMatrix4f(Uniforms.PROJECTION);
@@ -63,7 +63,7 @@ public class GUIRenderPass implements IRenderPass {
 		this.shaderProgram.addShader(
 			new Shader("shaders/gui/gui.frag", GL46.GL_FRAGMENT_SHADER)
 		);
-		this.shaderProgram.init();
+		this.shaderProgram.initialize();
 		
 		return true;
 	}

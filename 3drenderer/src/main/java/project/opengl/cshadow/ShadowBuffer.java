@@ -20,7 +20,7 @@ public class ShadowBuffer {
 	}
 	
 	
-	public void init() {
+	public void initialize() {
 		this.depthMapFBO = GL46.glGenFramebuffers();
 		this.depthMap = new DepthTexture(
 			CascadeShadow.SHADOW_MAP_CASCADE_COUNT, 
@@ -28,7 +28,7 @@ public class ShadowBuffer {
 			ShadowBuffer.DEFAULT_SHADOW_MAP_HEIGHT, 
 			GL46.GL_DEPTH_COMPONENT
 		);
-		this.depthMap.init();
+		this.depthMap.initialize();
 		
 		GL46.glBindFramebuffer(GL46.GL_FRAMEBUFFER, this.depthMapFBO);
 		GL46.glFramebufferTexture2D(

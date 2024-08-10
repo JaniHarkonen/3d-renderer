@@ -54,7 +54,7 @@ public class Scene {
 	}
 	
 	
-	public void init() {
+	public void initialize() {
 			// Scene
 			// WARNING: ORDER IN WHICH SCENE OBJECTS ARE ADDED IS IMPORTANT FOR DRAW CALLS
 			// LIGHTS HAVE TO BE ADDED FIRST SO THAT THEY ARE UPDATED BEFORE SCENE RENDERING
@@ -244,7 +244,7 @@ public class Scene {
 	private void createGUI() {
 		this.DEBUGtextAppStatistics = new Text(this.gui, "");
 		this.gui = new GUI(this);
-		this.gui.init();
+		this.gui.initialize();
 		this.gui.addElement(this.DEBUGtextAppStatistics);
 		
 		Image crosshair = new Image(this.gui, TestAssets.TEX_GUI_CROSSHAIR);

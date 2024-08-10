@@ -13,7 +13,7 @@ public class GUI {
 	}
 	
 	
-	public void init() {
+	public void initialize() {
 		this.elements = new ArrayList<>();
 	}
 	

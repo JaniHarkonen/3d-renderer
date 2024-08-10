@@ -40,7 +40,7 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	
 	
 	@Override
-	public boolean init() {
+	public boolean initialize() {
 		this.shaderProgram.addShader(
 			new Shader("shaders/cshadow/cshadow.vert", GL46.GL_VERTEX_SHADER)
 		);
@@ -49,8 +49,8 @@ public class CascadeShadowRenderPass implements IRenderPass {
 		this.shaderProgram.declareUniform(this.uLightView)
 		.declareUniform(new UAMatrix4f(Uniforms.OBJECT_TRANSFORM))
 		.declareUniform(new UAMatrix4f(Uniforms.BONE_MATRICES));
-		this.shaderProgram.init();
-		this.shadowBuffer.init();
+		this.shaderProgram.initialize();
+		this.shadowBuffer.initialize();
 		
 		for( int i = 0; i < CascadeShadow.SHADOW_MAP_CASCADE_COUNT; i++ ) {
 			this.cascadeShadows.add(new CascadeShadow());

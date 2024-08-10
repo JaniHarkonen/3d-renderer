@@ -20,7 +20,7 @@ public class DepthTexture {
 	}
 	
 	
-	public void init() {
+	public void initialize() {
 		int target = GL46.GL_TEXTURE_2D;
 		GL46.glGenTextures(this.textureHandles);
 		

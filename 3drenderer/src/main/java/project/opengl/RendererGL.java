@@ -53,9 +53,9 @@ public class RendererGL implements IRenderer {
 		GL46.glClearColor(0.643f, 0.62f, 0.557f, 1.0f);
 		
 		this.generateDefaults();
-		this.cascadeRenderPass.init();
-		this.sceneRenderPass.init();
-		this.guiRenderPass.init();
+		this.cascadeRenderPass.initialize();
+		this.sceneRenderPass.initialize();
+		this.guiRenderPass.initialize();
 		
 		return true;
 	}

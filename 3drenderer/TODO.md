@@ -8,7 +8,6 @@
 
 ### Formatting
 - switch from using ClassName.STATIC_FINAL_FIELD or ClassName.STATIC_METHOD to simply STATIC_FINAL_FIELD or STATIC_METHOD to make refactoring easier
-- use initialize() instead of init() for initialization methods
 
 ### General
 - restrict visibilities of class to the lowest level needed

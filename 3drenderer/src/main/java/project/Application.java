@@ -34,10 +34,10 @@ public class Application {
 		this.window = window;
 			this.renderer = new RendererGL(window, scene);
 			window.setRenderer((RendererGL) this.renderer);
-		window.init();
+		window.initialize();
 		
 		TestAssets.initialize();
-		scene.init();
+		scene.initialize();
 		
 		while( !window.isDestroyed() ) {
 			window.refresh();

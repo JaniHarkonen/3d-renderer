@@ -69,7 +69,7 @@ public class SceneRenderPass implements IRenderPass {
 	
 	
 	@Override
-	public boolean init() {
+	public boolean initialize() {
 		this.uDiffuseSampler = new UInteger1(Uniforms.DIFFUSE_SAMPLER);
 		this.uNormalSampler = new UInteger1(Uniforms.NORMAL_SAMPLER);
 		this.uProjection = new UAMatrix4f(Uniforms.PROJECTION);
@@ -106,7 +106,7 @@ public class SceneRenderPass implements IRenderPass {
 		this.shaderProgram.addShader(
 			new Shader("shaders/scene/scene.frag", GL46.GL_FRAGMENT_SHADER)
 		);
-		this.shaderProgram.init();
+		this.shaderProgram.initialize();
 		
 			// Set point light uniforms to default values, RIGHT NOW LIGHTS CANNOT BE REMOVED 
 		for( int i = 0; i < MAX_POINT_LIGHTS; i++ ) {
