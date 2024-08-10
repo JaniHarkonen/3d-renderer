@@ -1,16 +1,17 @@
 package project.opengl.gui;
 
 
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL46;
 
 import project.asset.AssetUtils;
 import project.asset.sceneasset.Mesh;
 import project.core.GameState;
+import project.core.GameState.SceneState;
 import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
 import project.core.renderer.RenderStrategyManager;
-import project.gui.AGUIElement;
 import project.gui.Image;
 import project.gui.Text;
 import project.opengl.shader.Shader;
@@ -74,11 +75,18 @@ public class GUIRenderPass implements IRenderPass {
 		
         activeShaderProgram.bind();
         this.uDiffuseSampler.update(0);
-        this.uProjection.update(gameState.DEBUGgetGUI().calculateAndGetProjection());
         
-        for( AGUIElement element : gameState.DEBUGgetGUI().getElements() ) {
-			this.recursiveRender(renderer, element);
-		}
+        	// Calculate and update projection
+        float windowCenterX = renderer.getClientWindow().getWidth() / 2;
+		float windowCenterY = renderer.getClientWindow().getHeight() / 2;
+		Matrix4f projectionMatrix = 
+			new Matrix4f().identity().setOrtho2D(0, windowCenterX * 2, windowCenterY * 2, 0);
+        this.uProjection.update(projectionMatrix);
+        
+        SceneState.SceneIterator iterator = gameState.getGUIIterator();
+        while( iterator.hasNext() ) {
+        	this.recursiveRender(renderer, iterator.next());
+        }
 		
 		activeShaderProgram.unbind();
 	}

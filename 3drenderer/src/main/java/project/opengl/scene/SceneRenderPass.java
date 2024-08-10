@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL46;
 import project.component.Attenuation;
 import project.component.CascadeShadow;
 import project.core.GameState;
+import project.core.GameState.SceneState;
 import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
@@ -160,11 +161,9 @@ public class SceneRenderPass implements IRenderPass {
 			(boolean) gameState.getDebugData(TestDebugDataHandles.CASCADE_SHADOW_ENABLED) ? 1 : 0
 		);
 		
-		gameState.resetQueue();
-		
-		ASceneObject object;
-		while( (object = gameState.pollRenderable()) != null ) {
-			this.recursiveRender(renderer, object);
+		SceneState.SceneIterator iterator = gameState.getSceneIterator();
+		while( iterator.hasNext() ) {
+			this.recursiveRender(renderer, iterator.next());
 		}
 		
 		activeShaderProgram.unbind();

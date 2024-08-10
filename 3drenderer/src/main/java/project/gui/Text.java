@@ -17,7 +17,8 @@ public class Text extends AGUIElement {
 	}
 	
 	private Text(Text src) {
-		super(null);
+		super(src);
+		
 		this.font = src.font;
 		this.content = new String(src.content);
 	}

@@ -25,7 +25,7 @@ public abstract class ASceneObject {
 	}
 	
 	public void submitToRenderer() {
-		Application.getApp().getRenderer().submitRenderable(this.rendererCopy());
+		Application.getApp().getRenderer().getBackGameState().listSceneObject(this.rendererCopy());
 	}
 	
 	protected abstract ASceneObject rendererCopy();

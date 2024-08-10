@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL46;
 
 import project.component.CascadeShadow;
 import project.core.GameState;
+import project.core.GameState.SceneState;
 import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
@@ -85,12 +86,10 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	    	
 	    	GL46.glClear(GL46.GL_DEPTH_BUFFER_BIT);
 	        this.uLightView.update(this.cascadeShadows.get(i).getLightViewMatrix());
-	
-	        gameState.resetQueue();
 	        
-	        ASceneObject object;
-	        while( (object = gameState.pollRenderable()) != null ) {
-	        	this.recursiveRender(renderer, object);
+	        SceneState.SceneIterator iterator = gameState.getSceneIterator();
+	        while( iterator.hasNext() ) {
+	        	this.recursiveRender(renderer, iterator.next());
 	        }
 	    }
 	

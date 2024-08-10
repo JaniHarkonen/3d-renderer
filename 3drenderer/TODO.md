@@ -3,8 +3,6 @@
 ### Priority
 - implement roughness maps, alpha maps
 - get rid of RendererGL casts inside 'opengl' package
-- consider AAsset
-- resolve AGUIElement vs ASceneObject conflict
 - ensure consistent code style in shaders
 - re-think animation & bone architecture
 

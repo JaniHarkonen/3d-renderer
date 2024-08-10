@@ -9,7 +9,7 @@ import org.lwjgl.glfw.GLFW;
 import project.Application;
 import project.Window;
 import project.controls.Controller;
-import project.core.GameState;
+import project.gui.AGUIElement;
 import project.gui.GUI;
 import project.gui.Image;
 import project.gui.Text;
@@ -209,9 +209,11 @@ public class Scene {
 			object.submitToRenderer();
 		}
 		
-		GameState back = Application.getApp().getRenderer().getBackGameState();
-		back.DEBUGsetGUI(this.gui);
-		back
+		for( AGUIElement element : this.gui.getElements() ) {
+			element.submitToRenderer();
+		}
+		
+		Application.getApp().getRenderer().getBackGameState()
 		.setDebugData(TestDebugDataHandles.NORMALS_ACTIVE, this.DEBUGareNormalsActive)
 		.setDebugData(TestDebugDataHandles.CASCADE_SHADOW_LIGHT, this.DEBUGshadowLightPosition)
 		.setDebugData(TestDebugDataHandles.CASCADE_SHADOW_ENABLED, this.DEBUGcascadeShadowEnabled);
@@ -246,7 +248,7 @@ public class Scene {
 		this.gui.addElement(this.DEBUGtextAppStatistics);
 		
 		Image crosshair = new Image(this.gui, TestAssets.TEX_GUI_CROSSHAIR);
-		crosshair.setPosition(400, 300, 0);
+		crosshair.getTransformComponent().setPosition(400, 300, 0);
 		crosshair.setAnchor(8, 8);
 		this.gui.addElement(crosshair);
 	}
