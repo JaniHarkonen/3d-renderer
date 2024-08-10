@@ -3,24 +3,23 @@
 ### Priority
 - implement roughness maps, alpha maps
 - get rid of RendererGL casts inside 'opengl' package
-- ensure consistent code style in shaders
 - re-think animation & bone architecture
 
 ### Formatting
 - switch from using ClassName.STATIC_FINAL_FIELD or ClassName.STATIC_METHOD to simply STATIC_FINAL_FIELD or STATIC_METHOD to make refactoring easier
+- ensure consistent code style in shaders
 
 ### General
 - restrict visibilities of class to the lowest level needed
-- avoid using static blocks
 - there is still a lot of repetition among render passes, however, this should be further examined once instanced rendering is considered
 - get rid of uniform casting in render strategies
+
+### AssetManager
+- AssetManager should spawn a fixed number of threads ahead of time for load tasks, and allocate tasks to them as they're scheduled
 
 ### ASceneObject
 - when deep copying scene objects for rendering, determine a way to skip unchanged objects
 - when deep copying scene objects for rendering, examine the degree to which fields need to be copied (for example, copying animations can be VERY costly)
-
-### AGUIElement & ASceneObject
-- AGUIElement and ASceneObject are essentially the same, combine the two or create a new class
 
 ### Window
 - create getters and setters for window attributes (such as, dimensions, position, vsync, fullscreen mode, fps limiter, etc.)
@@ -46,9 +45,6 @@
 
 ### Font
 - consider using an array instead of a map for quicker glyph access by character
-
-### Text
-- Font and color probably shouldn't be a part of Text (maybe set a draw font for draw calls), consider this when implementing GUI further
 
 ### SceneAssetLoadTask
 - re-think animation & bone architecture

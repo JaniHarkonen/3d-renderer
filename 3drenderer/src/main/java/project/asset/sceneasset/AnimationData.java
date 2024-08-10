@@ -45,6 +45,9 @@ public class AnimationData {
 	}
 	
 	public AnimationFrame getCurrentFrame() {
+		if( this.currentFrameIndex >= this.currentAnimation.getFrames().size() ) {
+			return null;
+		}
 		return this.currentAnimation.getFrames().get(this.currentFrameIndex);
 	}
 	

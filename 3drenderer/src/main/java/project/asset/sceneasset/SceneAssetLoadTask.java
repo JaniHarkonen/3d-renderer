@@ -26,7 +26,10 @@ import org.lwjgl.assimp.AIVertexWeight;
 import org.lwjgl.assimp.Assimp;
 
 import project.Application;
+import project.core.asset.IAsset;
+import project.core.asset.IAssetData;
 import project.core.asset.ILoadTask;
+import project.core.asset.ISystem;
 import project.utils.DebugUtils;
 import project.utils.GeometryUtils;
 
@@ -137,6 +140,7 @@ public class SceneAssetLoadTask implements ILoadTask {
 				faces.add(new Mesh.Face(indices));
 			}
 			
+				// Package mesh data and send to asset manager
 			Mesh.Data data = new Mesh.Data();
 			data.targetMesh = this.expectedMeshes.get(i);
 			data.vertices = vertices; 
@@ -146,12 +150,7 @@ public class SceneAssetLoadTask implements ILoadTask {
 			data.UVs = UVs;
 			data.faces = faces.toArray(new Mesh.Face[faces.size()]);
 			data.animationMeshData = this.processBones(aiMesh, boneList);
-			
-			Application.getApp().getAssetManager().notifyResult(
-				data.targetMesh, 
-				data,
-				Application.getApp().getRenderer()
-			);
+			this.notifyAssetManager(data.targetMesh, data, Application.getApp().getRenderer());
 		}
 		
 			////////////////////////////Extract animations ////////////////////////////
@@ -181,6 +180,12 @@ public class SceneAssetLoadTask implements ILoadTask {
 		return true;
 	}
 	
+	private void notifyAssetManager(IAsset asset, IAssetData data, ISystem system) {
+		Application.getApp().getAssetManager().notifyResult(
+			asset, data, system
+		);
+	}
+	
 	private AnimationMeshData processBones(AIMesh aiMesh, List<Bone> boneList) {
 		List<Integer> boneIDs = new ArrayList<>();
 		
@@ -192,14 +197,20 @@ public class SceneAssetLoadTask implements ILoadTask {
 		for( int j = 0; j < boneCount; j++ ) {
 			AIBone aiBone = AIBone.create(aiBoneBuffer.get(j));
 			int boneID = boneList.size();
-			Bone bone = new Bone(boneID, aiBone.mName().dataString(), GeometryUtils.aiMatrix4ToMatrix4f(aiBone.mOffsetMatrix()));
+			Bone bone = new Bone(
+				boneID, 
+				aiBone.mName().dataString(), 
+				GeometryUtils.aiMatrix4ToMatrix4f(aiBone.mOffsetMatrix())
+			);
 			boneList.add(bone);
 			
 			int weightCount = aiBone.mNumWeights();
 			AIVertexWeight.Buffer aiWeights = aiBone.mWeights();
 			for( int k = 0; k < weightCount; k++ ) {
 				AIVertexWeight aiWeight = aiWeights.get(k);
-				VertexWeight weight = new VertexWeight(bone.getID(), aiWeight.mVertexId(), aiWeight.mWeight());
+				VertexWeight weight = new VertexWeight(
+					bone.getID(), aiWeight.mVertexId(), aiWeight.mWeight()
+				);
 				List<VertexWeight> weightList = weightSet.get(weight.getVertexID());
 				
 				if( weightList == null ) {
@@ -240,18 +251,17 @@ public class SceneAssetLoadTask implements ILoadTask {
 		return new AnimationMeshData(finalWeights, finalBoneIDs);
 	}
 	
-	private void processAnimations(AIScene aiScene, List<Bone> boneList, Node rootNode, Matrix4f globalInverseTransform) {
+	private void processAnimations(
+		AIScene aiScene, List<Bone> boneList, Node rootNode, Matrix4f globalInverseTransform
+	) {
 		PointerBuffer aiAnimations = aiScene.mAnimations();
 		int animationCount = Math.min(this.expectedAnimations.size(), aiScene.mNumAnimations());
 		for( int i = 0; i < animationCount; i++ ) {
 			AIAnimation aiAnimation = AIAnimation.create(aiAnimations.get(i));
 			int frameCount = this.calculateAnimationFrames(aiAnimation);
-			List<AnimationFrame> frames = new ArrayList<>();
 			
+			List<AnimationFrame> frames = new ArrayList<>();
 			Animation animation = this.expectedAnimations.get(i);
-			animation.setName(aiAnimation.mName().dataString());
-			animation.setDuration(aiAnimation.mDuration());
-			animation.setFrames(frames);
 			
 			for( int j = 0; j < frameCount; j++ ) {
 				Matrix4f[] boneTransforms = new Matrix4f[MAX_BONE_COUNT];
@@ -268,6 +278,12 @@ public class SceneAssetLoadTask implements ILoadTask {
 				);
 				frames.add(frame);
 			}
+			
+			Animation.Data animationData = new Animation.Data();
+			animationData.targetAnimation = animation;
+			animationData.duration = aiAnimation.mDuration();
+			animationData.frames = frames;
+			this.notifyAssetManager(animationData.targetAnimation, animationData, null);
 		}
 	}
 	

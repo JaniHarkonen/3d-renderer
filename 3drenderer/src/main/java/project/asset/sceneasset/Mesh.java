@@ -50,7 +50,7 @@ public class Mesh implements IGraphicsAsset {
 				this.faces, 
 				this.animationMeshData
 			);
-			this.targetMesh.lastUpdateTimestamp = timestamp;
+			this.targetMesh.update(timestamp);
 		}
 	}
 	
@@ -222,6 +222,11 @@ public class Mesh implements IGraphicsAsset {
 	@Override
 	public void setGraphics(IGraphics graphics) {
 		this.graphics = graphics;
+	}
+	
+	@Override
+	public void update(long timestamp) {
+		this.lastUpdateTimestamp = timestamp;
 	}
 
 	@Override

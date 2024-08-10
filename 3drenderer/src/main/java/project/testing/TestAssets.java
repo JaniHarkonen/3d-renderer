@@ -4,6 +4,7 @@ import project.Application;
 import project.asset.font.Font;
 import project.asset.font.FontLoadTask;
 import project.asset.sceneasset.Animation;
+import project.asset.sceneasset.AnimationData;
 import project.asset.sceneasset.Mesh;
 import project.asset.sceneasset.SceneAssetLoadTask;
 import project.asset.texture.Texture;
@@ -91,9 +92,9 @@ public final class TestAssets {
 		MESH_OUTSIDE_PLACE = createMeshArray("mesh-outside-place", 29);
 		loadSceneAsset("models/Outside.fbx", MESH_OUTSIDE_PLACE);
 		
-		ANIM_SOLDIER_IDLE = new Animation();
+		ANIM_SOLDIER_IDLE = new Animation("anim-soldier-idle");
 		MESH_SOLDIER = createMeshArray("mesh-soldier", 8);
-		loadSceneAsset("models/soldier.fbx", MESH_SOLDIER/*, new Animation[] {ANIM_SOLDIER_IDLE}*/);
+		loadSceneAsset("models/soldier.fbx", MESH_SOLDIER, new Animation[] {ANIM_SOLDIER_IDLE});
 		
 		//Mesh[] array = createMeshArray("mesh-man", 1);
 		//ANIM_RUN = new Animation();

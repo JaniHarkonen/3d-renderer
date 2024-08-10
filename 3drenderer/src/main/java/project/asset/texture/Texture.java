@@ -21,7 +21,7 @@ public class Texture implements IGraphicsAsset {
 		@Override
 		public void assign(long timestamp) {
 			this.targetTexture.populate(this.width, this.height, this.pixels);
-			this.targetTexture.lastUpdateTimestamp = timestamp;
+			this.targetTexture.update(timestamp);
 		}
 	}
 	
@@ -113,6 +113,11 @@ public class Texture implements IGraphicsAsset {
 	@Override
 	public void setGraphics(IGraphics graphics) {
 		this.graphics = graphics;
+	}
+	
+	@Override
+	public void update(long timestamp) {
+		this.lastUpdateTimestamp = timestamp;
 	}
 	
 	@Override
