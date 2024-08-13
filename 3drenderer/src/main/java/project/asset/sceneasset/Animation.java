@@ -1,8 +1,5 @@
 package project.asset.sceneasset;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import project.core.asset.IAsset;
 import project.core.asset.IAssetData;
 
@@ -13,7 +10,7 @@ public class Animation implements IAsset {
 	public static class Data implements IAssetData {
 		Animation targetAnimation;
 		double duration;
-		List<AnimationFrame> frames;
+		AnimationFrame[] frames;
 
 		@Override
 		public void assign(long timestamp) {
@@ -25,34 +22,35 @@ public class Animation implements IAsset {
 	
 	/************************* Animation-class **************************/
 	
-	public static final Animation DEFAULT = new Animation("anim-default", true);
+	public static final Animation DEFAULT = new Animation("anim-default", 1, true);
 	static {
-		List<AnimationFrame> frames = new ArrayList<>();
-		frames.add(AnimationFrame.DEFAULT);
-		DEFAULT.populate(0, frames);
+		DEFAULT.populate(0, new AnimationFrame[] {
+			AnimationFrame.DEFAULT
+		});
 	}
 	
 	private final String name;
 	
 	private double duration;
-	private List<AnimationFrame> frames;
+	private int expectedFrameCount;
+	private AnimationFrame[] frames;
 	private long lastUpdateTimestamp;
 	
-	public Animation(String name) {
-		this(name, false);
+	public Animation(String name, int expectedFrameCount) {
+		this(name, expectedFrameCount, false);
 	}
 	
-	private Animation(String name, boolean isDefault) {
+	private Animation(String name, int expectedFrameCount, boolean isDefault) {
 		if( isDefault ) {
-			this.name = name;
 			this.duration = 0.0d;
-			this.frames = new ArrayList<>();
+			this.frames = null;
 		} else {
-			this.name = DEFAULT.name;
 			this.duration = DEFAULT.duration;
 			this.frames = DEFAULT.frames;
 		}
 		
+		this.name = name;
+		this.expectedFrameCount = expectedFrameCount;
 		this.lastUpdateTimestamp = -1;
 	}
 	
@@ -63,7 +61,7 @@ public class Animation implements IAsset {
 	}
 	
 	
-	public void populate(double duration, List<AnimationFrame> frames) {
+	public void populate(double duration, AnimationFrame[] frames) {
 		this.duration = duration;
 		this.frames = frames;
 	}
@@ -79,16 +77,20 @@ public class Animation implements IAsset {
 		this.lastUpdateTimestamp = timestamp;
 	}
 	
-	public List<AnimationFrame> getFrames() {
+	int getExpectedFrameCount() {
+		return this.expectedFrameCount;
+	}
+	
+	public AnimationFrame[] getFrames() {
 		return this.frames;
 	}
 	
 	public AnimationFrame getFrame(int frameIndex) {
-		return this.frames.get(frameIndex);
+		return this.frames[frameIndex];
 	}
 	
 	public int getFrameCount() {
-		return this.frames.size();
+		return this.frames.length;
 	}
 
 	@Override

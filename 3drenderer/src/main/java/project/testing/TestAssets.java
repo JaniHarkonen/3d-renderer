@@ -91,7 +91,7 @@ public final class TestAssets {
 		MESH_OUTSIDE_PLACE = createMeshArray("mesh-outside-place", 29);
 		loadSceneAsset("models/Outside.fbx", MESH_OUTSIDE_PLACE);
 		
-		ANIM_SOLDIER_IDLE = new Animation("anim-soldier-idle");
+		ANIM_SOLDIER_IDLE = new Animation("anim-soldier-idle", 39);
 		MESH_SOLDIER = createMeshArray("mesh-soldier", 8);
 		loadSceneAsset("models/soldier.fbx", MESH_SOLDIER, new Animation[] {ANIM_SOLDIER_IDLE});
 		

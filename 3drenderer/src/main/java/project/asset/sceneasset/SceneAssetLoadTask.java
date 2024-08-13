@@ -257,12 +257,10 @@ public class SceneAssetLoadTask implements ILoadTask {
 		int animationCount = Math.min(this.expectedAnimations.size(), aiScene.mNumAnimations());
 		for( int i = 0; i < animationCount; i++ ) {
 			AIAnimation aiAnimation = AIAnimation.create(aiAnimations.get(i));
-			int frameCount = this.calculateAnimationFrames(aiAnimation);
-			
-			List<AnimationFrame> frames = new ArrayList<>();
 			Animation animation = this.expectedAnimations.get(i);
+			AnimationFrame[] frames = new AnimationFrame[animation.getExpectedFrameCount()];
 			
-			for( int j = 0; j < frameCount; j++ ) {
+			for( int j = 0; j < animation.getExpectedFrameCount(); j++ ) {
 				Matrix4f[] boneTransforms = new Matrix4f[MAX_BONE_COUNT];
 				Arrays.fill(boneTransforms, IDENTITY_MATRIX);
 				AnimationFrame frame = new AnimationFrame(boneTransforms);
@@ -275,7 +273,7 @@ public class SceneAssetLoadTask implements ILoadTask {
 					rootNode.getNodeTransform(), 
 					globalInverseTransform
 				);
-				frames.add(frame);
+				frames[j] = frame;
 			}
 			
 			Animation.Data animationData = new Animation.Data();
@@ -284,22 +282,6 @@ public class SceneAssetLoadTask implements ILoadTask {
 			animationData.frames = frames;
 			this.notifyAssetManager(animationData.targetAnimation, animationData, null);
 		}
-	}
-	
-	private int calculateAnimationFrames(AIAnimation aiAnimation) {
-		int maxFrameCount = 0;
-		int channelCount = aiAnimation.mNumChannels();
-		PointerBuffer aiChannels = aiAnimation.mChannels();
-		for( int i = 0; i < channelCount; i++ ) {
-			AINodeAnim aiNodeAnim = AINodeAnim.create(aiChannels.get(i));
-			int frameCount = Math.max(
-				Math.max(aiNodeAnim.mNumPositionKeys(), aiNodeAnim.mNumScalingKeys()), 
-				aiNodeAnim.mNumRotationKeys()
-			);
-			maxFrameCount = Math.max(maxFrameCount, frameCount);
-		}
-		
-		return maxFrameCount;
 	}
 	
 	private void buildFrameMatrices(

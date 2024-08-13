@@ -17,6 +17,9 @@
 ### Animator
 - Animator needs a copy constructor for GameState generation
 
+### Animation
+- Animation frame delta time should be set by default to: duration / frameCount
+
 ### AssetManager
 - AssetManager should spawn a fixed number of threads ahead of time for load tasks, and allocate tasks to them as they're scheduled
 
