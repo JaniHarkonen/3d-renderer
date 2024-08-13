@@ -320,19 +320,13 @@ public class SceneAssetLoadTask implements ILoadTask {
 		}
 		
 		Matrix4f nodeGlobalTransform = new Matrix4f(parentTransform).mul(nodeTransform);
-		List<Bone> affectedBones = new ArrayList<>();
-		
 		for( Bone bone : boneList ) {
 			if( bone.getName().equals(nodeName) ) {
-				affectedBones.add(bone);
+				Matrix4f boneTransform = new Matrix4f(globalInverseTransform)
+				.mul(nodeGlobalTransform)
+				.mul(bone.getOffsetTransform());
+				frame.setBoneTransform(bone.getID(), boneTransform);
 			}
-		}
-		
-		for( Bone bone : affectedBones ) {
-			Matrix4f boneTransform = new Matrix4f(globalInverseTransform)
-			.mul(nodeGlobalTransform)
-			.mul(bone.getOffsetTransform());
-			frame.setBoneTransform(bone.getID(), boneTransform);
 		}
 		
 		for( Node childNode : node.getChildren() ) {
