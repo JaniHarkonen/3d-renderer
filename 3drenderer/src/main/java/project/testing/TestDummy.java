@@ -3,6 +3,7 @@ package project.testing;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import project.component.Animator;
 import project.scene.ASceneObject;
 import project.scene.Model;
 import project.scene.Scene;
@@ -10,15 +11,18 @@ import project.scene.Scene;
 public class TestDummy extends ASceneObject {
 
 	private Model model;
-	private float animationTimer;
-	private float animationFrameTime;
 	
 	public TestDummy(Scene scene, Model model) {
 		super(scene);
 		this.model = model;
+		this.model.setAnimator(new Animator() {
+			@Override
+			public void onFinish() {
+				this.restart();
+			}
+		});
+		this.model.getAnimator().setSpeed(1 / 24.0f);
 		this.children.add(model);
-		this.animationTimer = 0.0f;
-		this.animationFrameTime = 0.075f;
 	}
 	
 	public TestDummy(Scene scene) {
@@ -40,14 +44,7 @@ public class TestDummy extends ASceneObject {
 	
 	@Override
 	public void tick(float deltaTime) {
-		this.animationTimer += deltaTime;
-		if( this.animationTimer >= this.animationFrameTime ) {
-			if( this.model.getAnimationData() != null ) {
-				this.model.getAnimationData().nextFrame();
-			}
-			
-			this.animationTimer = 0.0f;
-		}
+		this.model.getAnimator().update(deltaTime);
 		
 		for( ASceneObject object : this.children ) {
 			Vector3f position = getTransformComponent().getPosition();

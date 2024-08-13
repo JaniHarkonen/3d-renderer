@@ -14,6 +14,9 @@
 - there is still a lot of repetition among render passes, however, this should be further examined once instanced rendering is considered
 - get rid of uniform casting in render strategies
 
+### Animator
+- Animator needs a copy constructor for GameState generation
+
 ### AssetManager
 - AssetManager should spawn a fixed number of threads ahead of time for load tasks, and allocate tasks to them as they're scheduled
 

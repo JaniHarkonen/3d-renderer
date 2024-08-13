@@ -25,6 +25,13 @@ public class Animation implements IAsset {
 	
 	/************************* Animation-class **************************/
 	
+	public static final Animation DEFAULT = new Animation("anim-default", true);
+	static {
+		List<AnimationFrame> frames = new ArrayList<>();
+		frames.add(AnimationFrame.DEFAULT);
+		DEFAULT.populate(0, frames);
+	}
+	
 	private final String name;
 	
 	private double duration;
@@ -32,9 +39,21 @@ public class Animation implements IAsset {
 	private long lastUpdateTimestamp;
 	
 	public Animation(String name) {
-		this.name = name;
-		this.duration = 0.0d;
-		this.frames = new ArrayList<>();
+		this(name, false);
+	}
+	
+	private Animation(String name, boolean isDefault) {
+		if( isDefault ) {
+			this.name = name;
+			this.duration = 0.0d;
+			this.frames = new ArrayList<>();
+		} else {
+			this.name = DEFAULT.name;
+			this.duration = DEFAULT.duration;
+			this.frames = DEFAULT.frames;
+		}
+		
+		this.lastUpdateTimestamp = -1;
 	}
 	
 	public Animation(Animation src) {
@@ -62,6 +81,14 @@ public class Animation implements IAsset {
 	
 	public List<AnimationFrame> getFrames() {
 		return this.frames;
+	}
+	
+	public AnimationFrame getFrame(int frameIndex) {
+		return this.frames.get(frameIndex);
+	}
+	
+	public int getFrameCount() {
+		return this.frames.size();
 	}
 
 	@Override

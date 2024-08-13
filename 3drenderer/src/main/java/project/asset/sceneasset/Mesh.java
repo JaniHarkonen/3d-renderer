@@ -59,7 +59,8 @@ public class Mesh implements IGraphicsAsset {
 	
 	public static final Mesh DEFAULT = new Mesh("mesh-default", true);
 	static {
-		DEFAULT.populate(new Vector3f[] {
+		DEFAULT.populate(
+			new Vector3f[] {
 				new Vector3f(0, 0, 0),
 				new Vector3f(10, 0, 0),
 				new Vector3f(0, 10, 0),

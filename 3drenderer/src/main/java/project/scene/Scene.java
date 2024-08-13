@@ -100,6 +100,7 @@ public class Scene {
 			// Soldier
 		TestDummy soldier = new TestDummy(this, TestAssets.createTestSoldier(this));
 		soldier.getTransformComponent().setPosition(1, -10, -100);
+		soldier.getTransformComponent().getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
 		//soldier.getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
 		this.objects.add(soldier);
 		DebugUtils.log(this, "Soldier TestDummy added!");

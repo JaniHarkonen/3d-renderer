@@ -2,7 +2,6 @@ package project.opengl.scene;
 
 import org.lwjgl.opengl.GL46;
 
-import project.asset.sceneasset.AnimationData;
 import project.asset.sceneasset.Mesh;
 import project.asset.texture.Texture;
 import project.component.Material;
@@ -67,16 +66,8 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 			VAO vao = (VAO) mesh.getGraphics();
 			vao.bind();
 			
-			AnimationData animationData = model.getAnimationData();
-			
-			if( animationData == null ) {
-				UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.BONE_MATRICES))
-				.update(AnimationData.DEFAULT_BONE_TRANSFORMS);
-				
-			} else {
-				UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.BONE_MATRICES))
-				.update(animationData.getCurrentFrame().getBoneTransforms());
-			}
+			UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.BONE_MATRICES))
+			.update(model.getAnimator().getCurrentFrame().getBoneTransforms());
 
 			GL46.glDrawElements(
 				GL46.GL_TRIANGLES, vao.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0

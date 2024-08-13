@@ -188,7 +188,6 @@ public class SceneAssetLoadTask implements ILoadTask {
 	
 	private AnimationMeshData processBones(AIMesh aiMesh, List<Bone> boneList) {
 		List<Integer> boneIDs = new ArrayList<>();
-		
 		List<Float> weights = new ArrayList<>();
 		Map<Integer, List<VertexWeight>> weightSet = new HashMap<>();
 		int boneCount = aiMesh.mNumBones();

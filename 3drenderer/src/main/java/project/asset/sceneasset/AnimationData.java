@@ -4,9 +4,11 @@ import java.util.Arrays;
 
 import org.joml.Matrix4f;
 
-public class AnimationData {
+/*public class AnimationData {
 
-	public static final Matrix4f[] DEFAULT_BONE_TRANSFORMS = new Matrix4f[SceneAssetLoadTask.MAX_BONE_COUNT];
+	public static final Matrix4f[] DEFAULT_BONE_TRANSFORMS = 
+		new Matrix4f[SceneAssetLoadTask.MAX_BONE_COUNT];
+	
 	static {
 		Matrix4f zeroMatrix = new Matrix4f().zero();
 		Arrays.fill(DEFAULT_BONE_TRANSFORMS, zeroMatrix);
@@ -54,4 +56,4 @@ public class AnimationData {
 	public int getCurrentFrameIndex() {
 		return this.currentFrameIndex;
 	}
-}
+}*/
