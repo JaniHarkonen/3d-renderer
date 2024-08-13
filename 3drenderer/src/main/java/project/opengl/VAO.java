@@ -7,7 +7,6 @@ import org.lwjgl.system.MemoryUtil;
 
 import project.Application;
 import project.asset.sceneasset.Mesh;
-import project.asset.sceneasset.SceneAssetLoadTask;
 import project.core.asset.IGraphics;
 import project.core.asset.IGraphicsAsset;
 
@@ -65,16 +64,6 @@ public class VAO implements IGraphics {
 		this.bind();
 		
 			Mesh mesh = this.targetMesh;
-			float[] boneWeights;
-			int[] boneIndices;
-			
-			if( mesh.getAnimationMeshData() != null ) {
-				boneWeights = mesh.getAnimationMeshData().getBoneWeights();
-				boneIndices = mesh.getAnimationMeshData().getBoneIDs();
-			} else {
-				boneWeights = new float[SceneAssetLoadTask.MAX_WEIGHT_COUNT * mesh.getVertexCount()];
-				boneIndices = new int[SceneAssetLoadTask.MAX_WEIGHT_COUNT * mesh.getVertexCount()];
-			}
 		
 				// VBOs
 			this.positionsVBO = new VBO(0, 3);
@@ -93,10 +82,10 @@ public class VAO implements IGraphics {
 			this.textureCoordinatesVBO.attach(mesh.getUVs(), 2);
 			
 			this.boneWeightVBO = new VBO(5, 4);
-			this.boneWeightVBO.attach(boneWeights);
+			this.boneWeightVBO.attach(mesh.getBoneWeights());
 			
 			this.boneIndicesVBO = new VBO(6, 4);
-			this.boneIndicesVBO.attach(boneIndices);
+			this.boneIndicesVBO.attach(mesh.getBoneIDs());
 			
 				// Indices
 			int[] indices = new int[mesh.getFaces().length * Mesh.Face.INDICES_PER_FACE];

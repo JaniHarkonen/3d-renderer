@@ -7,6 +7,7 @@ import org.lwjgl.system.MemoryUtil;
 
 import project.Application;
 import project.asset.sceneasset.Mesh;
+import project.asset.sceneasset.SceneAssetLoadTask;
 
 public final class AssetUtils {
 
@@ -53,7 +54,8 @@ public final class AssetUtils {
 				new Mesh.Face(new int[] {0, 1, 2}),
 				new Mesh.Face(new int[] {2, 3, 0})
     		},
-    		null
+    		new float[4 * 3 * SceneAssetLoadTask.MAX_WEIGHT_COUNT],
+			new int[4 * 3 * SceneAssetLoadTask.MAX_WEIGHT_COUNT]
 		);
 		
 		Application.getApp().getRenderer().assetLoaded(mesh);

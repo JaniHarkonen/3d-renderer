@@ -37,7 +37,8 @@ public class Mesh implements IGraphicsAsset {
 		Vector3f[] bitangents;
 		Vector3f[] UVs; // Stored as a 3-vector for consistency, change this if necessary
 		Face[] faces;
-		AnimationMeshData animationMeshData;
+		float[] weights;
+		int[] boneIDs;
 
 		@Override
 		public void assign(long timestamp) {
@@ -47,8 +48,9 @@ public class Mesh implements IGraphicsAsset {
 				this.tangents, 
 				this.bitangents, 
 				this.UVs, 
-				this.faces, 
-				this.animationMeshData
+				this.faces,
+				this.weights,
+				this.boneIDs
 			);
 			this.targetMesh.update(timestamp);
 		}
@@ -94,7 +96,8 @@ public class Mesh implements IGraphicsAsset {
 				new Face(new int[] { 0, 1, 3 } ),
 				new Face(new int[] { 0, 3, 2 } )
 			},
-			null
+			new float[4 * 3 * SceneAssetLoadTask.MAX_WEIGHT_COUNT],
+			new int[4 * 3 * SceneAssetLoadTask.MAX_WEIGHT_COUNT]
 		);
 	}
 	
@@ -106,11 +109,12 @@ public class Mesh implements IGraphicsAsset {
 		Vector3f[] bitangents,
 		Vector3f[] UVs,
 		Face[] faces,
-		AnimationMeshData animationMeshData
+		float[] weights,
+		int[] boneIDs
 	) {
 		Mesh mesh = new Mesh(name, false);
 		mesh.populate(
-			vertices, normals, tangents, bitangents, UVs, faces, animationMeshData
+			vertices, normals, tangents, bitangents, UVs, faces, weights, boneIDs
 		);
 		return mesh;
 	}
@@ -128,7 +132,8 @@ public class Mesh implements IGraphicsAsset {
 	private Vector3f[] bitangents;
 	private Vector3f[] UVs; // Stored as a 3-vector for consistency, change this if necessary
 	private Face[] faces;
-	private AnimationMeshData animationMeshData;
+	private float[] weights;
+	private int[] boneIDs;
 	
 	public Mesh(String name) {
 		this(name, false);
@@ -143,7 +148,8 @@ public class Mesh implements IGraphicsAsset {
 		this.bitangents = null;
 		this.UVs = null;
 		this.faces = null;
-		this.animationMeshData = null;
+		this.weights = null;
+		this.boneIDs = null;
 		
 		if( !isDefault ) {
 			Application.getApp().getRenderer().getDefaultMeshGraphics().createReference(this);
@@ -160,7 +166,8 @@ public class Mesh implements IGraphicsAsset {
 		Vector3f[] bitangents,
 		Vector3f[] UVs,
 		Face[] faces,
-		AnimationMeshData animationMeshData
+		float[] weights,
+		int[] boneIDs
 	) {
 		this.vertices = vertices;
 		this.normals = normals;
@@ -168,7 +175,8 @@ public class Mesh implements IGraphicsAsset {
 		this.bitangents = bitangents;
 		this.UVs = UVs;
 		this.faces = faces;
-		this.animationMeshData = animationMeshData;
+		this.weights = weights;
+		this.boneIDs = boneIDs;
 	}
 	
 	@Override
@@ -182,7 +190,9 @@ public class Mesh implements IGraphicsAsset {
 			this.bitangents = null;
 			this.UVs = null;
 			this.faces = null;
-			this.animationMeshData = null;
+			this.weights = null;
+			this.boneIDs = null;
+			//this.animationMeshData = null;
 			return true;
 		}
 		return false;
@@ -212,8 +222,12 @@ public class Mesh implements IGraphicsAsset {
 		return this.UVs;
 	}
 	
-	public AnimationMeshData getAnimationMeshData() {
-		return this.animationMeshData;
+	public float[] getBoneWeights() {
+		return this.weights;
+	}
+	
+	public int[] getBoneIDs() {
+		return this.boneIDs;
 	}
 	
 	public Face[] getFaces() {

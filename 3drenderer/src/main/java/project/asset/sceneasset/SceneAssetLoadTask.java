@@ -149,7 +149,8 @@ public class SceneAssetLoadTask implements ILoadTask {
 			data.bitangents = bitangents;
 			data.UVs = UVs;
 			data.faces = faces.toArray(new Mesh.Face[faces.size()]);
-			data.animationMeshData = this.processBones(aiMesh, boneList);
+			//data.animationMeshData = this.processBones(aiMesh, boneList);
+			this.processBones(aiMesh, boneList, data);
 			this.notifyAssetManager(data.targetMesh, data, Application.getApp().getRenderer());
 		}
 		
@@ -186,7 +187,10 @@ public class SceneAssetLoadTask implements ILoadTask {
 		);
 	}
 	
-	private AnimationMeshData processBones(AIMesh aiMesh, List<Bone> boneList) {
+	//private AnimationMeshData processBones(
+	private void processBones(
+		AIMesh aiMesh, List<Bone> boneList, Mesh.Data targetData
+	) {
 		List<Integer> boneIDs = new ArrayList<>();
 		List<Float> weights = new ArrayList<>();
 		Map<Integer, List<VertexWeight>> weightSet = new HashMap<>();
@@ -247,7 +251,8 @@ public class SceneAssetLoadTask implements ILoadTask {
 			finalBoneIDs[j] = boneIDs.get(j);
 		}
 		
-		return new AnimationMeshData(finalWeights, finalBoneIDs);
+		targetData.weights = finalWeights;
+		targetData.boneIDs = finalBoneIDs;
 	}
 	
 	private void processAnimations(

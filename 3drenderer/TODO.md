@@ -20,12 +20,17 @@
 ### Animation
 - Animation frame delta time should be set by default to: duration / frameCount
 
+### Rotation
+- rename Rotation to Rotator so that Rotation doesn't have to be referred to as rotation component
+
 ### AssetManager
 - AssetManager should spawn a fixed number of threads ahead of time for load tasks, and allocate tasks to them as they're scheduled
 
 ### ASceneObject
 - when deep copying scene objects for rendering, determine a way to skip unchanged objects
 - when deep copying scene objects for rendering, examine the degree to which fields need to be copied (for example, copying animations can be VERY costly)
+- rename Rotation to Rotator so that Rotation doesn't have to be referred to as rotation component
+- rename transform component to just transform and refer to transforms in matrix form as transform matrices
 
 ### Window
 - create getters and setters for window attributes (such as, dimensions, position, vsync, fullscreen mode, fps limiter, etc.)
