@@ -2,7 +2,7 @@ package project.asset.sceneasset;
 
 import org.joml.Matrix4f;
 
-public class Bone {
+class Bone {
 	private int boneID;
 	private String boneName;
 	private Matrix4f offsetTransform;

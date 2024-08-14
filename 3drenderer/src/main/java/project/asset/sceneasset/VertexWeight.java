@@ -1,6 +1,6 @@
 package project.asset.sceneasset;
 
-public class VertexWeight {
+class VertexWeight {
 
 	private int boneID;
 	private int vertexID;

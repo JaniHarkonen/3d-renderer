@@ -276,11 +276,11 @@ public class SceneAssetLoadTask implements ILoadTask {
 		Matrix4f globalInverseTransform
 	) {
 			// Build frame transforms for each key frame of the animation
-		AnimationFrame[] frames = new AnimationFrame[targetAnimation.getExpectedFrameCount()];
+		Animation.Frame[] frames = new Animation.Frame[targetAnimation.getExpectedFrameCount()];
 		for( int i = 0; i < targetAnimation.getExpectedFrameCount(); i++ ) {
 			Matrix4f[] boneTransforms = new Matrix4f[MAX_BONE_COUNT];
 			Arrays.fill(boneTransforms, IDENTITY_MATRIX);
-			AnimationFrame frame = new AnimationFrame(boneTransforms);
+			Animation.Frame frame = new Animation.Frame(boneTransforms);
 			this.buildFrameTransforms(
 				aiAnimation, 
 				boneList, 
@@ -303,7 +303,7 @@ public class SceneAssetLoadTask implements ILoadTask {
 	private void buildFrameTransforms(
 		AIAnimation aiAnimation, 
 		List<Bone> boneList, 
-		AnimationFrame frame, 
+		Animation.Frame frame, 
 		int frameIndex, 
 		Node node, 
 		Matrix4f parentTransform, 

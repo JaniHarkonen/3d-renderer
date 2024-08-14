@@ -1,16 +1,51 @@
 package project.asset.sceneasset;
 
+import java.util.Arrays;
+
+import org.joml.Matrix4f;
+
 import project.core.asset.IAsset;
 import project.core.asset.IAssetData;
 
 public class Animation implements IAsset {
+	
+	/************************* Frame-class **************************/
+	
+	public static class Frame {
+		
+		public static final Frame DEFAULT = new Frame(new Matrix4f[SceneAssetLoadTask.MAX_BONE_COUNT]);
+		static {
+			Matrix4f zeroMatrix = new Matrix4f().zero();
+			Arrays.fill(DEFAULT.boneTransforms, zeroMatrix);
+		}
+
+		private Matrix4f[] boneTransforms;
+		
+		public Frame(Matrix4f[] boneTransforms) {
+			this.boneTransforms = boneTransforms;
+		}
+		
+		
+		public void setBoneTransform(int boneIndex, Matrix4f boneTransform) {
+			this.boneTransforms[boneIndex] = boneTransform;
+		}
+		
+		public Matrix4f getBoneTransform(int boneIndex) {
+			return this.boneTransforms[boneIndex];
+		}
+		
+		public Matrix4f[] getBoneTransforms() {
+			return this.boneTransforms;
+		}
+	}
+	
 	
 	/************************* Data-class **************************/
 	
 	public static class Data implements IAssetData {
 		Animation targetAnimation;
 		double duration;
-		AnimationFrame[] frames;
+		Frame[] frames;
 
 		@Override
 		public void assign(long timestamp) {
@@ -24,8 +59,8 @@ public class Animation implements IAsset {
 	
 	public static final Animation DEFAULT = new Animation("anim-default", 1, true);
 	static {
-		DEFAULT.populate(0, new AnimationFrame[] {
-			AnimationFrame.DEFAULT
+		DEFAULT.populate(0, new Frame[] {
+			Frame.DEFAULT
 		});
 	}
 	
@@ -33,7 +68,7 @@ public class Animation implements IAsset {
 	
 	private double duration;
 	private int expectedFrameCount;
-	private AnimationFrame[] frames;
+	private Frame[] frames;
 	private long lastUpdateTimestamp;
 	
 	public Animation(String name, int expectedFrameCount) {
@@ -61,7 +96,7 @@ public class Animation implements IAsset {
 	}
 	
 	
-	public void populate(double duration, AnimationFrame[] frames) {
+	public void populate(double duration, Frame[] frames) {
 		this.duration = duration;
 		this.frames = frames;
 	}
@@ -81,11 +116,11 @@ public class Animation implements IAsset {
 		return this.expectedFrameCount;
 	}
 	
-	public AnimationFrame[] getFrames() {
+	public Frame[] getFrames() {
 		return this.frames;
 	}
 	
-	public AnimationFrame getFrame(int frameIndex) {
+	public Frame getFrame(int frameIndex) {
 		return this.frames[frameIndex];
 	}
 	

@@ -1,13 +1,12 @@
 package project.component;
 
 import project.asset.sceneasset.Animation;
-import project.asset.sceneasset.AnimationFrame;
 
 public class Animator {
 
 	private Animation animation;
 	private int currentFrameIndex;
-	private AnimationFrame currentFrame;
+	private Animation.Frame currentFrame;
 	private float frameTimer;
 	private float frameSpeed;
 	private boolean isPaused;
@@ -73,7 +72,7 @@ public class Animator {
 		this.frameSpeed = frameDelta;
 	}
 	
-	public AnimationFrame getCurrentFrame() {
+	public Animation.Frame getCurrentFrame() {
 		return this.currentFrame;
 	}
 	
