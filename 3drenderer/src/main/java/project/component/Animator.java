@@ -9,6 +9,7 @@ public class Animator {
 	private Animation.Frame currentFrame;
 	private float frameTimer;
 	private float frameSpeed;
+	private int direction;	// Must be 1 or -1
 	private boolean isPaused;
 	
 	public Animator() {
@@ -16,6 +17,7 @@ public class Animator {
 		this.setFrame(0);
 		this.frameTimer = 0.0f;
 		this.frameSpeed = 1.0f;
+		this.direction = 1;
 		this.isPaused = false;
 	}
 	
@@ -28,10 +30,16 @@ public class Animator {
 		this.frameTimer += deltaTime;
 		
 		if( this.frameTimer >= this.frameSpeed ) {
-			if( this.currentFrameIndex + 1 < this.animation.getFrameCount() ) {
-				this.setFrame(++this.currentFrameIndex);
+			this.currentFrameIndex += this.direction;
+			//if( this.currentFrameIndex + 1 < this.animation.getFrameCount() ) {
+			if( this.currentFrameIndex >= 0 && this.currentFrameIndex < this.animation.getFrameCount() ) {
+				this.setFrame(this.currentFrameIndex);
+				//this.setFrame(++this.currentFrameIndex);
 			} else {
 				this.onFinish();
+				this.currentFrameIndex = Math.max(
+					0, Math.min(this.animation.getFrameCount(), this.currentFrameIndex)
+				);
 			}
 			this.frameTimer = 0.0f;
 		}
@@ -58,6 +66,10 @@ public class Animator {
 		this.restart();
 	}
 	
+	public void reverse() {
+		this.direction *= -1;
+	}
+	
 	private void setFrame(int frameIndex) {
 		this.currentFrameIndex = frameIndex;
 		this.currentFrame = this.animation.getFrame(this.currentFrameIndex);
@@ -74,6 +86,10 @@ public class Animator {
 	
 	public Animation.Frame getCurrentFrame() {
 		return this.currentFrame;
+	}
+	
+	public int getCurrentFrameIndex() {
+		return this.currentFrameIndex;
 	}
 	
 	public Animation getAnimation() {

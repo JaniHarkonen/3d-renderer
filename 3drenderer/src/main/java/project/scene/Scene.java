@@ -37,6 +37,7 @@ public class Scene {
 	private Vector3f DEBUGshadowLightPosition;
 	private boolean DEBUGareNormalsActive;
 	private boolean DEBUGcascadeShadowEnabled;
+	private TestDummy DEBUGsoldier;
 	
 	public Scene(Application app, int tickRate) {
 		this.objects = null;
@@ -51,6 +52,7 @@ public class Scene {
 		this.DEBUGshadowLightPosition = null;
 		this.DEBUGareNormalsActive = true;
 		this.DEBUGcascadeShadowEnabled = false;
+		this.DEBUGsoldier = null;
 	}
 	
 	
@@ -70,7 +72,6 @@ public class Scene {
 		
 			// Point light
 		this.DEBUGtestPointLight0 = new TestPointLight(this);
-		//this.DEBUGtestPointLight0.setPosition(0.0f, 100.0f, 0.0f);
 		this.DEBUGtestPointLight0.getTransformComponent().setPosition(0.0f, 100.0f, 0.0f);
 		this.objects.add(this.DEBUGtestPointLight0);
 		Controller pointLightController = new Controller(input, this.DEBUGtestPointLight0)
@@ -98,11 +99,11 @@ public class Scene {
 		DebugUtils.log(this, "Outside place TestDummy added!");
 		
 			// Soldier
-		TestDummy soldier = new TestDummy(this, TestAssets.createTestSoldier(this));
-		soldier.getTransformComponent().setPosition(1, -10, -100);
-		soldier.getTransformComponent().getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
+		this.DEBUGsoldier = new TestDummy(this, TestAssets.createTestSoldier(this));
+		this.DEBUGsoldier.getTransformComponent().setPosition(1, -10, -100);
+		this.DEBUGsoldier.getTransformComponent().getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
 		//soldier.getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
-		this.objects.add(soldier);
+		this.objects.add(this.DEBUGsoldier);
 		DebugUtils.log(this, "Soldier TestDummy added!");
 		
 			// GUI
@@ -167,8 +168,11 @@ public class Scene {
 					pl0Color.y + ", " +
 					pl0Color.z +
 				")\n" +
+				"soldier: \n" +
+				"    model.animator.currentFrameIndex: \n" + this.DEBUGsoldier.getModel().getAnimator().getCurrentFrameIndex() + "\n" +
 				"    intensity: " + this.DEBUGtestPointLight0.getPointLight().getIntensity() + "\n" +
-				"    normal map: " + (this.DEBUGareNormalsActive ? "ON" : "OFF") + "\n\n" +
+				"    normal map: " + (this.DEBUGareNormalsActive ? "ON" : "OFF") + " (N to toggle)\n" +
+				"    shadow map cascades: " + (this.DEBUGcascadeShadowEnabled ? "ON" : "OFF") + " (C to toggle)\n\n" +
 				"Controls: \n" + 
 				"    WASD to move\n" +
 				"    MOUSE to look around\n" +
@@ -176,8 +180,7 @@ public class Scene {
 				"    +/- to change point light intensity\n" +
 				"    1/2 to change point light red value\n" +
 				"    3/4 to change point light green value\n" +
-				"    5/6 to change point light blue value\n" + 
-				"    N to toggle normal map\n" +
+				"    5/6 to change point light blue value\n" +
 				"    H to toggle HUD\n"
 			);
 		}
