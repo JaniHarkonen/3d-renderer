@@ -1,8 +1,5 @@
 package project.asset.font;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.json.JSONObject;
 
 import project.asset.AssetUtils;
@@ -146,7 +143,7 @@ public class Font implements IAsset {
 					characterJson.getFloat("originY"),
 					characterJson.getFloat("advance")
 				);
-				this.targetFont.addGlyph(character, glyph);
+				this.targetFont.putGlyph(character, glyph);
 			}
 			
 			this.targetFont.initialize();
@@ -158,9 +155,11 @@ public class Font implements IAsset {
     /************************* Font-class *************************/
     
     private final String name;
+    private final String characterSet;
     
     private long lastUpdateTimestamp;
-    private Map<Character, Glyph> glyphs;
+    private Glyph[] glyphs;
+    private char lowCharacter;
     private Glyph defaultGlyph;
     private Texture fontTexture;
     private float textureWidth;
@@ -168,23 +167,27 @@ public class Font implements IAsset {
     
     public Font(
 		String name,
+		String characterSet,
         Texture fontTexture,
         float textureWidth,
         float textureHeight
     ) {
     	this.name = name;
+    	this.characterSet = characterSet;
     	this.lastUpdateTimestamp = -1;
-    	this.glyphs = new HashMap<>();
+    	this.glyphs = new Glyph[this.characterSet.length()];
     	this.defaultGlyph = new Glyph((char) 0, 0, 0, 16, 16, 0, 0, 16);
         this.fontTexture = fontTexture;
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;
+        
+        this.calculateLowCharacter();
     }
     
     
     public void initialize() {
-        for( Map.Entry<Character, Glyph> en : this.glyphs.entrySet() ) {
-            Glyph glyph = en.getValue();
+    	for( int i = 0; i < this.characterSet.length(); i++ ) {
+    		Glyph glyph = this.glyphs[this.characterSet.charAt(i) - this.lowCharacter];
             
             float glyphX = glyph.getX();
             float glyphY = glyph.getY();
@@ -213,17 +216,28 @@ public class Font implements IAsset {
         }
     }
     
-    public void addGlyph(char glyphCharacter, Glyph glyph) {
-        glyph.font = this;
-        this.glyphs.put(glyphCharacter, glyph);
+    private void calculateLowCharacter() {
+    	this.lowCharacter = Character.MAX_VALUE;
+    	for( int i = 0; i < this.characterSet.length(); i++ )  {
+    		char charAt = this.characterSet.charAt(i);
+    		if( charAt < this.lowCharacter ) {
+    			this.lowCharacter = charAt;
+    		}
+    	}
+    }
+    
+    public void putGlyph(char glyphCharacter, Glyph glyph) {
+    	glyph.font = this;
+    	this.glyphs[glyphCharacter - this.lowCharacter] = glyph;
     }
     
     @Override
     public boolean deload() {
-    	for( Map.Entry<Character, Glyph> en : this.glyphs.entrySet() ) {
-    		en.getValue().getMesh().deload();
+    	for( Glyph glyph : this.glyphs ) {
+    		glyph.getMesh().deload();
     	}
-    	this.glyphs.clear();
+    	this.glyphs = null;
+    	
     	return true;
     }
     
@@ -232,10 +246,12 @@ public class Font implements IAsset {
     	this.lastUpdateTimestamp = timestamp;
     }
     
+    
     /************************ GETTERS ************************/
     
     public Glyph getGlyph(char character) {
-        return this.glyphs.getOrDefault(character, this.defaultGlyph);
+    	Glyph glyph = this.glyphs[character - this.lowCharacter];
+    	return (glyph == null) ? this.defaultGlyph : glyph;
     }
     
     public Texture getTexture() {

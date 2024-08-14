@@ -422,7 +422,7 @@ public final class TestAssets {
 	}
 	
 	private static Font loadFont(String name, String relativePath, int textureWidth, int textureHeight) {
-		Font result = new Font(name, loadTexture("tex-" + name, relativePath + ".png"), textureWidth, textureHeight);
+		Font result = new Font(name, "0123456789 !\\\"#$%&'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", loadTexture("tex-" + name, relativePath + ".png"), textureWidth, textureHeight);
 		
 		FontLoadTask task = new FontLoadTask(
 			FileUtils.getResourcePath(relativePath + ".json"), 
