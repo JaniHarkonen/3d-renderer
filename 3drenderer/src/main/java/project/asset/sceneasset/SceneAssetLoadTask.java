@@ -98,7 +98,6 @@ public class SceneAssetLoadTask implements ILoadTask {
 		int s = Math.min(meshCount, expectedMeshCount);
 		for( int i = 0; i < s; i++ ) {
 			AIMesh aiMesh = AIMesh.create(aiMeshBuffer.get(i));
-			Vector3f[] vertices = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mVertices());
 			Vector3f[] normals = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mNormals());
 			Vector3f[] tangents = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mTangents());
 			Vector3f[] bitangents = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mBitangents());
@@ -140,6 +139,20 @@ public class SceneAssetLoadTask implements ILoadTask {
 				faces.add(new Mesh.Face(indices));
 			}
 			
+				// Extract vertices and the bones that affect them
+			Map<Integer, List<VertexWeight>> weightSet = this.generateWeightSet(boneList, aiMesh.mBones());
+			int vertexCount = aiMesh.mNumVertices();
+			int[] boneIDs = new int[vertexCount * MAX_WEIGHT_COUNT];
+			float[] weights = new float[vertexCount * MAX_WEIGHT_COUNT];
+			AIVector3D.Buffer buffer = aiMesh.mVertices();
+			Vector3f[] vertices = new Vector3f[buffer.remaining()];
+			
+			for( int j = 0; buffer.remaining() > 0; j++ ) {
+				AIVector3D aiVector = buffer.get();
+				vertices[j] = new Vector3f(aiVector.x(), aiVector.y(), aiVector.z());
+				this.extractBonesAndWeights(weights, boneIDs, weightSet, j);
+			}
+			
 				// Package mesh data and send to asset manager
 			Mesh.Data data = new Mesh.Data();
 			data.targetMesh = this.expectedMeshes.get(i);
@@ -149,8 +162,8 @@ public class SceneAssetLoadTask implements ILoadTask {
 			data.bitangents = bitangents;
 			data.UVs = UVs;
 			data.faces = faces.toArray(new Mesh.Face[faces.size()]);
-			//data.animationMeshData = this.processBones(aiMesh, boneList);
-			this.processBones(aiMesh, boneList, data);
+			data.weights = weights;
+			data.boneIDs = boneIDs;
 			this.notifyAssetManager(data.targetMesh, data, Application.getApp().getRenderer());
 		}
 		
@@ -158,6 +171,7 @@ public class SceneAssetLoadTask implements ILoadTask {
 		int animationCount = aiScene.mNumAnimations();
 		int expectedAnimationCount = this.expectedAnimations.size();
 		
+			// Animation count mismatch
 		if( animationCount != expectedAnimationCount ) {
 			DebugUtils.log(
 				this, 
@@ -187,18 +201,15 @@ public class SceneAssetLoadTask implements ILoadTask {
 		);
 	}
 	
-	//private AnimationMeshData processBones(
-	private void processBones(
-		AIMesh aiMesh, List<Bone> boneList, Mesh.Data targetData
-	) {
-		List<Integer> boneIDs = new ArrayList<>();
-		List<Float> weights = new ArrayList<>();
+	private Map<Integer, List<VertexWeight>> generateWeightSet(List<Bone> boneList, PointerBuffer aiBoneBuffer) {
 		Map<Integer, List<VertexWeight>> weightSet = new HashMap<>();
-		int boneCount = aiMesh.mNumBones();
-		PointerBuffer aiBoneBuffer = aiMesh.mBones();
 		
-		for( int j = 0; j < boneCount; j++ ) {
-			AIBone aiBone = AIBone.create(aiBoneBuffer.get(j));
+		if( aiBoneBuffer == null ) {
+			return weightSet;
+		}
+		
+		while( aiBoneBuffer.remaining() > 0 ) {
+			AIBone aiBone = AIBone.create(aiBoneBuffer.get());
 			int boneID = boneList.size();
 			Bone bone = new Bone(
 				boneID, 
@@ -225,34 +236,26 @@ public class SceneAssetLoadTask implements ILoadTask {
 			}
 		}
 		
-		int vertexCount = aiMesh.mNumVertices();
-		for( int j = 0; j < vertexCount; j++ ) {
-			List<VertexWeight> weightList = weightSet.get(j);
-			int weightCount = (weightList != null) ? weightList.size() : 0;
-			for( int k = 0; k < MAX_WEIGHT_COUNT; k++ ) {
-				if( k < weightCount ) {
-					VertexWeight weight = weightList.get(k);
-					weights.add(weight.getWeight());
-					boneIDs.add(weight.getBoneID());
-				} else {
-					weights.add(0.0f);
-					boneIDs.add(0);
-				}
+		aiBoneBuffer.flip(); // Reset the buffer cursor
+		return weightSet;
+	}
+	
+	private void extractBonesAndWeights(
+		float[] weights, int[] boneIDs, Map<Integer, List<VertexWeight>> weightSet, int vertexIndex
+	) {
+		List<VertexWeight> weightList = weightSet.get(vertexIndex);
+		int weightCount = (weightList != null) ? weightList.size() : 0;
+		for( int j = 0; j < MAX_WEIGHT_COUNT; j++ ) {
+			int index = vertexIndex * MAX_WEIGHT_COUNT + j;
+			if( j < weightCount ) {
+				VertexWeight weight = weightList.get(j);
+				weights[index] = weight.getWeight();
+				boneIDs[index] = weight.getBoneID();
+			} else {
+				weights[index] = 0.0f;
+				boneIDs[index] = 0;
 			}
 		}
-		
-		float[] finalWeights = new float[weights.size()];
-		for( int j = 0; j < weights.size(); j++ ) {
-			finalWeights[j] = weights.get(j);
-		}
-		
-		int[] finalBoneIDs = new int[boneIDs.size()];
-		for( int j = 0; j < boneIDs.size(); j++ ) {
-			finalBoneIDs[j] = boneIDs.get(j);
-		}
-		
-		targetData.weights = finalWeights;
-		targetData.boneIDs = finalBoneIDs;
 	}
 	
 	private void processAnimations(

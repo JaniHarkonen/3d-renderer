@@ -351,7 +351,7 @@ public final class TestAssets {
 		model.addMesh(MESH_SOLDIER[5], MAT_SOLDIER_GADGETS);
 		model.addMesh(MESH_SOLDIER[6], MAT_SOLDIER_EYES);
 		model.addMesh(MESH_SOLDIER[7], MAT_SOLDIER_EYELASH);
-		//model.getAnimator().setAnimation(ANIM_SOLDIER_IDLE);
+		model.getAnimator().setAnimation(ANIM_SOLDIER_IDLE);
 		return model;
 	}
 	
