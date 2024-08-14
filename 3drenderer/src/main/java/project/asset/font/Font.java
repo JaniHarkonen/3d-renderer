@@ -150,7 +150,7 @@ public class Font implements IAsset {
 			}
 			
 			this.targetFont.initialize();
-			this.targetFont.lastUpdateTimestamp = timestamp;
+			this.targetFont.update(timestamp);
 		}
     }
     
@@ -225,6 +225,11 @@ public class Font implements IAsset {
     	}
     	this.glyphs.clear();
     	return true;
+    }
+    
+    @Override
+    public void update(long timestamp) {
+    	this.lastUpdateTimestamp = timestamp;
     }
     
     /************************ GETTERS ************************/

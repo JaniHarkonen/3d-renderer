@@ -17,7 +17,7 @@ public class Shader {
 		this.type = type;
 	}
 	
-	public void init() {
+	public void initialize() {
 		this.handle = GL46.glCreateShader(this.type);
 		String sourceCode = FileUtils.readTextFile(FileUtils.getResourcePath(this.sourcePath));
 		GL46.glShaderSource(this.handle, sourceCode);

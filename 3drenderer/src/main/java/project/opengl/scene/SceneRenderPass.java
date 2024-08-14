@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL46;
 import project.component.Attenuation;
 import project.component.CascadeShadow;
 import project.core.GameState;
+import project.core.GameState.SceneState;
 import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
@@ -68,7 +69,7 @@ public class SceneRenderPass implements IRenderPass {
 	
 	
 	@Override
-	public boolean init() {
+	public boolean initialize() {
 		this.uDiffuseSampler = new UInteger1(Uniforms.DIFFUSE_SAMPLER);
 		this.uNormalSampler = new UInteger1(Uniforms.NORMAL_SAMPLER);
 		this.uProjection = new UAMatrix4f(Uniforms.PROJECTION);
@@ -105,7 +106,7 @@ public class SceneRenderPass implements IRenderPass {
 		this.shaderProgram.addShader(
 			new Shader("shaders/scene/scene.frag", GL46.GL_FRAGMENT_SHADER)
 		);
-		this.shaderProgram.init();
+		this.shaderProgram.initialize();
 		
 			// Set point light uniforms to default values, RIGHT NOW LIGHTS CANNOT BE REMOVED 
 		for( int i = 0; i < MAX_POINT_LIGHTS; i++ ) {
@@ -154,17 +155,15 @@ public class SceneRenderPass implements IRenderPass {
 		
 		
 		this.uProjection.update(this.activeCamera.getProjection().getMatrix());
-		this.uCameraTransform.update(this.activeCamera.getTransformComponent().getAsMatrix());
+		this.uCameraTransform.update(this.activeCamera.getTransform().getAsMatrix());
 		
 		this.uDebugShowShadowCascades.update(
 			(boolean) gameState.getDebugData(TestDebugDataHandles.CASCADE_SHADOW_ENABLED) ? 1 : 0
 		);
 		
-		gameState.resetQueue();
-		
-		ASceneObject object;
-		while( (object = gameState.pollRenderable()) != null ) {
-			this.recursiveRender(renderer, object);
+		SceneState.SceneIterator iterator = gameState.getSceneIterator();
+		while( iterator.hasNext() ) {
+			this.recursiveRender(renderer, iterator.next());
 		}
 		
 		activeShaderProgram.unbind();
@@ -181,8 +180,8 @@ public class SceneRenderPass implements IRenderPass {
 	void updatePointLight(PointLight pointLight, int index) {
         Vector4f aux = new Vector4f();
         
-        Matrix4f cameraTransform = this.activeCamera.getTransformComponent().getAsMatrix();
-        aux.set(pointLight.getTransformComponent().getPosition(), 1);
+        Matrix4f cameraTransform = this.activeCamera.getTransform().getAsMatrix();
+        aux.set(pointLight.getTransform().getPosition(), 1);
         aux.mul(cameraTransform);
         
         Vector3f lightPosition = new Vector3f();

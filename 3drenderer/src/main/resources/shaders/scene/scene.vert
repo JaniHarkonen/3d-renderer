@@ -25,13 +25,6 @@ uniform mat4 uBoneMatrices[MAX_BONES]; //uniform mat4 bonesMatrices[MAX_BONES]
 
 void main()
 {
-    /*
-    vec4 initPos = vec4(position, 1.0);
-    vec4 initNormal = vec4(normal, 0.0);
-    vec4 initTangent = vec4(tangent, 0.0);
-    vec4 initBitangent = vec4(bitangent, 0.0);
-    */
-
     vec4 initPos = vec4(0, 0, 0, 0);
     vec4 initNormal = vec4(0, 0, 0, 0);
     vec4 initTangent = vec4(0, 0, 0, 0);
@@ -64,12 +57,12 @@ void main()
     }
 
     mat4 modelViewMatrix = uCameraTransform * uObjectTransform;
-    vec4 mvPosition = modelViewMatrix * initPos;//vec4(position, 1.0);
+    vec4 mvPosition = modelViewMatrix * initPos;
     gl_Position = uProjection * mvPosition;
-    outNormal = normalize(modelViewMatrix * initNormal).xyz;//vec4(normal, 0.0)).xyz;
-    outTangent = normalize(modelViewMatrix * initTangent).xyz;//vec4(tangent, 0)).xyz;
-    outBitangent = normalize(modelViewMatrix * initBitangent).xyz;//vec4(bitangent, 0)).xyz;
+    outNormal = normalize(modelViewMatrix * initNormal).xyz;
+    outTangent = normalize(modelViewMatrix * initTangent).xyz;
+    outBitangent = normalize(modelViewMatrix * initBitangent).xyz;
     outViewPosition  = mvPosition.xyz;
-    outWorldPosition = uObjectTransform * initPos;//vec4(position, 1.0);
+    outWorldPosition = uObjectTransform * initPos;
     outTextureCoordinate = textureCoordinate;
 }

@@ -17,7 +17,6 @@ import project.core.renderer.IRenderer;
 import project.opengl.cshadow.CascadeShadowRenderPass;
 import project.opengl.gui.GUIRenderPass;
 import project.opengl.scene.SceneRenderPass;
-import project.scene.ASceneObject;
 import project.scene.Camera;
 import project.scene.Scene;
 import project.utils.DebugUtils;
@@ -54,9 +53,9 @@ public class RendererGL implements IRenderer {
 		GL46.glClearColor(0.643f, 0.62f, 0.557f, 1.0f);
 		
 		this.generateDefaults();
-		this.cascadeRenderPass.init();
-		this.sceneRenderPass.init();
-		this.guiRenderPass.init();
+		this.cascadeRenderPass.initialize();
+		this.sceneRenderPass.initialize();
+		this.guiRenderPass.initialize();
 		
 		return true;
 	}
@@ -101,7 +100,6 @@ public class RendererGL implements IRenderer {
 			GL46.glEnable(GL46.GL_MULTISAMPLE);
 			GL46.glEnable(GL46.GL_CULL_FACE);
 			GL46.glCullFace(GL46.GL_BACK);
-			
 			this.cascadeRenderPass.render(this, gameState);
 	        
 				// Scene render pass
@@ -114,16 +112,12 @@ public class RendererGL implements IRenderer {
 				this.clientWindow.getWidth(), this.clientWindow.getHeight()
 			);
 			this.sceneRenderPass.setCascadeShadowRenderPass(this.cascadeRenderPass);
-			
 			this.sceneRenderPass.render(this, gameState);
 			
 				// GUI render pass
-			if( gameState.DEBUGgetGUI() != null ) {
-				GL46.glDisable(GL46.GL_CULL_FACE); // Ignores which direction GUI elements are facing
-			  	GL46.glDisable(GL46.GL_DEPTH_TEST); // Prevents close faces from overlapping with GUI
-			  	
-			  	this.guiRenderPass.render(this, gameState);
-			}
+			GL46.glDisable(GL46.GL_CULL_FACE); // Ignores which direction GUI elements are facing
+		  	GL46.glDisable(GL46.GL_DEPTH_TEST); // Prevents close faces from overlapping with GUI
+		  	this.guiRenderPass.render(this, gameState);
 		}
 	}
 	
@@ -153,11 +147,6 @@ public class RendererGL implements IRenderer {
 	public void submitGameState() {
 		this.gameStateQueue.add(this.backGameState);
 		this.backGameState = new GameState();
-	}
-	
-	@Override
-	public void submitRenderable(ASceneObject object) {
-		this.backGameState.listRenderable(object);
 	}
 	
 	@Override

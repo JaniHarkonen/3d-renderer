@@ -3,29 +3,42 @@ package project.core;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import project.core.asset.IGraphicsAsset;
-import project.gui.GUI;
 import project.scene.ASceneObject;
 import project.scene.Camera;
 
 public class GameState {
 
-	/**
-	 * Special purpose linked list that is designed to be used by the GameState
-	 * to store scene objects that are to be rendered. Renderables can be added
-	 * to the queue via add(), and polled via next(). Unlike with typical 
-	 * queues, polling the SceneObjectQueue doesn't remove elements from it, 
-	 * rather the queue simply moves the pointer to the next scene object. 
-	 * Before polling the queue, reset() should be called to move the pointer
-	 * back to the head of the queue. Otherwise, the queue will continue to 
-	 * return NULL.
-	 * 
-	 * @author Jani Härkönen
-	 *
-	 */
-	private class SceneObjectQueue {
+	public class SceneState {
+		
+		/************************* SceneIterator-class *************************/
+		
+		public class SceneIterator implements Iterator<ASceneObject> {
+			private Node cursor;
+			
+			private SceneIterator() {
+				this.cursor = SceneState.this.head;
+			}
+
+			@Override
+			public boolean hasNext() {
+				return this.cursor.value != null;
+			}
+
+			@Override
+			public ASceneObject next() {
+				Node next = this.cursor;
+				this.cursor = this.cursor.next;
+				return next.value;
+			}
+		}
+		
+		
+		/************************* Node-class *************************/
+		
 		private class Node {
 			private Node next;
 			private ASceneObject value;
@@ -35,10 +48,13 @@ public class GameState {
 			}
 		}
 		
+		
+		/************************* SceneState-class *************************/
+		
 		private Node head;
 		private Node next;
 		
-		private SceneObjectQueue() {
+		private SceneState() {
 			this.head = new Node(null);
 			this.next = this.head;
 		}
@@ -50,49 +66,40 @@ public class GameState {
 			this.next = this.next.next;
 		}
 		
-		public void reset() {
-			this.next = this.head;
-		}
-		
-		public ASceneObject next() {
-			if( this.next.value == null ) {
-				return null;
-			}
-			
-			ASceneObject result = this.next.value;
-			this.next = this.next.next;
-			return result;
+		public SceneIterator iterator() {
+			return new SceneIterator();
 		}
 	}
 
 	
 	/************************* GameState-class *************************/
 	
-	private SceneObjectQueue renderedObjects;
-	private Deque<IGraphicsAsset> graphicsGenerationRequests;
-	private Deque<IGraphicsAsset> graphicsDisposalRequests;
-	private Map<String, Object> debugData;
+	private final SceneState activeScene;
+	private final SceneState activeGUI;
+	private final Deque<IGraphicsAsset> graphicsGenerationRequests;
+	private final Deque<IGraphicsAsset> graphicsDisposalRequests;
+	private final Map<String, Object> debugData;
+	
 	private Camera activeCamera;
 	
-	private GUI DEBUGgui;
-	
 	public GameState() {
-		this.renderedObjects = new SceneObjectQueue();
+		this.activeScene = new SceneState();
+		this.activeGUI = new SceneState();
 		this.graphicsGenerationRequests = new ArrayDeque<>();
 		this.graphicsDisposalRequests = new ArrayDeque<>();
 		this.debugData = new HashMap<>();
-		this.activeCamera = null;
-		
-		this.DEBUGgui = null;
 	}
 	
-	
-	public void listRenderable(ASceneObject object) {
+	public void listSceneObject(ASceneObject object) {
 		if( object instanceof Camera ) {
 			this.activeCamera = (Camera) object;
 		} else {
-			this.renderedObjects.add(object);
+			this.activeScene.add(object);
 		}
+	}
+	
+	public void listGUIElement(ASceneObject element) {
+		this.activeGUI.add(element);
 	}
 	
 	public void listGenerationRequest(IGraphicsAsset asset) {
@@ -101,14 +108,6 @@ public class GameState {
 	
 	public void listDisposalRequest(IGraphicsAsset asset) {
 		this.graphicsDisposalRequests.add(asset);
-	}
-	
-	public void resetQueue() {
-		this.renderedObjects.reset();
-	}
-	
-	public ASceneObject pollRenderable() {
-		return this.renderedObjects.next();
 	}
 	
 	public IGraphicsAsset pollGenerationRequest() {
@@ -128,14 +127,15 @@ public class GameState {
 		return this.debugData.get(key);
 	}
 	
-	public Camera getActiveCamera() {
-		return this.activeCamera;
+	public SceneState.SceneIterator getSceneIterator() {
+		return this.activeScene.iterator();
 	}
 	
-	public void DEBUGsetGUI(GUI gui) {
-		this.DEBUGgui = gui;
+	public SceneState.SceneIterator getGUIIterator() {
+		return this.activeGUI.iterator();
 	}
-	public GUI DEBUGgetGUI() {
-		return this.DEBUGgui;
+	
+	public Camera getActiveCamera() {
+		return this.activeCamera;
 	}
 }

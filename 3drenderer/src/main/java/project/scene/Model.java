@@ -3,8 +3,8 @@ package project.scene;
 import java.util.ArrayList;
 import java.util.List;
 
-import project.asset.sceneasset.AnimationData;
 import project.asset.sceneasset.Mesh;
+import project.component.Animator;
 import project.component.Material;
 import project.component.Transform;
 
@@ -21,23 +21,19 @@ public class Model extends ASceneObject {
 	}
 	
 	private List<MeshEntry> meshMaterialTable;
-	private AnimationData animationData;
+	private Animator animator;
 	
 	public Model(Scene scene) {
 		super(scene);
 		this.meshMaterialTable = new ArrayList<>();
-		this.animationData = null;
+		this.animator = new Animator();
 	}
 	
 	private Model(Model src) {
 		super(null);
-		src.transformComponent.updateTransformMatrix();
-		this.transformComponent = new Transform(src.transformComponent);
-		if( src.animationData != null ) {
-			this.animationData = new AnimationData(src.animationData);
-		} else {
-			this.animationData = null;
-		}
+		src.transform.updateTransformMatrix();
+		this.transform = new Transform(src.transform);
+		this.animator = src.animator;
 		this.meshMaterialTable = src.meshMaterialTable; // NOT DEEP COPIED (assumed to stay the same for now)
 	}
 	
@@ -51,8 +47,9 @@ public class Model extends ASceneObject {
 		this.meshMaterialTable.add(new MeshEntry(mesh, material));
 	}
 	
-	public void setAnimationData(AnimationData animationData) {
-		this.animationData = animationData;
+	public void setAnimator(Animator animator) {
+		animator.setAnimation(this.animator.getAnimation());
+		this.animator = animator;
 	}
 	
 	public int getMeshCount() {
@@ -67,7 +64,7 @@ public class Model extends ASceneObject {
 		return this.meshMaterialTable.get(meshIndex).material;
 	}
 	
-	public AnimationData getAnimationData() {
-		return this.animationData;
+	public Animator getAnimator() {
+		return this.animator;
 	}
 }

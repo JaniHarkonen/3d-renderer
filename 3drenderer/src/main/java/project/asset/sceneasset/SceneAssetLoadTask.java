@@ -26,7 +26,10 @@ import org.lwjgl.assimp.AIVertexWeight;
 import org.lwjgl.assimp.Assimp;
 
 import project.Application;
+import project.core.asset.IAsset;
+import project.core.asset.IAssetData;
 import project.core.asset.ILoadTask;
+import project.core.asset.ISystem;
 import project.utils.DebugUtils;
 import project.utils.GeometryUtils;
 
@@ -61,7 +64,6 @@ public class SceneAssetLoadTask implements ILoadTask {
 		this(assetPath, SceneAssetLoadTask.DEFAULT_FLAGS);
 	}
 	
-	
 	@Override
 	public boolean load() {
 		int preTransformVerticesFlag = (
@@ -95,7 +97,6 @@ public class SceneAssetLoadTask implements ILoadTask {
 		int s = Math.min(meshCount, expectedMeshCount);
 		for( int i = 0; i < s; i++ ) {
 			AIMesh aiMesh = AIMesh.create(aiMeshBuffer.get(i));
-			Vector3f[] vertices = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mVertices());
 			Vector3f[] normals = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mNormals());
 			Vector3f[] tangents = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mTangents());
 			Vector3f[] bitangents = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mBitangents());
@@ -137,6 +138,21 @@ public class SceneAssetLoadTask implements ILoadTask {
 				faces.add(new Mesh.Face(indices));
 			}
 			
+				// Extract vertices and the bones that affect them
+			Map<Integer, List<VertexWeight>> weightSet = this.generateWeightSet(boneList, aiMesh.mBones());
+			int vertexCount = aiMesh.mNumVertices();
+			int[] boneIDs = new int[vertexCount * MAX_WEIGHT_COUNT];
+			float[] weights = new float[vertexCount * MAX_WEIGHT_COUNT];
+			AIVector3D.Buffer buffer = aiMesh.mVertices();
+			Vector3f[] vertices = new Vector3f[buffer.remaining()];
+			
+			for( int j = 0; buffer.remaining() > 0; j++ ) {
+				AIVector3D aiVector = buffer.get();
+				vertices[j] = new Vector3f(aiVector.x(), aiVector.y(), aiVector.z());
+				this.extractBoneIndicesAndWeights(weights, boneIDs, weightSet, j);
+			}
+			
+				// Package mesh data and send to asset manager
 			Mesh.Data data = new Mesh.Data();
 			data.targetMesh = this.expectedMeshes.get(i);
 			data.vertices = vertices; 
@@ -145,19 +161,16 @@ public class SceneAssetLoadTask implements ILoadTask {
 			data.bitangents = bitangents;
 			data.UVs = UVs;
 			data.faces = faces.toArray(new Mesh.Face[faces.size()]);
-			data.animationMeshData = this.processBones(aiMesh, boneList);
-			
-			Application.getApp().getAssetManager().notifyResult(
-				data.targetMesh, 
-				data,
-				Application.getApp().getRenderer()
-			);
+			data.weights = weights;
+			data.boneIDs = boneIDs;
+			this.notifyAssetManager(data.targetMesh, data, Application.getApp().getRenderer());
 		}
 		
 			////////////////////////////Extract animations ////////////////////////////
 		int animationCount = aiScene.mNumAnimations();
 		int expectedAnimationCount = this.expectedAnimations.size();
 		
+			// Animation count mismatch
 		if( animationCount != expectedAnimationCount ) {
 			DebugUtils.log(
 				this, 
@@ -173,7 +186,16 @@ public class SceneAssetLoadTask implements ILoadTask {
 			Matrix4f globalInverseTransform = GeometryUtils.aiMatrix4ToMatrix4f(
 				aiScene.mRootNode().mTransformation()
 			).invert();
-			this.processAnimations(aiScene, boneList, rootNode, globalInverseTransform);
+			PointerBuffer aiAnimations = aiScene.mAnimations();
+			for( int i = 0; i < animationCount; i++ ) {
+				this.loadAnimation(
+					AIAnimation.create(aiAnimations.get(i)), 
+					this.expectedAnimations.get(i), 
+					boneList, 
+					rootNode, 
+					globalInverseTransform
+				);
+			}
 		}
 		
 		Assimp.aiReleaseImport(aiScene);
@@ -181,25 +203,38 @@ public class SceneAssetLoadTask implements ILoadTask {
 		return true;
 	}
 	
-	private AnimationMeshData processBones(AIMesh aiMesh, List<Bone> boneList) {
-		List<Integer> boneIDs = new ArrayList<>();
-		
-		List<Float> weights = new ArrayList<>();
+	private void notifyAssetManager(IAsset asset, IAssetData data, ISystem system) {
+		Application.getApp().getAssetManager().notifyResult(
+			asset, data, system
+		);
+	}
+	
+	private Map<Integer, List<VertexWeight>> generateWeightSet(
+		List<Bone> boneList, PointerBuffer aiBoneBuffer
+	) {
 		Map<Integer, List<VertexWeight>> weightSet = new HashMap<>();
-		int boneCount = aiMesh.mNumBones();
-		PointerBuffer aiBoneBuffer = aiMesh.mBones();
 		
-		for( int j = 0; j < boneCount; j++ ) {
-			AIBone aiBone = AIBone.create(aiBoneBuffer.get(j));
+		if( aiBoneBuffer == null ) {
+			return weightSet;
+		}
+		
+		while( aiBoneBuffer.remaining() > 0 ) {
+			AIBone aiBone = AIBone.create(aiBoneBuffer.get());
 			int boneID = boneList.size();
-			Bone bone = new Bone(boneID, aiBone.mName().dataString(), GeometryUtils.aiMatrix4ToMatrix4f(aiBone.mOffsetMatrix()));
+			Bone bone = new Bone(
+				boneID, 
+				aiBone.mName().dataString(), 
+				GeometryUtils.aiMatrix4ToMatrix4f(aiBone.mOffsetMatrix())
+			);
 			boneList.add(bone);
 			
 			int weightCount = aiBone.mNumWeights();
 			AIVertexWeight.Buffer aiWeights = aiBone.mWeights();
 			for( int k = 0; k < weightCount; k++ ) {
 				AIVertexWeight aiWeight = aiWeights.get(k);
-				VertexWeight weight = new VertexWeight(bone.getID(), aiWeight.mVertexId(), aiWeight.mWeight());
+				VertexWeight weight = new VertexWeight(
+					bone.getID(), aiWeight.mVertexId(), aiWeight.mWeight()
+				);
 				List<VertexWeight> weightList = weightSet.get(weight.getVertexID());
 				
 				if( weightList == null ) {
@@ -211,86 +246,64 @@ public class SceneAssetLoadTask implements ILoadTask {
 			}
 		}
 		
-		int vertexCount = aiMesh.mNumVertices();
-		for( int j = 0; j < vertexCount; j++ ) {
-			List<VertexWeight> weightList = weightSet.get(j);
-			int weightCount = (weightList != null) ? weightList.size() : 0;
-			for( int k = 0; k < MAX_WEIGHT_COUNT; k++ ) {
-				if( k < weightCount ) {
-					VertexWeight weight = weightList.get(k);
-					weights.add(weight.getWeight());
-					boneIDs.add(weight.getBoneID());
-				} else {
-					weights.add(0.0f);
-					boneIDs.add(0);
-				}
-			}
-		}
-		
-		float[] finalWeights = new float[weights.size()];
-		for( int j = 0; j < weights.size(); j++ ) {
-			finalWeights[j] = weights.get(j);
-		}
-		
-		int[] finalBoneIDs = new int[boneIDs.size()];
-		for( int j = 0; j < boneIDs.size(); j++ ) {
-			finalBoneIDs[j] = boneIDs.get(j);
-		}
-		
-		return new AnimationMeshData(finalWeights, finalBoneIDs);
+		aiBoneBuffer.flip(); // Reset the buffer cursor
+		return weightSet;
 	}
 	
-	private void processAnimations(AIScene aiScene, List<Bone> boneList, Node rootNode, Matrix4f globalInverseTransform) {
-		PointerBuffer aiAnimations = aiScene.mAnimations();
-		int animationCount = Math.min(this.expectedAnimations.size(), aiScene.mNumAnimations());
-		for( int i = 0; i < animationCount; i++ ) {
-			AIAnimation aiAnimation = AIAnimation.create(aiAnimations.get(i));
-			int frameCount = this.calculateAnimationFrames(aiAnimation);
-			List<AnimationFrame> frames = new ArrayList<>();
-			
-			Animation animation = this.expectedAnimations.get(i);
-			animation.setName(aiAnimation.mName().dataString());
-			animation.setDuration(aiAnimation.mDuration());
-			animation.setFrames(frames);
-			
-			for( int j = 0; j < frameCount; j++ ) {
-				Matrix4f[] boneTransforms = new Matrix4f[MAX_BONE_COUNT];
-				Arrays.fill(boneTransforms, IDENTITY_MATRIX);
-				AnimationFrame frame = new AnimationFrame(boneTransforms);
-				this.buildFrameMatrices(
-					aiAnimation, 
-					boneList, 
-					frame, 
-					j, 
-					rootNode, 
-					rootNode.getNodeTransform(), 
-					globalInverseTransform
-				);
-				frames.add(frame);
+	private void extractBoneIndicesAndWeights(
+		float[] weights, int[] boneIDs, Map<Integer, List<VertexWeight>> weightSet, int vertexIndex
+	) {
+		List<VertexWeight> weightList = weightSet.get(vertexIndex);
+		int weightCount = (weightList != null) ? weightList.size() : 0;
+		for( int j = 0; j < MAX_WEIGHT_COUNT; j++ ) {
+			int index = vertexIndex * MAX_WEIGHT_COUNT + j;
+			if( j < weightCount ) {
+				VertexWeight weight = weightList.get(j);
+				weights[index] = weight.getWeight();
+				boneIDs[index] = weight.getBoneID();
+			} else {
+				weights[index] = 0.0f;
+				boneIDs[index] = 0;
 			}
 		}
 	}
 	
-	private int calculateAnimationFrames(AIAnimation aiAnimation) {
-		int maxFrameCount = 0;
-		int channelCount = aiAnimation.mNumChannels();
-		PointerBuffer aiChannels = aiAnimation.mChannels();
-		for( int i = 0; i < channelCount; i++ ) {
-			AINodeAnim aiNodeAnim = AINodeAnim.create(aiChannels.get(i));
-			int frameCount = Math.max(
-				Math.max(aiNodeAnim.mNumPositionKeys(), aiNodeAnim.mNumScalingKeys()), 
-				aiNodeAnim.mNumRotationKeys()
+	private void loadAnimation(
+		AIAnimation aiAnimation, 
+		Animation targetAnimation, 
+		List<Bone> boneList, 
+		Node rootNode, 
+		Matrix4f globalInverseTransform
+	) {
+			// Build frame transforms for each key frame of the animation
+		Animation.Frame[] frames = new Animation.Frame[targetAnimation.getExpectedFrameCount()];
+		for( int i = 0; i < targetAnimation.getExpectedFrameCount(); i++ ) {
+			Matrix4f[] boneTransforms = new Matrix4f[MAX_BONE_COUNT];
+			Arrays.fill(boneTransforms, IDENTITY_MATRIX);
+			Animation.Frame frame = new Animation.Frame(boneTransforms);
+			this.buildFrameTransforms(
+				aiAnimation, 
+				boneList, 
+				frame, 
+				i, 
+				rootNode, 
+				rootNode.getNodeTransform(), 
+				globalInverseTransform
 			);
-			maxFrameCount = Math.max(maxFrameCount, frameCount);
+			frames[i] = frame;
 		}
 		
-		return maxFrameCount;
+		Animation.Data animationData = new Animation.Data();
+		animationData.targetAnimation = targetAnimation;
+		animationData.duration = aiAnimation.mDuration();
+		animationData.frames = frames;
+		this.notifyAssetManager(animationData.targetAnimation, animationData, null);
 	}
 	
-	private void buildFrameMatrices(
+	private void buildFrameTransforms(
 		AIAnimation aiAnimation, 
 		List<Bone> boneList, 
-		AnimationFrame frame, 
+		Animation.Frame frame, 
 		int frameIndex, 
 		Node node, 
 		Matrix4f parentTransform, 
@@ -300,28 +313,25 @@ public class SceneAssetLoadTask implements ILoadTask {
 		AINodeAnim aiNodeAnim = this.findAIAnimationNode(aiAnimation, nodeName);
 		Matrix4f nodeTransform = node.getNodeTransform();
 		
+			// Build node transform matrix if this node is associated with an animation node
 		if( aiNodeAnim != null ) {
-			nodeTransform = this.buildTransformMatrix(aiNodeAnim, frameIndex);
+			nodeTransform = this.buildNodeTransform(aiNodeAnim, frameIndex);
 		}
 		
+			// Apply node's transform to each Bone of the Assimp scene
 		Matrix4f nodeGlobalTransform = new Matrix4f(parentTransform).mul(nodeTransform);
-		List<Bone> affectedBones = new ArrayList<>();
-		
 		for( Bone bone : boneList ) {
 			if( bone.getName().equals(nodeName) ) {
-				affectedBones.add(bone);
+				Matrix4f boneTransform = new Matrix4f(globalInverseTransform)
+				.mul(nodeGlobalTransform)
+				.mul(bone.getOffsetTransform());
+				frame.setBoneTransform(bone.getID(), boneTransform);
 			}
 		}
 		
-		for( Bone bone : affectedBones ) {
-			Matrix4f boneTransform = new Matrix4f(globalInverseTransform)
-			.mul(nodeGlobalTransform)
-			.mul(bone.getOffsetTransform());
-			frame.setBoneTransform(bone.getID(), boneTransform);
-		}
-		
+			// Recurse through child nodes
 		for( Node childNode : node.getChildren() ) {
-			this.buildFrameMatrices(
+			this.buildFrameTransforms(
 				aiAnimation, 
 				boneList, 
 				frame, 
@@ -338,65 +348,58 @@ public class SceneAssetLoadTask implements ILoadTask {
 		Node node = new Node(
 			nodeName, parentNode, GeometryUtils.aiMatrix4ToMatrix4f(aiNode.mTransformation())
 		);
-		int childCount = aiNode.mNumChildren();
-		PointerBuffer aiChildren = aiNode.mChildren();
 		
+		int childCount = aiNode.mNumChildren();
 		for( int i = 0; i < childCount; i++ ) {
-			AINode aiChildNode = AINode.create(aiChildren.get(i));
-			node.addChild(this.buildNodesTree(aiChildNode, node));
+			node.addChild(this.buildNodesTree(AINode.create(aiNode.mChildren().get(i)), node));
 		}
 		
 		return node;
 	}
 	
-	private Matrix4f buildTransformMatrix(AINodeAnim aiNodeAnim, int frameIndex) {
-		AIVectorKey.Buffer positionKeys = aiNodeAnim.mPositionKeys();
-		AIQuatKey.Buffer rotationKeys = aiNodeAnim.mRotationKeys();
-		AIVectorKey.Buffer scalingKeys = aiNodeAnim.mScalingKeys();
-		
-		AIVectorKey aiVectorKey;
-		AIVector3D vector;
-		
+	private Matrix4f buildNodeTransform(AINodeAnim aiNodeAnim, int frameIndex) {
         Matrix4f nodeTransform = new Matrix4f();
+        
+        	// Apply frame translation
         int positionCount = aiNodeAnim.mNumPositionKeys();
-        if (positionCount > 0) {
-        	aiVectorKey = positionKeys.get(Math.min(positionCount - 1, frameIndex));
-        	vector = aiVectorKey.mValue();
-            nodeTransform.translate(vector.x(), vector.y(), vector.z());
+        if( positionCount > 0 ) {
+        	AIVectorKey.Buffer positionKeys = aiNodeAnim.mPositionKeys();
+        	AIVector3D aiTranslation = positionKeys.get(Math.min(positionCount - 1, frameIndex)).mValue();
+            nodeTransform.translate(aiTranslation.x(), aiTranslation.y(), aiTranslation.z());
         }
         
-        int numRotations = aiNodeAnim.mNumRotationKeys();
-        if (numRotations > 0) {
-            AIQuatKey quatKey = rotationKeys.get(Math.min(numRotations - 1, frameIndex));
-            AIQuaternion aiQuat = quatKey.mValue();
+        	// Apply frame rotation
+        int rotationKeyCount = aiNodeAnim.mNumRotationKeys();
+        if( rotationKeyCount > 0 ) {
+        	AIQuatKey.Buffer rotationKeys = aiNodeAnim.mRotationKeys();
+            AIQuaternion aiQuat = rotationKeys.get(Math.min(rotationKeyCount - 1, frameIndex)).mValue();
             Quaternionf quat = new Quaternionf(aiQuat.x(), aiQuat.y(), aiQuat.z(), aiQuat.w());
             nodeTransform.rotate(quat);
         }
         
-        int numScalingKeys = aiNodeAnim.mNumScalingKeys();
-        if (numScalingKeys > 0) {
-        	aiVectorKey = scalingKeys.get(Math.min(numScalingKeys - 1, frameIndex));
-        	vector = aiVectorKey.mValue();
-            nodeTransform.scale(vector.x(), vector.y(), vector.z());
+        	// Apply frame scaling
+        int scalingKeyCount = aiNodeAnim.mNumScalingKeys();
+        if( scalingKeyCount > 0 ) {
+        	AIVectorKey.Buffer scalingKeys = aiNodeAnim.mScalingKeys();
+        	AIVector3D aiScaling = scalingKeys.get(Math.min(scalingKeyCount - 1, frameIndex)).mValue();
+            nodeTransform.scale(aiScaling.x(), aiScaling.y(), aiScaling.z());
         }
 
         return nodeTransform;
 	}
 	
 	private AINodeAnim findAIAnimationNode(AIAnimation aiAnimation, String nodeName) {
-		AINodeAnim result = null;
 		int animationNodeCount = aiAnimation.mNumChannels();
 		PointerBuffer aiChannels = aiAnimation.mChannels();
+		
 		for( int i = 0; i < animationNodeCount; i++ ) {
 			AINodeAnim aiNodeAnim = AINodeAnim.create(aiChannels.get(i));
-			
 			if( nodeName.equals(aiNodeAnim.mNodeName().dataString()) ) {
-				result = aiNodeAnim;
-				break;
+				return aiNodeAnim;
 			}
 		}
 		
-		return result;
+		return null;
 	}
 	
 	public void expectMesh(Mesh... meshes) {

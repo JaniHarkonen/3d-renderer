@@ -51,7 +51,7 @@ public class Window {
 		this.latestInputSnapshot = null;
 	}
 	
-	public void init() {
+	public void initialize() {
 		GLFW.glfwInit();
 		
 		GLFW.glfwWindowHint(GLFW.GLFW_SAMPLES, 4);

@@ -91,9 +91,9 @@ public final class TestAssets {
 		MESH_OUTSIDE_PLACE = createMeshArray("mesh-outside-place", 29);
 		loadSceneAsset("models/Outside.fbx", MESH_OUTSIDE_PLACE);
 		
-		ANIM_SOLDIER_IDLE = new Animation();
+		ANIM_SOLDIER_IDLE = new Animation("anim-soldier-idle", 39);
 		MESH_SOLDIER = createMeshArray("mesh-soldier", 8);
-		loadSceneAsset("models/soldier.fbx", MESH_SOLDIER/*, new Animation[] {ANIM_SOLDIER_IDLE}*/);
+		loadSceneAsset("models/soldier.fbx", MESH_SOLDIER, new Animation[] {ANIM_SOLDIER_IDLE});
 		
 		//Mesh[] array = createMeshArray("mesh-man", 1);
 		//ANIM_RUN = new Animation();
@@ -304,54 +304,54 @@ public final class TestAssets {
 	}
 	
 	public static void initTextures() {
-		TEX_GUI_CROSSHAIR = TestAssets.loadTexture("tex-crosshair", "textures/crosshair.png");
+		TEX_GUI_CROSSHAIR = loadTexture("tex-crosshair", "textures/crosshair.png");
 	}
 	
 	public static Model createTestSceneOutside(Scene scene) {
 		Model model = new Model(scene);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[0], TestAssets.MAT_OUTSIDE_PAVEMENT1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[1], TestAssets.MAT_OUTSIDE_CONCRETE_BLOCK1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[2], TestAssets.MAT_OUTSIDE_METAL_DIRTYRUST);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[3], TestAssets.MAT_OUTSIDE_CONCRETE_WALL1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[4], TestAssets.MAT_OUTSIDE_CONCRETE_BARRIER_DIRTY);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[5], TestAssets.MAT_OUTSIDE_LAMPBOX_METAL);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[6], TestAssets.MAT_OUTSIDE_METAL_DOOR1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[7], TestAssets.MAT_OUTSIDE_CONCRETE_WALL2);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[8], TestAssets.MAT_OUTSIDE_METAL_SKIRTING);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[9], TestAssets.MAT_OUTSIDE_WINDOW_BLINDS1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[10], TestAssets.MAT_OUTSIDE_WOOD_PLANKS1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[11], TestAssets.MAT_OUTSIDE_CONCRETE_BARRIER);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[12], TestAssets.MAT_TEST_RED);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[13], TestAssets.MAT_TEST_RED);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[14], TestAssets.MAT_OUTSIDE_BRICKS1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[15], TestAssets.MAT_OUTSIDE_CONCRETE_MIX);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[16], TestAssets.MAT_OUTSIDE_GRAVEL1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[17], TestAssets.MAT_OUTSIDE_ASPHALT1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[18], TestAssets.MAT_OUTSIDE_LAMPPOST_METAL);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[19], TestAssets.MAT_OUTSIDE_WIRES);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[20], TestAssets.MAT_OUTSIDE_TREE1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[21], TestAssets.MAT_OUTSIDE_GRAFFITI3);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[22], TestAssets.MAT_OUTSIDE_GRAFFITI1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[23], TestAssets.MAT_OUTSIDE_GRAFFITI1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[24], TestAssets.MAT_OUTSIDE_SNOW);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[25], TestAssets.MAT_OUTSIDE_DIRT_DECAL2);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[26], TestAssets.MAT_OUTSIDE_DIRT_DECAL1);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[27], TestAssets.MAT_OUTSIDE_BARREL_METAL);
-		model.addMesh(TestAssets.MESH_OUTSIDE_PLACE[28], TestAssets.MAT_OUTSIDE_BARREL_TRASH);
+		model.addMesh(MESH_OUTSIDE_PLACE[0], MAT_OUTSIDE_PAVEMENT1);
+		model.addMesh(MESH_OUTSIDE_PLACE[1], MAT_OUTSIDE_CONCRETE_BLOCK1);
+		model.addMesh(MESH_OUTSIDE_PLACE[2], MAT_OUTSIDE_METAL_DIRTYRUST);
+		model.addMesh(MESH_OUTSIDE_PLACE[3], MAT_OUTSIDE_CONCRETE_WALL1);
+		model.addMesh(MESH_OUTSIDE_PLACE[4], MAT_OUTSIDE_CONCRETE_BARRIER_DIRTY);
+		model.addMesh(MESH_OUTSIDE_PLACE[5], MAT_OUTSIDE_LAMPBOX_METAL);
+		model.addMesh(MESH_OUTSIDE_PLACE[6], MAT_OUTSIDE_METAL_DOOR1);
+		model.addMesh(MESH_OUTSIDE_PLACE[7], MAT_OUTSIDE_CONCRETE_WALL2);
+		model.addMesh(MESH_OUTSIDE_PLACE[8], MAT_OUTSIDE_METAL_SKIRTING);
+		model.addMesh(MESH_OUTSIDE_PLACE[9], MAT_OUTSIDE_WINDOW_BLINDS1);
+		model.addMesh(MESH_OUTSIDE_PLACE[10], MAT_OUTSIDE_WOOD_PLANKS1);
+		model.addMesh(MESH_OUTSIDE_PLACE[11], MAT_OUTSIDE_CONCRETE_BARRIER);
+		model.addMesh(MESH_OUTSIDE_PLACE[12], MAT_TEST_RED);
+		model.addMesh(MESH_OUTSIDE_PLACE[13], MAT_TEST_RED);
+		model.addMesh(MESH_OUTSIDE_PLACE[14], MAT_OUTSIDE_BRICKS1);
+		model.addMesh(MESH_OUTSIDE_PLACE[15], MAT_OUTSIDE_CONCRETE_MIX);
+		model.addMesh(MESH_OUTSIDE_PLACE[16], MAT_OUTSIDE_GRAVEL1);
+		model.addMesh(MESH_OUTSIDE_PLACE[17], MAT_OUTSIDE_ASPHALT1);
+		model.addMesh(MESH_OUTSIDE_PLACE[18], MAT_OUTSIDE_LAMPPOST_METAL);
+		model.addMesh(MESH_OUTSIDE_PLACE[19], MAT_OUTSIDE_WIRES);
+		model.addMesh(MESH_OUTSIDE_PLACE[20], MAT_OUTSIDE_TREE1);
+		model.addMesh(MESH_OUTSIDE_PLACE[21], MAT_OUTSIDE_GRAFFITI3);
+		model.addMesh(MESH_OUTSIDE_PLACE[22], MAT_OUTSIDE_GRAFFITI1);
+		model.addMesh(MESH_OUTSIDE_PLACE[23], MAT_OUTSIDE_GRAFFITI1);
+		model.addMesh(MESH_OUTSIDE_PLACE[24], MAT_OUTSIDE_SNOW);
+		model.addMesh(MESH_OUTSIDE_PLACE[25], MAT_OUTSIDE_DIRT_DECAL2);
+		model.addMesh(MESH_OUTSIDE_PLACE[26], MAT_OUTSIDE_DIRT_DECAL1);
+		model.addMesh(MESH_OUTSIDE_PLACE[27], MAT_OUTSIDE_BARREL_METAL);
+		model.addMesh(MESH_OUTSIDE_PLACE[28], MAT_OUTSIDE_BARREL_TRASH);
 		return model;
 	}
 	
 	public static Model createTestSoldier(Scene scene) {
 		Model model = new Model(scene);
-		//model.addMesh(TestAssets.MESH_SOLDIER[0], TestAssets.MAT_TEST_RED);
-		model.addMesh(TestAssets.MESH_SOLDIER[1], TestAssets.MAT_SOLDIER_HEAD);
-		model.addMesh(TestAssets.MESH_SOLDIER[2], TestAssets.MAT_SOLDIER_BODY);
-		model.addMesh(TestAssets.MESH_SOLDIER[3], TestAssets.MAT_SOLDIER_VEST);
-		model.addMesh(TestAssets.MESH_SOLDIER[4], TestAssets.MAT_SOLDIER_HELMET);
-		model.addMesh(TestAssets.MESH_SOLDIER[5], TestAssets.MAT_SOLDIER_GADGETS);
-		model.addMesh(TestAssets.MESH_SOLDIER[6], TestAssets.MAT_SOLDIER_EYES);
-		model.addMesh(TestAssets.MESH_SOLDIER[7], TestAssets.MAT_SOLDIER_EYELASH);
-		//model.setAnimationData(new AnimationData(TestAssets.ANIM_SOLDIER_IDLE));
+		//model.addMesh(MESH_SOLDIER[0], TestAssets.MAT_TEST_RED);
+		model.addMesh(MESH_SOLDIER[1], MAT_SOLDIER_HEAD);
+		model.addMesh(MESH_SOLDIER[2], MAT_SOLDIER_BODY);
+		model.addMesh(MESH_SOLDIER[3], MAT_SOLDIER_VEST);
+		model.addMesh(MESH_SOLDIER[4], MAT_SOLDIER_HELMET);
+		model.addMesh(MESH_SOLDIER[5], MAT_SOLDIER_GADGETS);
+		model.addMesh(MESH_SOLDIER[6], MAT_SOLDIER_EYES);
+		model.addMesh(MESH_SOLDIER[7], MAT_SOLDIER_EYELASH);
+		model.getAnimator().setAnimation(ANIM_SOLDIER_IDLE);
 		return model;
 	}
 	
@@ -414,6 +414,7 @@ public final class TestAssets {
 		loadSceneAsset(relativePath, expectedMeshes, new Animation[0]);
 	}
 	
+	@SuppressWarnings("unused")
 	private static Mesh loadMesh(String name, String relativePath) {
 		Mesh result = new Mesh(name);
 		loadSceneAsset(relativePath, new Mesh[] {result});

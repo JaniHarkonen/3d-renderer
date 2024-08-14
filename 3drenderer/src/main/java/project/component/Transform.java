@@ -5,20 +5,20 @@ import org.joml.Vector3f;
 
 public class Transform {
 	protected Vector3f position;
-	protected Rotation rotationComponent;
+	protected Rotator rotator;
 	protected Vector3f scale;
 	protected Matrix4f transformMatrix;
 	
 	public Transform() {
 		this.position = new Vector3f(0.0f);
-		this.rotationComponent = new Rotation();
+		this.rotator = new Rotator();
 		this.scale = new Vector3f(1.0f);
 		this.transformMatrix = new Matrix4f();
 	}
 	
 	public Transform(Transform src) {
 		this.position = new Vector3f(src.position);
-		this.rotationComponent = new Rotation(src.rotationComponent);
+		this.rotator = new Rotator(src.rotator);
 		this.scale = new Vector3f(src.scale);
 		src.updateTransformMatrix();
 		this.transformMatrix = new Matrix4f(src.transformMatrix);
@@ -27,7 +27,7 @@ public class Transform {
 	
 	public void updateTransformMatrix() {
 		this.transformMatrix.translationRotateScale(
-			this.position, this.rotationComponent.getAsQuaternion(), this.scale
+			this.position, this.rotator.getAsQuaternion(), this.scale
 		);
 	}
 	
@@ -43,8 +43,8 @@ public class Transform {
 		return this.position;
 	}
 	
-	public Rotation getRotationComponent() {
-		return this.rotationComponent;
+	public Rotator getRotator() {
+		return this.rotator;
 	}
 	
 	public Vector3f getScale() {

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.joml.Matrix4f;
 
-public class Node {
+class Node {
 	private String nodeName;
 	private Node parent;
 	private Matrix4f nodeTransform;

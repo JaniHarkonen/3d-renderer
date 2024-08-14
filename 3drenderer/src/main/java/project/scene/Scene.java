@@ -9,7 +9,7 @@ import org.lwjgl.glfw.GLFW;
 import project.Application;
 import project.Window;
 import project.controls.Controller;
-import project.core.GameState;
+import project.gui.AGUIElement;
 import project.gui.GUI;
 import project.gui.Image;
 import project.gui.Text;
@@ -37,6 +37,7 @@ public class Scene {
 	private Vector3f DEBUGshadowLightPosition;
 	private boolean DEBUGareNormalsActive;
 	private boolean DEBUGcascadeShadowEnabled;
+	private TestDummy DEBUGsoldier;
 	
 	public Scene(Application app, int tickRate) {
 		this.objects = null;
@@ -51,10 +52,11 @@ public class Scene {
 		this.DEBUGshadowLightPosition = null;
 		this.DEBUGareNormalsActive = true;
 		this.DEBUGcascadeShadowEnabled = false;
+		this.DEBUGsoldier = null;
 	}
 	
 	
-	public void init() {
+	public void initialize() {
 			// Scene
 			// WARNING: ORDER IN WHICH SCENE OBJECTS ARE ADDED IS IMPORTANT FOR DRAW CALLS
 			// LIGHTS HAVE TO BE ADDED FIRST SO THAT THEY ARE UPDATED BEFORE SCENE RENDERING
@@ -70,8 +72,7 @@ public class Scene {
 		
 			// Point light
 		this.DEBUGtestPointLight0 = new TestPointLight(this);
-		//this.DEBUGtestPointLight0.setPosition(0.0f, 100.0f, 0.0f);
-		this.DEBUGtestPointLight0.getTransformComponent().setPosition(0.0f, 100.0f, 0.0f);
+		this.DEBUGtestPointLight0.getTransform().setPosition(0.0f, 100.0f, 0.0f);
 		this.objects.add(this.DEBUGtestPointLight0);
 		Controller pointLightController = new Controller(input, this.DEBUGtestPointLight0)
 		.addBinding(ActionSet.MOVE_FORWARD, input.new KeyHeld(GLFW.GLFW_KEY_UP))
@@ -98,10 +99,11 @@ public class Scene {
 		DebugUtils.log(this, "Outside place TestDummy added!");
 		
 			// Soldier
-		TestDummy soldier = new TestDummy(this, TestAssets.createTestSoldier(this));
-		soldier.getTransformComponent().setPosition(1, -10, -100);
+		this.DEBUGsoldier = new TestDummy(this, TestAssets.createTestSoldier(this));
+		this.DEBUGsoldier.getTransform().setPosition(1, -10, -100);
+		this.DEBUGsoldier.getTransform().getRotator().setXAngle((float) Math.toRadians(-85.0d));
 		//soldier.getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
-		this.objects.add(soldier);
+		this.objects.add(this.DEBUGsoldier);
 		DebugUtils.log(this, "Soldier TestDummy added!");
 		
 			// GUI
@@ -140,8 +142,8 @@ public class Scene {
 		
 		long memoryUsage = Runtime.getRuntime().totalMemory();
 		
-		Vector3f cameraPosition = this.activeCamera.getTransformComponent().getPosition();
-		Vector3f pl0Position = this.DEBUGtestPointLight0.getTransformComponent().getPosition();
+		Vector3f cameraPosition = this.activeCamera.getTransform().getPosition();
+		Vector3f pl0Position = this.DEBUGtestPointLight0.getTransform().getPosition();
 		Vector3f pl0Color = this.DEBUGtestPointLight0.getPointLight().getColor();
 		
 		if( this.gui != null ) {
@@ -166,8 +168,11 @@ public class Scene {
 					pl0Color.y + ", " +
 					pl0Color.z +
 				")\n" +
+				"soldier: \n" +
+				"    model.animator.currentFrameIndex: \n" + this.DEBUGsoldier.getModel().getAnimator().getCurrentFrameIndex() + "\n" +
 				"    intensity: " + this.DEBUGtestPointLight0.getPointLight().getIntensity() + "\n" +
-				"    normal map: " + (this.DEBUGareNormalsActive ? "ON" : "OFF") + "\n\n" +
+				"    normal map: " + (this.DEBUGareNormalsActive ? "ON" : "OFF") + " (N to toggle)\n" +
+				"    shadow map cascades: " + (this.DEBUGcascadeShadowEnabled ? "ON" : "OFF") + " (C to toggle)\n\n" +
 				"Controls: \n" + 
 				"    WASD to move\n" +
 				"    MOUSE to look around\n" +
@@ -175,8 +180,7 @@ public class Scene {
 				"    +/- to change point light intensity\n" +
 				"    1/2 to change point light red value\n" +
 				"    3/4 to change point light green value\n" +
-				"    5/6 to change point light blue value\n" + 
-				"    N to toggle normal map\n" +
+				"    5/6 to change point light blue value\n" +
 				"    H to toggle HUD\n"
 			);
 		}
@@ -209,9 +213,11 @@ public class Scene {
 			object.submitToRenderer();
 		}
 		
-		GameState back = Application.getApp().getRenderer().getBackGameState();
-		back.DEBUGsetGUI(this.gui);
-		back
+		for( AGUIElement element : this.gui.getElements() ) {
+			element.submitToRenderer();
+		}
+		
+		Application.getApp().getRenderer().getBackGameState()
 		.setDebugData(TestDebugDataHandles.NORMALS_ACTIVE, this.DEBUGareNormalsActive)
 		.setDebugData(TestDebugDataHandles.CASCADE_SHADOW_LIGHT, this.DEBUGshadowLightPosition)
 		.setDebugData(TestDebugDataHandles.CASCADE_SHADOW_ENABLED, this.DEBUGcascadeShadowEnabled);
@@ -242,11 +248,11 @@ public class Scene {
 	private void createGUI() {
 		this.DEBUGtextAppStatistics = new Text(this.gui, "");
 		this.gui = new GUI(this);
-		this.gui.init();
+		this.gui.initialize();
 		this.gui.addElement(this.DEBUGtextAppStatistics);
 		
 		Image crosshair = new Image(this.gui, TestAssets.TEX_GUI_CROSSHAIR);
-		crosshair.setPosition(400, 300, 0);
+		crosshair.getTransform().setPosition(400, 300, 0);
 		crosshair.setAnchor(8, 8);
 		this.gui.addElement(crosshair);
 	}

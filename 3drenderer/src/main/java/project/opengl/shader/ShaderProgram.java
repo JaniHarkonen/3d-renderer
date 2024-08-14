@@ -22,11 +22,11 @@ public class ShaderProgram {
 		this.shaders = new ArrayList<>();
 	}
 	
-	public void init() {
+	public void initialize() {
 		this.programHandle = GL46.glCreateProgram();
 		
 		for( Shader shader : this.shaders ) {
-			shader.init();
+			shader.initialize();
 			shader.attach(this);
 		}
 		

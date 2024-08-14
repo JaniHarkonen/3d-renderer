@@ -17,7 +17,8 @@ public class Image extends AGUIElement {
 	}
 	
 	private Image(Image src) {
-		super(null);
+		super(src);
+		
 		this.imageTexture = src.imageTexture;
 		this.anchor = new Vector2f(src.anchor);
 	}

@@ -1,9 +1,13 @@
 package project.opengl.gui;
 
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
 
+import project.component.Transform;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
 import project.gui.Image;
@@ -27,17 +31,18 @@ public class RenderImage implements IRenderStrategy<GUIRenderPass> {
 		UVector4f.class.cast(activeShaderProgram.getUniform(Uniforms.PRIMARY_COLOR)).update(primaryColor);
 		GL46.glActiveTexture(GL46.GL_TEXTURE0);
 		textureGL.bind();
+		
+		Transform transform = element.getTransform();
+		Vector3f position = transform.getPosition();
+		Vector2f anchor = element.getAnchor();
+		Quaternionf rotation = transform.getRotator().getAsQuaternion();
+		
 		UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.OBJECT_TRANSFORM))
 		.update(
 			new Matrix4f()
 			.translationRotateScale(
-				element.getPosition().x - element.getAnchor().x, 
-				element.getPosition().y - element.getAnchor().y, 
-				0.0f, 
-				element.getRotation().x, 
-				element.getRotation().y, 
-				element.getRotation().z, 
-				element.getRotation().w, 
+				position.x - anchor.x, position.y - anchor.y, 0.0f,
+				rotation.x, rotation.y, rotation.z, rotation.w,
 				1.0f, 1.0f, 1.0f
 			)
 		);

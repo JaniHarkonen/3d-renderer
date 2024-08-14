@@ -1,10 +1,13 @@
 package project.opengl.gui;
 
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
 
 import project.asset.font.Font;
+import project.component.Transform;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
 import project.gui.Text;
@@ -22,8 +25,12 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 		ShaderProgram activeShaderProgram = renderPass.shaderProgram;
 		Text element = (Text) target;
 		
-		float textX = element.getPosition().x;
-		float textY = element.getPosition().y;
+		Transform transform = element.getTransform();
+		Vector3f position = transform.getPosition();
+		Quaternionf rotation = transform.getRotator().getAsQuaternion();
+		
+		float textX = position.x;
+		float textY = position.y;
 		Text text = (Text) element;
 		Font font = text.getFont();
 		TextureGL textureGL = (TextureGL) font.getTexture().getGraphics();
@@ -41,10 +48,10 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 					new Matrix4f()
 					.translationRotateScale(
 						textX, textY + renderPass.baseLine - glyph.getOriginY(), 0.0f, 
-						element.getRotation().x, 
-						element.getRotation().y, 
-						element.getRotation().z, 
-						element.getRotation().w, 
+						rotation.x, 
+						rotation.y, 
+						rotation.z, 
+						rotation.w, 
 						1.0f, 1.0f, 1.0f
 					)
 				);

@@ -6,17 +6,17 @@ import project.component.Projection;
 public class Camera extends ASceneObject {
 
 	private Projection projection;
-	private CameraTransform transformComponent;
+	private CameraTransform transform;
 	
 	public Camera(Scene scene, Projection projection) {
 		super(scene);
 		this.projection = projection;
-		this.transformComponent = new CameraTransform();
+		this.transform = new CameraTransform();
 	}
 	
 	private Camera(Camera src) {
 		super(null);
-		this.transformComponent = new CameraTransform(src.transformComponent);
+		this.transform = new CameraTransform(src.transform);
 		this.projection = new Projection(src.projection);
 	}
 	
@@ -27,8 +27,8 @@ public class Camera extends ASceneObject {
 	}
 	
 	@Override
-	public CameraTransform getTransformComponent() {
-		return this.transformComponent;
+	public CameraTransform getTransform() {
+		return this.transform;
 	}
 	
 	public Projection getProjection() {

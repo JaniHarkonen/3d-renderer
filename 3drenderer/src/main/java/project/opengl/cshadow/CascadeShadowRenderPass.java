@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL46;
 
 import project.component.CascadeShadow;
 import project.core.GameState;
+import project.core.GameState.SceneState;
 import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
@@ -39,7 +40,7 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	
 	
 	@Override
-	public boolean init() {
+	public boolean initialize() {
 		this.shaderProgram.addShader(
 			new Shader("shaders/cshadow/cshadow.vert", GL46.GL_VERTEX_SHADER)
 		);
@@ -48,8 +49,8 @@ public class CascadeShadowRenderPass implements IRenderPass {
 		this.shaderProgram.declareUniform(this.uLightView)
 		.declareUniform(new UAMatrix4f(Uniforms.OBJECT_TRANSFORM))
 		.declareUniform(new UAMatrix4f(Uniforms.BONE_MATRICES));
-		this.shaderProgram.init();
-		this.shadowBuffer.init();
+		this.shaderProgram.initialize();
+		this.shadowBuffer.initialize();
 		
 		for( int i = 0; i < CascadeShadow.SHADOW_MAP_CASCADE_COUNT; i++ ) {
 			this.cascadeShadows.add(new CascadeShadow());
@@ -85,12 +86,10 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	    	
 	    	GL46.glClear(GL46.GL_DEPTH_BUFFER_BIT);
 	        this.uLightView.update(this.cascadeShadows.get(i).getLightViewMatrix());
-	
-	        gameState.resetQueue();
 	        
-	        ASceneObject object;
-	        while( (object = gameState.pollRenderable()) != null ) {
-	        	this.recursiveRender(renderer, object);
+	        SceneState.SceneIterator iterator = gameState.getSceneIterator();
+	        while( iterator.hasNext() ) {
+	        	this.recursiveRender(renderer, iterator.next());
 	        }
 	    }
 	
