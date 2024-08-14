@@ -54,39 +54,51 @@ public class Animator {
 		this.pause();
 	}
 	
-	public void restart() {
+	public Animator restart() {
 		this.setFrame(0);
+		return this;
 	}
 	
-	public void play() {
+	public Animator play() {
 		this.isPaused = false;
+		return this;
 	}
 	
-	public void pause() {
+	public Animator pause() {
 		this.isPaused = true;
+		return this;
 	}
 	
-	public void stop() {
+	public Animator stop() {
 		this.pause();
 		this.restart();
+		return this;
 	}
 	
-	public void reverse() {
+	public Animator reverse() {
 		this.direction *= -1;
+		return this;
 	}
 	
-	private void setFrame(int frameIndex) {
+	public Animator setFrame(int frameIndex) {
 		this.currentFrameIndex = frameIndex;
 		this.currentFrame = this.animation.getFrame(this.currentFrameIndex);
+		return this;
 	}
 	
-	public void setAnimation(Animation animation) {
+	public Animator setAnimation(Animation animation) {
 		this.animation = animation;
 		this.setFrame(0);
+		return this;
 	}
 	
-	public void setSpeed(float frameDelta) {
+	public Animator setSpeed(float frameDelta) {
 		this.frameSpeed = frameDelta;
+		return this;
+	}
+	
+	public float getSpeed() {
+		return this.frameSpeed;
 	}
 	
 	public Animation.Frame getCurrentFrame() {

@@ -295,7 +295,7 @@ public class SceneAssetLoadTask implements ILoadTask {
 		
 		Animation.Data animationData = new Animation.Data();
 		animationData.targetAnimation = targetAnimation;
-		animationData.duration = aiAnimation.mDuration();
+		animationData.duration = (float) aiAnimation.mDuration();
 		animationData.frames = frames;
 		this.notifyAssetManager(animationData.targetAnimation, animationData, null);
 	}

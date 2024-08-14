@@ -47,9 +47,14 @@ public class Model extends ASceneObject {
 		this.meshMaterialTable.add(new MeshEntry(mesh, material));
 	}
 	
-	public void setAnimator(Animator animator) {
-		animator.setAnimation(this.animator.getAnimation());
-		this.animator = animator;
+	public Animator swapAnimator(Animator newAnimator) {
+		newAnimator
+		.setAnimation(this.animator.getAnimation())
+		.setSpeed(this.animator.getSpeed())
+		.setFrame(this.animator.getCurrentFrameIndex());
+		this.animator = newAnimator;
+		
+		return this.animator;
 	}
 	
 	public int getMeshCount() {

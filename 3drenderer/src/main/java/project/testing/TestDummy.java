@@ -15,13 +15,12 @@ public class TestDummy extends ASceneObject {
 	public TestDummy(Scene scene, Model model) {
 		super(scene);
 		this.model = model;
-		this.model.setAnimator(new Animator() {
+		this.model.swapAnimator(new Animator() {
 			@Override
 			public void onFinish() {
 				this.restart();
 			}
-		});
-		this.model.getAnimator().setSpeed(1 / 24.0f);
+		}).setSpeed(1 / 24.0f);
 		this.children.add(model);
 	}
 	
