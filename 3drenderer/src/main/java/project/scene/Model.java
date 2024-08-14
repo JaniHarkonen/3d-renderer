@@ -33,7 +33,7 @@ public class Model extends ASceneObject {
 		super(null);
 		src.transform.updateTransformMatrix();
 		this.transform = new Transform(src.transform);
-		this.animator = src.animator;
+		this.animator = new Animator(src.animator);
 		this.meshMaterialTable = src.meshMaterialTable; // NOT DEEP COPIED (assumed to stay the same for now)
 	}
 	

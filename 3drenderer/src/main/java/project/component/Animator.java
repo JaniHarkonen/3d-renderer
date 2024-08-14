@@ -21,6 +21,12 @@ public class Animator {
 		this.isPaused = false;
 	}
 	
+	public Animator(Animator src) {
+		this.animation = src.animation;
+		this.currentFrameIndex = src.currentFrameIndex;
+		this.currentFrame = src.currentFrame;
+	}
+	
 	
 	public void update(float deltaTime) {
 		if( this.isPaused ) {
@@ -31,15 +37,14 @@ public class Animator {
 		
 		if( this.frameTimer >= this.frameSpeed ) {
 			this.currentFrameIndex += this.direction;
-			//if( this.currentFrameIndex + 1 < this.animation.getFrameCount() ) {
+			
 			if( this.currentFrameIndex >= 0 && this.currentFrameIndex < this.animation.getFrameCount() ) {
 				this.setFrame(this.currentFrameIndex);
-				//this.setFrame(++this.currentFrameIndex);
 			} else {
-				this.onFinish();
 				this.currentFrameIndex = Math.max(
 					0, Math.min(this.animation.getFrameCount(), this.currentFrameIndex)
 				);
+				this.onFinish();
 			}
 			this.frameTimer = 0.0f;
 		}

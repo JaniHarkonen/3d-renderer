@@ -13,9 +13,6 @@
 - there is still a lot of repetition among render passes, however, this should be further examined once instanced rendering is considered
 - get rid of uniform casting in render strategies
 
-### Animator
-- Animator needs a copy constructor for GameState generation
-
 ### Animation
 - Animation frame delta time should be set by default to: duration / frameCount
 
