@@ -119,7 +119,7 @@ public class SceneRenderPass implements IRenderPass {
 			pointLightStruct.position = new Vector3f(0.0f);
 			pointLightStruct.color = new Vector3f(0.0f);
 			pointLightStruct.intensity = 0.0f;
-			pointLightStruct.att = attenuationStruct;
+			pointLightStruct.attenuation = attenuationStruct;
 			
 			this.uPointLights.update(pointLightStruct, i);
 		}
@@ -201,7 +201,7 @@ public class SceneRenderPass implements IRenderPass {
 		pointLightStruct.position = lightPosition;
 		pointLightStruct.color = color;
 		pointLightStruct.intensity = pointLight.getIntensity();
-		pointLightStruct.att = attenuationStruct;
+		pointLightStruct.attenuation = attenuationStruct;
 		
 		this.uPointLights.update(pointLightStruct, index);
 	}

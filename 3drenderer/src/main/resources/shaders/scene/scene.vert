@@ -18,51 +18,51 @@ out vec2 outTextureCoordinate;
 out vec3 outViewPosition;
 out vec4 outWorldPosition;
 
-uniform mat4 uProjection; //uniform mat4 projectionMatrix;
-uniform mat4 uCameraTransform; //uniform mat4 viewMatrix;
-uniform mat4 uObjectTransform; //uniform mat4 modelMatrix;
-uniform mat4 uBoneMatrices[MAX_BONES]; //uniform mat4 bonesMatrices[MAX_BONES]
+uniform mat4 uProjection;
+uniform mat4 uCameraTransform;
+uniform mat4 uObjectTransform;
+uniform mat4 uBoneMatrices[MAX_BONES];
 
 void main()
 {
-    vec4 initPos = vec4(0, 0, 0, 0);
-    vec4 initNormal = vec4(0, 0, 0, 0);
-    vec4 initTangent = vec4(0, 0, 0, 0);
-    vec4 initBitangent = vec4(0, 0, 0, 0);
+    vec4 fixedPosition = vec4(0, 0, 0, 0);
+    vec4 fixedNormal = vec4(0, 0, 0, 0);
+    vec4 fixedTangent = vec4(0, 0, 0, 0);
+    vec4 fixedBitangent = vec4(0, 0, 0, 0);
+    
+    vec4 defaultPosition = vec4(position, 1.0);
+    vec4 defaultNormal = vec4(normal, 0.0);
+    vec4 defaultTangent = vec4(tangent, 0.0);
+    vec4 defaultBitangent = vec4(bitangent, 0.0);
 
-    int count = 0;
-    for (int i = 0; i < MAX_WEIGHTS; i++) {
+    int activeWeightCount = 0;
+    for( int i = 0; i < MAX_WEIGHTS; i++ ) {
         float weight = boneWeights[i];
-        if (weight > 0) {
-            count++;
+        if( weight > 0 ) {
+            activeWeightCount++;
             int boneIndex = boneIndices[i];
-            vec4 tmpPos = uBoneMatrices[boneIndex] * vec4(position, 1.0);
-            initPos += weight * tmpPos;
-
-            vec4 tmpNormal = uBoneMatrices[boneIndex] * vec4(normal, 0.0);
-            initNormal += weight * tmpNormal;
-
-            vec4 tmpTangent = uBoneMatrices[boneIndex] * vec4(tangent, 0.0);
-            initTangent += weight * tmpTangent;
-
-            vec4 tmpBitangent = uBoneMatrices[boneIndex] * vec4(bitangent, 0.0);
-            initBitangent += weight * tmpBitangent;
+            
+            fixedPosition += weight * uBoneMatrices[boneIndex] * defaultPosition;
+            fixedNormal += weight * uBoneMatrices[boneIndex] * defaultNormal;
+            fixedTangent += weight * uBoneMatrices[boneIndex] * defaultTangent;
+            fixedBitangent += weight * uBoneMatrices[boneIndex] * defaultBitangent;
         }
     }
-    if (count == 0) {
-        initPos = vec4(position, 1.0);
-        initNormal = vec4(normal, 0.0);
-        initTangent = vec4(tangent, 0.0);
-        initBitangent = vec4(bitangent, 0.0);
+
+    if( activeWeightCount == 0 ) {
+        fixedPosition = defaultPosition;
+        fixedNormal = defaultNormal;
+        fixedTangent = defaultTangent;
+        fixedBitangent = defaultBitangent;
     }
 
     mat4 modelViewMatrix = uCameraTransform * uObjectTransform;
-    vec4 mvPosition = modelViewMatrix * initPos;
+    vec4 mvPosition = modelViewMatrix * fixedPosition;
     gl_Position = uProjection * mvPosition;
-    outNormal = normalize(modelViewMatrix * initNormal).xyz;
-    outTangent = normalize(modelViewMatrix * initTangent).xyz;
-    outBitangent = normalize(modelViewMatrix * initBitangent).xyz;
+    outNormal = normalize(modelViewMatrix * fixedNormal).xyz;
+    outTangent = normalize(modelViewMatrix * fixedTangent).xyz;
+    outBitangent = normalize(modelViewMatrix * fixedBitangent).xyz;
     outViewPosition  = mvPosition.xyz;
-    outWorldPosition = uObjectTransform * initPos;
+    outWorldPosition = uObjectTransform * fixedPosition;
     outTextureCoordinate = textureCoordinate;
 }

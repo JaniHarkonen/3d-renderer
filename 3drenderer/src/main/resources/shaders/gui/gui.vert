@@ -18,4 +18,3 @@ void main()
   gl_Position = uProjection * (uObjectTransform * vec4(position, 1.0));
   outTextureCoordinate = textureCoordinate;
 }
-

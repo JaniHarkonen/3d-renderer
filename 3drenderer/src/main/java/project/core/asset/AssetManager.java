@@ -22,7 +22,6 @@ public class AssetManager {
 		}
 	}
 	
-	
 	/************************* TaskResult-class *************************/
 	
 	private class TaskResult {
@@ -47,13 +46,9 @@ public class AssetManager {
 	}
 	
 	
-	public void scheduleLoadTask(ILoadTask loadTask, ISystem system) {
+	public void scheduleLoadTask(ILoadTask loadTask) {
 		LoadProcess process = new LoadProcess(loadTask);
 		process.start();
-	}
-	
-	public void scheduleLoadTask(ILoadTask loadTask) {
-		this.scheduleLoadTask(loadTask, null);
 	}
 	
 	public void processTaskResults(long timestamp) {

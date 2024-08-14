@@ -7,7 +7,6 @@
 
 ### Formatting
 - switch from using ClassName.STATIC_FINAL_FIELD or ClassName.STATIC_METHOD to simply STATIC_FINAL_FIELD or STATIC_METHOD to make refactoring easier
-- ensure consistent code style in shaders
 
 ### General
 - restrict visibilities of class to the lowest level needed
@@ -22,9 +21,6 @@
 
 ### Rotation
 - rename Rotation to Rotator so that Rotation doesn't have to be referred to as rotation component
-
-### AssetManager
-- AssetManager should spawn a fixed number of threads ahead of time for load tasks, and allocate tasks to them as they're scheduled
 
 ### ASceneObject
 - when deep copying scene objects for rendering, determine a way to skip unchanged objects

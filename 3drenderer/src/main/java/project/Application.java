@@ -22,6 +22,7 @@ public class Application {
 		APPLICATION.execute();
 	}
 	
+	
 	public void execute() {
 		final String TITLE = "3D Renderer - JOHNEngine";
 		final int FPS_MAX = 60;

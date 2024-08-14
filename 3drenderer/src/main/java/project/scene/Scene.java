@@ -169,7 +169,7 @@ public class Scene {
 					pl0Color.z +
 				")\n" +
 				"soldier: \n" +
-				"    model.animator.currentFrameIndex: \n" + this.DEBUGsoldier.getModel().getAnimator().getCurrentFrameIndex() + "\n" +
+				"    model.animator.currentFrameIndex: " + this.DEBUGsoldier.getModel().getAnimator().getCurrentFrameIndex() + "\n" +
 				"    intensity: " + this.DEBUGtestPointLight0.getPointLight().getIntensity() + "\n" +
 				"    normal map: " + (this.DEBUGareNormalsActive ? "ON" : "OFF") + " (N to toggle)\n" +
 				"    shadow map cascades: " + (this.DEBUGcascadeShadowEnabled ? "ON" : "OFF") + " (C to toggle)\n\n" +
@@ -213,8 +213,10 @@ public class Scene {
 			object.submitToRenderer();
 		}
 		
-		for( AGUIElement element : this.gui.getElements() ) {
-			element.submitToRenderer();
+		if( this.gui != null ) {
+			for( AGUIElement element : this.gui.getElements() ) {
+				element.submitToRenderer();
+			}
 		}
 		
 		Application.getApp().getRenderer().getBackGameState()
