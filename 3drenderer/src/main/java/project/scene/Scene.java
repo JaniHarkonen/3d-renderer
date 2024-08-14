@@ -72,7 +72,7 @@ public class Scene {
 		
 			// Point light
 		this.DEBUGtestPointLight0 = new TestPointLight(this);
-		this.DEBUGtestPointLight0.getTransformComponent().setPosition(0.0f, 100.0f, 0.0f);
+		this.DEBUGtestPointLight0.getTransform().setPosition(0.0f, 100.0f, 0.0f);
 		this.objects.add(this.DEBUGtestPointLight0);
 		Controller pointLightController = new Controller(input, this.DEBUGtestPointLight0)
 		.addBinding(ActionSet.MOVE_FORWARD, input.new KeyHeld(GLFW.GLFW_KEY_UP))
@@ -100,8 +100,8 @@ public class Scene {
 		
 			// Soldier
 		this.DEBUGsoldier = new TestDummy(this, TestAssets.createTestSoldier(this));
-		this.DEBUGsoldier.getTransformComponent().setPosition(1, -10, -100);
-		this.DEBUGsoldier.getTransformComponent().getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
+		this.DEBUGsoldier.getTransform().setPosition(1, -10, -100);
+		this.DEBUGsoldier.getTransform().getRotator().setXAngle((float) Math.toRadians(-85.0d));
 		//soldier.getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
 		this.objects.add(this.DEBUGsoldier);
 		DebugUtils.log(this, "Soldier TestDummy added!");
@@ -142,8 +142,8 @@ public class Scene {
 		
 		long memoryUsage = Runtime.getRuntime().totalMemory();
 		
-		Vector3f cameraPosition = this.activeCamera.getTransformComponent().getPosition();
-		Vector3f pl0Position = this.DEBUGtestPointLight0.getTransformComponent().getPosition();
+		Vector3f cameraPosition = this.activeCamera.getTransform().getPosition();
+		Vector3f pl0Position = this.DEBUGtestPointLight0.getTransform().getPosition();
 		Vector3f pl0Color = this.DEBUGtestPointLight0.getPointLight().getColor();
 		
 		if( this.gui != null ) {
@@ -252,7 +252,7 @@ public class Scene {
 		this.gui.addElement(this.DEBUGtextAppStatistics);
 		
 		Image crosshair = new Image(this.gui, TestAssets.TEX_GUI_CROSSHAIR);
-		crosshair.getTransformComponent().setPosition(400, 300, 0);
+		crosshair.getTransform().setPosition(400, 300, 0);
 		crosshair.setAnchor(8, 8);
 		this.gui.addElement(crosshair);
 	}

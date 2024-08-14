@@ -49,7 +49,7 @@ public class TestPlayer extends ASceneObject implements IControllable {
 		
 		switch( action.getActionID() ) {
 			case ActionSet.LOOK_AROUND: {
-				camera.getTransformComponent().getRotationComponent().rotate(
+				camera.getTransform().getRotator().rotate(
 					(float) Math.toRadians(sensitivity * action.getAxisIntensity(1)),
 					(float) Math.toRadians(sensitivity * action.getAxisIntensity(0)),
 					0
@@ -57,26 +57,26 @@ public class TestPlayer extends ASceneObject implements IControllable {
 			} break;
 
 			case ActionSet.MOVE_FORWARD: {
-				camera.getTransformComponent().getPosition().add(
-					camera.getTransformComponent().getRotationComponent().getForwardVector(new Vector3f(0.0f)).mul(finalSpeed)
+				camera.getTransform().getPosition().add(
+					camera.getTransform().getRotator().getForwardVector(new Vector3f(0.0f)).mul(finalSpeed)
 				);
 			} break;
 
 			case ActionSet.MOVE_LEFT: {
-				camera.getTransformComponent().getPosition().add(
-					camera.getTransformComponent().getRotationComponent().getLeftVector(new Vector3f()).mul(finalSpeed)
+				camera.getTransform().getPosition().add(
+					camera.getTransform().getRotator().getLeftVector(new Vector3f()).mul(finalSpeed)
 				);
 			} break;
 
 			case ActionSet.MOVE_BACKWARDS: {
-				camera.getTransformComponent().getPosition().add(
-					camera.getTransformComponent().getRotationComponent().getBackwardVector(new Vector3f()).mul(finalSpeed)
+				camera.getTransform().getPosition().add(
+					camera.getTransform().getRotator().getBackwardVector(new Vector3f()).mul(finalSpeed)
 				);
 			} break;
 
 			case ActionSet.MOVE_RIGHT: {
-				camera.getTransformComponent().getPosition().add(
-					camera.getTransformComponent().getRotationComponent().getRightVector(new Vector3f()).mul(finalSpeed)
+				camera.getTransform().getPosition().add(
+					camera.getTransform().getRotator().getRightVector(new Vector3f()).mul(finalSpeed)
 				);
 			} break;
 		}

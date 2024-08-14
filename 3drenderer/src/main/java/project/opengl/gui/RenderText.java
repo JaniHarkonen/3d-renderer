@@ -25,9 +25,9 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 		ShaderProgram activeShaderProgram = renderPass.shaderProgram;
 		Text element = (Text) target;
 		
-		Transform transform = element.getTransformComponent();
+		Transform transform = element.getTransform();
 		Vector3f position = transform.getPosition();
-		Quaternionf rotation = transform.getRotationComponent().getAsQuaternion();
+		Quaternionf rotation = transform.getRotator().getAsQuaternion();
 		
 		float textX = position.x;
 		float textY = position.y;

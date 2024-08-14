@@ -23,7 +23,7 @@ public class CascadeShadow {
 	
     public static void updateCascadeShadows(List<CascadeShadow> cascadeShadows, Camera activeCamera, Vector3f light) {
     	activeCamera.getProjection().update(800, 600);
-        Matrix4f viewMatrix = activeCamera.getTransformComponent().getAsMatrix();
+        Matrix4f viewMatrix = activeCamera.getTransform().getAsMatrix();
         Matrix4f projMatrix = activeCamera.getProjection().getMatrix();
         Vector4f lightPos = new Vector4f(light.x, light.y, light.z, 0);
 

@@ -11,11 +11,11 @@ public abstract class ASceneObject {
 	protected final Scene scene;
 	protected final List<ASceneObject> children;
 	
-	protected Transform transformComponent;
+	protected Transform transform;
 	
 	public ASceneObject(Scene scene) {
 		this.children = new ArrayList<>();
-		this.transformComponent = new Transform();
+		this.transform = new Transform();
 		this.scene = scene;
 	}
 	
@@ -30,8 +30,8 @@ public abstract class ASceneObject {
 	
 	protected abstract ASceneObject rendererCopy();
 	
-	public Transform getTransformComponent() {
-		return this.transformComponent;
+	public Transform getTransform() {
+		return this.transform;
 	}
 	
 	public void addChild(ASceneObject child) {

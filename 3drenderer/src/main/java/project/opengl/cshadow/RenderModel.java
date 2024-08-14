@@ -23,7 +23,7 @@ class RenderModel implements IRenderStrategy<CascadeShadowRenderPass> {
     		vao.bind();
     		
     		UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.OBJECT_TRANSFORM))
-    		.update(target.getTransformComponent().getAsMatrix());
+    		.update(target.getTransform().getAsMatrix());
     		
     		UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.BONE_MATRICES))
 			.update(model.getAnimator().getCurrentFrame().getBoneTransforms());

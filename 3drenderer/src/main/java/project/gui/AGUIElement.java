@@ -24,8 +24,8 @@ public abstract class AGUIElement extends ASceneObject {
 		super(null);
 		
 		this.gui = null;
-		src.transformComponent.updateTransformMatrix();
-		this.transformComponent = new Transform(src.transformComponent);
+		src.transform.updateTransformMatrix();
+		this.transform = new Transform(src.transform);
 		this.primaryColor = new Vector4f(src.primaryColor);
 		this.secondaryColor = new Vector4f(src.secondaryColor);
 	}

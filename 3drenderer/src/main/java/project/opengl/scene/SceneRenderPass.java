@@ -155,7 +155,7 @@ public class SceneRenderPass implements IRenderPass {
 		
 		
 		this.uProjection.update(this.activeCamera.getProjection().getMatrix());
-		this.uCameraTransform.update(this.activeCamera.getTransformComponent().getAsMatrix());
+		this.uCameraTransform.update(this.activeCamera.getTransform().getAsMatrix());
 		
 		this.uDebugShowShadowCascades.update(
 			(boolean) gameState.getDebugData(TestDebugDataHandles.CASCADE_SHADOW_ENABLED) ? 1 : 0
@@ -180,8 +180,8 @@ public class SceneRenderPass implements IRenderPass {
 	void updatePointLight(PointLight pointLight, int index) {
         Vector4f aux = new Vector4f();
         
-        Matrix4f cameraTransform = this.activeCamera.getTransformComponent().getAsMatrix();
-        aux.set(pointLight.getTransformComponent().getPosition(), 1);
+        Matrix4f cameraTransform = this.activeCamera.getTransform().getAsMatrix();
+        aux.set(pointLight.getTransform().getPosition(), 1);
         aux.mul(cameraTransform);
         
         Vector3f lightPosition = new Vector3f();

@@ -47,14 +47,14 @@ public class TestDummy extends ASceneObject {
 		this.model.getAnimator().update(deltaTime);
 		
 		for( ASceneObject object : this.children ) {
-			Vector3f position = getTransformComponent().getPosition();
-			object.getTransformComponent().setPosition(position.x, position.y, position.z);
-			Quaternionf rotationQuaternion = this.getTransformComponent().getRotationComponent().getAsQuaternion();
-			object.getTransformComponent().getRotationComponent().setQuaternion(
+			Vector3f position = getTransform().getPosition();
+			object.getTransform().setPosition(position.x, position.y, position.z);
+			Quaternionf rotationQuaternion = this.getTransform().getRotator().getAsQuaternion();
+			object.getTransform().getRotator().setQuaternion(
 				rotationQuaternion.x, rotationQuaternion.y, rotationQuaternion.z, rotationQuaternion.w
 			);
-			Vector3f scale = this.getTransformComponent().getScale();
-			object.getTransformComponent().setScale(scale.x, scale.y, scale.z);
+			Vector3f scale = this.getTransform().getScale();
+			object.getTransform().setScale(scale.x, scale.y, scale.z);
 		}
 	}
 	

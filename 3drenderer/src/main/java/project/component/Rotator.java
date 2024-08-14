@@ -3,7 +3,7 @@ package project.component;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public class Rotation {
+public class Rotator {
 	public static final Vector3f X_AXIS = new Vector3f(1.0f, 0.0f, 0.0f);
 	public static final Vector3f Y_AXIS = new Vector3f(0.0f, 1.0f, 0.0f);
 	public static final Vector3f Z_AXIS = new Vector3f(0.0f, 0.0f, 1.0f);
@@ -13,14 +13,14 @@ public class Rotation {
 	private Quaternionf rotationQuaternionTempY;
 	private Quaternionf rotationQuaternionTempZ;
 	
-	public Rotation() {
+	public Rotator() {
 		this.angles = new Vector3f(0.0f);
 		this.rotationQuaternion = new Quaternionf();
 		this.rotationQuaternionTempY = new Quaternionf();
 		this.rotationQuaternionTempZ = new Quaternionf();
 	}
 	
-	public Rotation(Rotation src) {
+	public Rotator(Rotator src) {
 		this.angles = new Vector3f(src.angles);
 		this.rotationQuaternion = new Quaternionf(src.rotationQuaternion);
 	}

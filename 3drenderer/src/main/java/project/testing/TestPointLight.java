@@ -38,14 +38,14 @@ public class TestPointLight extends ASceneObject implements IControllable {
 	public void tick(float deltaTime) {
 		this.controller.tick(deltaTime);
 		for( ASceneObject object : this.children ) {
-			Quaternionf rotationQuaternion = this.getTransformComponent().getRotationComponent().getAsQuaternion();
-			Vector3f position = this.getTransformComponent().getPosition();
-			object.getTransformComponent().setPosition(position.x, position.y, position.z);
-			object.getTransformComponent().getRotationComponent().setQuaternion(
+			Quaternionf rotationQuaternion = this.getTransform().getRotator().getAsQuaternion();
+			Vector3f position = this.getTransform().getPosition();
+			object.getTransform().setPosition(position.x, position.y, position.z);
+			object.getTransform().getRotator().setQuaternion(
 				rotationQuaternion.x, rotationQuaternion.y, rotationQuaternion.z, rotationQuaternion.w
 			);
-			Vector3f scale = this.getTransformComponent().getScale();
-			object.getTransformComponent().setScale(scale.x, scale.y, scale.z);
+			Vector3f scale = this.getTransform().getScale();
+			object.getTransform().setScale(scale.x, scale.y, scale.z);
 		}
 	}
 	
@@ -56,28 +56,28 @@ public class TestPointLight extends ASceneObject implements IControllable {
 		float movementSpeed = deltaTime * 100.0f;
 		float intensitySpeed = deltaTime * 10.0f;
 		float colorSpeed = deltaTime * 0.1f;
-		Vector3f position = this.getTransformComponent().getPosition();
+		Vector3f position = this.getTransform().getPosition();
 		switch( action.getActionID() ) {
 			case ActionSet.MOVE_FORWARD: {
-				this.getTransformComponent().setPosition(
+				this.getTransform().setPosition(
 					position.x, position.y, position.z + movementSpeed
 				);
 			} break;
 			
 			case ActionSet.MOVE_BACKWARDS: {
-				this.getTransformComponent().setPosition(
+				this.getTransform().setPosition(
 					position.x, position.y, position.z - movementSpeed
 				);
 			} break;
 			
 			case ActionSet.MOVE_LEFT: {
-				this.getTransformComponent().setPosition(
+				this.getTransform().setPosition(
 					position.x + movementSpeed, position.y, position.z
 				);
 			} break;
 			
 			case ActionSet.MOVE_RIGHT: {
-				this.getTransformComponent().setPosition(
+				this.getTransform().setPosition(
 					position.x - movementSpeed, position.y, position.z
 				);
 			} break;

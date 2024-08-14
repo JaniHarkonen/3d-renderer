@@ -32,10 +32,10 @@ public class RenderImage implements IRenderStrategy<GUIRenderPass> {
 		GL46.glActiveTexture(GL46.GL_TEXTURE0);
 		textureGL.bind();
 		
-		Transform transform = element.getTransformComponent();
+		Transform transform = element.getTransform();
 		Vector3f position = transform.getPosition();
 		Vector2f anchor = element.getAnchor();
-		Quaternionf rotation = transform.getRotationComponent().getAsQuaternion();
+		Quaternionf rotation = transform.getRotator().getAsQuaternion();
 		
 		UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.OBJECT_TRANSFORM))
 		.update(

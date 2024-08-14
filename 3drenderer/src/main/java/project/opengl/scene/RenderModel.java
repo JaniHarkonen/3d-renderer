@@ -30,7 +30,7 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 		ShaderProgram activeShaderProgram = renderPass.shaderProgram;
 		
 		UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.OBJECT_TRANSFORM))
-		.update(target.getTransformComponent().getAsMatrix());
+		.update(target.getTransform().getAsMatrix());
 		
 		Model model = (Model) target;
 		

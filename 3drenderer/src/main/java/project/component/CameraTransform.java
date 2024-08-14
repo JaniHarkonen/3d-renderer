@@ -13,7 +13,7 @@ public class CameraTransform extends Transform {
 	@Override
 	public void updateTransformMatrix() {
 		this.transformMatrix.identity()
-		.rotate(this.rotationComponent.getAsQuaternion())
+		.rotate(this.rotator.getAsQuaternion())
 		.translate(-this.position.x, -this.position.y, -this.position.z);
 	}
 }
