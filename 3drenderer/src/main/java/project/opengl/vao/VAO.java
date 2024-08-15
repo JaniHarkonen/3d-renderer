@@ -1,19 +1,21 @@
-package project.opengl;
+package project.opengl.vao;
 
-import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.opengl.GL46;
-import org.lwjgl.system.MemoryUtil;
 
 import project.Application;
 import project.asset.sceneasset.Mesh;
 import project.core.asset.IGraphics;
 import project.core.asset.IGraphicsAsset;
+import project.utils.GeometryUtils;
 
 public class VAO implements IGraphics {
 
 	private int vaoHandle;
-	private VBO positionsVBO;
+	private List<VBO> vbos;
+	/*private VBO positionsVBO;
 	private VBO normalsVBO;
 	private VBO tangentsVBO;
 	private VBO bitangentsVBO;
@@ -21,7 +23,7 @@ public class VAO implements IGraphics {
 	private VBO boneWeightVBO;
 	private VBO boneIndicesVBO;
 	
-	private int indicesVBO;
+	private int indicesVBO;*/
 	
 	private Mesh targetMesh;
 	private int vertexCount;
@@ -29,14 +31,15 @@ public class VAO implements IGraphics {
 	public VAO(Mesh targetMesh) {
 		this.vaoHandle = -1;
 		
-		this.positionsVBO = null;
+		/*this.positionsVBO = null;
 		this.normalsVBO = null;
 		this.tangentsVBO = null;
 		this.bitangentsVBO = null;
 		this.textureCoordinatesVBO = null;
 		this.boneWeightVBO = null;
 		this.boneIndicesVBO = null;
-		this.indicesVBO = -1;
+		this.indicesVBO = -1;*/
+		this.vbos = new ArrayList<>();
 		
 		this.targetMesh = targetMesh;
 		this.vertexCount = -1;
@@ -44,19 +47,25 @@ public class VAO implements IGraphics {
 	
 	private VAO(VAO src) {
 		this.vaoHandle = src.vaoHandle;
-		this.positionsVBO = src.positionsVBO;
+		/*this.positionsVBO = src.positionsVBO;
 		this.normalsVBO = src.normalsVBO;
 		this.tangentsVBO = src.tangentsVBO;
 		this.bitangentsVBO = src.bitangentsVBO;
 		this.textureCoordinatesVBO = src.textureCoordinatesVBO;
 		this.boneWeightVBO = src.boneWeightVBO;
 		this.boneIndicesVBO = src.boneIndicesVBO;
-		this.indicesVBO = src.indicesVBO;
-		
+		this.indicesVBO = src.indicesVBO;*/
+		this.vbos = new ArrayList<>(src.vbos);
 		this.targetMesh = src.targetMesh;
 		this.vertexCount = src.vertexCount;
 	}
 	
+	
+	public VAO addVBO(VBO vbo) {
+		vbo.setAttributeArrayIndex(this.vbos.size());
+		this.vbos.add(vbo);
+		return this;
+	}
 	
 	@Override
 	public boolean generate() {
@@ -64,9 +73,9 @@ public class VAO implements IGraphics {
 		this.bind();
 		
 			Mesh mesh = this.targetMesh;
-		
+			
 				// VBOs
-			this.positionsVBO = new VBO(0, 3);
+			/*this.positionsVBO = new VBO(0, 3);
 			this.positionsVBO.attach(mesh.getVertices());
 			
 			this.normalsVBO = new VBO(1, 3);
@@ -102,9 +111,18 @@ public class VAO implements IGraphics {
 			indicesBuffer.put(0, indices);
 			GL46.glBindBuffer(GL46.GL_ELEMENT_ARRAY_BUFFER, this.indicesVBO);
 			GL46.glBufferData(GL46.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL46.GL_STATIC_DRAW);
+
+			GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, 0);
+			MemoryUtil.memFree(indicesBuffer);*/
+			
+			this
+			.addVBO(new VBO(3).attach(GeometryUtils.vector3fArrayToFloatArray(mesh.getVertices())))
+			.addVBO(new VBO(3).attach(GeometryUtils.vector3fArrayToFloatArray(mesh.getNormals())))
+			.addVBO(new VBO(3).attach(GeometryUtils.vector3fArrayToFloatArray(mesh.getTangents())))
+			.addVBO(new VBO(3).attach(GeometryUtils.vector3fArrayToFloatArray(mesh.getBitangents())))
+			.addVBO(new VBO(2).attach(GeometryUtils.vector2fArrayToFloatArray(mesh.getUVs())));
 			
 			GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, 0);
-			MemoryUtil.memFree(indicesBuffer);
 		
 		this.unbind();
 		this.vertexCount = mesh.getVertexCount();
@@ -123,14 +141,18 @@ public class VAO implements IGraphics {
 	
 	@Override
 	public boolean dispose() {
-		this.positionsVBO.dispose();
+		/*this.positionsVBO.dispose();
 		this.normalsVBO.dispose();
 		this.tangentsVBO.dispose();
 		this.bitangentsVBO.dispose();
 		this.textureCoordinatesVBO.dispose();
 		this.boneWeightVBO.dispose();
 		this.boneIndicesVBO.dispose();
-		GL46.glDeleteBuffers(this.indicesVBO);
+		GL46.glDeleteBuffers(this.indicesVBO);*/
+		for( VBO vbo : this.vbos ) {
+			vbo.dispose();
+		}
+		
 		GL46.glDeleteVertexArrays(this.vaoHandle);
 		return true;
 	}

@@ -2,6 +2,7 @@ package project.asset;
 
 import java.nio.ByteBuffer;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
 
@@ -44,11 +45,11 @@ public final class AssetUtils {
     		new Vector3f[0],
     		new Vector3f[0],
     		new Vector3f[0],
-    		new Vector3f[] {
-				new Vector3f(UVs[0], UVs[1], 0),
-				new Vector3f(UVs[2], UVs[1], 0),
-				new Vector3f(UVs[2], UVs[3], 0),
-				new Vector3f(UVs[0], UVs[3], 0)
+    		new Vector2f[] {
+				new Vector2f(UVs[0], UVs[1]),
+				new Vector2f(UVs[2], UVs[1]),
+				new Vector2f(UVs[2], UVs[3]),
+				new Vector2f(UVs[0], UVs[3])
     		},
     		new Mesh.Face[] {
 				new Mesh.Face(new int[] {0, 1, 2}),

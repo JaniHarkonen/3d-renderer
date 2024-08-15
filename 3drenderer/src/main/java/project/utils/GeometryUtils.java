@@ -1,6 +1,7 @@
 package project.utils;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIVector3D;
@@ -40,6 +41,41 @@ public final class GeometryUtils {
 			result[i] = new Vector3f(aiVector.x(), aiVector.y(), aiVector.z());
 		}
 		
+		return result;
+	}
+	
+	public static Vector2f[] aiVector3DBufferToVector2fArray(AIVector3D.Buffer buffer) {
+		if( buffer == null ) {
+			return new Vector2f[0];
+		}
+		
+		Vector2f[] result = new Vector2f[buffer.remaining()];
+		for( int i = 0; buffer.remaining() > 0; i++ ) {
+			AIVector3D aiVector = buffer.get();
+			result[i] = new Vector2f(aiVector.x(), aiVector.y());
+		}
+		
+		return result;
+	}
+	
+	public static float[] vector3fArrayToFloatArray(Vector3f[] vectorArray) {
+		float[] result = new float[vectorArray.length * 3];
+		for( int i = 0; i < result.length; i += 3 ) {
+			Vector3f vector = vectorArray[i];
+			result[i] = vector.x;
+			result[i + 1] = vector.y;
+			result[i + 2] = vector.z;
+		}
+		return result;
+	}
+	
+	public static float[] vector2fArrayToFloatArray(Vector2f[] vectorArray) {
+		float[] result = new float[vectorArray.length * 2];
+		for( int i = 0; i < result.length; i += 3 ) {
+			Vector2f vector = vectorArray[i];
+			result[i] = vector.x;
+			result[i + 1] = vector.y;
+		}
 		return result;
 	}
 }

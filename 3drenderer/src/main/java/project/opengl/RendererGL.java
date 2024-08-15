@@ -17,6 +17,7 @@ import project.core.renderer.IRenderer;
 import project.opengl.cshadow.CascadeShadowRenderPass;
 import project.opengl.gui.GUIRenderPass;
 import project.opengl.scene.SceneRenderPass;
+import project.opengl.vao.VAO;
 import project.scene.Camera;
 import project.scene.Scene;
 import project.utils.DebugUtils;

@@ -12,10 +12,10 @@ import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
 import project.gui.Text;
 import project.opengl.TextureGL;
-import project.opengl.VAO;
 import project.opengl.shader.ShaderProgram;
 import project.opengl.shader.uniform.UAMatrix4f;
 import project.opengl.shader.uniform.UVector4f;
+import project.opengl.vao.VAO;
 import project.scene.ASceneObject;
 
 public class RenderText implements IRenderStrategy<GUIRenderPass> {

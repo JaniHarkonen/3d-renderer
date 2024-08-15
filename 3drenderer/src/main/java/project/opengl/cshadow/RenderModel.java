@@ -5,9 +5,9 @@ import org.lwjgl.opengl.GL46;
 import project.asset.sceneasset.Mesh;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
-import project.opengl.VAO;
 import project.opengl.shader.ShaderProgram;
 import project.opengl.shader.uniform.UAMatrix4f;
+import project.opengl.vao.VAO;
 import project.scene.ASceneObject;
 import project.scene.Model;
 
