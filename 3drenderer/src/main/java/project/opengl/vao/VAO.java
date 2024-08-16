@@ -15,118 +15,62 @@ public class VAO implements IGraphics {
 
 	private int vaoHandle;
 	private List<VBO> vbos;
-	/*private VBO positionsVBO;
-	private VBO normalsVBO;
-	private VBO tangentsVBO;
-	private VBO bitangentsVBO;
-	private VBO textureCoordinatesVBO;
-	private VBO boneWeightVBO;
-	private VBO boneIndicesVBO;
-	
-	private int indicesVBO;*/
-	
 	private Mesh targetMesh;
 	private int vertexCount;
 	
 	public VAO(Mesh targetMesh) {
 		this.vaoHandle = -1;
-		
-		/*this.positionsVBO = null;
-		this.normalsVBO = null;
-		this.tangentsVBO = null;
-		this.bitangentsVBO = null;
-		this.textureCoordinatesVBO = null;
-		this.boneWeightVBO = null;
-		this.boneIndicesVBO = null;
-		this.indicesVBO = -1;*/
 		this.vbos = new ArrayList<>();
-		
 		this.targetMesh = targetMesh;
 		this.vertexCount = -1;
 	}
 	
 	private VAO(VAO src) {
 		this.vaoHandle = src.vaoHandle;
-		/*this.positionsVBO = src.positionsVBO;
-		this.normalsVBO = src.normalsVBO;
-		this.tangentsVBO = src.tangentsVBO;
-		this.bitangentsVBO = src.bitangentsVBO;
-		this.textureCoordinatesVBO = src.textureCoordinatesVBO;
-		this.boneWeightVBO = src.boneWeightVBO;
-		this.boneIndicesVBO = src.boneIndicesVBO;
-		this.indicesVBO = src.indicesVBO;*/
 		this.vbos = new ArrayList<>(src.vbos);
 		this.targetMesh = src.targetMesh;
 		this.vertexCount = src.vertexCount;
 	}
 	
 	
-	public VAO addVBO(VBO vbo) {
+	public VBO addVBO(VBO vbo) {
 		vbo.setAttributeArrayIndex(this.vbos.size());
 		this.vbos.add(vbo);
-		return this;
+		return vbo;
 	}
 	
 	@Override
 	public boolean generate() {
 		this.vaoHandle = GL46.glGenVertexArrays();
-		this.bind();
 		
-			Mesh mesh = this.targetMesh;
-			
-				// VBOs
-			/*this.positionsVBO = new VBO(0, 3);
-			this.positionsVBO.attach(mesh.getVertices());
-			
-			this.normalsVBO = new VBO(1, 3);
-			this.normalsVBO.attach(mesh.getNormals());
-			
-			this.tangentsVBO = new VBO(2, 3);
-			this.tangentsVBO.attach(mesh.getTangents());
-			
-			this.bitangentsVBO = new VBO(3, 3);
-			this.bitangentsVBO.attach(mesh.getBitangents());
-			
-			this.textureCoordinatesVBO = new VBO(4, 2);
-			this.textureCoordinatesVBO.attach(mesh.getUVs(), 2);
-			
-			this.boneWeightVBO = new VBO(5, 4);
-			this.boneWeightVBO.attach(mesh.getBoneWeights());
-			
-			this.boneIndicesVBO = new VBO(6, 4);
-			this.boneIndicesVBO.attach(mesh.getBoneIDs());
-			
-				// Indices
-			int[] indices = new int[mesh.getFaces().length * Mesh.Face.INDICES_PER_FACE];
-			Mesh.Face[] faces = mesh.getFaces();
-			for( int i = 0; i < faces.length; i++ ) {
-				Mesh.Face face = faces[i];
-				int j = i * 3;
-				indices[j] = face.getIndex(0);
-				indices[j + 1] = face.getIndex(1);
-				indices[j + 2] = face.getIndex(2);
-			}
-			this.indicesVBO = GL46.glGenBuffers();
-			IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);
-			indicesBuffer.put(0, indices);
-			GL46.glBindBuffer(GL46.GL_ELEMENT_ARRAY_BUFFER, this.indicesVBO);
-			GL46.glBufferData(GL46.GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL46.GL_STATIC_DRAW);
-
-			GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, 0);
-			MemoryUtil.memFree(indicesBuffer);*/
-			
-			this
-			.addVBO(new VBO(3).attach(GeometryUtils.vector3fArrayToFloatArray(mesh.getVertices())))
-			.addVBO(new VBO(3).attach(GeometryUtils.vector3fArrayToFloatArray(mesh.getNormals())))
-			.addVBO(new VBO(3).attach(GeometryUtils.vector3fArrayToFloatArray(mesh.getTangents())))
-			.addVBO(new VBO(3).attach(GeometryUtils.vector3fArrayToFloatArray(mesh.getBitangents())))
-			.addVBO(new VBO(2).attach(GeometryUtils.vector2fArrayToFloatArray(mesh.getUVs())));
-			
-			GL46.glBindBuffer(GL46.GL_ARRAY_BUFFER, 0);
+		Mesh mesh = this.targetMesh;
+		VBO indicesVBO = new VBO(0, -1, GL46.GL_ELEMENT_ARRAY_BUFFER, GL46.GL_STATIC_DRAW) {
+			@Override
+			public void attach() {} // Index VBO doesn't have to be attached
+		};
+		
+		this
+		.addVBO(new VBO(3))
+		.generateAndAttach(this, GeometryUtils.vector3fArrayToFloatArray(mesh.getVertices()))
+		.addVBO(new VBO(3))
+		.generateAndAttach(this, GeometryUtils.vector3fArrayToFloatArray(mesh.getNormals()))
+		.addVBO(new VBO(3))
+		.generateAndAttach(this, GeometryUtils.vector3fArrayToFloatArray(mesh.getTangents()))
+		.addVBO(new VBO(3))
+		.generateAndAttach(this, GeometryUtils.vector3fArrayToFloatArray(mesh.getBitangents()))
+		.addVBO(new VBO(2))
+		.generateAndAttach(this, GeometryUtils.vector2fArrayToFloatArray(mesh.getUVs()))
+		.addVBO(new VBO(4))
+		.generateAndAttach(this, mesh.getBoneWeights())
+		.addVBO(new VBO(4))
+		.generateAndAttach(this, mesh.getBoneIDs())
+		.addVBO(indicesVBO)
+		.generateAndAttach(this, GeometryUtils.faceArrayToIntArray(mesh.getFaces()));
 		
 		this.unbind();
 		this.vertexCount = mesh.getVertexCount();
 		this.targetMesh.setGraphics(this);
+		
 		return true;
 	}
 	
@@ -141,14 +85,6 @@ public class VAO implements IGraphics {
 	
 	@Override
 	public boolean dispose() {
-		/*this.positionsVBO.dispose();
-		this.normalsVBO.dispose();
-		this.tangentsVBO.dispose();
-		this.bitangentsVBO.dispose();
-		this.textureCoordinatesVBO.dispose();
-		this.boneWeightVBO.dispose();
-		this.boneIndicesVBO.dispose();
-		GL46.glDeleteBuffers(this.indicesVBO);*/
 		for( VBO vbo : this.vbos ) {
 			vbo.dispose();
 		}
