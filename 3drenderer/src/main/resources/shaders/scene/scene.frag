@@ -41,6 +41,7 @@ struct Material
     vec4 specular;
     float reflectance;
     int hasNormalMap;
+    int hasRoughnessMap;
 };
 
 struct AmbientLight
@@ -73,6 +74,7 @@ out vec4 fragColor;
 
 uniform sampler2D uDiffuseSampler;
 uniform sampler2D uNormalSampler;
+uniform sampler2D uRoughnessSampler;
 uniform sampler2D uShadowMap[NUM_CASCADES];
 uniform Material uMaterial;
 uniform AmbientLight uAmbientLight;
@@ -104,8 +106,21 @@ vec4 calculateLightColor(
     vec3 cameraDirection = normalize(-position);
     float specularFactor = max(dot(cameraDirection, lightReflection), 0.0);
     specularFactor = pow(specularFactor, SPECULAR_POWER);
-    vec4 specColor = 
-        specular * lightIntensity  * specularFactor * uMaterial.reflectance * vec4(lightColor, 1.0);
+
+    float roughness = 0.0;
+
+    if( uMaterial.hasRoughnessMap == 1 ) {
+        roughness = texture(uRoughnessSampler, outTextureCoordinate).r;
+    }
+
+    vec4 specColor = (
+        specular * 
+        lightIntensity * 
+        specularFactor * 
+        roughness * 
+        vec4(lightColor, 1.0)
+    );
+        //specular * lightIntensity  * specularFactor * uMaterial.reflectance * vec4(lightColor, 1.0);
 
     return (diffuseColor + specColor);
 }
@@ -119,13 +134,14 @@ vec4 calculatePointLight(vec4 diffuse, vec4 specular, PointLight light, vec3 pos
 
         // Apply Attenuation
     float distanceToLight = length(lightDirection);
-    float attenuationInv = 
+    float attenuationInv = (
         light.attenuation.constant + 
         light.attenuation.linear * 
         distanceToLight + 
         light.attenuation.exponent * 
         distanceToLight * 
-        distanceToLight;
+        distanceToLight
+    );
 
     return lightColor / attenuationInv;
 }

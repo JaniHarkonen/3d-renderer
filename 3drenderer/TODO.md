@@ -1,13 +1,16 @@
 ## TO DO
 
 ### Priority
-- implement roughness maps, alpha maps
+- implement alpha maps
 - get rid of RendererGL casts inside 'opengl' package
-- re-think animation & bone architecture
 
 ### General
 - there is still a lot of repetition among render passes, however, this should be further examined once instanced rendering is considered
 - get rid of uniform casting in render strategies
+
+### Scene
+- remove debug-related code
+- create a TestScene that possibly extends Scene
 
 ### ASceneObject
 - when deep copying scene objects for rendering, determine a way to skip unchanged objects

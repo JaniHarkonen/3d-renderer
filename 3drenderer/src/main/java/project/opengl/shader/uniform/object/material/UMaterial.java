@@ -8,6 +8,7 @@ import project.opengl.shader.uniform.UVector4f;
 public class UMaterial extends AUniformObject<SSMaterial> {
 
 	private UInteger1 hasNormalMap;
+	private UInteger1 hasRoughnessMap;
 	private UVector4f ambient;
 	private UVector4f diffuse;
 	private UVector4f specular;
@@ -17,6 +18,7 @@ public class UMaterial extends AUniformObject<SSMaterial> {
 		super(name);
 		
 		this.hasNormalMap = new UInteger1();
+		this.hasRoughnessMap = new UInteger1();
 		this.ambient = new UVector4f();
 		this.diffuse = new UVector4f();
 		this.specular = new UVector4f();
@@ -24,6 +26,7 @@ public class UMaterial extends AUniformObject<SSMaterial> {
 		
 		this
 		.addField("hasNormalMap", this.hasNormalMap)
+		.addField("hasRoughnessMap", this.hasRoughnessMap)
 		.addField("ambient", this.ambient)
 		.addField("diffuse", this.diffuse)
 		.addField("specular", this.specular)
@@ -38,6 +41,7 @@ public class UMaterial extends AUniformObject<SSMaterial> {
 	@Override
 	public void update(SSMaterial value) {
 		this.hasNormalMap.update(value.hasNormalMap);
+		this.hasRoughnessMap.update(value.hasRoughnessMap);
 		this.ambient.update(value.ambient);
 		this.diffuse.update(value.diffuse);
 		this.specular.update(value.specular);

@@ -50,18 +50,22 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 				textureGL.bind();
 			}
 			
-			if( material.getTexture(1) != null && (boolean) renderPass.getGameState().getDebugData(TestDebugDataHandles.NORMALS_ACTIVE) ) {
-				this.materialStruct.hasNormalMap = 1;
-			} else {
-				this.materialStruct.hasNormalMap = 0;
-			}
+			boolean areNormalsActive = 
+				(boolean) renderPass.getGameState().getDebugData(TestDebugDataHandles.NORMALS_ACTIVE);
+			boolean isRoughnessActive = 
+				(boolean) renderPass.getGameState().getDebugData(TestDebugDataHandles.ROUGHNESS_ACTIVE);
 			
+			this.materialStruct.hasNormalMap = 
+				(material.getTexture(1) != null && areNormalsActive) ? 1 : 0;
+			this.materialStruct.hasRoughnessMap = 
+				(material.getTexture(2) != null && isRoughnessActive) ? 1 : 0;
 			this.materialStruct.ambient = material.getAmbientColor();
 			this.materialStruct.diffuse = material.getDiffuseColor();
 			this.materialStruct.specular = material.getSpecularColor();
 			this.materialStruct.reflectance = material.getReflectance();
 			
-			UMaterial.class.cast(activeShaderProgram.getUniform(Uniforms.MATERIAL)).update(this.materialStruct);
+			UMaterial.class.cast(activeShaderProgram.getUniform(Uniforms.MATERIAL))
+			.update(this.materialStruct);
 			
 			VAO vao = (VAO) mesh.getGraphics();
 			vao.bind();

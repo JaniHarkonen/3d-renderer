@@ -34,7 +34,6 @@ import project.scene.PointLight;
 import project.testing.TestDebugDataHandles;
 
 public class SceneRenderPass implements IRenderPass {
-	public static final int DEFAULT_FIRST_FREE_TEXTURE_INDEX = 2;
 	static final int MAX_POINT_LIGHTS = 5;
 	
 		// Shared with render passes
@@ -44,6 +43,7 @@ public class SceneRenderPass implements IRenderPass {
 		// Cache frequently used uniforms
 	private UInteger1 uDiffuseSampler;
 	private UInteger1 uNormalSampler;
+	private UInteger1 uRoughnessSampler;
 	private UAMatrix4f uProjection;
 	private UAMatrix4f uCameraTransform;
 	private UArray<Integer> uShadowMap;
@@ -72,6 +72,7 @@ public class SceneRenderPass implements IRenderPass {
 	public boolean initialize() {
 		this.uDiffuseSampler = new UInteger1(Uniforms.DIFFUSE_SAMPLER);
 		this.uNormalSampler = new UInteger1(Uniforms.NORMAL_SAMPLER);
+		this.uRoughnessSampler = new UInteger1(Uniforms.ROUGHNESS_SAMPLER);
 		this.uProjection = new UAMatrix4f(Uniforms.PROJECTION);
 		this.uCameraTransform = new UAMatrix4f(Uniforms.CAMERA_TRANSFORM);
 		this.uDebugShowShadowCascades = new UInteger1(Uniforms.DEBUG_SHOW_SHADOW_CASCADES);
@@ -88,6 +89,7 @@ public class SceneRenderPass implements IRenderPass {
 		this.shaderProgram
 		.declareUniform(this.uDiffuseSampler)
 		.declareUniform(this.uNormalSampler)
+		.declareUniform(this.uRoughnessSampler)
 		.declareUniform(this.uProjection)
 		.declareUniform(this.uCameraTransform)
 		.declareUniform(this.uShadowMap)
@@ -131,7 +133,9 @@ public class SceneRenderPass implements IRenderPass {
 	public void render(IRenderer renderer, GameState gameState) {
 		final int DIFFUSE_SAMPLER = 0;
 		final int NORMAL_SAMPLER = 1;
-		final int SHADOW_MAP_FIRST = DEFAULT_FIRST_FREE_TEXTURE_INDEX;
+		final int ROUGHNESS_SAMPLER = 2;
+		final int LAST_SAMPLER = ROUGHNESS_SAMPLER;
+		final int SHADOW_MAP_FIRST = LAST_SAMPLER + 1;
 		
 		this.gameState = gameState;
 		ShaderProgram activeShaderProgram = this.shaderProgram;
@@ -139,6 +143,7 @@ public class SceneRenderPass implements IRenderPass {
 		activeShaderProgram.bind();
 		this.uDiffuseSampler.update(DIFFUSE_SAMPLER);
 		this.uNormalSampler.update(NORMAL_SAMPLER);
+		this.uRoughnessSampler.update(ROUGHNESS_SAMPLER);
 		
 		for( int i = 0; i < CascadeShadow.SHADOW_MAP_CASCADE_COUNT; i++ ) {
 			CascadeShadow cascadeShadow = this.cascadeShadowRenderPass.getCascadeShadow(i);
@@ -150,7 +155,7 @@ public class SceneRenderPass implements IRenderPass {
 			this.uCascadeShadows.update(cascadeShadowStruct, i);
 		}
 		
-		this.cascadeShadowRenderPass.getShadowBuffer().bindTextures(GL46.GL_TEXTURE2);
+		this.cascadeShadowRenderPass.getShadowBuffer().bindTextures(GL46.GL_TEXTURE0 + SHADOW_MAP_FIRST);
 		this.activeCamera = this.gameState.getActiveCamera();
 		
 		
