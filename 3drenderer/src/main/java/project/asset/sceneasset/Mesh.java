@@ -1,5 +1,6 @@
 package project.asset.sceneasset;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import project.Application;
@@ -35,7 +36,7 @@ public class Mesh implements IGraphicsAsset {
 		Vector3f[] normals;
 		Vector3f[] tangents;
 		Vector3f[] bitangents;
-		Vector3f[] UVs; // Stored as a 3-vector for consistency, change this if necessary
+		Vector2f[] UVs;
 		Face[] faces;
 		float[] weights;
 		int[] boneIDs;
@@ -86,11 +87,11 @@ public class Mesh implements IGraphicsAsset {
 				new Vector3f(0, 0, 0),
 				new Vector3f(0, 0, 0),	
 			},
-			new Vector3f[] {
-				new Vector3f(0, 0, 0),
-				new Vector3f(1, 0, 0),
-				new Vector3f(0, 1, 0),
-				new Vector3f(1, 1, 0),
+			new Vector2f[] {
+				new Vector2f(0, 0),
+				new Vector2f(1, 0),
+				new Vector2f(0, 1),
+				new Vector2f(1, 1),
 			}, 
 			new Face[] {
 				new Face(new int[] { 0, 1, 3 } ),
@@ -107,7 +108,7 @@ public class Mesh implements IGraphicsAsset {
 		Vector3f[] normals,
 		Vector3f[] tangents,
 		Vector3f[] bitangents,
-		Vector3f[] UVs,
+		Vector2f[] UVs,
 		Face[] faces,
 		float[] weights,
 		int[] boneIDs
@@ -130,7 +131,7 @@ public class Mesh implements IGraphicsAsset {
 	private Vector3f[] normals;
 	private Vector3f[] tangents;
 	private Vector3f[] bitangents;
-	private Vector3f[] UVs; // Stored as a 3-vector for consistency, change this if necessary
+	private Vector2f[] UVs; // Stored as a 3-vector for consistency, change this if necessary
 	private Face[] faces;
 	private float[] weights;
 	private int[] boneIDs;
@@ -164,7 +165,7 @@ public class Mesh implements IGraphicsAsset {
 		Vector3f[] normals,
 		Vector3f[] tangents,
 		Vector3f[] bitangents,
-		Vector3f[] UVs,
+		Vector2f[] UVs,
 		Face[] faces,
 		float[] weights,
 		int[] boneIDs
@@ -218,7 +219,7 @@ public class Mesh implements IGraphicsAsset {
 		return this.bitangents;
 	}
 	
-	public Vector3f[] getUVs() {
+	public Vector2f[] getUVs() {
 		return this.UVs;
 	}
 	

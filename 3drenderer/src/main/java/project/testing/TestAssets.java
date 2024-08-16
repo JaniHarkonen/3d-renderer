@@ -101,6 +101,7 @@ public final class TestAssets {
 		//MESH_MAN = array[0];
 	}
 	
+	
 	public static void initMaterials() {
 		MAT_SOLDIER_HEAD = createMaterialWithNormal(
 			"mat-soldier-head",
@@ -108,6 +109,7 @@ public final class TestAssets {
 			"textures/soldier",
 			"head"
 		);
+		MAT_SOLDIER_HEAD.setTexture(2, loadTexture("tex-soldier-head", "textures/soldier/rough/head_rough.png"));
 		MAT_SOLDIER_BODY = createMaterial(
 			"mat-soldier-body",
 			"tex-soldier-body-diffuse",
@@ -115,24 +117,28 @@ public final class TestAssets {
 			"textures/soldier/diffuse/body_diff.png",
 			"textures/soldier/normal/body_normal.png"
 		);
+		MAT_SOLDIER_BODY.setTexture(2, loadTexture("tex-soldier-body", "textures/soldier/rough/body_rough.png"));
 		MAT_SOLDIER_VEST = createMaterialWithNormal(
 			"mat-soldier-vest",
 			"tex-soldier-vest",
 			"textures/soldier",
 			"vest"
 		);
+		MAT_SOLDIER_VEST.setTexture(2, loadTexture("tex-soldier-vest", "textures/soldier/rough/vest_rough.png"));
 		MAT_SOLDIER_HELMET = createMaterialWithNormal(
 			"mat-soldier-helmet",
 			"tex-soldier-helmet",
 			"textures/soldier/",
 			"helmet"
 		);
+		MAT_SOLDIER_HELMET.setTexture(2, loadTexture("tex-soldier-helmet", "textures/soldier/rough/helmet_rough.png"));
 		MAT_SOLDIER_GADGETS = createMaterialWithNormal(
 			"mat-soldier-gadgets",
 			"tex-soldier-gadgets",
 			"textures/soldier",
 			"gadgets"
 		);
+		MAT_SOLDIER_GADGETS.setTexture(2, loadTexture("tex-soldier-gadgets", "textures/soldier/rough/gadgets_rough.png"));
 		MAT_SOLDIER_EYES = createMaterialWithNormal(
 			"mat-soldier-eyes",
 			"tex-soldier-eyes",
@@ -364,7 +370,11 @@ public final class TestAssets {
 	}
 	
 	private static Material createMaterial(
-		String materialName, String diffuseName, String normalName, String relativeDiffusePath, String relativeNormalPath
+		String materialName, 
+		String diffuseName, 
+		String normalName, 
+		String relativeDiffusePath, 
+		String relativeNormalPath
 	) {
 		Texture diffuse = loadTexture(diffuseName, relativeDiffusePath);
 		Texture normal = relativeNormalPath != null ? loadTexture(normalName, relativeNormalPath) : null;
@@ -386,7 +396,9 @@ public final class TestAssets {
 		);
 	}
 	
-	private static Material createMaterial(String materialName, String textureNamePrefix, String relativeDiffusePath) {
+	private static Material createMaterial(
+		String materialName, String textureNamePrefix, String relativeDiffusePath
+	) {
 		return createMaterial(materialName, textureNamePrefix + "-diffuse", null, relativeDiffusePath, null);
 	}
 	
@@ -422,7 +434,14 @@ public final class TestAssets {
 	}
 	
 	private static Font loadFont(String name, String relativePath, int textureWidth, int textureHeight) {
-		Font result = new Font(name, loadTexture("tex-" + name, relativePath + ".png"), textureWidth, textureHeight);
+		Font result = new Font(
+			name, 
+			"0123456789 !\\\"#$%&'()*+,-./:;<=>?@" + 
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\\\]^_`" + 
+			"abcdefghijklmnopqrstuvwxyz{|}~", 
+			loadTexture("tex-" + name, relativePath + ".png"), 
+			textureWidth, textureHeight
+		);
 		
 		FontLoadTask task = new FontLoadTask(
 			FileUtils.getResourcePath(relativePath + ".json"), 

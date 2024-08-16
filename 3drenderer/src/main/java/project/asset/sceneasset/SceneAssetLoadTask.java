@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIAnimation;
@@ -100,7 +101,7 @@ public class SceneAssetLoadTask implements ILoadTask {
 			Vector3f[] normals = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mNormals());
 			Vector3f[] tangents = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mTangents());
 			Vector3f[] bitangents = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mBitangents());
-			Vector3f[] UVs = GeometryUtils.aiVector3DBufferToVector3fArray(aiMesh.mTextureCoords(0));
+			Vector2f[] UVs = GeometryUtils.aiVector3DBufferToVector2fArray(aiMesh.mTextureCoords(0));
 
 				// By default, set tangents array should be the same length as the normals array
 			if( tangents.length == 0 ) {
@@ -117,7 +118,7 @@ public class SceneAssetLoadTask implements ILoadTask {
 			}
 			
 				// Fix UV-coordinates
-			for( Vector3f uv : UVs ) {
+			for( Vector2f uv : UVs ) {
 				uv.y = 1 - uv.y;
 			}
 			
@@ -295,7 +296,7 @@ public class SceneAssetLoadTask implements ILoadTask {
 		
 		Animation.Data animationData = new Animation.Data();
 		animationData.targetAnimation = targetAnimation;
-		animationData.duration = aiAnimation.mDuration();
+		animationData.duration = (float) aiAnimation.mDuration();
 		animationData.frames = frames;
 		this.notifyAssetManager(animationData.targetAnimation, animationData, null);
 	}

@@ -6,7 +6,7 @@ import project.asset.texture.Texture;
 
 public class Material {
 	
-	public static final int DEFAULT_TEXTURE_SLOT_COUNT = 2;
+	public static final int DEFAULT_TEXTURE_SLOT_COUNT = 3;
 	public static final Vector4f DEFAULT_AMBIENT_COLOR = 
 		new Vector4f(0.0f, 0.0f, 0.0f, 1.0f); // pulled from fbx via Assimp
 	public static final Vector4f DEFAULT_DIFFUSE_COLOR = 

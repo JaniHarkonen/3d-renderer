@@ -36,6 +36,7 @@ public class Scene {
 	private TestPointLight DEBUGtestPointLight0;
 	private Vector3f DEBUGshadowLightPosition;
 	private boolean DEBUGareNormalsActive;
+	private boolean DEBUGisRoughnessActive;
 	private boolean DEBUGcascadeShadowEnabled;
 	private TestDummy DEBUGsoldier;
 	
@@ -51,6 +52,7 @@ public class Scene {
 		this.DEBUGtestPointLight0 = null;
 		this.DEBUGshadowLightPosition = null;
 		this.DEBUGareNormalsActive = true;
+		this.DEBUGisRoughnessActive = true;
 		this.DEBUGcascadeShadowEnabled = false;
 		this.DEBUGsoldier = null;
 	}
@@ -169,9 +171,10 @@ public class Scene {
 					pl0Color.z +
 				")\n" +
 				"soldier: \n" +
-				"    model.animator.currentFrameIndex: \n" + this.DEBUGsoldier.getModel().getAnimator().getCurrentFrameIndex() + "\n" +
+				"    model.animator.currentFrameIndex: " + this.DEBUGsoldier.getModel().getAnimator().getCurrentFrameIndex() + "\n" +
 				"    intensity: " + this.DEBUGtestPointLight0.getPointLight().getIntensity() + "\n" +
 				"    normal map: " + (this.DEBUGareNormalsActive ? "ON" : "OFF") + " (N to toggle)\n" +
+				"    roughness map: " + (DEBUGisRoughnessActive ? "ON" : "OFF") + " (R to toggle)\n" +
 				"    shadow map cascades: " + (this.DEBUGcascadeShadowEnabled ? "ON" : "OFF") + " (C to toggle)\n\n" +
 				"Controls: \n" + 
 				"    WASD to move\n" +
@@ -205,6 +208,10 @@ public class Scene {
 			this.DEBUGareNormalsActive = !this.DEBUGareNormalsActive;
 		}
 		
+		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_R) ) {
+			this.DEBUGisRoughnessActive = !this.DEBUGisRoughnessActive;
+		}
+		
 		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_C) ) {
 			this.DEBUGcascadeShadowEnabled = !this.DEBUGcascadeShadowEnabled;
 		}
@@ -213,13 +220,16 @@ public class Scene {
 			object.submitToRenderer();
 		}
 		
-		for( AGUIElement element : this.gui.getElements() ) {
-			element.submitToRenderer();
+		if( this.gui != null ) {
+			for( AGUIElement element : this.gui.getElements() ) {
+				element.submitToRenderer();
+			}
 		}
 		
 		Application.getApp().getRenderer().getBackGameState()
 		.setDebugData(TestDebugDataHandles.NORMALS_ACTIVE, this.DEBUGareNormalsActive)
 		.setDebugData(TestDebugDataHandles.CASCADE_SHADOW_LIGHT, this.DEBUGshadowLightPosition)
+		.setDebugData(TestDebugDataHandles.ROUGHNESS_ACTIVE, this.DEBUGisRoughnessActive)
 		.setDebugData(TestDebugDataHandles.CASCADE_SHADOW_ENABLED, this.DEBUGcascadeShadowEnabled);
 		Application.getApp().getRenderer().submitGameState();
 	}

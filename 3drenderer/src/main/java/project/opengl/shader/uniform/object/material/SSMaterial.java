@@ -7,6 +7,7 @@ import project.opengl.shader.uniform.IShaderStruct;
 public class SSMaterial implements IShaderStruct {
 
 	public int hasNormalMap;
+	public int hasRoughnessMap;
 	public Vector4f ambient;
 	public Vector4f diffuse;
 	public Vector4f specular;

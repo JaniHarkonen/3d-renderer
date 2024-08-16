@@ -10,5 +10,5 @@ public class SSPointLight implements IShaderStruct {
 	public Vector3f position;
 	public Vector3f color;
 	public float intensity;
-	public SSAttenuation att;
+	public SSAttenuation attenuation;
 }

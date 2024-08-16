@@ -10,7 +10,7 @@ public class UPointLight extends AUniformObject<SSPointLight> {
 	private UVector3f position;
 	private UVector3f color;
 	private UFloat1 intensity;
-	private UAttenuation att;
+	private UAttenuation attenuation;
 	
 	public UPointLight(String name) {
 		super(name);
@@ -18,14 +18,16 @@ public class UPointLight extends AUniformObject<SSPointLight> {
 		this.position = new UVector3f();
 		this.color = new UVector3f();
 		this.intensity = new UFloat1();
-		this.att = new UAttenuation();
+		this.attenuation = new UAttenuation();
 		
 		this
 		.addField("position", this.position)
 		.addField("color", this.color)
 		.addField("intensity", this.intensity)
-		.addField("att", this.att);
+		.addField("attenuation", this.attenuation);
 	}
+	
+	
 	
 	public UPointLight() {
 		this("");
@@ -37,6 +39,6 @@ public class UPointLight extends AUniformObject<SSPointLight> {
 		this.position.update(value.position);
 		this.color.update(value.color);
 		this.intensity.update(value.intensity);
-		this.att.update(value.att);
+		this.attenuation.update(value.attenuation);
 	}
 }

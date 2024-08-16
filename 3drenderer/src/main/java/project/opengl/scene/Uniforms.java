@@ -4,6 +4,7 @@ final class Uniforms {
 
 	static final String DIFFUSE_SAMPLER = "uDiffuseSampler";
 	static final String NORMAL_SAMPLER = "uNormalSampler";
+	static final String ROUGHNESS_SAMPLER = "uRoughnessSampler";
 	static final String PROJECTION = "uProjection";
 	static final String CAMERA_TRANSFORM = "uCameraTransform";
 	static final String SHADOW_MAP = "uShadowMap";

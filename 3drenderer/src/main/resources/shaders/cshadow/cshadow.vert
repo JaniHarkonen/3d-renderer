@@ -11,27 +11,28 @@ layout (location=6) in ivec4 boneIndices;
 const int MAX_WEIGHTS = 4;
 const int MAX_BONES = 150;
 
-uniform mat4 uObjectTransform; //modelMatrix;
-uniform mat4 uLightView;//projViewMatrix;
-uniform mat4 uBoneMatrices[MAX_BONES]; //uniform mat4 bonesMatrices[MAX_BONES];
+uniform mat4 uObjectTransform;
+uniform mat4 uLightView;
+uniform mat4 uBoneMatrices[MAX_BONES];
 
 void main()
 {
-    //vec4 initPos = vec4(position, 1.0);
-    vec4 initPos = vec4(0, 0, 0, 0);
-    int count = 0;
-    for (int i = 0; i < MAX_WEIGHTS; i++) {
+    vec4 fixedPosition = vec4(0, 0, 0, 0);
+    vec4 defaultPosition = vec4(position, 1.0);
+    int activeWeightCount = 0;
+    for( int i = 0; i < MAX_WEIGHTS; i++ ) {
         float weight = boneWeights[i];
-        if (weight > 0) {
-            count++;
+        if( weight > 0 ) {
+            activeWeightCount++;
+
             int boneIndex = boneIndices[i];
-            vec4 tmpPos = uBoneMatrices[boneIndex] * vec4(position, 1.0);
-            initPos += weight * tmpPos;
+            fixedPosition += weight * uBoneMatrices[boneIndex] * defaultPosition;
         }
     }
-    if (count == 0) {
-        initPos = vec4(position, 1.0);
+    
+    if( activeWeightCount == 0 ) {
+        fixedPosition = defaultPosition;
     }
 
-    gl_Position = uLightView * uObjectTransform * initPos;
+    gl_Position = uLightView * uObjectTransform * fixedPosition;
 }

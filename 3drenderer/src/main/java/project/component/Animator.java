@@ -21,6 +21,12 @@ public class Animator {
 		this.isPaused = false;
 	}
 	
+	public Animator(Animator src) {
+		this.animation = src.animation;
+		this.currentFrameIndex = src.currentFrameIndex;
+		this.currentFrame = src.currentFrame;
+	}
+	
 	
 	public void update(float deltaTime) {
 		if( this.isPaused ) {
@@ -31,15 +37,14 @@ public class Animator {
 		
 		if( this.frameTimer >= this.frameSpeed ) {
 			this.currentFrameIndex += this.direction;
-			//if( this.currentFrameIndex + 1 < this.animation.getFrameCount() ) {
+			
 			if( this.currentFrameIndex >= 0 && this.currentFrameIndex < this.animation.getFrameCount() ) {
 				this.setFrame(this.currentFrameIndex);
-				//this.setFrame(++this.currentFrameIndex);
 			} else {
-				this.onFinish();
 				this.currentFrameIndex = Math.max(
 					0, Math.min(this.animation.getFrameCount(), this.currentFrameIndex)
 				);
+				this.onFinish();
 			}
 			this.frameTimer = 0.0f;
 		}
@@ -49,39 +54,51 @@ public class Animator {
 		this.pause();
 	}
 	
-	public void restart() {
+	public Animator restart() {
 		this.setFrame(0);
+		return this;
 	}
 	
-	public void play() {
+	public Animator play() {
 		this.isPaused = false;
+		return this;
 	}
 	
-	public void pause() {
+	public Animator pause() {
 		this.isPaused = true;
+		return this;
 	}
 	
-	public void stop() {
+	public Animator stop() {
 		this.pause();
 		this.restart();
+		return this;
 	}
 	
-	public void reverse() {
+	public Animator reverse() {
 		this.direction *= -1;
+		return this;
 	}
 	
-	private void setFrame(int frameIndex) {
+	public Animator setFrame(int frameIndex) {
 		this.currentFrameIndex = frameIndex;
 		this.currentFrame = this.animation.getFrame(this.currentFrameIndex);
+		return this;
 	}
 	
-	public void setAnimation(Animation animation) {
+	public Animator setAnimation(Animation animation) {
 		this.animation = animation;
 		this.setFrame(0);
+		return this;
 	}
 	
-	public void setSpeed(float frameDelta) {
+	public Animator setSpeed(float frameDelta) {
 		this.frameSpeed = frameDelta;
+		return this;
+	}
+	
+	public float getSpeed() {
+		return this.frameSpeed;
 	}
 	
 	public Animation.Frame getCurrentFrame() {

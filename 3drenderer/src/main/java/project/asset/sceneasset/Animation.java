@@ -44,7 +44,7 @@ public class Animation implements IAsset {
 	
 	public static class Data implements IAssetData {
 		Animation targetAnimation;
-		double duration;
+		float duration;
 		Frame[] frames;
 
 		@Override
@@ -66,7 +66,7 @@ public class Animation implements IAsset {
 	
 	private final String name;
 	
-	private double duration;
+	private float duration;
 	private int expectedFrameCount;
 	private Frame[] frames;
 	private long lastUpdateTimestamp;
@@ -77,7 +77,7 @@ public class Animation implements IAsset {
 	
 	private Animation(String name, int expectedFrameCount, boolean isDefault) {
 		if( isDefault ) {
-			this.duration = 0.0d;
+			this.duration = 0.0f;
 			this.frames = null;
 		} else {
 			this.duration = DEFAULT.duration;
@@ -96,7 +96,7 @@ public class Animation implements IAsset {
 	}
 	
 	
-	public void populate(double duration, Frame[] frames) {
+	public void populate(float duration, Frame[] frames) {
 		this.duration = duration;
 		this.frames = frames;
 	}
@@ -114,6 +114,10 @@ public class Animation implements IAsset {
 	
 	int getExpectedFrameCount() {
 		return this.expectedFrameCount;
+	}
+	
+	public float getDuration() {
+		return this.duration;
 	}
 	
 	public Frame[] getFrames() {
