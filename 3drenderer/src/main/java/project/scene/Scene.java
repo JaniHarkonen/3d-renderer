@@ -32,6 +32,7 @@ public class Scene {
 	private int tickRate;
 	private Application app;
 	
+	private Image DEBUGcrosshair;
 	private Text DEBUGtextAppStatistics;
 	private TestPointLight DEBUGtestPointLight0;
 	private Vector3f DEBUGshadowLightPosition;
@@ -48,6 +49,7 @@ public class Scene {
 		this.setTickRate(tickRate);
 		this.app = app;
 		
+		this.DEBUGcrosshair = null;
 		this.DEBUGtextAppStatistics = null;
 		this.DEBUGtestPointLight0 = null;
 		this.DEBUGshadowLightPosition = null;
@@ -136,8 +138,14 @@ public class Scene {
 		Window appWindow = this.app.getWindow();
 		
 		Application.getApp().getAssetManager().processTaskResults(System.nanoTime());
-		
 		appWindow.pollInput();
+		
+		if( this.DEBUGcrosshair != null ) {
+			this.DEBUGcrosshair.getTransform().setPosition(
+				this.app.getWindow().getWidth() / 2, this.app.getWindow().getHeight() / 2, 0
+			);
+		}
+		
 		for( ASceneObject object : this.objects ) {
 			object.tick(deltaTime);
 		}
@@ -261,10 +269,10 @@ public class Scene {
 		this.gui.initialize();
 		this.gui.addElement(this.DEBUGtextAppStatistics);
 		
-		Image crosshair = new Image(this.gui, TestAssets.TEX_GUI_CROSSHAIR);
-		crosshair.getTransform().setPosition(400, 300, 0);
-		crosshair.setAnchor(8, 8);
-		this.gui.addElement(crosshair);
+		this.DEBUGcrosshair = new Image(this.gui, TestAssets.TEX_GUI_CROSSHAIR);
+		this.DEBUGcrosshair.getTransform().setPosition(400, 300, 0);
+		this.DEBUGcrosshair.setAnchor(8, 8);
+		this.gui.addElement(this.DEBUGcrosshair);
 	}
 	
 	public void addObject(ASceneObject sceneObject) {
