@@ -74,7 +74,7 @@ public class Scene {
 		
 			// Point light
 		this.DEBUGtestPointLight0 = new TestPointLight(this);
-		this.DEBUGtestPointLight0.getTransform().setPosition(0.0f, 100.0f, 0.0f);
+		this.DEBUGtestPointLight0.getTransform().setPosition(0.0f, 200.0f, 0.0f);
 		this.objects.add(this.DEBUGtestPointLight0);
 		Controller pointLightController = new Controller(input, this.DEBUGtestPointLight0)
 		.addBinding(ActionSet.MOVE_FORWARD, input.new KeyHeld(GLFW.GLFW_KEY_UP))

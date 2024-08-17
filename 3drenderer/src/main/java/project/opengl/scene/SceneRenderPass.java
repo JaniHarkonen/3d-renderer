@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
 
+import project.Window;
 import project.component.Attenuation;
 import project.component.CascadeShadow;
 import project.core.GameState;
@@ -158,7 +159,8 @@ public class SceneRenderPass implements IRenderPass {
 		this.cascadeShadowRenderPass.getShadowBuffer().bindTextures(GL46.GL_TEXTURE0 + SHADOW_MAP_FIRST);
 		this.activeCamera = this.gameState.getActiveCamera();
 		
-		
+		Window window = renderer.getClientWindow();
+		this.activeCamera.getProjection().update(window.getWidth(), window.getHeight());
 		this.uProjection.update(this.activeCamera.getProjection().getMatrix());
 		this.uCameraTransform.update(this.activeCamera.getTransform().getAsMatrix());
 		

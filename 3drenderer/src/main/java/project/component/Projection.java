@@ -16,17 +16,17 @@ public class Projection {
 		this.zFar = zFar;
 	}
 	
-	public Projection(Projection projection) {
-		this.projectionMatrix = new Matrix4f(projection.projectionMatrix);
-		this.fieldOfView = projection.fieldOfView;
-		this.zNear = projection.zNear;
-		this.zFar = projection.zFar;
+	public Projection(Projection src) {
+		this.projectionMatrix = new Matrix4f(src.projectionMatrix);
+		this.fieldOfView = src.fieldOfView;
+		this.zNear = src.zNear;
+		this.zFar = src.zFar;
 	}
 	
 	
 	public void update(int width, int height) {
 		this.projectionMatrix.setPerspective(
-			this.fieldOfView, (float) (width / height), this.zNear, this.zFar
+			this.fieldOfView, width / (float) height, this.zNear, this.zFar
 		);
 	}
 	

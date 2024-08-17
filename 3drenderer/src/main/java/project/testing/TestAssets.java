@@ -109,7 +109,7 @@ public final class TestAssets {
 			"textures/soldier",
 			"head"
 		);
-		MAT_SOLDIER_HEAD.setTexture(2, loadTexture("tex-soldier-head", "textures/soldier/rough/head_rough.png"));
+		MAT_SOLDIER_HEAD.setTexture(2, loadTexture("tex-soldier-head-rough", "textures/soldier/rough/head_rough.png"));
 		MAT_SOLDIER_BODY = createMaterial(
 			"mat-soldier-body",
 			"tex-soldier-body-diffuse",
@@ -117,28 +117,28 @@ public final class TestAssets {
 			"textures/soldier/diffuse/body_diff.png",
 			"textures/soldier/normal/body_normal.png"
 		);
-		MAT_SOLDIER_BODY.setTexture(2, loadTexture("tex-soldier-body", "textures/soldier/rough/body_rough.png"));
+		MAT_SOLDIER_BODY.setTexture(2, loadTexture("tex-soldier-body-rough", "textures/soldier/rough/body_rough.png"));
 		MAT_SOLDIER_VEST = createMaterialWithNormal(
 			"mat-soldier-vest",
 			"tex-soldier-vest",
 			"textures/soldier",
 			"vest"
 		);
-		MAT_SOLDIER_VEST.setTexture(2, loadTexture("tex-soldier-vest", "textures/soldier/rough/vest_rough.png"));
+		MAT_SOLDIER_VEST.setTexture(2, loadTexture("tex-soldier-vest-rough", "textures/soldier/rough/vest_rough.png"));
 		MAT_SOLDIER_HELMET = createMaterialWithNormal(
 			"mat-soldier-helmet",
 			"tex-soldier-helmet",
 			"textures/soldier/",
 			"helmet"
 		);
-		MAT_SOLDIER_HELMET.setTexture(2, loadTexture("tex-soldier-helmet", "textures/soldier/rough/helmet_rough.png"));
+		MAT_SOLDIER_HELMET.setTexture(2, loadTexture("tex-soldier-helmet-rough", "textures/soldier/rough/helmet_rough.png"));
 		MAT_SOLDIER_GADGETS = createMaterialWithNormal(
 			"mat-soldier-gadgets",
 			"tex-soldier-gadgets",
 			"textures/soldier",
 			"gadgets"
 		);
-		MAT_SOLDIER_GADGETS.setTexture(2, loadTexture("tex-soldier-gadgets", "textures/soldier/rough/gadgets_rough.png"));
+		MAT_SOLDIER_GADGETS.setTexture(2, loadTexture("tex-soldier-gadgets-rough", "textures/soldier/rough/gadgets_rough.png"));
 		MAT_SOLDIER_EYES = createMaterialWithNormal(
 			"mat-soldier-eyes",
 			"tex-soldier-eyes",
@@ -190,12 +190,14 @@ public final class TestAssets {
 			"tex-outside-lampbox-metal",
 			"textures/outside/diffuse/lampbox_metal_diff.png"
 		);
+		MAT_OUTSIDE_LAMPBOX_METAL.setTexture(2, loadTexture("tex-outside-lampbox-metal-rough", "textures/outside/rough/lampbox_metal_rough.png"));
 		MAT_OUTSIDE_METAL_DOOR1 = createMaterialWithNormal(
 			"mat-outside-metal-door1",
 			"tex-outside-metal-door1",
 			"textures/outside",
 			"metal_door1"
 		);
+		MAT_OUTSIDE_METAL_DOOR1.setTexture(2, loadTexture("tex-outside-metal-door1-rough", "textures/outside/rough/metal_door1_rough.png"));
 		MAT_OUTSIDE_CONCRETE_WALL2 = createMaterial(
 			"mat-outside-concrete-wall2",
 			"tex-outside-concrete-wall2",
@@ -217,6 +219,7 @@ public final class TestAssets {
 			"textures/outside",
 			"wood_planks1"
 		);
+		MAT_OUTSIDE_WOOD_PLANKS1.setTexture(2, loadTexture("tex-outside-wood-planks1-rough", "textures/outside/rough/wood_planks1_rough.png"));
 		MAT_OUTSIDE_CONCRETE_BARRIER = createMaterialWithNormal(
 			"mat-outside-wood-planks1",
 			"tex-outside-wood-planks1",
@@ -229,6 +232,7 @@ public final class TestAssets {
 			"textures/outside",
 			"bricks01"
 		);
+		MAT_OUTSIDE_BRICKS1.setTexture(2, loadTexture("tex-outside-bricks1-rough", "textures/outside/rough/bricks01_rough.png"));
 		MAT_OUTSIDE_CONCRETE_MIX = createMaterialWithNormal(
 			"mat-outside-concrete-mix",
 			"tex-outside-concrete-mix",
@@ -247,6 +251,7 @@ public final class TestAssets {
 			"textures/outside",
 			"asphalt1"
 		);
+		MAT_OUTSIDE_ASPHALT1.setTexture(2, loadTexture("tex-outside-asphalt1-rough", "textures/outside/rough/asphalt1_rough.png"));
 		MAT_OUTSIDE_LAMPPOST_METAL = createMaterialWithNormal(
 			"mat-outside-lamppost-metal",
 			"tex-outside-lamppost-metal",
@@ -285,6 +290,7 @@ public final class TestAssets {
 			"textures/outside",
 			"snow"
 		);
+		MAT_OUTSIDE_SNOW.setTexture(2, loadTexture("tex-outside-snow-rough", "textures/outside/rough/snow_rough.png"));
 		MAT_OUTSIDE_DIRT_DECAL2 = createMaterial(
 			"mat-outside-dirt-decal2",
 			"tex-outside-dirt-decal2",
@@ -301,6 +307,7 @@ public final class TestAssets {
 			"textures/outside",
 			"barrel_metal"
 		);
+		MAT_OUTSIDE_BARREL_METAL.setTexture(2, loadTexture("tex-outside-barrel-metal-rough", "textures/outside/rough/barrel_metal_rough.png"));
 		MAT_OUTSIDE_BARREL_TRASH = createMaterialWithNormal(
 			"mat-outside-barrel-trash",
 			"tex-outside-barrel-trash",
