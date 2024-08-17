@@ -4,7 +4,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class InputSnapshot {
 
-	public static final int DEFAULT_MAX_KEYBOARD_STRING_LENTH = 50;
+	public static final int DEFAULT_MAX_KEYBOARD_STRING_LENGTH = 50;
 	
 	private static final int KEY_MAP_SIZE = GLFW.GLFW_KEY_LAST + 1;
 	private static final int MOUSE_BUTTON_MAP_SIZE = GLFW.GLFW_MOUSE_BUTTON_LAST + 1;
@@ -17,6 +17,9 @@ public class InputSnapshot {
 	private int[] keyMap;
 	private int[] mouseButtonMap;
 	
+	private boolean[] anyKey;
+	private boolean[] anyMouseButton;
+	
 	private double mouseX;
 	private double mouseY;
 	private double previousMouseX;
@@ -28,8 +31,20 @@ public class InputSnapshot {
 	private int maxKeyboardStringLength;
 	
 	public InputSnapshot() {
-		this.keyMap = new int[InputSnapshot.KEY_MAP_SIZE];
-		this.mouseButtonMap = new int[InputSnapshot.MOUSE_BUTTON_MAP_SIZE];
+		this.keyMap = new int[KEY_MAP_SIZE];
+		this.mouseButtonMap = new int[MOUSE_BUTTON_MAP_SIZE];
+		
+		this.anyKey = new boolean[ACTION_HELD + 1];
+		this.anyKey[ACTION_NONE] = true;
+		this.anyKey[ACTION_PRESSED] = false;
+		this.anyKey[ACTION_RELEASED] = false;
+		this.anyKey[ACTION_HELD] = false;
+		
+		this.anyMouseButton = new boolean[ACTION_HELD + 1];
+		this.anyMouseButton[ACTION_NONE] = true;
+		this.anyMouseButton[ACTION_PRESSED] = false;
+		this.anyMouseButton[ACTION_RELEASED] = false;
+		this.anyMouseButton[ACTION_HELD] = false;
 		
 		this.mouseX = 0.0d;
 		this.mouseY = 0.0d;
@@ -39,32 +54,12 @@ public class InputSnapshot {
 		this.mouseDeltaY = 0.0d;
 		
 		this.keyboardString = "";
-		this.maxKeyboardStringLength = InputSnapshot.DEFAULT_MAX_KEYBOARD_STRING_LENTH;
+		this.maxKeyboardStringLength = DEFAULT_MAX_KEYBOARD_STRING_LENGTH;
 	}
 	
 	public void snapshot(InputSnapshot target) {
-		
-			// Update the key presses of this snapshot and the target snapshot
-		for( int i = 0; i < this.keyMap.length; i++ ) {
-			target.keyMap[i] = this.keyMap[i];
-			
-			if( this.keyMap[i] == InputSnapshot.ACTION_PRESSED ) {
-				this.keyMap[i] = InputSnapshot.ACTION_HELD;
-			} else if( this.keyMap[i] == InputSnapshot.ACTION_RELEASED ) {
-				this.keyMap[i] = InputSnapshot.ACTION_NONE;
-			}
-		}
-
-			// Update the mouse presses of this snapshot and the target snapshot
-		for( int i = 0; i < this.mouseButtonMap.length; i++ ) {
-			target.mouseButtonMap[i] = this.mouseButtonMap[i];
-			
-			if( this.mouseButtonMap[i] == InputSnapshot.ACTION_PRESSED ) {
-				this.mouseButtonMap[i] = InputSnapshot.ACTION_HELD;
-			} else if( this.mouseButtonMap[i] == InputSnapshot.ACTION_RELEASED ) {
-				this.mouseButtonMap[i] = InputSnapshot.ACTION_NONE;
-			}
-		}
+		this.updateSnapshotMap(target.keyMap, this.keyMap, target.anyKey, this.anyKey);
+		this.updateSnapshotMap(target.mouseButtonMap, this.mouseButtonMap, target.anyMouseButton, this.anyMouseButton);
 		
 			// Update the mouse metrics of the target snapshot
 		target.previousMouseX = target.mouseX;
@@ -90,18 +85,51 @@ public class InputSnapshot {
 		this.keyboardString = "";
 	}
 	
+	private void updateSnapshotMap(
+		int[] targetMap, int[] sourceMap, boolean[] targetAny, boolean[] sourceAny
+	) {
+		for( int i = 0; i < targetAny.length; i++ ) {
+			targetAny[i] = false;
+		}
+		
+		int noActionCount = 0;
+		for( int i = 0; i < sourceMap.length; i++ ) {
+			targetMap[i] = sourceMap[i];
+			
+			if( sourceMap[i] == ACTION_HELD ) {
+				targetAny[ACTION_HELD] = true;
+			}
+			
+			if( sourceMap[i] == ACTION_PRESSED ) {
+				sourceMap[i] = ACTION_HELD;
+				targetAny[ACTION_PRESSED] = true;
+			} else if( sourceMap[i] == ACTION_RELEASED ) {
+				sourceMap[i] = ACTION_NONE;
+				targetAny[ACTION_RELEASED] = true;
+			}
+			
+			if( sourceMap[i] == ACTION_NONE ) {
+				noActionCount++;
+			}
+		}
+		
+		if( noActionCount == sourceMap.length ) {
+			targetAny[ACTION_NONE] = true;
+		}
+	}
+	
 	private void attemptToPress(int[] map, int input) {
 		if(
-			map[input] != InputSnapshot.ACTION_HELD && 
-			map[input] != InputSnapshot.ACTION_RELEASED 
+			map[input] != ACTION_HELD && 
+			map[input] != ACTION_RELEASED 
 		) {
-			map[input] = InputSnapshot.ACTION_PRESSED;
+			map[input] = ACTION_PRESSED;
 		}
 	}
 	
 	private void attemptToRelease(int[] map, int input) {
-		if( map[input] != InputSnapshot.ACTION_NONE ) {
-			map[input] = InputSnapshot.ACTION_RELEASED;
+		if( map[input] != ACTION_NONE ) {
+			map[input] = ACTION_RELEASED;
 		}
 	}
 	
@@ -138,28 +166,60 @@ public class InputSnapshot {
 		this.keyboardString = "";
 	}
 	
+	public boolean isNoKeyHeld() {
+		return this.anyKey[ACTION_NONE];
+	}
+	
+	public boolean isAnyKeyPressed() {
+		return this.anyKey[ACTION_PRESSED];
+	}
+	
+	public boolean isAnyKeyReleased() {
+		return this.anyKey[ACTION_RELEASED];
+	}
+	
+	public boolean isAnyKeyHeld() {
+		return this.anyKey[ACTION_HELD];
+	}
+	
 	public boolean isKeyHeld(int key) {
-		return (this.keyMap[key] == InputSnapshot.ACTION_HELD);
+		return (this.keyMap[key] == ACTION_HELD);
 	}
 	
 	public boolean isKeyReleased(int key) {
-		return (this.keyMap[key] == InputSnapshot.ACTION_RELEASED);
+		return (this.keyMap[key] == ACTION_RELEASED);
 	}
 	
 	public boolean isKeyPressed(int key) {
-		return (this.keyMap[key] == InputSnapshot.ACTION_PRESSED);
+		return (this.keyMap[key] == ACTION_PRESSED);
 	}
 	
 	public boolean isMouseButtonPressed(int button) {
-		return (this.mouseButtonMap[button] == InputSnapshot.ACTION_PRESSED);
+		return (this.mouseButtonMap[button] == ACTION_PRESSED);
 	}
 	
 	public boolean isMouseButtonHeld(int button) {
-		return (this.mouseButtonMap[button] == InputSnapshot.ACTION_HELD);
+		return (this.mouseButtonMap[button] == ACTION_HELD);
 	}
 	
 	public boolean isMouseButtonReleased(int button) {
-		return (this.mouseButtonMap[button] == InputSnapshot.ACTION_RELEASED);
+		return (this.mouseButtonMap[button] == ACTION_RELEASED);
+	}
+	
+	public boolean isNoMouseButtonHeld() {
+		return this.anyMouseButton[ACTION_NONE];
+	}
+	
+	public boolean isAnyMouseButtonPressed() {
+		return this.anyMouseButton[ACTION_PRESSED];
+	}
+	
+	public boolean isAnyMouseButtonReleased() {
+		return this.anyMouseButton[ACTION_RELEASED];
+	}
+	
+	public boolean isAnyMouseButtonHeld() {
+		return this.anyMouseButton[ACTION_HELD];
 	}
 	
 	public float getMouseX() {

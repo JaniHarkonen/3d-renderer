@@ -28,9 +28,6 @@
 ### VAO
 - consider switching back to primitive arrays instead of Vector3f-arrays for lower memory consumption
 
-### Input
-- add NoKeyAction, AnyKey, NoMouseAction input events
-
 ### AInputEvent
 - perhaps input events should be static classes of Input instead of being tied to an Input instance by default
 

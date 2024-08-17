@@ -119,7 +119,7 @@ public class Scene {
 		this.objects.add(player);
 		this.activeCamera = player.getCamera();
 		Controller playerController = new Controller(input, player)
-		.addBinding(ActionSet.MOVE_FORWARD, input.new KeyHeld(GLFW.GLFW_KEY_W))
+		.addBinding(ActionSet.MOVE_FORWARD, input.new NoMouseButton())
 		.addBinding(ActionSet.MOVE_LEFT, input.new KeyHeld(GLFW.GLFW_KEY_A))
 		.addBinding(ActionSet.MOVE_BACKWARDS, input.new KeyHeld(GLFW.GLFW_KEY_S))
 		.addBinding(ActionSet.MOVE_RIGHT, input.new KeyHeld(GLFW.GLFW_KEY_D))
