@@ -27,9 +27,12 @@ public class GUIRenderPass implements IRenderPass {
 	float lineHeight;
 	float baseLine;
 	
-	private GameState gameState;
+	UVector4f uPrimaryColor;
+	UAMatrix4f uObjectTransform;
 	private UAMatrix4f uProjection;
 	private UInteger1 uDiffuseSampler;
+	
+	private GameState gameState;
 	private RenderStrategyManager<GUIRenderPass> renderStrategyManager;
 	
 	public GUIRenderPass() {
@@ -50,12 +53,14 @@ public class GUIRenderPass implements IRenderPass {
 		this.shaderProgram = new ShaderProgram();
 		this.uProjection = new UAMatrix4f(Uniforms.PROJECTION);
 		this.uDiffuseSampler = new UInteger1(Uniforms.DIFFUSE_SAMPLER);
+		this.uPrimaryColor = new UVector4f(Uniforms.PRIMARY_COLOR);
+		this.uObjectTransform = new UAMatrix4f(Uniforms.OBJECT_TRANSFORM);
 		
 		this.shaderProgram
 		.declareUniform(this.uProjection)
 		.declareUniform(this.uDiffuseSampler)
-		.declareUniform(new UAMatrix4f(Uniforms.OBJECT_TRANSFORM))
-		.declareUniform(new UVector4f(Uniforms.PRIMARY_COLOR));
+		.declareUniform(this.uObjectTransform)
+		.declareUniform(this.uPrimaryColor);
 		
 		this.shaderProgram.addShader(
 			new Shader("shaders/gui/gui.vert", GL46.GL_VERTEX_SHADER)

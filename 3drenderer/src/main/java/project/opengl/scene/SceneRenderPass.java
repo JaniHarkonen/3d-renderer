@@ -42,6 +42,11 @@ public class SceneRenderPass implements IRenderPass {
 	CascadeShadowRenderPass cascadeShadowRenderPass;
 	
 		// Cache frequently used uniforms
+	UAmbientLight uAmbientLight;
+	UAMatrix4f uObjectTransform;
+	UMaterial uMaterial;
+	UAMatrix4f uBoneMatrices;
+	
 	private UInteger1 uDiffuseSampler;
 	private UInteger1 uNormalSampler;
 	private UInteger1 uRoughnessSampler;
@@ -87,6 +92,11 @@ public class SceneRenderPass implements IRenderPass {
 		this.uCascadeShadows = new UArray<>(Uniforms.CASCADE_SHADOWS, new UCascadeShadow[CascadeShadow.SHADOW_MAP_CASCADE_COUNT]);
 		this.uCascadeShadows.fill(() -> new UCascadeShadow());
 		
+		this.uAmbientLight = new UAmbientLight(Uniforms.AMBIENT_LIGHT);
+		this.uObjectTransform = new UAMatrix4f(Uniforms.OBJECT_TRANSFORM);
+		this.uMaterial = new UMaterial(Uniforms.MATERIAL);
+		this.uBoneMatrices = new UAMatrix4f(Uniforms.BONE_MATRICES);
+		
 		this.shaderProgram
 		.declareUniform(this.uDiffuseSampler)
 		.declareUniform(this.uNormalSampler)
@@ -97,10 +107,10 @@ public class SceneRenderPass implements IRenderPass {
 		.declareUniform(this.uPointLights)
 		.declareUniform(this.uCascadeShadows)
 		.declareUniform(this.uDebugShowShadowCascades)
-		.declareUniform(new UAMatrix4f(Uniforms.OBJECT_TRANSFORM))
-		.declareUniform(new UMaterial(Uniforms.MATERIAL))
-		.declareUniform(new UAmbientLight(Uniforms.AMBIENT_LIGHT))
-		.declareUniform(new UAMatrix4f(Uniforms.BONE_MATRICES));
+		.declareUniform(this.uObjectTransform)
+		.declareUniform(this.uMaterial)
+		.declareUniform(this.uAmbientLight)
+		.declareUniform(this.uBoneMatrices);
 
 			// Spot light uniform declarations here
 		this.shaderProgram.addShader(

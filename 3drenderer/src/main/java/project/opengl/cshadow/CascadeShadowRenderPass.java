@@ -25,8 +25,11 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	List<CascadeShadow> cascadeShadows;
 	ShadowBuffer shadowBuffer;
 	
-	private GameState gameState;
+	UAMatrix4f uObjectTransform;
+	UAMatrix4f uBoneMatrices;
 	private UAMatrix4f uLightView;
+	
+	private GameState gameState;
 	private RenderStrategyManager<CascadeShadowRenderPass> renderStrategyManager;
 	
 	public CascadeShadowRenderPass() {
@@ -44,11 +47,15 @@ public class CascadeShadowRenderPass implements IRenderPass {
 		this.shaderProgram.addShader(
 			new Shader("shaders/cshadow/cshadow.vert", GL46.GL_VERTEX_SHADER)
 		);
+		
 		this.uLightView = new UAMatrix4f(Uniforms.LIGHT_VIEW);
+		this.uObjectTransform = new UAMatrix4f(Uniforms.OBJECT_TRANSFORM);
+		this.uBoneMatrices = new UAMatrix4f(Uniforms.BONE_MATRICES);
 		
 		this.shaderProgram.declareUniform(this.uLightView)
-		.declareUniform(new UAMatrix4f(Uniforms.OBJECT_TRANSFORM))
-		.declareUniform(new UAMatrix4f(Uniforms.BONE_MATRICES));
+		.declareUniform(this.uObjectTransform)
+		.declareUniform(this.uBoneMatrices);
+		
 		this.shaderProgram.initialize();
 		this.shadowBuffer.initialize();
 		
