@@ -28,8 +28,5 @@
 ### VAO
 - consider switching back to primitive arrays instead of Vector3f-arrays for lower memory consumption
 
-### AInputEvent
-- perhaps input events should be static classes of Input instead of being tied to an Input instance by default
-
 ### Application
 - tick rate and frame rate seem to cause issues with reading input
