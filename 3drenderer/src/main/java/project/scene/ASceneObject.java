@@ -5,18 +5,25 @@ import java.util.List;
 
 import project.Application;
 import project.component.Transform;
+import project.core.UUID;
 
 public abstract class ASceneObject {
 
+	protected final long id;
 	protected final Scene scene;
 	protected final List<ASceneObject> children;
 	
 	protected Transform transform;
 	
-	public ASceneObject(Scene scene) {
+	public ASceneObject(Scene scene, long id) {
+		this.id = id;
 		this.children = new ArrayList<>();
 		this.transform = new Transform();
 		this.scene = scene;
+	}
+	
+	public ASceneObject(Scene scene) {
+		this(scene, UUID.getUUID());
 	}
 	
 	
@@ -25,10 +32,12 @@ public abstract class ASceneObject {
 	}
 	
 	public void submitToRenderer() {
-		Application.getApp().getRenderer().getBackGameState().listSceneObject(this.rendererCopy());
+		Application.getApp().getRenderer().getBackGameState().listSceneObject(this);
 	}
 	
-	protected abstract ASceneObject rendererCopy();
+	public abstract ASceneObject rendererCopy();
+	
+	public abstract boolean rendererEquals(ASceneObject previous);
 	
 	public Transform getTransform() {
 		return this.transform;
@@ -36,6 +45,10 @@ public abstract class ASceneObject {
 	
 	public void addChild(ASceneObject child) {
 		this.children.add(child);
+	}
+	
+	public long getID() {
+		return this.id;
 	}
 	
 	public Scene getScene() {

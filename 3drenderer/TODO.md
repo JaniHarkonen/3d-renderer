@@ -10,8 +10,8 @@
 - remove debug-related code
 - create a TestScene that possibly extends Scene
 
-### ASceneObject
-- when deep copying scene objects for rendering, determine a way to skip unchanged objects
+### GameState
+- it is unclear whether delta-checking procures any performance improvement compared to simply copying scene objects every tick
 
 ### Window
 - create getters and setters for window attributes (such as, dimensions, position, vsync, fullscreen mode, fps limiter, etc.)
@@ -27,4 +27,4 @@
 - consider switching back to primitive arrays instead of Vector3f-arrays for lower memory consumption
 
 ### Application
-- tick rate and frame rate seem to cause issues with reading input
+- tick rate and frame rate seem to cause issues with reading input, revamp input so that all events are queued

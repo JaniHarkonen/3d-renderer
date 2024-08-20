@@ -1,13 +1,14 @@
 package project.opengl.gui;
 
 
+import java.util.Map;
+
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL46;
 
 import project.asset.AssetUtils;
 import project.asset.sceneasset.Mesh;
 import project.core.GameState;
-import project.core.GameState.SceneState;
 import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
@@ -42,14 +43,16 @@ public class GUIRenderPass implements IRenderPass {
 		this.lineHeight = 22.0f;
 		this.baseLine = 16.0f;
 		
-		this.renderStrategyManager = new RenderStrategyManager<>(new NullRenderStrategy<GUIRenderPass>())
+		this.renderStrategyManager = 
+			new RenderStrategyManager<>(new NullRenderStrategy<GUIRenderPass>())
 		.addStrategy(Text.class, new RenderText())
 		.addStrategy(Image.class, new RenderImage());
 	}
 	
 	@Override
 	public boolean initialize() {
-		this.imagePlane = AssetUtils.createPlaneMesh("mesh-default-gui-plane", 0, 0, 16, 16, 0, 0, 1, 1);
+		this.imagePlane = 
+			AssetUtils.createPlaneMesh("mesh-default-gui-plane", 0, 0, 16, 16, 0, 0, 1, 1);
 		this.shaderProgram = new ShaderProgram();
 		this.uProjection = new UAMatrix4f(Uniforms.PROJECTION);
 		this.uDiffuseSampler = new UInteger1(Uniforms.DIFFUSE_SAMPLER);
@@ -88,20 +91,13 @@ public class GUIRenderPass implements IRenderPass {
 			new Matrix4f().identity().setOrtho2D(0, windowCenterX * 2, windowCenterY * 2, 0);
         this.uProjection.update(projectionMatrix);
         
-        SceneState.SceneIterator iterator = gameState.getGUIIterator();
-        while( iterator.hasNext() ) {
-        	this.recursiveRender(renderer, iterator.next());
+        for( Map.Entry<Long, ASceneObject> en : gameState.getActiveGUI().entrySet() ) {
+        	ASceneObject object = en.getValue();
+        	this.renderStrategyManager.getStrategy(object.getClass())
+        	.execute(renderer, this, object);
         }
 		
 		activeShaderProgram.unbind();
-	}
-	
-	private void recursiveRender(IRenderer renderer, ASceneObject object) {
-		for( ASceneObject child : object.getChildren() ) {
-			this.recursiveRender(renderer, child);
-		}
-		
-		this.renderStrategyManager.getStrategy(object.getClass()).execute(renderer, this, object);
 	}
 	
 	@Override

@@ -15,15 +15,29 @@ public class Camera extends ASceneObject {
 	}
 	
 	private Camera(Camera src) {
-		super(null);
+		super(null, src.id);
 		this.transform = new CameraTransform(src.transform);
 		this.projection = new Projection(src.projection);
 	}
 	
 	
 	@Override
-	protected Camera rendererCopy() {
+	public Camera rendererCopy() {
 		return new Camera(this);
+	}
+	
+	@Override
+	public boolean rendererEquals(ASceneObject previous) {
+		if( !(previous instanceof Camera) ) {
+			return false;
+		}
+		
+		Camera c = (Camera) previous;
+		return (
+			this.id == c.id && 
+			this.transform.equals(c.transform) && 
+			this.projection.equals(c.projection)
+		);
 	}
 	
 	@Override

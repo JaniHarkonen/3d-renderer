@@ -3,6 +3,7 @@ package project.gui;
 import org.joml.Vector4f;
 
 import project.asset.font.Font;
+import project.scene.ASceneObject;
 import project.testing.TestAssets;
 
 public class Text extends AGUIElement {
@@ -25,8 +26,25 @@ public class Text extends AGUIElement {
 	
 	
 	@Override
-	protected Text rendererCopy() {
+	public Text rendererCopy() {
 		return new Text(this);
+	}
+	
+	@Override
+	public boolean rendererEquals(ASceneObject previous) {
+		if( !(previous instanceof Text) ) {
+			return false;
+		}
+		
+		Text t = (Text) previous;
+		return(
+			this.id == t.id && 
+			this.transform.equals(t.transform) && 
+			this.primaryColor.equals(t.primaryColor) && 
+			this.secondaryColor.equals(t.secondaryColor) && 
+			this.font == t.font && 
+			this.content.equals(t.content)
+		);
 	}
 	
 	public void setContent(String content) {

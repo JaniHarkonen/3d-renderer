@@ -130,4 +130,14 @@ public class Rotator {
 		result.negate();
 		return result;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if( !(o instanceof Rotator) ) {
+			return false;
+		}
+		
+		Rotator r = (Rotator) o;
+		return this.angles.equals(r.angles);
+	}
 }

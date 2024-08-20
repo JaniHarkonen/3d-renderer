@@ -42,4 +42,18 @@ public class Attenuation {
 	public float getLinear() {
 		return this.linear;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if( !(o instanceof Attenuation) ) {
+			return false;
+		}
+		
+		Attenuation a = (Attenuation) o;
+		return(
+			this.constant == a.constant && 
+			this.exponent == a.exponent && 
+			this.linear == a.linear
+		);
+	}
 }

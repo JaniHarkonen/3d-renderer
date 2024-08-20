@@ -33,4 +33,18 @@ public class Projection {
 	public Matrix4f getMatrix() {
 		return this.projectionMatrix;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if( !(o instanceof Projection) ) {
+			return false;
+		}
+		
+		Projection p = (Projection) o;
+		return (
+			this.fieldOfView == p.fieldOfView &&
+			this.zFar == p.zFar &&
+			this.zNear == p.zNear
+		); 
+	}
 }

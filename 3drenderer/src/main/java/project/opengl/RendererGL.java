@@ -147,7 +147,7 @@ public class RendererGL implements IRenderer {
 	@Override
 	public void submitGameState() {
 		this.gameStateQueue.add(this.backGameState);
-		this.backGameState = new GameState();
+		this.backGameState = new GameState(this.backGameState);
 	}
 	
 	@Override

@@ -88,7 +88,9 @@ public class Window {
 		this.input = new Input();
 		this.input.bind(this);
 		
-		GLFW.glfwSetWindowSizeCallback(this.windowHandle, (window, width, height) -> this.windowResizeListener(width, height));
+		GLFW.glfwSetWindowSizeCallback(
+			this.windowHandle, (window, width, height) -> this.windowResizeListener(width, height)
+		);
 		
 		GLFW.glfwMakeContextCurrent(this.windowHandle);
 		GLFW.glfwSwapInterval(this.vsync); // v-sync

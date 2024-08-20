@@ -21,7 +21,7 @@ public abstract class AGUIElement extends ASceneObject {
 	}
 	
 	protected AGUIElement(AGUIElement src) {
-		super(null);
+		super(null, src.id);
 		
 		this.gui = null;
 		src.transform.updateTransformMatrix();
@@ -33,7 +33,7 @@ public abstract class AGUIElement extends ASceneObject {
 	
 	@Override
 	public void submitToRenderer() {
-		Application.getApp().getRenderer().getBackGameState().listGUIElement(this.rendererCopy());
+		Application.getApp().getRenderer().getBackGameState().listGUIElement(this);
 	}
 	
 	public GUI getGUI() {

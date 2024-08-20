@@ -1,5 +1,7 @@
 package project.opengl.scene;
 
+import java.util.Map;
+
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -9,7 +11,6 @@ import project.Window;
 import project.component.Attenuation;
 import project.component.CascadeShadow;
 import project.core.GameState;
-import project.core.GameState.SceneState;
 import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
@@ -67,7 +68,8 @@ public class SceneRenderPass implements IRenderPass {
 		this.cascadeShadowRenderPass = null;
 		this.activeCamera = null;
 		
-		this.renderStrategyManager = new RenderStrategyManager<>(new NullRenderStrategy<SceneRenderPass>())
+		this.renderStrategyManager = 
+			new RenderStrategyManager<>(new NullRenderStrategy<SceneRenderPass>())
 		.addStrategy(Model.class, new RenderModel())
 		.addStrategy(PointLight.class, new RenderPointLight())
 		.addStrategy(AmbientLight.class, new RenderAmbientLight());
@@ -83,13 +85,19 @@ public class SceneRenderPass implements IRenderPass {
 		this.uCameraTransform = new UAMatrix4f(Uniforms.CAMERA_TRANSFORM);
 		this.uDebugShowShadowCascades = new UInteger1(Uniforms.DEBUG_SHOW_SHADOW_CASCADES);
 		
-		this.uShadowMap = new UArray<>(Uniforms.SHADOW_MAP, new UInteger1[CascadeShadow.SHADOW_MAP_CASCADE_COUNT]);
+		this.uShadowMap = new UArray<>(
+			Uniforms.SHADOW_MAP, new UInteger1[CascadeShadow.SHADOW_MAP_CASCADE_COUNT]
+		);
 		this.uShadowMap.fill(() -> new UInteger1());
 		
-		this.uPointLights = new UArray<>(Uniforms.POINT_LIGHTS, new UPointLight[MAX_POINT_LIGHTS]);
+		this.uPointLights = new UArray<>(
+			Uniforms.POINT_LIGHTS, new UPointLight[MAX_POINT_LIGHTS]
+		);
 		this.uPointLights.fill(() -> new UPointLight());
 		
-		this.uCascadeShadows = new UArray<>(Uniforms.CASCADE_SHADOWS, new UCascadeShadow[CascadeShadow.SHADOW_MAP_CASCADE_COUNT]);
+		this.uCascadeShadows = new UArray<>(
+			Uniforms.CASCADE_SHADOWS, new UCascadeShadow[CascadeShadow.SHADOW_MAP_CASCADE_COUNT]
+		);
 		this.uCascadeShadows.fill(() -> new UCascadeShadow());
 		
 		this.uAmbientLight = new UAmbientLight(Uniforms.AMBIENT_LIGHT);
@@ -178,20 +186,12 @@ public class SceneRenderPass implements IRenderPass {
 			(boolean) gameState.getDebugData(TestDebugDataHandles.CASCADE_SHADOW_ENABLED) ? 1 : 0
 		);
 		
-		SceneState.SceneIterator iterator = gameState.getSceneIterator();
-		while( iterator.hasNext() ) {
-			this.recursiveRender(renderer, iterator.next());
-		}
+        for( Map.Entry<Long, ASceneObject> en : gameState.getActiveScene().entrySet() ) {
+        	ASceneObject object = en.getValue();
+        	this.renderStrategyManager.getStrategy(object.getClass()).execute(renderer, this, object);
+        }
 		
 		activeShaderProgram.unbind();
-	}
-	
-	private void recursiveRender(IRenderer renderer, ASceneObject object) {
-		for( ASceneObject child : object.getChildren() ) {
-			this.recursiveRender(renderer, child);
-		}
-		
-		this.renderStrategyManager.getStrategy(object.getClass()).execute(renderer, this, object);
 	}
 	
 	void updatePointLight(PointLight pointLight, int index) {

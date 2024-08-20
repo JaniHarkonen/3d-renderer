@@ -4,6 +4,7 @@ import org.joml.Vector2f;
 import org.joml.Vector4f;
 
 import project.asset.texture.Texture;
+import project.scene.ASceneObject;
 
 public class Image extends AGUIElement {
 	private Texture imageTexture;
@@ -25,8 +26,25 @@ public class Image extends AGUIElement {
 	
 	
 	@Override
-	protected Image rendererCopy() {
+	public Image rendererCopy() {
 		return new Image(this);
+	}
+	
+	@Override
+	public boolean rendererEquals(ASceneObject previous) {
+		if( !(previous instanceof Image) ) {
+			return false;
+		}
+		
+		Image img = (Image) previous;
+		return(
+			this.id == img.id && 
+			this.transform.equals(img.transform) && 
+			this.primaryColor.equals(img.primaryColor) && 
+			this.secondaryColor.equals(img.secondaryColor) && 
+			this.imageTexture == img.imageTexture && 
+			this.anchor.equals(img.anchor)
+		);
 	}
 	
 	public void setAnchor(float anchorX, float anchorY) {

@@ -30,8 +30,7 @@ public class Model extends ASceneObject {
 	}
 	
 	private Model(Model src) {
-		super(null);
-		src.transform.updateTransformMatrix();
+		super(null, src.id);
 		this.transform = new Transform(src.transform);
 		this.animator = new Animator(src.animator);
 		this.meshMaterialTable = src.meshMaterialTable; // NOT DEEP COPIED (assumed to stay the same for now)
@@ -39,8 +38,23 @@ public class Model extends ASceneObject {
 	
 	
 	@Override
-	protected Model rendererCopy() {
+	public Model rendererCopy() {
 		return new Model(this);
+	}
+	
+	@Override
+	public boolean rendererEquals(ASceneObject previous) {
+		if( !(previous instanceof Model) ) {
+			return false;
+		}
+		
+		Model m = (Model) previous;
+		return (
+			this.id == m.id && 
+			this.transform.equals(m.transform) &&
+			this.animator.equals(m.animator) &&
+			this.meshMaterialTable == m.meshMaterialTable
+		);
 	}
 	
 	public void addMesh(Mesh mesh, Material material) {

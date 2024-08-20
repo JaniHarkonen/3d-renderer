@@ -104,13 +104,23 @@ public class Scene {
 		this.objects.add(outsideScene);
 		DebugUtils.log(this, "Outside place TestDummy added!");
 		
-			// Soldier
+			// Platoon
 		this.DEBUGsoldier = new TestDummy(this, TestAssets.createTestSoldier(this));
 		this.DEBUGsoldier.getTransform().setPosition(1, -10, -100);
 		this.DEBUGsoldier.getTransform().getRotator().setXAngle((float) Math.toRadians(-85.0d));
 		//soldier.getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
 		this.objects.add(this.DEBUGsoldier);
 		DebugUtils.log(this, "Soldier TestDummy added!");
+		
+			// Company
+		/*for( int i = 0; i < 100; i++ ) {
+			
+			TestDummy randomSoldier = new TestDummy(this, TestAssets.createTestSoldier(this));
+			randomSoldier.getTransform().setPosition(((float) Math.random() * 300), -10, -100 - ((float) Math.random() * 300));
+			randomSoldier.getTransform().getRotator().setXAngle((float) Math.toRadians(-85.0d));
+			//soldier.getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
+			this.objects.add(randomSoldier);
+		}*/
 		
 			// GUI
 		this.createGUI();
@@ -226,6 +236,7 @@ public class Scene {
 			this.DEBUGcascadeShadowEnabled = !this.DEBUGcascadeShadowEnabled;
 		}
 		
+		long time = System.nanoTime();
 		for( ASceneObject object : this.objects ) {
 			object.submitToRenderer();
 		}

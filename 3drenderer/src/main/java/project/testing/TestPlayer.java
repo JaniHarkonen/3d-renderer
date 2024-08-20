@@ -31,8 +31,12 @@ public class TestPlayer extends ASceneObject implements IControllable {
 	}
 	
 	@Override
-	protected TestPlayer rendererCopy() {
+	public TestPlayer rendererCopy() {
 		return null;
+	}
+	
+	public boolean rendererEquals(ASceneObject previous) {
+		return false;
 	}
 	
 	@Override

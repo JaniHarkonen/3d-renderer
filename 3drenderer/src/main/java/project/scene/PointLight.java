@@ -3,6 +3,7 @@ package project.scene;
 import org.joml.Vector3f;
 
 import project.component.Attenuation;
+import project.component.Transform;
 
 public class PointLight extends ASceneObject {
 
@@ -18,9 +19,8 @@ public class PointLight extends ASceneObject {
 	}
 	
 	private PointLight(PointLight src) {
-		super(null);
-		src.transform.updateTransformMatrix();
-		this.transform = src.transform;
+		super(null, src.id);
+		this.transform = new Transform(src.transform);
 		this.attenuation = new Attenuation(src.attenuation);
 		this.lightColor = new Vector3f(src.lightColor);
 		this.intensity = src.intensity;
@@ -28,8 +28,25 @@ public class PointLight extends ASceneObject {
 	
 	
 	@Override
-	protected PointLight rendererCopy() {
-		return new PointLight(this);
+	public PointLight rendererCopy() {
+		PointLight pl = new PointLight(this);
+		return pl;
+	}
+	
+	@Override
+	public boolean rendererEquals(ASceneObject previous) {
+		if( !(previous instanceof PointLight) ) {
+			return false;
+		}
+		
+		PointLight pl = (PointLight) previous;
+		return (
+			this.id == pl.id && 
+			this.transform.equals(pl.transform) && 
+			this.attenuation.equals(pl.attenuation) && 
+			this.lightColor.equals(pl.lightColor) && 
+			this.intensity == pl.intensity
+		);
 	}
 	
 	public void setAttenuation(Attenuation attenuation) {

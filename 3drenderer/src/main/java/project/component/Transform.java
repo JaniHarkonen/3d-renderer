@@ -16,6 +16,11 @@ public class Transform {
 		this.transformMatrix = new Matrix4f();
 	}
 	
+	/**
+	 * Copy constructor. Creates a new Transform based on a source Transform.
+	 * 
+	 * @param src Source Transform.
+	 */
 	public Transform(Transform src) {
 		this.position = new Vector3f(src.position);
 		this.rotator = new Rotator(src.rotator);
@@ -53,5 +58,19 @@ public class Transform {
 	
 	public Matrix4f getAsMatrix() {
 		return this.transformMatrix;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if( !(o instanceof Transform) ) {
+			return false;
+		}
+		
+		Transform t = (Transform) o;
+		return(
+			this.position.equals(t.position) &&
+			this.rotator.equals(t.rotator) &&
+			this.scale.equals(t.scale)
+		);
 	}
 }
