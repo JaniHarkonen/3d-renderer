@@ -15,6 +15,8 @@ import project.gui.Image;
 import project.gui.Text;
 import project.input.Input;
 import project.input.InputSnapshot;
+import project.input.KeyHeld;
+import project.input.MouseMove;
 import project.testing.ActionSet;
 import project.testing.TestAssets;
 import project.testing.TestDebugDataHandles;
@@ -32,6 +34,7 @@ public class Scene {
 	private int tickRate;
 	private Application app;
 	
+	private Image DEBUGcrosshair;
 	private Text DEBUGtextAppStatistics;
 	private TestPointLight DEBUGtestPointLight0;
 	private Vector3f DEBUGshadowLightPosition;
@@ -48,6 +51,7 @@ public class Scene {
 		this.setTickRate(tickRate);
 		this.app = app;
 		
+		this.DEBUGcrosshair = null;
 		this.DEBUGtextAppStatistics = null;
 		this.DEBUGtestPointLight0 = null;
 		this.DEBUGshadowLightPosition = null;
@@ -74,21 +78,21 @@ public class Scene {
 		
 			// Point light
 		this.DEBUGtestPointLight0 = new TestPointLight(this);
-		this.DEBUGtestPointLight0.getTransform().setPosition(0.0f, 100.0f, 0.0f);
+		this.DEBUGtestPointLight0.getTransform().setPosition(0.0f, 200.0f, 0.0f);
 		this.objects.add(this.DEBUGtestPointLight0);
 		Controller pointLightController = new Controller(input, this.DEBUGtestPointLight0)
-		.addBinding(ActionSet.MOVE_FORWARD, input.new KeyHeld(GLFW.GLFW_KEY_UP))
-		.addBinding(ActionSet.MOVE_BACKWARDS, input.new KeyHeld(GLFW.GLFW_KEY_DOWN))
-		.addBinding(ActionSet.MOVE_LEFT, input.new KeyHeld(GLFW.GLFW_KEY_LEFT))
-		.addBinding(ActionSet.MOVE_RIGHT, input.new KeyHeld(GLFW.GLFW_KEY_RIGHT))
-		.addBinding(ActionSet.LIGHT_INTENSIFY, input.new KeyHeld(GLFW.GLFW_KEY_KP_ADD))
-		.addBinding(ActionSet.LIGHT_DIM, input.new KeyHeld(GLFW.GLFW_KEY_KP_SUBTRACT))
-		.addBinding(ActionSet.LIGHT_INCREASE_RED, input.new KeyHeld(GLFW.GLFW_KEY_1))
-		.addBinding(ActionSet.LIGHT_DECREASE_RED, input.new KeyHeld(GLFW.GLFW_KEY_2))
-		.addBinding(ActionSet.LIGHT_INCREASE_GREEN, input.new KeyHeld(GLFW.GLFW_KEY_3))
-		.addBinding(ActionSet.LIGHT_DECREASE_GREEN, input.new KeyHeld(GLFW.GLFW_KEY_4))
-		.addBinding(ActionSet.LIGHT_INCREASE_BLUE, input.new KeyHeld(GLFW.GLFW_KEY_5))
-		.addBinding(ActionSet.LIGHT_DECREASE_BLUE, input.new KeyHeld(GLFW.GLFW_KEY_6));
+		.addBinding(ActionSet.MOVE_FORWARD, new KeyHeld(input, GLFW.GLFW_KEY_UP))
+		.addBinding(ActionSet.MOVE_BACKWARDS, new KeyHeld(input, GLFW.GLFW_KEY_DOWN))
+		.addBinding(ActionSet.MOVE_LEFT, new KeyHeld(input, GLFW.GLFW_KEY_LEFT))
+		.addBinding(ActionSet.MOVE_RIGHT, new KeyHeld(input, GLFW.GLFW_KEY_RIGHT))
+		.addBinding(ActionSet.LIGHT_INTENSIFY, new KeyHeld(input, GLFW.GLFW_KEY_KP_ADD))
+		.addBinding(ActionSet.LIGHT_DIM, new KeyHeld(input, GLFW.GLFW_KEY_KP_SUBTRACT))
+		.addBinding(ActionSet.LIGHT_INCREASE_RED, new KeyHeld(input, GLFW.GLFW_KEY_1))
+		.addBinding(ActionSet.LIGHT_DECREASE_RED, new KeyHeld(input, GLFW.GLFW_KEY_2))
+		.addBinding(ActionSet.LIGHT_INCREASE_GREEN, new KeyHeld(input, GLFW.GLFW_KEY_3))
+		.addBinding(ActionSet.LIGHT_DECREASE_GREEN, new KeyHeld(input, GLFW.GLFW_KEY_4))
+		.addBinding(ActionSet.LIGHT_INCREASE_BLUE, new KeyHeld(input, GLFW.GLFW_KEY_5))
+		.addBinding(ActionSet.LIGHT_DECREASE_BLUE, new KeyHeld(input, GLFW.GLFW_KEY_6));
 		this.DEBUGtestPointLight0.setController(pointLightController);
 		DebugUtils.log(this, "Added TestPointLight!");
 		
@@ -100,13 +104,23 @@ public class Scene {
 		this.objects.add(outsideScene);
 		DebugUtils.log(this, "Outside place TestDummy added!");
 		
-			// Soldier
+			// Platoon
 		this.DEBUGsoldier = new TestDummy(this, TestAssets.createTestSoldier(this));
 		this.DEBUGsoldier.getTransform().setPosition(1, -10, -100);
 		this.DEBUGsoldier.getTransform().getRotator().setXAngle((float) Math.toRadians(-85.0d));
 		//soldier.getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
 		this.objects.add(this.DEBUGsoldier);
 		DebugUtils.log(this, "Soldier TestDummy added!");
+		
+			// Company
+		/*for( int i = 0; i < 100; i++ ) {
+			
+			TestDummy randomSoldier = new TestDummy(this, TestAssets.createTestSoldier(this));
+			randomSoldier.getTransform().setPosition(((float) Math.random() * 300), -10, -100 - ((float) Math.random() * 300));
+			randomSoldier.getTransform().getRotator().setXAngle((float) Math.toRadians(-85.0d));
+			//soldier.getRotationComponent().setXAngle((float) Math.toRadians(-85.0d));
+			this.objects.add(randomSoldier);
+		}*/
 		
 			// GUI
 		this.createGUI();
@@ -117,11 +131,11 @@ public class Scene {
 		this.objects.add(player);
 		this.activeCamera = player.getCamera();
 		Controller playerController = new Controller(input, player)
-		.addBinding(ActionSet.MOVE_FORWARD, input.new KeyHeld(GLFW.GLFW_KEY_W))
-		.addBinding(ActionSet.MOVE_LEFT, input.new KeyHeld(GLFW.GLFW_KEY_A))
-		.addBinding(ActionSet.MOVE_BACKWARDS, input.new KeyHeld(GLFW.GLFW_KEY_S))
-		.addBinding(ActionSet.MOVE_RIGHT, input.new KeyHeld(GLFW.GLFW_KEY_D))
-		.addBinding(ActionSet.LOOK_AROUND, input.new MouseMove());
+		.addBinding(ActionSet.MOVE_FORWARD, new KeyHeld(input, GLFW.GLFW_KEY_W))
+		.addBinding(ActionSet.MOVE_LEFT, new KeyHeld(input, GLFW.GLFW_KEY_A))
+		.addBinding(ActionSet.MOVE_BACKWARDS, new KeyHeld(input, GLFW.GLFW_KEY_S))
+		.addBinding(ActionSet.MOVE_RIGHT, new KeyHeld(input, GLFW.GLFW_KEY_D))
+		.addBinding(ActionSet.LOOK_AROUND, new MouseMove(input));
 		player.setController(playerController);
 		DebugUtils.log(this, "Added TestPlayer!");
 	}
@@ -136,8 +150,14 @@ public class Scene {
 		Window appWindow = this.app.getWindow();
 		
 		Application.getApp().getAssetManager().processTaskResults(System.nanoTime());
-		
 		appWindow.pollInput();
+		
+		if( this.DEBUGcrosshair != null ) {
+			this.DEBUGcrosshair.getTransform().setPosition(
+				this.app.getWindow().getWidth() / 2, this.app.getWindow().getHeight() / 2, 0
+			);
+		}
+		
 		for( ASceneObject object : this.objects ) {
 			object.tick(deltaTime);
 		}
@@ -216,6 +236,7 @@ public class Scene {
 			this.DEBUGcascadeShadowEnabled = !this.DEBUGcascadeShadowEnabled;
 		}
 		
+		long time = System.nanoTime();
 		for( ASceneObject object : this.objects ) {
 			object.submitToRenderer();
 		}
@@ -261,10 +282,10 @@ public class Scene {
 		this.gui.initialize();
 		this.gui.addElement(this.DEBUGtextAppStatistics);
 		
-		Image crosshair = new Image(this.gui, TestAssets.TEX_GUI_CROSSHAIR);
-		crosshair.getTransform().setPosition(400, 300, 0);
-		crosshair.setAnchor(8, 8);
-		this.gui.addElement(crosshair);
+		this.DEBUGcrosshair = new Image(this.gui, TestAssets.TEX_GUI_CROSSHAIR);
+		this.DEBUGcrosshair.getTransform().setPosition(400, 300, 0);
+		this.DEBUGcrosshair.setAnchor(8, 8);
+		this.gui.addElement(this.DEBUGcrosshair);
 	}
 	
 	public void addObject(ASceneObject sceneObject) {

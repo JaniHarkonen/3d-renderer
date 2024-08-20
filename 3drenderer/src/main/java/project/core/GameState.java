@@ -3,7 +3,7 @@ package project.core;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import project.core.asset.IGraphicsAsset;
@@ -11,71 +11,8 @@ import project.scene.ASceneObject;
 import project.scene.Camera;
 
 public class GameState {
-
-	public class SceneState {
-		
-		/************************* SceneIterator-class *************************/
-		
-		public class SceneIterator implements Iterator<ASceneObject> {
-			private Node cursor;
-			
-			private SceneIterator() {
-				this.cursor = SceneState.this.head;
-			}
-
-			@Override
-			public boolean hasNext() {
-				return this.cursor.value != null;
-			}
-
-			@Override
-			public ASceneObject next() {
-				Node next = this.cursor;
-				this.cursor = this.cursor.next;
-				return next.value;
-			}
-		}
-		
-		
-		/************************* Node-class *************************/
-		
-		private class Node {
-			private Node next;
-			private ASceneObject value;
-			private Node(ASceneObject value) {
-				this.next = null;
-				this.value = value;
-			}
-		}
-		
-		
-		/************************* SceneState-class *************************/
-		
-		private Node head;
-		private Node next;
-		
-		private SceneState() {
-			this.head = new Node(null);
-			this.next = this.head;
-		}
-		
-		
-		public void add(ASceneObject value) {
-			this.next.value = value;
-			this.next.next = new Node(null);
-			this.next = this.next.next;
-		}
-		
-		public SceneIterator iterator() {
-			return new SceneIterator();
-		}
-	}
-
-	
-	/************************* GameState-class *************************/
-	
-	private final SceneState activeScene;
-	private final SceneState activeGUI;
+	private final Map<Long, ASceneObject> activeScene;
+	private final Map<Long, ASceneObject> activeGUI;
 	private final Deque<IGraphicsAsset> graphicsGenerationRequests;
 	private final Deque<IGraphicsAsset> graphicsDisposalRequests;
 	private final Map<String, Object> debugData;
@@ -83,23 +20,47 @@ public class GameState {
 	private Camera activeCamera;
 	
 	public GameState() {
-		this.activeScene = new SceneState();
-		this.activeGUI = new SceneState();
+		this.activeScene = new LinkedHashMap<>();
+		this.activeGUI = new LinkedHashMap<>();
 		this.graphicsGenerationRequests = new ArrayDeque<>();
 		this.graphicsDisposalRequests = new ArrayDeque<>();
 		this.debugData = new HashMap<>();
 	}
 	
+	public GameState(GameState src) {
+		this.activeScene = src.activeScene;
+		this.activeGUI = src.activeGUI;
+		this.graphicsGenerationRequests = new ArrayDeque<>();
+		this.graphicsDisposalRequests = new ArrayDeque<>();
+		this.debugData = new HashMap<>();
+	}
+	
+	
 	public void listSceneObject(ASceneObject object) {
 		if( object instanceof Camera ) {
-			this.activeCamera = (Camera) object;
+			Camera c = (Camera) object;
+			if( this.activeCamera == null || !c.rendererEquals(this.activeCamera) ) {
+				this.activeCamera = c.rendererCopy();
+			} else {
+				this.activeCamera = c;
+			}
 		} else {
-			this.activeScene.add(object);
+			long objectID = object.getID();
+			ASceneObject previous = this.activeScene.get(objectID);
+			
+			if( previous == null || !object.rendererEquals(previous)) {
+				this.activeScene.put(objectID, object.rendererCopy());
+			}
 		}
 	}
 	
 	public void listGUIElement(ASceneObject element) {
-		this.activeGUI.add(element);
+		long elementID = element.getID();
+		ASceneObject previous = this.activeGUI.get(elementID);
+		
+		if( previous == null || !element.rendererEquals(previous) ) {
+			this.activeGUI.put(elementID, element.rendererCopy());
+		}
 	}
 	
 	public void listGenerationRequest(IGraphicsAsset asset) {
@@ -127,12 +88,12 @@ public class GameState {
 		return this.debugData.get(key);
 	}
 	
-	public SceneState.SceneIterator getSceneIterator() {
-		return this.activeScene.iterator();
+	public Map<Long, ASceneObject> getActiveScene() {
+		return this.activeScene;
 	}
 	
-	public SceneState.SceneIterator getGUIIterator() {
-		return this.activeGUI.iterator();
+	public Map<Long, ASceneObject> getActiveGUI() {
+		return this.activeGUI;
 	}
 	
 	public Camera getActiveCamera() {

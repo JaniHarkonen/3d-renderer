@@ -13,16 +13,30 @@ public class AmbientLight extends ASceneObject {
 		this.intensity = intensity;
 	}
 	
-	private AmbientLight(AmbientLight ambientLight) {
-		super(null);
-		this.lightColor = new Vector3f(ambientLight.lightColor);
-		this.intensity = ambientLight.intensity;
+	private AmbientLight(AmbientLight src) {
+		super(null, src.id);
+		this.lightColor = new Vector3f(src.lightColor);
+		this.intensity = src.intensity;
 	}
 
 
 	@Override
-	protected AmbientLight rendererCopy() {
+	public AmbientLight rendererCopy() {
 		return new AmbientLight(this);
+	}
+	
+	@Override
+	public boolean rendererEquals(ASceneObject previous) {
+		if( !(previous instanceof AmbientLight) ) {
+			return false;
+		}
+		
+		AmbientLight al = (AmbientLight) previous;
+		return (
+			this.id == al.id &&
+			this.lightColor.equals(al.lightColor) &&
+			this.intensity == al.intensity
+		);
 	}
 	
 	public void setColor(float r, float g, float b) {

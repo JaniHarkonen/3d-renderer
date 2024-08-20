@@ -37,8 +37,13 @@ public class TestDummy extends ASceneObject {
 	}
 	
 	@Override
-	protected TestDummy rendererCopy() {
+	public TestDummy rendererCopy() {
 		return null;
+	}
+	
+	@Override
+	public boolean rendererEquals(ASceneObject previous) {
+		return false;
 	}
 	
 	@Override

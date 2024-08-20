@@ -112,4 +112,18 @@ public class Animator {
 	public Animation getAnimation() {
 		return this.animation;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if( !(o instanceof Animator) ) {
+			return false;
+		}
+		
+		Animator a = (Animator) o;
+		return (
+			this.animation == a.animation && 
+			this.currentFrameIndex == a.currentFrameIndex &&
+			this.currentFrame == a.currentFrame
+		);
+	}
 }

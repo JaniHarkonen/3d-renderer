@@ -16,21 +16,35 @@ public class Projection {
 		this.zFar = zFar;
 	}
 	
-	public Projection(Projection projection) {
-		this.projectionMatrix = new Matrix4f(projection.projectionMatrix);
-		this.fieldOfView = projection.fieldOfView;
-		this.zNear = projection.zNear;
-		this.zFar = projection.zFar;
+	public Projection(Projection src) {
+		this.projectionMatrix = new Matrix4f(src.projectionMatrix);
+		this.fieldOfView = src.fieldOfView;
+		this.zNear = src.zNear;
+		this.zFar = src.zFar;
 	}
 	
 	
 	public void update(int width, int height) {
 		this.projectionMatrix.setPerspective(
-			this.fieldOfView, (float) (width / height), this.zNear, this.zFar
+			this.fieldOfView, width / (float) height, this.zNear, this.zFar
 		);
 	}
 	
 	public Matrix4f getMatrix() {
 		return this.projectionMatrix;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if( !(o instanceof Projection) ) {
+			return false;
+		}
+		
+		Projection p = (Projection) o;
+		return (
+			this.fieldOfView == p.fieldOfView &&
+			this.zFar == p.zFar &&
+			this.zNear == p.zNear
+		); 
 	}
 }

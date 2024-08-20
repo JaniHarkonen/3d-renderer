@@ -110,7 +110,7 @@ vec4 calculateLightColor(
     float roughness = 0.0;
 
     if( uMaterial.hasRoughnessMap == 1 ) {
-        roughness = texture(uRoughnessSampler, outTextureCoordinate).r;
+        roughness = 1 - texture(uRoughnessSampler, outTextureCoordinate).r;
     }
 
     vec4 specColor = (

@@ -4,9 +4,9 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryUtil;
 
+import project.core.renderer.IRenderer;
 import project.input.Input;
 import project.input.InputSnapshot;
-import project.opengl.RendererGL;
 import project.utils.DebugUtils;
 
 public class Window {
@@ -26,7 +26,7 @@ public class Window {
 	private long frameDelta;
 	private long frameTimer;
 	
-	private RendererGL renderer;
+	private IRenderer renderer;
 	private Input input;
 	private InputSnapshot latestInputSnapshot;
 	
@@ -88,7 +88,9 @@ public class Window {
 		this.input = new Input();
 		this.input.bind(this);
 		
-		GLFW.glfwSetWindowSizeCallback(this.windowHandle, (window, width, height) -> this.windowResizeListener(width, height));
+		GLFW.glfwSetWindowSizeCallback(
+			this.windowHandle, (window, width, height) -> this.windowResizeListener(width, height)
+		);
 		
 		GLFW.glfwMakeContextCurrent(this.windowHandle);
 		GLFW.glfwSwapInterval(this.vsync); // v-sync
@@ -161,7 +163,7 @@ public class Window {
 		this.height = height;
 	}
 	
-	public void setRenderer(RendererGL renderer) {
+	public void setRenderer(IRenderer renderer) {
 		this.renderer = renderer;
 	}
 	

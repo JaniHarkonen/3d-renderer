@@ -2,11 +2,13 @@ package project.input;
 
 public abstract class AInputEvent {
 	
+	protected final Input hostInput;
 	protected final int inputKey;
 	protected final float[] thresholds;
 	protected final float[] axes;
 	
-	protected AInputEvent(int inputKey, float... thresholds) {
+	protected AInputEvent(Input hostInput, int inputKey, float... thresholds) {
+		this.hostInput = hostInput;
 		this.inputKey = inputKey;
 		this.thresholds = thresholds;
 		this.axes = new float[thresholds.length];

@@ -30,8 +30,12 @@ public class TestPointLight extends ASceneObject implements IControllable {
 	}
 	
 	@Override
-	protected TestPointLight rendererCopy() {
+	public TestPointLight rendererCopy() {
 		return null;
+	}
+	
+	public boolean rendererEquals(ASceneObject previous) {
+		return false;
 	}
 	
 	@Override

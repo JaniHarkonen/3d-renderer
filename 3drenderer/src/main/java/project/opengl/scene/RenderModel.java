@@ -8,10 +8,7 @@ import project.component.Material;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
 import project.opengl.TextureGL;
-import project.opengl.shader.ShaderProgram;
-import project.opengl.shader.uniform.UAMatrix4f;
 import project.opengl.shader.uniform.object.material.SSMaterial;
-import project.opengl.shader.uniform.object.material.UMaterial;
 import project.opengl.vao.VAO;
 import project.scene.ASceneObject;
 import project.scene.Model;
@@ -27,12 +24,8 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 
 	@Override
 	public void execute(IRenderer renderer, SceneRenderPass renderPass, ASceneObject target) {
-		ShaderProgram activeShaderProgram = renderPass.shaderProgram;
-		
-		UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.OBJECT_TRANSFORM))
-		.update(target.getTransform().getAsMatrix());
-		
 		Model model = (Model) target;
+		renderPass.uObjectTransform.update(target.getTransform().getAsMatrix());
 		
 		for( int m = 0; m < model.getMeshCount(); m++ ) {
 			Material material = model.getMaterial(m);
@@ -64,14 +57,12 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 			this.materialStruct.specular = material.getSpecularColor();
 			this.materialStruct.reflectance = material.getReflectance();
 			
-			UMaterial.class.cast(activeShaderProgram.getUniform(Uniforms.MATERIAL))
-			.update(this.materialStruct);
+			renderPass.uMaterial.update(this.materialStruct);
 			
 			VAO vao = (VAO) mesh.getGraphics();
 			vao.bind();
 			
-			UAMatrix4f.class.cast(activeShaderProgram.getUniform(Uniforms.BONE_MATRICES))
-			.update(model.getAnimator().getCurrentFrame().getBoneTransforms());
+			renderPass.uBoneMatrices.update(model.getAnimator().getCurrentFrame().getBoneTransforms());
 
 			GL46.glDrawElements(
 				GL46.GL_TRIANGLES, vao.getVertexCount() * 3, GL46.GL_UNSIGNED_INT, 0

@@ -34,7 +34,7 @@ public class Application {
 		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);
 		this.window = window;
 			this.renderer = new RendererGL(window, scene);
-			window.setRenderer((RendererGL) this.renderer);
+			window.setRenderer(this.renderer);
 		window.initialize();
 		
 		TestAssets.initialize();
