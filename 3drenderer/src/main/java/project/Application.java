@@ -1,5 +1,8 @@
 package project;
 
+import java.io.IOException;
+import java.net.Socket;
+
 import project.core.asset.AssetManager;
 import project.core.renderer.IRenderer;
 import project.opengl.RendererGL;
@@ -9,11 +12,6 @@ import project.utils.DebugUtils;
 
 public class Application {
 	
-	private static Application APPLICATION;
-	private AssetManager assetManager;
-	private Window window;
-	private IRenderer renderer;
-
 	public static void main(String[] args) {
 		if( APPLICATION != null )
 		return;
@@ -23,12 +21,20 @@ public class Application {
 	}
 	
 	
+	private static Application APPLICATION;
+	private AssetManager assetManager;
+	private Window window;
+	private IRenderer renderer;
+	
 	public void execute() {
 		final String TITLE = "3D Renderer - JOHNEngine";
 		final int FPS_MAX = 60;
 		final int TICK_RATE = 60;
 		
 		this.assetManager = new AssetManager();
+		
+		Thread networkerThread = new Thread(new Networker("localhost", 12345));
+		networkerThread.start();
 		
 		Scene scene = new Scene(this, TICK_RATE);
 		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);
