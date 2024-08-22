@@ -19,7 +19,6 @@ import project.opengl.gui.GUIRenderPass;
 import project.opengl.scene.SceneRenderPass;
 import project.opengl.vao.VAO;
 import project.scene.Camera;
-import project.scene.Scene;
 import project.utils.DebugUtils;
 
 public class RendererGL implements IRenderer {
@@ -35,7 +34,7 @@ public class RendererGL implements IRenderer {
 	private IGraphics defaultMeshGraphics;
 	private IGraphics defaultTextureGraphics;
 	
-	public RendererGL(Window clientWindow, Scene scene) {
+	public RendererGL(Window clientWindow) {
 		this.gameStateQueue = new ConcurrentLinkedQueue<>();
 		this.backGameState = new GameState();
 		this.clientWindow = clientWindow;

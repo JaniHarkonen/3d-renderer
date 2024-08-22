@@ -236,6 +236,10 @@ public class Scene {
 			this.DEBUGcascadeShadowEnabled = !this.DEBUGcascadeShadowEnabled;
 		}
 		
+		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_T) ) {
+			//this.app.getNetworker().sendMessages();
+		}
+		
 		long time = System.nanoTime();
 		for( ASceneObject object : this.objects ) {
 			object.submitToRenderer();
