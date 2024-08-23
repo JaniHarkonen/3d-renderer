@@ -19,11 +19,8 @@ public class Application {
 		networkerThread.start();
 		
 			// Update game logic
-		long time = System.nanoTime();
 		while( true ) {
-			if( System.nanoTime() - time >= 1000000000 ) {
-				System.out.println("game tick");
-			}
+			
 		}
 	}
 }

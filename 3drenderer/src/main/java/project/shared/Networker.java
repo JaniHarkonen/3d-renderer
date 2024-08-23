@@ -15,6 +15,7 @@ public class Networker implements Runnable {
 	@Override
 	public void run() {
 		this.isRunning = true;
+		this.networkingStrategy.startUp();
 		
 		while( this.isRunning ) {
 			this.networkingStrategy.loop();

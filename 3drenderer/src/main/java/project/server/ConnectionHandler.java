@@ -3,14 +3,24 @@ package project.server;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+
+import project.shared.INetworkMessage;
+import project.shared.MMessage;
+import project.shared.NetUtils;
 
 public class ConnectionHandler implements Runnable {
 	private final Socket socket;
+	private final INetworkMessage[] messageDeserializers;
+	
 	private DataInputStream from;
 	private DataOutputStream to;
 	
 	public ConnectionHandler(Socket socket) {
 		this.socket = socket;
+		this.messageDeserializers = new INetworkMessage[1];
+		this.messageDeserializers[MMessage.MSG_MESSAGE] = new MMessage();
+		
 		this.to = null;
 		this.from = null;
 	}
@@ -20,18 +30,28 @@ public class ConnectionHandler implements Runnable {
 	public void run() {
 		Socket socket = this.socket;
 		try {
-			this.from = new DataInputStream(socket.getInputStream());
-			this.to = new DataOutputStream(socket.getOutputStream());
+			DataInputStream from = new DataInputStream(socket.getInputStream());
+			DataOutputStream to = new DataOutputStream(socket.getOutputStream());
 			
+			this.from = from;
+			this.to = to;
+			
+			long time = System.nanoTime();
 			while( socket.isConnected() ) {
-				int size = this.from.read();
+				if( System.nanoTime() - time >= 2000000000 ) {
+					to.write(new MMessage("hello world!").serialize());
+					to.flush();
+					
+					time = System.nanoTime();
+				}
 				
-				if( size >= 0 ) {
-					if( this.from.read() == 2 ) {
-						byte[] messageBytes = new byte[size - 1];
-						this.from.read(messageBytes);
-						System.out.println(new String(messageBytes));
-					}
+				while( from.available() >= 1 ) {
+					int size = NetUtils.readSize(from);
+					int header = NetUtils.readHeader(from);
+					byte[] bytes = from.readNBytes(size);
+					ByteBuffer buffer = ByteBuffer.wrap(bytes);
+					
+					this.messageDeserializers[header].deserialize(buffer).resolve();
 				}
 			}
 			
@@ -39,7 +59,10 @@ public class ConnectionHandler implements Runnable {
 			this.socket.close();
 			
 		} catch( Exception e ) {
-			System.out.println("ERROR: Unable to create either the output writer or input reader for socket " + this.socket);
+			System.out.println(
+				"ERROR: Unable to create either the output writer or input reader for socket " + 
+				this.socket
+			);
 		}
 	}
 }

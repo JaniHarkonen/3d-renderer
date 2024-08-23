@@ -27,6 +27,15 @@ public class Application {
 	private Window window;
 	private IRenderer renderer;
 	
+	public Application() {
+		this.assetManager = null;
+		this.networker = null;
+		this.client = null;
+		this.window = null;
+		this.renderer = null;
+	}
+	
+	
 	public void execute() {
 		final String TITLE = "3D Renderer - JOHNEngine";
 		final int FPS_MAX = 60;
@@ -58,7 +67,9 @@ public class Application {
 			// Game loop
 		while( !window.isDestroyed() ) {
 			window.refresh();
+			this.client.handleInboundMessages();
 			scene.update();
+			this.client.handleOutboundMessages();
 		}
 		
 		this.networker.shutdown();

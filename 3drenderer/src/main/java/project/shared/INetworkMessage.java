@@ -9,4 +9,6 @@ public interface INetworkMessage {
 	public INetworkMessage deserialize(ByteBuffer buffer);
 	
 	public void resolve();
+	
+	public int getType();
 }

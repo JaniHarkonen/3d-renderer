@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import project.shared.INetworkMessage;
 import project.shared.INetworkingStrategy;
+import project.shared.MMessage;
 import project.shared.NetUtils;
 import project.shared.Networker;
 import project.utils.DebugUtils;
@@ -30,7 +31,9 @@ public class Client implements INetworkingStrategy {
 		this.port = port;
 		this.inboundMessages = new ConcurrentLinkedQueue<>();
 		this.outboundMessages = new ConcurrentLinkedQueue<>();
+		
 		this.messageDeserializers = new INetworkMessage[1];
+		this.messageDeserializers[MMessage.MSG_MESSAGE] = new MMessage();
 		
 		this.clientSocket = null;
 		this.from = null;
@@ -59,10 +62,11 @@ public class Client implements INetworkingStrategy {
 	public void loop() {
 		try {
 			DataInputStream from = this.from;
-			int size;
-			while( (size = NetUtils.readSize(from)) >= 0 ) {
+			while( from.available() >= 1 ) {
+				int size = NetUtils.readSize(from);
 				int header = NetUtils.readHeader(from);
-				ByteBuffer buffer = ByteBuffer.wrap(from.readNBytes(size));
+				byte[] bytes = from.readNBytes(size);
+				ByteBuffer buffer = ByteBuffer.wrap(bytes);
 				this.inboundMessages.add(this.messageDeserializers[header].deserialize(buffer));
 			}
 		} catch( Exception e ) {
@@ -97,8 +101,9 @@ public class Client implements INetworkingStrategy {
 	
 	public void handleInboundMessages() {
 		try {
-			for( INetworkMessage inbound : this.inboundMessages ) {
-				inbound.resolve();
+			INetworkMessage message;
+			while( (message = this.inboundMessages.poll()) != null ) {
+				message.resolve();
 			}
 		} catch( Exception e ) {
 			DebugUtils.log(this, "ERROR: Unable to read messages from the server!");
@@ -108,9 +113,11 @@ public class Client implements INetworkingStrategy {
 	
 	public void handleOutboundMessages() {
 		try {
-			for( INetworkMessage outbound : this.outboundMessages ) {
-				this.to.write(outbound.serialize());
+			INetworkMessage message;
+			while( (message = this.outboundMessages.poll()) != null ) {
+				this.to.write(message.serialize());
 			}
+			this.to.flush();
 		} catch( Exception e ) {
 			DebugUtils.log(this, "ERROR: Unable to write a message to the server!");
 			this.networker.shutdown();
