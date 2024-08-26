@@ -3,6 +3,9 @@
 ### Priority
 - implement alpha maps
 
+### ANetworkMessage
+- remove resolve(), must be handled separately by the server and the client
+
 ### General
 - there is still a lot of repetition among render passes, however, this should be further examined once instanced rendering is considered
 

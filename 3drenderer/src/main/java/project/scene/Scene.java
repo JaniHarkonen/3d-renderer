@@ -17,6 +17,7 @@ import project.input.Input;
 import project.input.InputSnapshot;
 import project.input.KeyHeld;
 import project.input.MouseMove;
+import project.shared.MMessage;
 import project.testing.ActionSet;
 import project.testing.TestAssets;
 import project.testing.TestDebugDataHandles;
@@ -224,16 +225,24 @@ public class Scene {
 			this.DEBUGshadowLightPosition.sub(0,1*deltaTime,0);
 		}
 		
+			// DEBUG - Toggle normal maps
 		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_N) ) {
 			this.DEBUGareNormalsActive = !this.DEBUGareNormalsActive;
 		}
 		
+			// DEBUG - Toggle roughness maps
 		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_R) ) {
 			this.DEBUGisRoughnessActive = !this.DEBUGisRoughnessActive;
 		}
 		
+			// DEBUG - Toggle cascade shadow maps
 		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_C) ) {
 			this.DEBUGcascadeShadowEnabled = !this.DEBUGcascadeShadowEnabled;
+		}
+		
+			// DEBUG - Send "pong" to server
+		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_T) ) {
+			this.app.getNetworker().queueMessage(new MMessage("TEST pong"));
 		}
 		
 		long time = System.nanoTime();
