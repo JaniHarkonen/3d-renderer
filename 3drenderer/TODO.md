@@ -3,6 +3,10 @@
 ### Priority
 - implement alpha maps
 
+### ANetworkMessage
+- switch to INetworkMessage, pass in the network standard when serializing as well as deserializing
+- remove resolve(), must be handled separately by the server and the client
+
 ### General
 - there is still a lot of repetition among render passes, however, this should be further examined once instanced rendering is considered
 

@@ -1,6 +1,6 @@
 package project.server;
 
-import project.shared.Networker;
+import project.shared.NetworkStandard;
 
 public class Application {
 
@@ -11,16 +11,14 @@ public class Application {
 	
 	
 	public void execute() {
-		Server server = new Server(12345);
-		Networker networker = new Networker(server);
-		server.assignToNetworker(networker);
-		
+		NetworkStandard networkStandard = new NetworkStandard();
+		networkStandard.declare();
+		Networker networker = new Networker(networkStandard, 12345);
 		Thread networkerThread = new Thread(networker);
 		networkerThread.start();
 		
-			// Update game logic
 		while( true ) {
-			
+			networker.handleInboundMessages();
 		}
 	}
 }

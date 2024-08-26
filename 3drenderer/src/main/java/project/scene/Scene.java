@@ -242,7 +242,7 @@ public class Scene {
 		
 			// DEBUG - Send "pong" to server
 		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_T) ) {
-			this.app.getClient().queueMessage(new MMessage("PONG"));
+			this.app.getNetworker().queueMessage(new MMessage("LOL"));
 		}
 		
 		long time = System.nanoTime();

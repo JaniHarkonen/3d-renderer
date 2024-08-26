@@ -4,11 +4,13 @@ import java.nio.ByteBuffer;
 
 public interface INetworkMessage {
 
-	public byte[] serialize();
+	public ByteBuffer serialize();
 	
-	public INetworkMessage deserialize(ByteBuffer buffer);
+	public INetworkMessage deserialize(ByteBuffer messageBuffer);
 	
 	public void resolve();
 	
-	public int getType();
+	public int getSize();
+	
+	public int getHead();
 }

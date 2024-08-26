@@ -4,42 +4,30 @@ import java.nio.ByteBuffer;
 
 import project.utils.DebugUtils;
 
-public class MMessage implements INetworkMessage {
-	public static final byte MSG_MESSAGE = 0;
+public class MMessage extends ANetworkMessage {
+	public static final byte MSG_MESSAGE = 1;
 
 	public String message;
 	
-	public MMessage() {
-		this("");
+	public MMessage(INetworkStandard networkStandard) {
+		super(networkStandard);
+		this.message = "";
 	}
 	
 	public MMessage(String message) {
+		super(null);
 		this.message = message;
 	}
 	
 	
 	@Override
-	public byte[] serialize() {
-		byte[] messageBytes = this.message.getBytes();
-		int length = messageBytes.length;
-		byte[] bytes = new byte[length + 3];
-		
-		bytes[0] = (byte) (length + 1);
-		bytes[1] = MSG_MESSAGE;
-		bytes[2] = (byte) length;
-		
-		for( int i = 0; i < length; i++ ) {
-			bytes[i + 3] = messageBytes[i];
-		}
-		
-		return bytes;
+	public ByteBuffer serialize(INetworkStandard networkStandard) {
+		return networkStandard.buildStringBuffer(this.message);
 	}
 
 	@Override
-	public MMessage deserialize(ByteBuffer buffer) {
-		byte[] bytes = new byte[buffer.get()];
-		buffer.get(1, bytes);
-		return new MMessage(new String(bytes));
+	public MMessage deserialize(ByteBuffer messageBuffer) {
+		return new MMessage(this.getNetworkStandard().getString(messageBuffer));
 	}
 
 	@Override
@@ -48,7 +36,7 @@ public class MMessage implements INetworkMessage {
 	}
 	
 	@Override
-	public int getType() {
+	public int getHead() {
 		return MSG_MESSAGE;
 	}
 }

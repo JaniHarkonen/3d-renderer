@@ -1,11 +1,11 @@
 package project;
 
-import project.core.Client;
+import project.core.Networker;
 import project.core.asset.AssetManager;
 import project.core.renderer.IRenderer;
 import project.opengl.RendererGL;
 import project.scene.Scene;
-import project.shared.Networker;
+import project.shared.NetworkStandard;
 import project.testing.TestAssets;
 import project.utils.DebugUtils;
 
@@ -23,14 +23,12 @@ public class Application {
 	private static Application APPLICATION;
 	private AssetManager assetManager;
 	private Networker networker;
-	private Client client;
 	private Window window;
 	private IRenderer renderer;
 	
 	public Application() {
 		this.assetManager = null;
 		this.networker = null;
-		this.client = null;
 		this.window = null;
 		this.renderer = null;
 	}
@@ -45,12 +43,10 @@ public class Application {
 		this.assetManager = new AssetManager();
 		
 			// Networker
-		this.client = new Client("localhost", 12345);
-		this.networker = new Networker(this.client);
-		this.client.assignToNetworker(this.networker);
-		
-		Thread networkerThread = new Thread(this.networker);
-		networkerThread.start();
+		NetworkStandard networkStandard = new NetworkStandard();
+		networkStandard.declare();
+		this.networker = new Networker(networkStandard);
+		this.networker.launchSession("localhost", 12345);
 		
 			// Window and renderer
 		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);
@@ -67,12 +63,12 @@ public class Application {
 			// Game loop
 		while( !window.isDestroyed() ) {
 			window.refresh();
-			this.client.handleInboundMessages();
+			this.networker.handleInboundMessages();
 			scene.update();
-			this.client.handleOutboundMessages();
+			this.networker.handleOutboundMessages();
 		}
 		
-		this.networker.shutdown();
+		this.networker.abortSession();
 		DebugUtils.log(this, "main loop terminated!");
 	}
 	
@@ -94,9 +90,5 @@ public class Application {
 	
 	public Networker getNetworker() {
 		return this.networker;
-	}
-	
-	public Client getClient() {
-		return this.client;
 	}
 }
