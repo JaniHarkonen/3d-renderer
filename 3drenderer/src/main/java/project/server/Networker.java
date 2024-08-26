@@ -8,8 +8,8 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import project.shared.ANetworkMessage;
 import project.shared.ConnectionHandler;
+import project.shared.INetworkMessage;
 import project.shared.NetworkStandard;
 import project.utils.DebugUtils;
 
@@ -95,8 +95,8 @@ public class Networker implements Runnable {
 				e.printStackTrace();
 			}
 			
-			ANetworkMessage message;
-			Queue<ANetworkMessage> messages = handler.getInboundMessages();
+			INetworkMessage message;
+			Queue<INetworkMessage> messages = handler.getInboundMessages();
 			while( (message = messages.poll()) != null ) {
 				message.resolve();
 			}

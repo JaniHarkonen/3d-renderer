@@ -4,7 +4,6 @@
 - implement alpha maps
 
 ### ANetworkMessage
-- switch to INetworkMessage, pass in the network standard when serializing as well as deserializing
 - remove resolve(), must be handled separately by the server and the client
 
 ### General

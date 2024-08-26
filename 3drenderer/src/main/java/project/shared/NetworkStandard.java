@@ -12,18 +12,18 @@ public final class NetworkStandard implements INetworkStandard {
 	/************************* MessageTypeTable-class **************************/
 	
 	private class MessageTypeTable {
-		private Map<Integer, ANetworkMessage> table;
+		private Map<Integer, INetworkMessage> table;
 		
 		private MessageTypeTable() {
 			this.table = new HashMap<>();
 		}
 		
-		private MessageTypeTable declareType(ANetworkMessage template) {
+		private MessageTypeTable declareType(INetworkMessage template) {
 			this.table.put(template.getHead(), template);
 			return this;
 		}
 		
-		private ANetworkMessage getTemplate(int type) {
+		private INetworkMessage getTemplate(int type) {
 			return this.table.get(type);
 		}
 	}
@@ -41,7 +41,7 @@ public final class NetworkStandard implements INetworkStandard {
 	@Override
 	public void declare() {
 		this.messageTypeTable
-		.declareType(new MMessage(this));
+		.declareType(new MMessage());
 	}
 	
 	@Override
@@ -91,7 +91,7 @@ public final class NetworkStandard implements INetworkStandard {
 	}
 	
 	@Override
-	public ANetworkMessage getTemplate(int head) {
+	public INetworkMessage getTemplate(int head) {
 		return this.messageTypeTable.getTemplate(head);
 	}
 	

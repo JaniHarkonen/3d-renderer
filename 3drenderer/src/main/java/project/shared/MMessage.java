@@ -4,18 +4,16 @@ import java.nio.ByteBuffer;
 
 import project.utils.DebugUtils;
 
-public class MMessage extends ANetworkMessage {
+public class MMessage implements INetworkMessage {
 	public static final byte MSG_MESSAGE = 1;
 
 	public String message;
 	
-	public MMessage(INetworkStandard networkStandard) {
-		super(networkStandard);
-		this.message = "";
+	public MMessage() {
+		this("");
 	}
 	
 	public MMessage(String message) {
-		super(null);
 		this.message = message;
 	}
 	
@@ -26,8 +24,8 @@ public class MMessage extends ANetworkMessage {
 	}
 
 	@Override
-	public MMessage deserialize(ByteBuffer messageBuffer) {
-		return new MMessage(this.getNetworkStandard().getString(messageBuffer));
+	public MMessage deserialize(INetworkStandard networkStandard, ByteBuffer messageBuffer) {
+		return new MMessage(networkStandard.getString(messageBuffer));
 	}
 
 	@Override

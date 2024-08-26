@@ -88,7 +88,7 @@ public interface INetworkStandard {
 	 * @param head Head of the message.
 	 * @return The corresponding network message template or NULL if no such template exists.
 	 */
-	public ANetworkMessage getTemplate(int head);
+	public INetworkMessage getTemplate(int head);
 	
 	/**
 	 * @return The length of the "size"-part of a message in bytes.

@@ -15,15 +15,15 @@ public class ConnectionHandler {
 	private Socket socket;
 	private DataInputStream from;
 	private DataOutputStream to;
-	private Queue<ANetworkMessage> inboundQueue;
-	private Queue<ANetworkMessage> outboundQueue;
+	private Queue<INetworkMessage> inboundQueue;
+	private Queue<INetworkMessage> outboundQueue;
 	private int expectedSize;
 	
 	public ConnectionHandler(
 		INetworkStandard networkStandard,
 		Socket socket, 
-		Queue<ANetworkMessage> inboundQueue, 
-		Queue<ANetworkMessage> outboundQueue
+		Queue<INetworkMessage> inboundQueue, 
+		Queue<INetworkMessage> outboundQueue
 	) {
 		this.networkStandard = networkStandard;
 		this.socket = socket;
@@ -58,12 +58,12 @@ public class ConnectionHandler {
 			
 			ByteBuffer messageBuffer = ByteBuffer.wrap(from.readNBytes(this.expectedSize));
 			int head = ns.getMessageHead(messageBuffer);
-			ANetworkMessage template = ns.getTemplate(head);
+			INetworkMessage template = ns.getTemplate(head);
 			
 			if( template == null ) {
 				DebugUtils.log(this, "WARNING: Received a malformed message!");
 			} else {
-				this.inboundQueue.add(template.deserialize(messageBuffer));
+				this.inboundQueue.add(template.deserialize(this.networkStandard, messageBuffer));
 			}
 			
 			this.resetExpectedSize();
@@ -73,12 +73,11 @@ public class ConnectionHandler {
 	public void sendMessages() throws IOException {
 		DataOutputStream to = this.to;
 		INetworkStandard ns = this.networkStandard;
-		ANetworkMessage message;
+		INetworkMessage message;
 		
 		while( (message = this.outboundQueue.poll()) != null ) {
 			byte[] bytes = message.serialize(ns).array();
 			int size = bytes.length + ns.sizeOfHead();
-			message.resolve();
 			
 			ns.writeSize(to, size);
 			ns.writeHead(to, message.getHead());
@@ -106,11 +105,11 @@ public class ConnectionHandler {
 		this.socket = null;
 	}
 	
-	public Queue<ANetworkMessage> getInboundMessages() {
+	public Queue<INetworkMessage> getInboundMessages() {
 		return this.inboundQueue;
 	}
 	
-	public Queue<ANetworkMessage> getOutboundMessages() {
+	public Queue<INetworkMessage> getOutboundMessages() {
 		return this.outboundQueue;
 	}
 	

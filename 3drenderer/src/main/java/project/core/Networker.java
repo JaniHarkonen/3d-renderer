@@ -5,12 +5,15 @@ import java.net.Socket;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import project.shared.ANetworkMessage;
 import project.shared.ConnectionHandler;
+import project.shared.INetworkMessage;
 import project.shared.INetworkStandard;
 import project.utils.DebugUtils;
 
 public class Networker {
+	
+	/************************* Session-class **************************/
+	
 	private class Session implements Runnable {
 
 		@Override
@@ -22,6 +25,8 @@ public class Networker {
 	}
 	
 	
+	/************************* Networker-class **************************/
+	
 	private final INetworkStandard networkStandard;
 	
 	private volatile boolean isSessionAuthorized;
@@ -30,8 +35,8 @@ public class Networker {
 	private int port;
 	private Socket clientSocket;
 	private ConnectionHandler connectionHandler;
-	private Queue<ANetworkMessage> outboundMessages;
-	private Queue<ANetworkMessage> inboundMessages;
+	private Queue<INetworkMessage> outboundMessages;
+	private Queue<INetworkMessage> inboundMessages;
 	private Session currentSession;
 	
 	public Networker(INetworkStandard networkStandard) {
@@ -109,7 +114,7 @@ public class Networker {
 	}
 	
 	public void handleInboundMessages() {
-		ANetworkMessage message;
+		INetworkMessage message;
 		while( (message = this.inboundMessages.poll()) != null ) {
 			message.resolve();
 		}
@@ -124,7 +129,7 @@ public class Networker {
 		}
 	}
 	
-	public void queueMessage(ANetworkMessage message) {
+	public void queueMessage(INetworkMessage message) {
 		this.outboundMessages.add(message);
 	}
 }
