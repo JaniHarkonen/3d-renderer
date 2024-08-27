@@ -41,7 +41,8 @@ public final class NetworkStandard implements INetworkStandard {
 	@Override
 	public void declare() {
 		this.messageTypeTable
-		.declareType(new MMessage());
+		.declareType(new MMessage())
+		.declareType(new MMove());
 	}
 	
 	@Override

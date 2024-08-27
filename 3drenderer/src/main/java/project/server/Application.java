@@ -10,15 +10,30 @@ public class Application {
 	}
 	
 	
+	private Networker networker;
+	
+	public Application() {
+		this.networker = null;
+	}
+	
+	
 	public void execute() {
+		Game game = new Game(this);
+		
 		NetworkStandard networkStandard = new NetworkStandard();
 		networkStandard.declare();
-		Networker networker = new Networker(networkStandard, 12345);
-		Thread networkerThread = new Thread(networker);
+		this.networker = new Networker(networkStandard, 12345);
+		Thread networkerThread = new Thread(this.networker);
 		networkerThread.start();
 		
 		while( true ) {
-			networker.handleInboundMessages();
+			this.networker.handleInboundMessages();
+			game.tick(0.0f);
+			//this.networker.handleOutboundMessages();
 		}
+	}
+	
+	public Networker getNetworker() {
+		return this.networker;
 	}
 }

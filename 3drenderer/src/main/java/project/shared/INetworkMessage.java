@@ -6,7 +6,7 @@ public interface INetworkMessage {
 
 	public ByteBuffer serialize(INetworkStandard networkStandard);
 
-	public MMessage deserialize(INetworkStandard networkStandard, ByteBuffer messageBuffer);
+	public INetworkMessage deserialize(INetworkStandard networkStandard, ByteBuffer messageBuffer);
 
 	public void resolve();
 	

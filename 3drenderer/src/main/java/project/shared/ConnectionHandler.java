@@ -45,6 +45,7 @@ public class ConnectionHandler {
 		DataInputStream from = this.from;
 		INetworkStandard ns = this.networkStandard;
 
+			// Continue until there are no more complete messages left to read
 		while( true ) {
 			if( this.expectedSize == -1 ) {
 				if( (this.expectedSize = ns.readSizeIfAvailable(from)) == -1 ) {
@@ -61,7 +62,12 @@ public class ConnectionHandler {
 			INetworkMessage template = ns.getTemplate(head);
 			
 			if( template == null ) {
-				DebugUtils.log(this, "WARNING: Received a malformed message!");
+				DebugUtils.log(
+					this, 
+					"WARNING: Received a malformed message!", 
+					"Expected size: " + this.expectedSize, 
+					"Head: " + head
+				);
 			} else {
 				this.inboundQueue.add(template.deserialize(this.networkStandard, messageBuffer));
 			}
