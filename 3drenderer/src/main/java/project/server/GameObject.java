@@ -21,6 +21,10 @@ public class GameObject {
 		
 	}
 	
+	public boolean hasChanged() {
+		
+	}
+	
 	public long getID() {
 		return this.id;
 	}

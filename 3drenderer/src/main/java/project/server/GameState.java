@@ -1,6 +1,7 @@
 package project.server;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,26 @@ public class GameState {
 		this.removedObjects = new ArrayList<>();
 	}
 	
+	
+	public void tick(float deltaTime) {
+		Collection<GameObject> gameObjects = this.objects.values();
+		for( GameObject object : gameObjects ) {
+			object.tick(deltaTime);
+		}
+		
+		for( GameObject object : gameObjects ) {
+			object.tick(deltaTime);
+		}
+		
+		while( this.addedObjects.size() > 0 ) {
+			GameObject object = this.addedObjects.get(0);
+			this.objects.put(object.getID(), object);
+		}
+		
+		while( this.removedObjects.size() > 0 ) {
+			this.objects.remove(this.removedObjects.get(0).getID());
+		}
+	}
 	
 	public void commitChanges() {
 		while( this.addedObjects.size() > 0 ) {
