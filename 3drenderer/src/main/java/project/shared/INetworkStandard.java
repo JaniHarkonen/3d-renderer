@@ -22,6 +22,13 @@ import java.nio.ByteBuffer;
  */
 public interface INetworkStandard {
 	
+	public static final int SIZEOF_BYTE = 1;
+	public static final int SIZEOF_SHORT = 2;
+	public static final int SIZEOF_INT = 4;
+	public static final int SIZEOF_FLOAT = 4;
+	public static final int SIZEOF_LONG = 8;
+	public static final int SIZEOF_DOUBLE = 8;
+	
 	/**
 	 * "Declares" the networking standard by instantiating message templates and other
 	 * networking values.
@@ -77,6 +84,17 @@ public interface INetworkStandard {
 	public int getMessageHead(ByteBuffer messageBuffer);
 	
 	/**
+	 * Standard for extracting the head ID of a game object from a message stored as a 
+	 * ByteBuffer. This operation will advance the cursor in the ByteBuffer by the length of 
+	 * the ID. The ID will be returned as an int even if the read operation returns a smaller 
+	 * data type, such as a byte.
+	 * 
+	 * @param messageBuffer ByteBuffer where the message along with the ID is to be found.
+	 * @return The ID of the game object (as int).
+	 */
+	public int getGameObjectID(ByteBuffer messageBuffer);
+	
+	/**
 	 * Standard for extracting a string from a message stored as a ByteBuffer. This operation 
 	 * will advance the cursor in the ByteBuffer by the length of the string.
 	 * 
@@ -124,5 +142,15 @@ public interface INetworkStandard {
 	 * @return The length of the value that denotes the length of a string.
 	 */
 	public int sizeOfStringLength();
+	
+	/**
+	 * @return The length of the type of a game object.
+	 */
+	public int sizeOfGameObjectType();
+	
+	/**
+	 * @return The length of the UUID of a game object.
+	 */
+	public int sizeOfGameObjectID();
 }
 

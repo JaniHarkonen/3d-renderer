@@ -66,6 +66,11 @@ public final class NetworkStandard implements INetworkStandard {
 	}
 	
 	@Override
+	public int getGameObjectID(ByteBuffer messageBuffer) {
+		return messageBuffer.getInt();
+	}
+	
+	@Override
 	public String getString(ByteBuffer messageBuffer) {
 		int length = messageBuffer.get();
 		StringBuilder builder = new StringBuilder(length);
@@ -98,12 +103,12 @@ public final class NetworkStandard implements INetworkStandard {
 	
 	@Override
 	public int sizeOfSize() {
-		return 1;
+		return INetworkStandard.SIZEOF_BYTE;
 	}
 	
 	@Override
 	public int sizeOfHead() {
-		return 1;
+		return INetworkStandard.SIZEOF_BYTE;
 	}
 	
 	@Override
@@ -113,6 +118,16 @@ public final class NetworkStandard implements INetworkStandard {
 	
 	@Override
 	public int sizeOfStringLength() {
-		return 1;
+		return INetworkStandard.SIZEOF_BYTE;
+	}
+	
+	@Override
+	public int sizeOfGameObjectType() {
+		return INetworkStandard.SIZEOF_INT;
+	}
+	
+	@Override
+	public int sizeOfGameObjectID() {
+		return INetworkStandard.SIZEOF_INT;
 	}
 }

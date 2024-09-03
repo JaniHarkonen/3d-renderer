@@ -1,16 +1,23 @@
 package project.server;
 
 import project.shared.NetworkStandard;
+import project.server.NEW.Game;
 
-public class Application {
-
+public class Application {	
+	private static Application app;
+	
 	public static void main(String[] args) {
-		Application app = new Application();
+		app = new Application();
 		app.execute();
+	}
+	
+	public static Application getApp() {
+		return app;
 	}
 	
 	
 	private Networker networker;
+	private Game game;
 	
 	public Application() {
 		this.networker = null;
@@ -18,7 +25,7 @@ public class Application {
 	
 	
 	public void execute() {
-		Game game = new Game(this);
+		this.game = new Game();
 		
 		NetworkStandard networkStandard = new NetworkStandard();
 		networkStandard.declare();
@@ -28,12 +35,16 @@ public class Application {
 		
 		while( true ) {
 			this.networker.handleInboundMessages();
-			game.tick(0.0f);
-			//this.networker.handleOutboundMessages();
+			this.game.tick(0.0f);
+			this.networker.handleOutboundMessages();
 		}
 	}
 	
 	public Networker getNetworker() {
 		return this.networker;
+	}
+	
+	public Game getGame() {
+		return this.game;
 	}
 }

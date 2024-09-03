@@ -24,4 +24,7 @@ public class Game {
 		}
 	}
 	
+	public GameState getLatestGameState() {
+		return this.frontGameState;
+	}
 }
