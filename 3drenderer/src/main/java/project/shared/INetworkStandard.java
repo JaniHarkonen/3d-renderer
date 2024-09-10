@@ -5,7 +5,29 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+/**
+ * The network standard defines the structure of messages sent between the server and
+ * the client by defining operations and values that are eventually used by the 
+ * Networkers and ConnectionHandlers. The network standard itself should be light on 
+ * implementation details mainly functioning as a lookup table. Some operations, like 
+ * buildStringBuffer(String), still have to be defined, because different client-server 
+ * implementations may opt for different ways of storing strings.
+ * <br><br>
+ * Before the network standard can be used, it should be declared first by calling 
+ * declare(). This ensures that all the necessary objects, such as message templates,
+ * are instantiated.
+ * 
+ * @author Jani Härkönen
+ *
+ */
 public interface INetworkStandard {
+	
+	public static final int SIZEOF_BYTE = 1;
+	public static final int SIZEOF_SHORT = 2;
+	public static final int SIZEOF_INT = 4;
+	public static final int SIZEOF_FLOAT = 4;
+	public static final int SIZEOF_LONG = 8;
+	public static final int SIZEOF_DOUBLE = 8;
 	
 	/**
 	 * "Declares" the networking standard by instantiating message templates and other
@@ -17,7 +39,7 @@ public interface INetworkStandard {
 	 * Reads the size of the next incoming message from a given DataInputStream, or 
 	 * returns -1, if the size is not yet available. The size will be return as an int, 
 	 * however, the read operation may fetch smaller data types, such as bytes.
-	 * <br/><br/>
+	 * <br><br>
 	 * This method should be non-blocking meaning it only issues a read call (which is
 	 * blocking) when enough data is available for reading.
 	 * 
@@ -60,6 +82,17 @@ public interface INetworkStandard {
 	 * @return The head of the message (as int).
 	 */
 	public int getMessageHead(ByteBuffer messageBuffer);
+	
+	/**
+	 * Standard for extracting the head ID of a game object from a message stored as a 
+	 * ByteBuffer. This operation will advance the cursor in the ByteBuffer by the length of 
+	 * the ID. The ID will be returned as an int even if the read operation returns a smaller 
+	 * data type, such as a byte.
+	 * 
+	 * @param messageBuffer ByteBuffer where the message along with the ID is to be found.
+	 * @return The ID of the game object (as int).
+	 */
+	public int getGameObjectID(ByteBuffer messageBuffer);
 	
 	/**
 	 * Standard for extracting a string from a message stored as a ByteBuffer. This operation 
@@ -109,5 +142,15 @@ public interface INetworkStandard {
 	 * @return The length of the value that denotes the length of a string.
 	 */
 	public int sizeOfStringLength();
+	
+	/**
+	 * @return The length of the type of a game object.
+	 */
+	public int sizeOfGameObjectType();
+	
+	/**
+	 * @return The length of the UUID of a game object.
+	 */
+	public int sizeOfGameObjectID();
 }
 

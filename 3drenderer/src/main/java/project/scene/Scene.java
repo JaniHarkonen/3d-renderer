@@ -43,6 +43,7 @@ public class Scene {
 	private boolean DEBUGisRoughnessActive;
 	private boolean DEBUGcascadeShadowEnabled;
 	private TestDummy DEBUGsoldier;
+	public TestDummy DEBUGserverSoldier;
 	
 	public Scene(Application app, int tickRate) {
 		this.objects = null;
@@ -60,6 +61,7 @@ public class Scene {
 		this.DEBUGisRoughnessActive = true;
 		this.DEBUGcascadeShadowEnabled = false;
 		this.DEBUGsoldier = null;
+		this.DEBUGserverSoldier = null;
 	}
 	
 	
@@ -105,7 +107,7 @@ public class Scene {
 		this.objects.add(outsideScene);
 		DebugUtils.log(this, "Outside place TestDummy added!");
 		
-			// Platoon
+			// Soldier
 		this.DEBUGsoldier = new TestDummy(this, TestAssets.createTestSoldier(this));
 		this.DEBUGsoldier.getTransform().setPosition(1, -10, -100);
 		this.DEBUGsoldier.getTransform().getRotator().setXAngle((float) Math.toRadians(-85.0d));
@@ -113,7 +115,7 @@ public class Scene {
 		this.objects.add(this.DEBUGsoldier);
 		DebugUtils.log(this, "Soldier TestDummy added!");
 		
-			// Company
+			// Platoon
 		/*for( int i = 0; i < 100; i++ ) {
 			
 			TestDummy randomSoldier = new TestDummy(this, TestAssets.createTestSoldier(this));

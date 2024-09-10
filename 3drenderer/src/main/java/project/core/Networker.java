@@ -35,7 +35,7 @@ public class Networker {
 	private int port;
 	private Socket clientSocket;
 	private ConnectionHandler connectionHandler;
-	private Queue<INetworkMessage> outboundMessages;
+	private Queue<ConnectionHandler.IQueueItem> outboundMessages;
 	private Queue<INetworkMessage> inboundMessages;
 	private Session currentSession;
 	
@@ -130,6 +130,6 @@ public class Networker {
 	}
 	
 	public void queueMessage(INetworkMessage message) {
-		this.outboundMessages.add(message);
+		this.connectionHandler.queueMessage(message);
 	}
 }

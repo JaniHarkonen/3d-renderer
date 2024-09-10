@@ -25,12 +25,14 @@ public class Application {
 	private Networker networker;
 	private Window window;
 	private IRenderer renderer;
+	private Scene scene;
 	
 	public Application() {
 		this.assetManager = null;
 		this.networker = null;
 		this.window = null;
 		this.renderer = null;
+		this.scene = null;
 	}
 	
 	
@@ -57,14 +59,14 @@ public class Application {
 		
 			// Scene and assets
 		TestAssets.initialize();
-		Scene scene = new Scene(this, TICK_RATE);
-		scene.initialize();
+		this.scene = new Scene(this, TICK_RATE);
+		this.scene.initialize();
 		
 			// Game loop
 		while( !window.isDestroyed() ) {
 			window.refresh();
 			this.networker.handleInboundMessages();
-			scene.update();
+			this.scene.update();
 			this.networker.handleOutboundMessages();
 		}
 		
@@ -90,5 +92,9 @@ public class Application {
 	
 	public Networker getNetworker() {
 		return this.networker;
+	}
+	
+	public Scene getScene() {
+		return this.scene;
 	}
 }
