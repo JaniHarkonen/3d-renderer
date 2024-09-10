@@ -66,7 +66,6 @@ public class TestPlayer extends ASceneObject implements IControllable {
 				camera.getTransform().getPosition().add(
 					camera.getTransform().getRotator().getForwardVector(new Vector3f(0.0f)).mul(finalSpeed)
 				);
-				Application.getApp().getNetworker().queueMessage(new MMove());
 			} break;
 
 			case ActionSet.MOVE_LEFT: {

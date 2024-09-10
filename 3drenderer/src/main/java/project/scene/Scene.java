@@ -43,6 +43,7 @@ public class Scene {
 	private boolean DEBUGisRoughnessActive;
 	private boolean DEBUGcascadeShadowEnabled;
 	private TestDummy DEBUGsoldier;
+	public TestDummy DEBUGserverSoldier;
 	
 	public Scene(Application app, int tickRate) {
 		this.objects = null;
@@ -60,6 +61,7 @@ public class Scene {
 		this.DEBUGisRoughnessActive = true;
 		this.DEBUGcascadeShadowEnabled = false;
 		this.DEBUGsoldier = null;
+		this.DEBUGserverSoldier = null;
 	}
 	
 	

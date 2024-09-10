@@ -1,17 +1,28 @@
 package project.server.NEW;
 
+import project.utils.DebugUtils;
+
 public class Game {
 	
 	private GameState frontGameState;
 	private GameState backGameState;
+	private long DEBUGtimer;
 	
 	public Game() {
 		this.backGameState = new GameState();
 		this.frontGameState = null;
+		this.DEBUGtimer = System.nanoTime();
 	}
 	
 	
 	public void tick(float deltaTime) {
+			// DEBUG - create test soldier
+		if( System.nanoTime() - this.DEBUGtimer >= 1000000000l ) {
+			this.backGameState.addObject(new TestSoldier());
+			this.DEBUGtimer = Long.MAX_VALUE;
+			DebugUtils.log(this, "soldier added");
+		}
+		
 		this.backGameState.tick(deltaTime);
 		
 		if( this.frontGameState == null ) {

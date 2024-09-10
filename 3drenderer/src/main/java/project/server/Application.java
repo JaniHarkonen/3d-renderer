@@ -1,7 +1,7 @@
 package project.server;
 
-import project.shared.NetworkStandard;
 import project.server.NEW.Game;
+import project.shared.NetworkStandard;
 
 public class Application {	
 	private static Application app;
@@ -33,9 +33,19 @@ public class Application {
 		Thread networkerThread = new Thread(this.networker);
 		networkerThread.start();
 		
+		final long tickRate = 1000000000 / 8;
+		long time = System.nanoTime();
 		while( true ) {
+			if( System.nanoTime() - time < tickRate ) {
+				continue;
+			}
+			
 			this.networker.handleInboundMessages();
-			this.game.tick(0.0f);
+			
+				float deltaTime = (System.nanoTime() - time) / 1000000000.0f;
+				time = System.nanoTime();
+				this.game.tick(deltaTime);
+				
 			this.networker.handleOutboundMessages();
 		}
 	}

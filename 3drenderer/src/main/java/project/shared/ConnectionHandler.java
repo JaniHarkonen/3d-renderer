@@ -106,7 +106,6 @@ public class ConnectionHandler {
 					"Head: " + head
 				);
 			} else {
-				//this.inboundQueue.add(template.deserialize(this.networkStandard, messageBuffer));
 				this.inboundQueue.add(template.deserialize(this.networkStandard, messageBuffer));
 			}
 			
@@ -118,9 +117,7 @@ public class ConnectionHandler {
 		DataOutputStream to = this.to;
 		INetworkStandard ns = this.networkStandard;
 		IQueueItem item;
-		//INetworkMessage message;
 		
-		//while( (message = this.outboundQueue.poll()) != null ) {
 		while( (item = this.outboundQueue.poll()) != null ) {
 			INetworkMessage message;
 			while( (message = item.getMessage()) != null ) {
@@ -129,10 +126,9 @@ public class ConnectionHandler {
 				
 				ns.writeSize(to, size);
 				ns.writeHead(to, message.getHead());
-				to.write(message.serialize(ns).array());
+				to.write(bytes);
 			}
 		}
-		
 		to.flush();
 	}
 	
@@ -140,7 +136,7 @@ public class ConnectionHandler {
 		this.outboundQueue.add(new SingleMessage(message));
 	}
 	
-	public void queueMessge(Queue<INetworkMessage> compoundMessage) {
+	public void queueMessage(Queue<INetworkMessage> compoundMessage) {
 		this.outboundQueue.add(new CompoundMessage(compoundMessage));
 	}
 	

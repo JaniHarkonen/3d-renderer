@@ -14,7 +14,8 @@ public class Transform implements IGameComponent {
 	
 	private IHasID host;
 	
-	public Transform() {
+	public Transform(IHasID host) {
+		this.host = host;
 		this.position = new Vector3f(0.0f);
 		this.rotator = new Rotator();
 		this.scale = new Vector3f(1.0f);

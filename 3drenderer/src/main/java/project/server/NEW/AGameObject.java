@@ -8,12 +8,14 @@ public abstract class AGameObject implements IHasID {
 	protected Transform transform;
 	
 	public AGameObject() {
-		this.transform = new Transform();
+		this.id = UUID.nextID();
+		this.transform = new Transform(this);
 	}
 	
 	
 	public void onCreate() {
-		this.id = UUID.nextID();
+		//this.id = UUID.nextID();
+		
 	}
 	
 	public abstract void tick(float deltaTime);

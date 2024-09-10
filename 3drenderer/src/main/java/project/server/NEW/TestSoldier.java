@@ -1,5 +1,7 @@
 package project.server.NEW;
 
+import org.joml.Vector3f;
+
 public class TestSoldier extends AGameObject {
 	
 	public TestSoldier() {
@@ -10,8 +12,9 @@ public class TestSoldier extends AGameObject {
 
 	@Override
 	public void tick(float deltaTime) {
-		// TODO Auto-generated method stub
-		
+		Vector3f position = this.transform.getPosition();
+		this.transform.setPosition(position.x, position.y, position.z + 4 * deltaTime);
+		this.transform.updateTransformMatrix();
 	}
 
 	@Override
@@ -23,7 +26,7 @@ public class TestSoldier extends AGameObject {
 	@Override
 	public TestSoldier deepCopy() {
 		TestSoldier copy = new TestSoldier();
-		copy.transform = new Transform(transform);
+		copy.transform = new Transform(this.transform);
 		return copy;
 	}
 

@@ -80,7 +80,7 @@ public class Networker implements Runnable {
 						new ConcurrentLinkedQueue<>()
 					);
 					handler.initialize();
-					handler.queueMessge(this.fullWorldUpdateMessages);
+					handler.queueMessage(this.fullWorldUpdateMessages);
 					this.connections.put(handler, true);
 				}
 			} catch( IOException e ) {
@@ -122,10 +122,24 @@ public class Networker implements Runnable {
 	public void handleOutboundMessages() {
 		GameState latestGameState = Application.getApp().getGame().getLatestGameState();
 		this.fullWorldUpdateMessages = this.generateFullWorldUpdateMessages(latestGameState);
-		Queue<INetworkMessage> deltaUpdate = this.generateWorldDeltaUpdateMessages(latestGameState.getDelta());
+		Queue<INetworkMessage> deltaUpdate = 
+			this.generateWorldDeltaUpdateMessages(latestGameState.getDelta());
+		
+		
+			// Send delta update if changes occurred 
+		if( deltaUpdate.size() <= 0 ) {
+			return;
+		}
 		
 		for( ConnectionHandler handler : this.connections.keySet() ) {
-			handler.queueMessge(deltaUpdate);
+			handler.queueMessage(deltaUpdate);
+				
+				// THIS SHOULD BE HANDLED ON A SEPARATE THREAD
+			try {
+				handler.sendMessages();
+			} catch( Exception e ) {
+				
+			}
 		}
 	}
 	

@@ -18,7 +18,7 @@ public class GameState {
 		private void reset() {
 			this.addedObjects = new ArrayList<>();
 			this.deletedObjects = new ArrayList<>();
-			this.alteredComponents = null;
+			this.alteredComponents = new ArrayList<>();
 		}
 		
 		
@@ -38,17 +38,10 @@ public class GameState {
 	private Map<Integer, AGameObject> gameObjects;
 	private Delta stateDelta;
 	
-	//private List<GameObject> addedObjects;
-	//private List<Integer> deletedObjects;
-	//private List<IGameComponent> alteredComponents;
-	
 	
 	public GameState() {
 		this.gameObjects = new LinkedHashMap<>();
 		this.stateDelta = new Delta();
-		//this.addedObjects = new ArrayList<>();
-		//this.deletedObjects = new ArrayList<>();
-		//this.alteredComponents = null;
 	}
 	
 	
@@ -57,26 +50,22 @@ public class GameState {
 			object.tick(deltaTime);
 		}
 		
-		//for( GameObject object : this.addedObjects ) {
 		for( AGameObject object : this.stateDelta.addedObjects ) {
 			this.gameObjects.put(object.getID(), object);
 		}
 		
-		//for( Integer objectID : this.deletedObjects ) {
 		for( Integer objectID : this.stateDelta.deletedObjects ) {
 			this.gameObjects.remove(objectID);
 		}
 	}
 	
 	public GameState deepCopyComplete() {
-		Map<Integer, AGameObject> objects = new LinkedHashMap<>(this.gameObjects.size());
+		Map<Integer, AGameObject> objects = new LinkedHashMap<>();
 		for( AGameObject object : this.gameObjects.values() ) {
 			objects.put(object.getID(), object.deepCopy());
 		}
 		
 			// Deep copy game objects whose copies can't already be found in the objects-map
-		//List<GameObject> added = new ArrayList<>(this.addedObjects.size());
-		//for( GameObject object : this.addedObjects ) {
 		List<AGameObject> addedObjects = this.stateDelta.addedObjects;
 		List<AGameObject> added = new ArrayList<>(addedObjects.size());
 		for( AGameObject object : addedObjects ) {
@@ -85,19 +74,16 @@ public class GameState {
 		
 		GameState copy = new GameState();
 		copy.gameObjects = objects;
-		//copy.addedObjects = added;
 		copy.stateDelta.addedObjects = added;
-		copy.stateDelta.deletedObjects = new ArrayList<>(this.stateDelta.deletedObjects);
-		//copy.deletedObjects = new ArrayList<>(this.deletedObjects);
+		copy.stateDelta.deletedObjects = new ArrayList<>();
 		
 		return copy;
 	}
 	
 	public GameState deepCopyChangesOnly(GameState comparison) {
 		GameState copy = new GameState();
-		Map<Integer, AGameObject> objects = new LinkedHashMap<>(this.gameObjects.size());
+		Map<Integer, AGameObject> objects = new LinkedHashMap<>();
 		
-		//copy.alteredComponents = new ArrayList<>();
 		copy.stateDelta.alteredComponents = new ArrayList<>();
 		
 		for( AGameObject object : this.gameObjects.values() ) {
@@ -110,24 +96,24 @@ public class GameState {
 			}
 		}
 		
-		//copy.addedObjects = new ArrayList<>(this.addedObjects);
-		//copy.deletedObjects = new ArrayList<>(this.deletedObjects);
 		copy.stateDelta.addedObjects = new ArrayList<>(this.stateDelta.addedObjects);
 		copy.stateDelta.deletedObjects = new ArrayList<>(this.stateDelta.deletedObjects);
+		copy.gameObjects = objects;
 		return copy;
 	}
 	
 	public void notifyComponentChange(IGameComponent... gameComponents) {
 		for( IGameComponent component : gameComponents ) {
 			this.stateDelta.alteredComponents.add(component);
-			//this.alteredComponents.add(component);
 		}
 	}
 	
 	public void reset() {
 		this.stateDelta.reset();
-		//this.addedObjects = new ArrayList<>();
-		//this.deletedObjects = new ArrayList<>();
+	}
+	
+	public void addObject(AGameObject object) {
+		this.stateDelta.addedObjects.add(object);
 	}
 	
 	public Map<Integer, AGameObject> getObjects() {

@@ -1,10 +1,16 @@
 ## TO DO
 
-### Priority
+### Later
 - implement alpha maps
 
 ### ANetworkMessage
 - remove resolve(), must be handled separately by the server and the client
+
+### Server-client shared
+- contains a lot of code dependent on either server or client, make the package agnostic
+
+### ConnectionHandler
+- server side connection handlers should run on separate threads, currently running on the Networker thread
 
 ### General
 - there is still a lot of repetition among render passes, however, this should be further examined once instanced rendering is considered

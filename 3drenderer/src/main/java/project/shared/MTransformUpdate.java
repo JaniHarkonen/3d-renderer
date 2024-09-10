@@ -4,6 +4,9 @@ import java.nio.ByteBuffer;
 
 import org.joml.Vector3f;
 
+import project.Application;
+import project.utils.DebugUtils;
+
 public class MTransformUpdate implements INetworkMessage {
 	
 	public static final int MSG_POSITION_UPDATE = 3;
@@ -21,6 +24,13 @@ public class MTransformUpdate implements INetworkMessage {
 		this.updatedPosition = updatedPosition;
 		this.updatedEulerRotation = updatedEulerRotation;
 		this.updatedScale= updatedScale;
+	}
+	
+	public MTransformUpdate() {
+		this.ownerID = -1;
+		this.updatedPosition = null;
+		this.updatedEulerRotation = null;
+		this.updatedScale = null;
 	}
 	
 	public MTransformUpdate(
@@ -46,8 +56,8 @@ public class MTransformUpdate implements INetworkMessage {
 	
 	@Override
 	public ByteBuffer serialize(INetworkStandard networkStandard) {
-		ByteBuffer buffer = ByteBuffer.allocate(
-			networkStandard.sizeOfGameObjectID() + INetworkStandard.SIZEOF_FLOAT * 3
+		return ByteBuffer.allocate(
+			networkStandard.sizeOfGameObjectID() + INetworkStandard.SIZEOF_FLOAT * 9
 		)
 		.putInt(this.ownerID)
 		.putFloat(this.updatedPosition.x)
@@ -59,7 +69,6 @@ public class MTransformUpdate implements INetworkMessage {
 		.putFloat(this.updatedScale.x)
 		.putFloat(this.updatedScale.y)
 		.putFloat(this.updatedScale.z);
-		return buffer;
 	}
 
 	@Override
@@ -80,8 +89,18 @@ public class MTransformUpdate implements INetworkMessage {
 
 	@Override
 	public void resolve() {
-		// TODO Auto-generated method stub
-		
+		DebugUtils.log(
+			this, 
+			"TRANSFORM UPDATE", 
+			"pos: (" + 
+				this.updatedPosition.x + "," + 
+				this.updatedPosition.y + ", " + 
+				this.updatedPosition.z +
+			")"
+		);
+		Application.getApp().getScene().DEBUGserverSoldier.getTransform().setPosition(
+			this.updatedPosition.x, this.updatedPosition.y, this.updatedPosition.z
+		);
 	}
 
 	@Override
