@@ -1,6 +1,6 @@
 package project.server;
 
-import project.server.NEW.Game;
+import project.server.game.Game;
 import project.shared.NetworkStandard;
 
 public class Application {	

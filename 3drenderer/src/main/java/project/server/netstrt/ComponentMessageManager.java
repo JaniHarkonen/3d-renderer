@@ -1,10 +1,9 @@
-package project.server;
+package project.server.netstrt;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import project.server.NEW.IGameComponent;
-import project.server.netstrt.IComponentMessageStrategy;
+import project.server.game.IGameComponent;
 
 public class ComponentMessageManager {
 

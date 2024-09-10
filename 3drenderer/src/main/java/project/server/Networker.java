@@ -9,10 +9,11 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import project.server.NEW.AGameObject;
-import project.server.NEW.GameState;
-import project.server.NEW.IGameComponent;
-import project.server.NEW.Transform;
+import project.server.game.AGameObject;
+import project.server.game.GameState;
+import project.server.game.IGameComponent;
+import project.server.game.Transform;
+import project.server.netstrt.ComponentMessageManager;
 import project.server.netstrt.IComponentMessageStrategy;
 import project.server.netstrt.TransformUpdated;
 import project.shared.ConnectionHandler;

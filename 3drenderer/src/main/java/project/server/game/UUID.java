@@ -1,4 +1,4 @@
-package project.server.NEW;
+package project.server.game;
 
 public final class UUID {
 	

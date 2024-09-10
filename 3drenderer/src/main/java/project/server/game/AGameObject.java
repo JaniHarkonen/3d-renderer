@@ -1,4 +1,4 @@
-package project.server.NEW;
+package project.server.game;
 
 import project.server.IHasID;
 
