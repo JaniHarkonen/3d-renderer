@@ -5,7 +5,6 @@ import project.core.asset.AssetManager;
 import project.core.renderer.IRenderer;
 import project.opengl.RendererGL;
 import project.scene.Scene;
-import project.shared.NetworkStandard;
 import project.testing.TestAssets;
 import project.utils.DebugUtils;
 
@@ -45,10 +44,10 @@ public class Application {
 		this.assetManager = new AssetManager();
 		
 			// Networker
-		NetworkStandard networkStandard = new NetworkStandard();
-		networkStandard.declare();
-		this.networker = new Networker(networkStandard);
-		this.networker.launchSession("localhost", 12345);
+		//NetworkStandard networkStandard = new NetworkStandard();
+		//networkStandard.declare();
+		//this.networker = new Networker(networkStandard);
+		//this.networker.launchSession("localhost", 12345);
 		
 			// Window and renderer
 		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);
@@ -65,9 +64,9 @@ public class Application {
 			// Game loop
 		while( !window.isDestroyed() ) {
 			window.refresh();
-			this.networker.handleInboundMessages();
+			//this.networker.handleInboundMessages();
 			this.scene.update();
-			this.networker.handleOutboundMessages();
+			//this.networker.handleOutboundMessages();
 		}
 		
 		this.networker.abortSession();
