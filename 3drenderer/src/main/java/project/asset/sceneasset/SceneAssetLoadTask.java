@@ -31,7 +31,7 @@ import project.core.asset.IAsset;
 import project.core.asset.IAssetData;
 import project.core.asset.ILoadTask;
 import project.core.asset.ISystem;
-import project.utils.DebugUtils;
+import project.shared.logger.Logger;
 import project.utils.GeometryUtils;
 
 public class SceneAssetLoadTask implements ILoadTask {
@@ -77,7 +77,7 @@ public class SceneAssetLoadTask implements ILoadTask {
 		);
 		
 		if( aiScene == null ) {
-			DebugUtils.log(this, "ERROR: Failed to load scene from path: ", this.assetPath);
+			Logger.get().error(this, "Failed to load scene from path: ", this.assetPath);
 			return false;
 		}
 		
@@ -86,9 +86,9 @@ public class SceneAssetLoadTask implements ILoadTask {
 		int expectedMeshCount = this.expectedMeshes.size();
 		
 		if( meshCount != expectedMeshCount ) {
-			DebugUtils.log(
+			Logger.get().warn(
 				this, 
-				"WARNING: Expected " + expectedMeshCount + " meshes, " + 
+				"Expected " + expectedMeshCount + " meshes, " + 
 				"found " + meshCount + "!"
 			);
 		}
@@ -107,14 +107,14 @@ public class SceneAssetLoadTask implements ILoadTask {
 			if( tangents.length == 0 ) {
 				tangents = new Vector3f[normals.length];
 				Arrays.fill(tangents, new Vector3f(0.0f));
-				DebugUtils.log(this, "WARNING: Scene asset contains no tangents!");
+				Logger.get().warn(this, "Scene asset contains no tangents!");
 			}
 			
 				// By default, set bitangents array should be the same length as the normals array
 			if( bitangents.length == 0 ) {
 				bitangents = new Vector3f[normals.length];
 				Arrays.fill(bitangents, new Vector3f(0.0f));
-				DebugUtils.log(this, "WARNING: Scene asset contains no bitangents!");
+				Logger.get().warn(this, "Scene asset contains no bitangents!");
 			}
 			
 				// Fix UV-coordinates
@@ -173,9 +173,9 @@ public class SceneAssetLoadTask implements ILoadTask {
 		
 			// Animation count mismatch
 		if( animationCount != expectedAnimationCount ) {
-			DebugUtils.log(
+			Logger.get().warn(
 				this, 
-				"WARNING: Expected " + expectedAnimationCount + " animations, " + 
+				"Expected " + expectedAnimationCount + " animations, " + 
 				"found " + animationCount + "!"
 			);
 		}

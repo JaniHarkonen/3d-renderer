@@ -19,7 +19,7 @@ import project.opengl.gui.GUIRenderPass;
 import project.opengl.scene.SceneRenderPass;
 import project.opengl.vao.VAO;
 import project.scene.Camera;
-import project.utils.DebugUtils;
+import project.shared.logger.Logger;
 
 public class RendererGL implements IRenderer {
 	
@@ -123,9 +123,9 @@ public class RendererGL implements IRenderer {
 	
 	private void processGenerationRequest(IGraphicsAsset graphicsAsset) {
 		if( !graphicsAsset.getGraphics().regenerate() ) {
-			DebugUtils.log(
+			Logger.get().warn(
 				this, 
-				"WARNING: Unable to generate a graphics representation for graphics asset '" + 
+				"Unable to generate a graphics representation for graphics asset '" + 
 				graphicsAsset.getName() + "'!", 
 				"Using default instead."
 			);
@@ -134,9 +134,9 @@ public class RendererGL implements IRenderer {
 	
 	private void processDisposalRequest(IGraphicsAsset graphicsAsset) {
 		if( !graphicsAsset.getGraphics().dispose() ) {
-			DebugUtils.log(
+			Logger.get().warn(
 				this, 
-				"WARNING: Unable to dispose the graphics representation of graphics asset '" + 
+				"Unable to dispose the graphics representation of graphics asset '" + 
 				graphicsAsset.getName() + "'!", 
 				"Possibly attempting to dispose a default graphics representation."
 			);

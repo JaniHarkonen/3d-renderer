@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL46;
 
 import project.component.CascadeShadow;
 import project.opengl.DepthTexture;
-import project.utils.DebugUtils;
+import project.shared.logger.Logger;
 
 public class ShadowBuffer {
 
@@ -43,7 +43,7 @@ public class ShadowBuffer {
 		GL46.glReadBuffer(GL46.GL_NONE);
 		
 		if( GL46.glCheckFramebufferStatus(GL46.GL_FRAMEBUFFER) != GL46.GL_FRAMEBUFFER_COMPLETE ) {
-			DebugUtils.log(this, "ERROR: Unable to create framebuffer for cascade shadows!");
+			Logger.get().error(this, "Unable to create framebuffer for cascade shadows!");
 			return;
 		}
 		

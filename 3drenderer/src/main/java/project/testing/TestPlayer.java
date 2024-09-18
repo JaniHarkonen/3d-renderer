@@ -2,7 +2,6 @@ package project.testing;
 
 import org.joml.Vector3f;
 
-import project.Application;
 import project.component.Projection;
 import project.controls.Action;
 import project.controls.Controller;
@@ -10,7 +9,6 @@ import project.controls.IControllable;
 import project.scene.ASceneObject;
 import project.scene.Camera;
 import project.scene.Scene;
-import project.shared.MMove;
 
 public class TestPlayer extends ASceneObject implements IControllable {
 	

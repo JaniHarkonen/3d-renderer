@@ -5,11 +5,13 @@ import project.core.asset.AssetManager;
 import project.core.renderer.IRenderer;
 import project.opengl.RendererGL;
 import project.scene.Scene;
-import project.shared.NetworkStandard;
+import project.shared.ConsoleRecorder;
+import project.shared.logger.Logger;
 import project.testing.TestAssets;
-import project.utils.DebugUtils;
 
 public class Application {
+	
+	private static Application APPLICATION;
 	
 	public static void main(String[] args) {
 		if( APPLICATION != null )
@@ -20,7 +22,6 @@ public class Application {
 	}
 	
 	
-	private static Application APPLICATION;
 	private AssetManager assetManager;
 	private Networker networker;
 	private Window window;
@@ -33,6 +34,16 @@ public class Application {
 		this.window = null;
 		this.renderer = null;
 		this.scene = null;
+		Logger.configure(
+			//Logger.LOG_TIMESTAMP | 
+			//Logger.LOG_SYSTEM | 
+			Logger.LOG_CALLER | 
+			Logger.LOG_SEVERITY, 
+			Logger.INFO
+		);
+		ConsoleRecorder consoleRecoder = new ConsoleRecorder();
+		Logger.get().registerTarget(consoleRecoder);
+		Logger.get().info(this, "Logger has been configured!");
 	}
 	
 	
@@ -45,10 +56,10 @@ public class Application {
 		this.assetManager = new AssetManager();
 		
 			// Networker
-		NetworkStandard networkStandard = new NetworkStandard();
-		networkStandard.declare();
-		this.networker = new Networker(networkStandard);
-		this.networker.launchSession("localhost", 12345);
+		//NetworkStandard networkStandard = new NetworkStandard();
+		//networkStandard.declare();
+		//this.networker = new Networker(networkStandard);
+		//this.networker.launchSession("localhost", 12345);
 		
 			// Window and renderer
 		Window window = new Window(TITLE, 800, 600, FPS_MAX, 0);
@@ -65,13 +76,14 @@ public class Application {
 			// Game loop
 		while( !window.isDestroyed() ) {
 			window.refresh();
-			this.networker.handleInboundMessages();
+			//this.networker.handleInboundMessages();
 			this.scene.update();
-			this.networker.handleOutboundMessages();
+			//this.networker.handleOutboundMessages();
 		}
 		
-		this.networker.abortSession();
-		DebugUtils.log(this, "main loop terminated!");
+		//this.networker.abortSession();
+		//DebugUtils.log(this, "main loop terminated!");
+		Logger.get().info(this, "Main loop terminated!");
 	}
 	
 	public static Application getApp() {

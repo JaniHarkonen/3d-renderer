@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import org.joml.Vector3f;
 
 import project.Application;
-import project.utils.DebugUtils;
+import project.testing.TestDummy;
 
 public class MTransformUpdate implements INetworkMessage {
 	
@@ -89,18 +89,13 @@ public class MTransformUpdate implements INetworkMessage {
 
 	@Override
 	public void resolve() {
-		DebugUtils.log(
-			this, 
-			"TRANSFORM UPDATE", 
-			"pos: (" + 
-				this.updatedPosition.x + "," + 
-				this.updatedPosition.y + ", " + 
-				this.updatedPosition.z +
-			")"
-		);
-		Application.getApp().getScene().DEBUGserverSoldier.getTransform().setPosition(
-			this.updatedPosition.x, this.updatedPosition.y, this.updatedPosition.z
-		);
+		TestDummy soldier = Application.getApp().getScene().DEBUGserverSoldier;
+		
+		if( soldier != null ) {
+			soldier.getTransform().setPosition(
+				this.updatedPosition.x, this.updatedPosition.y, this.updatedPosition.z
+			);
+		}
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.net.URL;
 
 import project.Application;
+import project.shared.logger.Logger;
 
 public final class FileUtils {
 
@@ -25,8 +26,8 @@ public final class FileUtils {
 			return sourceBuilder.toString();
 			
 		} catch( Exception e ) {
-			DebugUtils.log(
-				"[FileUtils.readTextFile(String)]",
+			Logger.get().error(
+				"[FileUtils.readTextFile(String)]", 
 				"ERROR: Unable to read file: ",
 				path
 			);
@@ -39,12 +40,11 @@ public final class FileUtils {
 		URL url = Application.class.getResource("/" + relativePath);
 		
 		if( url == null ) {
-			DebugUtils.log(
+			Logger.get().error(
 				"[FileUtils.getResourcePath(String)]", 
 				"ERROR: Unable to resolve relative resource path: ",
 				relativePath
 			);
-			
 			return null;
 		}
 		
