@@ -7,7 +7,7 @@ import org.lwjgl.system.MemoryUtil;
 import project.core.renderer.IRenderer;
 import project.input.Input;
 import project.input.InputSnapshot;
-import project.utils.DebugUtils;
+import project.shared.logger.Logger;
 
 public class Window {
 	private long windowHandle;
@@ -64,7 +64,7 @@ public class Window {
 		);
 		
 		if( this.windowHandle == MemoryUtil.NULL ) {
-			DebugUtils.log(this, "Unable to create window!");
+			Logger.get().error(this, "Unable to create window!");
 			return;
 		}
 		

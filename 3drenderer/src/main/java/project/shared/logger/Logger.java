@@ -56,7 +56,7 @@ public final class Logger {
 	}
 	
 	private LoggerMessage createMessage(int severity, Object me) {
-		if( this.verbosity > severity ) {
+		if( this.verbosity < severity ) {
 			return null;
 		}
 		
@@ -129,6 +129,10 @@ public final class Logger {
 		this.log(FATAL, me, messages);
 	}
 	
+	public String createSignifierIfLogged(int signifierFlag, String signifier) {
+		return ((this.logFlags & signifierFlag) == signifierFlag) ? "[" + signifier + "]" : "";
+	}
+	
 	public String formatDateTimeString(LocalDateTime dateTime) {
 		return (
 			dateTime.getHour() + ":" + 
@@ -142,7 +146,11 @@ public final class Logger {
 		return this.severityLabels.get(severity);
 	}
 	
-	public String createSignifier(int signifierFlag, String signifier) {
-		return ((this.logFlags & signifierFlag) == signifierFlag) ? "[" + signifier + "]" : "";
+	public int getVerbosity() {
+		return this.verbosity;
+	}
+	
+	public boolean doesLog(int logFlags) {
+		return (this.logFlags & logFlags) == logFlags;
 	}
 }

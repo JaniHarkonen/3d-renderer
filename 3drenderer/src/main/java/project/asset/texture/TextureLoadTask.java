@@ -8,7 +8,7 @@ import org.lwjgl.system.MemoryStack;
 
 import project.Application;
 import project.core.asset.ILoadTask;
-import project.utils.DebugUtils;
+import project.shared.logger.Logger;
 
 public class TextureLoadTask implements ILoadTask {
 
@@ -33,9 +33,9 @@ public class TextureLoadTask implements ILoadTask {
 			);
 			
 			if( textureBuffer == null ) {
-				DebugUtils.log(
+				Logger.get().error(
 					this,
-					"ERROR: Unable to load texture: ",
+					"Unable to load texture: ",
 					this.texturePath,
 					
 					"Reason: ",

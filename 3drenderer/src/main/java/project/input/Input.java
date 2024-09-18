@@ -3,7 +3,7 @@ package project.input;
 import org.lwjgl.glfw.GLFW;
 
 import project.Window;
-import project.utils.DebugUtils;
+import project.shared.logger.Logger;
 
 public class Input {
 	
@@ -75,9 +75,9 @@ public class Input {
 			case GLFW.GLFW_RELEASE: this.back.attemptToReleaseKey(key); break;
 			
 			default: {
-				DebugUtils.log(
+				Logger.get().warn(
 					this,
-					"WARNING: Unknown action code '" + action + "' on keyboard key '" + 
+					"Unknown action code '" + action + "' on keyboard key '" + 
 					key + "'!"
 				);
 			} break;
@@ -98,9 +98,9 @@ public class Input {
 			case GLFW.GLFW_RELEASE: this.back.attemptToReleaseMouseButton(button); break;
 			
 			default: {
-				DebugUtils.log(
+				Logger.get().warn(
 					this,
-					"WARNING: Unknown action code '" + action + "' on mouse button '" + 
+					"Unknown action code '" + action + "' on mouse button '" + 
 					button + "'!"
 				);
 			} break;

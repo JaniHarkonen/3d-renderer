@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import project.shared.ConnectionHandler;
 import project.shared.INetworkMessage;
 import project.shared.INetworkStandard;
-import project.utils.DebugUtils;
+import project.shared.logger.Logger;
 
 public class Networker {
 	
@@ -70,18 +70,18 @@ public class Networker {
 	
 	private void connect() {
 		try {
-			DebugUtils.log(this, "Connecting to " + this.address + ":" + this.port + "...");
+			Logger.get().info(this, "Connecting to " + this.address + ":" + this.port + "...");
 			this.clientSocket = new Socket(this.address, this.port);
 			this.connectionHandler = new ConnectionHandler(
 				this.networkStandard, this.clientSocket, this.inboundMessages, this.outboundMessages
 			);
 			this.connectionHandler.initialize();
 			this.isSessionAuthorized = true;
-			DebugUtils.log(this, "Connection established to " + this.address + ":" + this.port + "!");
+			Logger.get().info(this, "Connection established to " + this.address + ":" + this.port + "!");
 		} catch( IOException e ) {
-			DebugUtils.log(
+			Logger.get().error(
 				this, 
-				"ERROR: Unable to connect to the server!", 
+				"Unable to connect to the server!", 
 				"IP: " + this.address + ", PORT: " + this.port
 			);
 			e.printStackTrace();
@@ -93,7 +93,7 @@ public class Networker {
 			this.clientSocket.close();
 			this.connectionHandler.close();
 		} catch( IOException e ) {
-			DebugUtils.log(this, "ERROR: Unable to close the connection!");
+			Logger.get().error(this, "Unable to close the connection!");
 			e.printStackTrace();
 		}
 		
@@ -108,7 +108,7 @@ public class Networker {
 				Networker.this.connectionHandler.receiveMessages();
 			}
 		} catch( IOException e ) {
-			DebugUtils.log(this, "ERROR: Unable to receive messages from the server!");
+			Logger.get().error(this, "Unable to receive messages from the server!");
 			e.printStackTrace();
 		}
 	}
@@ -124,7 +124,7 @@ public class Networker {
 		try {
 			this.connectionHandler.sendMessages();
 		} catch( IOException e ) {
-			DebugUtils.log(this, "ERROR: Unable to send messages to the server!");
+			Logger.get().error(this, "Unable to send messages to the server!");
 			e.printStackTrace();
 		}
 	}

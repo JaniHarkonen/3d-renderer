@@ -2,7 +2,7 @@ package project.opengl.shader;
 
 import org.lwjgl.opengl.GL46;
 
-import project.utils.DebugUtils;
+import project.shared.logger.Logger;
 import project.utils.FileUtils;
 
 public class Shader {
@@ -24,9 +24,8 @@ public class Shader {
 		GL46.glCompileShader(this.handle);
 		
 		if( GL46.glGetShaderi(this.handle, GL46.GL_COMPILE_STATUS) != GL46.GL_TRUE ) {
-			DebugUtils.log(
-				this, 
-				"ERROR: Unable to compile shader. Reason:",
+			Logger.get().error(this, 
+				"Unable to compile shader. Reason:",
 				GL46.glGetShaderInfoLog(this.handle)
 			);
 		}

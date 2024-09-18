@@ -66,4 +66,8 @@ public class LoggerMessage {
 	public Object getCaller() {
 		return this.caller;
 	}
+	
+	public List<Object> getMessages() {
+		return this.messages;
+	}
 }

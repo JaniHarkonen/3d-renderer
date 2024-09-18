@@ -8,7 +8,7 @@ import java.util.Map;
 import org.lwjgl.opengl.GL46;
 
 import project.opengl.shader.uniform.IUniform;
-import project.utils.DebugUtils;
+import project.shared.logger.Logger;
 
 public class ShaderProgram {
 
@@ -33,7 +33,7 @@ public class ShaderProgram {
 		GL46.glLinkProgram(this.programHandle);	
 		
 		if( GL46.glGetProgrami(this.programHandle, GL46.GL_LINK_STATUS) != GL46.GL_TRUE ) {
-			DebugUtils.log(this, "ERROR: Unable to link shader program!");
+			Logger.get().error(this, "ERROR: Unable to link shader program!");
 			return;
 		}
 		

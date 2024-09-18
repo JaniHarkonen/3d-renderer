@@ -3,7 +3,7 @@ package project.opengl.shader.uniform;
 import java.util.function.Supplier;
 
 import project.opengl.shader.ShaderProgram;
-import project.utils.DebugUtils;
+import project.shared.logger.Logger;
 
 public class UArray<T> implements IUniform<T[]> {
 	private String name;
@@ -30,8 +30,7 @@ public class UArray<T> implements IUniform<T[]> {
 	@Override
 	public void update(T[] values) {
 		if( this.array.length != values.length) {
-			DebugUtils.log(
-				this, 
+			Logger.get().warn(this, 
 				"WARNING: Unable to set array uniform '" + this.name + "'!",
 				"Uniform array of size " + this.array.length + 
 				" is being set with an array of size " + values.length + "."
