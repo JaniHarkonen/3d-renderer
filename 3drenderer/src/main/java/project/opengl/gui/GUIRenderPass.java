@@ -13,6 +13,7 @@ import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
 import project.core.renderer.RenderStrategyManager;
+import project.gui.AGUIElement;
 import project.gui.Image;
 import project.gui.Text;
 import project.opengl.shader.Shader;
@@ -20,7 +21,6 @@ import project.opengl.shader.ShaderProgram;
 import project.opengl.shader.uniform.UAMatrix4f;
 import project.opengl.shader.uniform.UInteger1;
 import project.opengl.shader.uniform.UVector4f;
-import project.scene.ASceneObject;
 
 public class GUIRenderPass implements IRenderPass {
 	Mesh imagePlane;
@@ -91,8 +91,8 @@ public class GUIRenderPass implements IRenderPass {
 			new Matrix4f().identity().setOrtho2D(0, windowCenterX * 2, windowCenterY * 2, 0);
         this.uProjection.update(projectionMatrix);
         
-        for( Map.Entry<Long, ASceneObject> en : gameState.getActiveGUI().entrySet() ) {
-        	ASceneObject object = en.getValue();
+        for( Map.Entry<String, AGUIElement> en : gameState.getActiveGUI().entrySet() ) {
+        	AGUIElement object = en.getValue();
         	this.renderStrategyManager.getStrategy(object.getClass())
         	.execute(renderer, this, object);
         }

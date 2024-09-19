@@ -8,18 +8,18 @@ import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
 
 import project.component.Transform;
+import project.core.IRenderable;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
 import project.gui.Image;
 import project.opengl.TextureGL;
 import project.opengl.vao.VAO;
-import project.scene.ASceneObject;
 
 public class RenderImage implements IRenderStrategy<GUIRenderPass> {
 
 	@Override
-	public void execute(IRenderer renderer, GUIRenderPass renderPass, ASceneObject target) {
-		Image element = (Image) target;
+	public void execute(IRenderer renderer, GUIRenderPass renderPass, IRenderable renderable) {
+		Image element = (Image) renderable;
 		
 		TextureGL textureGL = (TextureGL) element.getTexture().getGraphics();
 		Vector4f primaryColor = element.getPrimaryColor();

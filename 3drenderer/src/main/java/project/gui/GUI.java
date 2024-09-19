@@ -3,12 +3,10 @@ package project.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import project.scene.Scene;
-
 public class GUI {
 	private List<AGUIElement> elements;
 	
-	public GUI(Scene scene) {
+	public GUI() {
 		this.elements = null;
 	}
 	
@@ -20,6 +18,7 @@ public class GUI {
 	public void addElement(AGUIElement element) {
 		this.elements.add(element);
 	}
+	
 	
 	public List<AGUIElement> getElements() {
 		return this.elements;

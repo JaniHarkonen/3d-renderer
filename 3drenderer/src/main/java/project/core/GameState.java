@@ -7,12 +7,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import project.core.asset.IGraphicsAsset;
+import project.gui.AGUIElement;
 import project.scene.ASceneObject;
 import project.scene.Camera;
 
 public class GameState {
 	private final Map<Long, ASceneObject> activeScene;
-	private final Map<Long, ASceneObject> activeGUI;
+	private final Map<String, AGUIElement> activeGUI;
 	private final Deque<IGraphicsAsset> graphicsGenerationRequests;
 	private final Deque<IGraphicsAsset> graphicsDisposalRequests;
 	private final Map<String, Object> debugData;
@@ -54,9 +55,9 @@ public class GameState {
 		}
 	}
 	
-	public void listGUIElement(ASceneObject element) {
-		long elementID = element.getID();
-		ASceneObject previous = this.activeGUI.get(elementID);
+	public void listGUIElement(AGUIElement element) {
+		String elementID = element.getID();
+		AGUIElement previous = this.activeGUI.get(elementID);
 		
 		if( previous == null || !element.rendererEquals(previous) ) {
 			this.activeGUI.put(elementID, element.rendererCopy());
@@ -92,7 +93,7 @@ public class GameState {
 		return this.activeScene;
 	}
 	
-	public Map<Long, ASceneObject> getActiveGUI() {
+	public Map<String, AGUIElement> getActiveGUI() {
 		return this.activeGUI;
 	}
 	

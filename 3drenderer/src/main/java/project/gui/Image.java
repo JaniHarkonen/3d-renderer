@@ -4,14 +4,13 @@ import org.joml.Vector2f;
 import org.joml.Vector4f;
 
 import project.asset.texture.Texture;
-import project.scene.ASceneObject;
 
 public class Image extends AGUIElement {
 	private Texture imageTexture;
 	private Vector2f anchor;
 	
-	public Image(GUI gui, Texture imageTexture) {
-		super(gui);
+	public Image(GUI gui, String id, Texture imageTexture) {
+		super(gui, id);
 		this.imageTexture = imageTexture;
 		this.primaryColor = new Vector4f(1.0f, 1.0f, 1.0f, 0.85f);
 		this.anchor = new Vector2f(0.0f, 0.0f);
@@ -31,14 +30,14 @@ public class Image extends AGUIElement {
 	}
 	
 	@Override
-	public boolean rendererEquals(ASceneObject previous) {
+	public boolean rendererEquals(AGUIElement previous) {
 		if( !(previous instanceof Image) ) {
 			return false;
 		}
 		
 		Image img = (Image) previous;
 		return(
-			this.id == img.id && 
+			this.id.equals(img.id) && 
 			this.transform.equals(img.transform) && 
 			this.primaryColor.equals(img.primaryColor) && 
 			this.secondaryColor.equals(img.secondaryColor) && 

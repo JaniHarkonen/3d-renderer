@@ -8,18 +8,18 @@ import org.lwjgl.opengl.GL46;
 
 import project.asset.font.Font;
 import project.component.Transform;
+import project.core.IRenderable;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
 import project.gui.Text;
 import project.opengl.TextureGL;
 import project.opengl.vao.VAO;
-import project.scene.ASceneObject;
 
 public class RenderText implements IRenderStrategy<GUIRenderPass> {
 
 	@Override
-	public void execute(IRenderer renderer, GUIRenderPass renderPass, ASceneObject target) {
-		Text element = (Text) target;
+	public void execute(IRenderer renderer, GUIRenderPass renderPass, IRenderable renderable) {
+		Text element = (Text) renderable;
 		
 		Transform transform = element.getTransform();
 		Vector3f position = transform.getPosition();

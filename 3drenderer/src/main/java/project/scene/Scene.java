@@ -288,12 +288,12 @@ public class Scene {
 	}
 	
 	private void createGUI() {
-		this.DEBUGtextAppStatistics = new Text(this.gui, "");
-		this.gui = new GUI(this);
+		this.DEBUGtextAppStatistics = new Text(this.gui, "test-text", "");
+		this.gui = new GUI();
 		this.gui.initialize();
 		this.gui.addElement(this.DEBUGtextAppStatistics);
 		
-		this.DEBUGcrosshair = new Image(this.gui, TestAssets.TEX_GUI_CROSSHAIR);
+		this.DEBUGcrosshair = new Image(this.gui, "test-image", TestAssets.TEX_GUI_CROSSHAIR);
 		this.DEBUGcrosshair.getTransform().setPosition(400, 300, 0);
 		this.DEBUGcrosshair.setAnchor(8, 8);
 		this.gui.addElement(this.DEBUGcrosshair);
