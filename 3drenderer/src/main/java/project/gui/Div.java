@@ -2,21 +2,25 @@ package project.gui;
 
 public class Div extends AGUIElement {
 
-	protected Div(AGUIElement src) {
+	public Div(GUI gui, String id) {
+		super(gui, id);
+	}
+	
+	private Div(AGUIElement src) {
 		super(src);
-		// TODO Auto-generated constructor stub
 	}
 
 	
 	@Override
 	public AGUIElement rendererCopy() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Div(this);
 	}
 
 	@Override
 	public boolean rendererEquals(AGUIElement previous) {
-		// TODO Auto-generated method stub
-		return false;
+		if( !(previous instanceof Div) ) {
+			return false;
+		}
+		return this.properties.equals(((Div) previous).properties);
 	}
 }

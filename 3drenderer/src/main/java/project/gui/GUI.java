@@ -1,26 +1,18 @@
 package project.gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class GUI {
-	private List<AGUIElement> elements;
+	private Body body;
 	
 	public GUI() {
-		this.elements = null;
+		this.body = null;
 	}
 	
 	
 	public void initialize() {
-		this.elements = new ArrayList<>();
+		this.body = new Body(this);
 	}
 	
-	public void addElement(AGUIElement element) {
-		this.elements.add(element);
-	}
-	
-	
-	public List<AGUIElement> getElements() {
-		return this.elements;
+	public Body getBody() {
+		return this.body;
 	}
 }

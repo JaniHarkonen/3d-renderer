@@ -1,8 +1,6 @@
 package project.opengl.gui;
 
 
-import java.util.Map;
-
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL46;
 
@@ -94,13 +92,24 @@ public class GUIRenderPass implements IRenderPass {
 		this.projectionMatrix.identity().setOrtho2D(0, window.getWidth(), window.getHeight(), 0);
         this.uProjection.update(this.projectionMatrix);
         
-        for( Map.Entry<String, AGUIElement> en : gameState.getActiveCamera().entrySet() ) {
+        /*for( Map.Entry<String, AGUIElement> en : gameState.getActiveCamera().entrySet() ) {
         	AGUIElement object = en.getValue();
         	this.renderStrategyManager.getStrategy(object.getClass())
         	.execute(renderer, this, object);
-        }
+        }*/
+        this.recursivelyRender(renderer, gameState.getActiveGUIRoot());
 		
 		activeShaderProgram.unbind();
+	}
+	
+	private void recursivelyRender(IRenderer renderer, AGUIElement element) {
+		this.renderStrategyManager.getStrategy(element.getClass()).execute(renderer, this, element);
+		
+		for( AGUIElement child : element.getChildren() ) {
+			Context currentContext = this.context;	// Stash context
+			this.recursivelyRender(renderer, child);
+			this.context = currentContext;
+		}
 	}
 	
 	@Override

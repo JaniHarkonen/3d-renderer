@@ -5,7 +5,7 @@ import java.util.List;
 
 import project.Application;
 import project.core.IRenderable;
-import project.gui.props4.Properties;
+import project.gui.props.Properties;
 
 public abstract class AGUIElement implements IRenderable {
 	protected final GUI gui;
@@ -42,6 +42,12 @@ public abstract class AGUIElement implements IRenderable {
 		//this.secondaryColor = new Vector4f(src.secondaryColor);
 	}
 	
+	
+	public void tick(float deltaTime) {
+		for( AGUIElement child : this.children ) {
+			child.tick(deltaTime);
+		}
+	}
 	
 	@Override
 	public void submitToRenderer() {

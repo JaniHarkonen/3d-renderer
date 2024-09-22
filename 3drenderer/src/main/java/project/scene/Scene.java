@@ -9,7 +9,6 @@ import org.lwjgl.glfw.GLFW;
 import project.Application;
 import project.Window;
 import project.controls.Controller;
-import project.gui.AGUIElement;
 import project.gui.GUI;
 import project.gui.Image;
 import project.gui.Text;
@@ -155,9 +154,9 @@ public class Scene {
 		appWindow.pollInput();
 		
 		if( this.DEBUGcrosshair != null ) {
-			this.DEBUGcrosshair.getTransform().setPosition(
-				this.app.getWindow().getWidth() / 2, this.app.getWindow().getHeight() / 2, 0
-			);
+			//this.DEBUGcrosshair.getTransform().setPosition(
+				//this.app.getWindow().getWidth() / 2, this.app.getWindow().getHeight() / 2, 0
+			//);
 		}
 		
 		for( ASceneObject object : this.objects ) {
@@ -252,9 +251,10 @@ public class Scene {
 		}
 		
 		if( this.gui != null ) {
-			for( AGUIElement element : this.gui.getElements() ) {
-				element.submitToRenderer();
-			}
+			//for( AGUIElement element : this.gui.getElements() ) {
+				//element.submitToRenderer();
+			//}
+			
 		}
 		
 		Application.getApp().getRenderer().getBackGameState()
@@ -290,12 +290,12 @@ public class Scene {
 		this.DEBUGtextAppStatistics = new Text(this.gui, "test-text", "");
 		this.gui = new GUI();
 		this.gui.initialize();
-		this.gui.addElement(this.DEBUGtextAppStatistics);
+		//this.gui.addElement(this.DEBUGtextAppStatistics);
 		
-		this.DEBUGcrosshair = new Image(this.gui, "test-image", TestAssets.TEX_GUI_CROSSHAIR);
-		this.DEBUGcrosshair.getTransform().setPosition(400, 300, 0);
-		this.DEBUGcrosshair.setAnchor(8, 8);
-		this.gui.addElement(this.DEBUGcrosshair);
+		//this.DEBUGcrosshair = new Image(this.gui, "test-image", TestAssets.TEX_GUI_CROSSHAIR);
+		//this.DEBUGcrosshair.getTransform().setPosition(400, 300, 0);
+		//this.DEBUGcrosshair.setAnchor(8, 8);
+		//this.gui.addElement(this.DEBUGcrosshair);
 	}
 	
 	public void addObject(ASceneObject sceneObject) {

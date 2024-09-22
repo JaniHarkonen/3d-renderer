@@ -1,4 +1,6 @@
-package project.gui.props4;
+package project.gui.props;
+
+import org.joml.Vector4f;
 
 public class Property {
 
@@ -29,7 +31,19 @@ public class Property {
 	}
 	
 	
-	public void set(Object value, String type) {
+	public void set(float value, String type) {
+		this.set((Object) value, type);
+	}
+	
+	public void set(String value, String type) {
+		this.set((Object) value, type);
+	}
+	
+	public void set(Vector4f value, String type) {
+		this.set((Object) value, type);
+	}
+	
+	private void set(Object value, String type) {
 		this.value = value;
 		this.type = type;
 	}
@@ -44,6 +58,18 @@ public class Property {
 	
 	public Object getValue() {
 		return this.value;
+	}
+	
+	public float getAsFloat() {
+		return (float) this.value;
+	}
+	
+	public String getAsString() {
+		return (String) this.value;
+	}
+	
+	public Vector4f getAsColor() {
+		return (Vector4f) this.value;
 	}
 	
 	@Override

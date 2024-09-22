@@ -1,17 +1,15 @@
 package project.opengl.gui;
 
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
 
 import project.asset.font.Font;
-import project.component.Transform;
 import project.core.IRenderable;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
 import project.gui.Text;
+import project.gui.props.Properties;
 import project.opengl.TextureGL;
 import project.opengl.vao.VAO;
 
@@ -21,17 +19,18 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 	public void execute(IRenderer renderer, GUIRenderPass renderPass, IRenderable renderable) {
 		Text element = (Text) renderable;
 		Context renderContext = renderPass.context;
+		Properties props = element.getProperties();
 		
-		Transform transform = element.getTransform();
-		Vector3f position = transform.getPosition();
-		Quaternionf rotation = transform.getRotator().getAsQuaternion();
+		//Transform transform = element.getTransform();
+		//Vector3f position = transform.getPosition();
+		//Quaternionf rotation = transform.getRotator().getAsQuaternion();
 		
-		float textX = position.x;
-		float textY = position.y;
+		float textX = renderContext.evaluateFloat(props.getProperty(Properties.LEFT));//position.x;
+		float textY = renderContext.evaluateFloat(props.getProperty(Properties.TOP));//position.y;
 		Text text = (Text) element;
 		Font font = text.getFont();
 		TextureGL textureGL = (TextureGL) font.getTexture().getGraphics();
-		Vector4f primaryColor = text.getPrimaryColor();
+		Vector4f primaryColor = renderContext.evaluateColor(props.getProperty(Properties.PRIMARY_COLOR));//text.getPrimaryColor();
 		
 		renderPass.uPrimaryColor.update(primaryColor);
 		GL46.glActiveTexture(GL46.GL_TEXTURE0);
@@ -43,8 +42,9 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 				renderPass.uObjectTransform.update(
 					new Matrix4f()
 					.translationRotateScale(
-						textX, textY + renderContext.baseLine - glyph.getOriginY(), 0.0f, 
-						rotation.x, rotation.y, rotation.z, rotation.w, 
+						textX, textY + renderContext.baseLine - glyph.getOriginY(), 0.0f,
+						0, 0, 0, 0,
+						//rotation.x, rotation.y, rotation.z, rotation.w, 
 						1.0f, 1.0f, 1.0f
 					)
 				);

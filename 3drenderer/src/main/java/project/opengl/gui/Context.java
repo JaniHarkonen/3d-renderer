@@ -2,8 +2,8 @@ package project.opengl.gui;
 
 import org.joml.Vector4f;
 
-import project.gui.props4.Properties;
-import project.gui.props4.Property;
+import project.gui.props.Properties;
+import project.gui.props.Property;
 
 class Context {
 	static final float DEFAULT_LINE_HEIGHT = 22;
@@ -35,7 +35,19 @@ class Context {
 		this.parentSecondaryColor = DEFAULT_SECONDARY_COLOR;
 	}
 	
-	Object evaluate(Property property) {
+	float evaluateFloat(Property property) {
+		return (float) this.evaluate(property);
+	}
+	
+	String evaluateString(Property property) {
+		return (String) this.evaluate(property);
+	}
+	
+	Vector4f evaluateColor(Property property) {
+		return (Vector4f) this.evaluate(property);
+	}
+	
+	private Object evaluate(Property property) {
 		switch( property.getType() ) {
 			case Property.NUMBER:
 			case Property.STRING:

@@ -1,4 +1,4 @@
-package project.gui.props4;
+package project.gui.props;
 
 import java.util.HashMap;
 import java.util.Map;
