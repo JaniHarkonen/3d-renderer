@@ -20,6 +20,7 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 	@Override
 	public void execute(IRenderer renderer, GUIRenderPass renderPass, IRenderable renderable) {
 		Text element = (Text) renderable;
+		Context renderContext = renderPass.context;
 		
 		Transform transform = element.getTransform();
 		Vector3f position = transform.getPosition();
@@ -42,11 +43,8 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 				renderPass.uObjectTransform.update(
 					new Matrix4f()
 					.translationRotateScale(
-						textX, textY + renderPass.baseLine - glyph.getOriginY(), 0.0f, 
-						rotation.x, 
-						rotation.y, 
-						rotation.z, 
-						rotation.w, 
+						textX, textY + renderContext.baseLine - glyph.getOriginY(), 0.0f, 
+						rotation.x, rotation.y, rotation.z, rotation.w, 
 						1.0f, 1.0f, 1.0f
 					)
 				);
@@ -64,7 +62,7 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 			}
 			
 			textX = 0.0f;
-			textY += renderPass.lineHeight;
+			textY += renderContext.lineHeight;
 		}
 	}
 }

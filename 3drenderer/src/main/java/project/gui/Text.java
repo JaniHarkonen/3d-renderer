@@ -1,7 +1,5 @@
 package project.gui;
 
-import org.joml.Vector4f;
-
 import project.asset.font.Font;
 import project.testing.TestAssets;
 
@@ -13,7 +11,7 @@ public class Text extends AGUIElement {
 		super(gui, id);
 		this.font = TestAssets.FONT_ARIAL_16;
 		this.content = content;
-		this.primaryColor = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+		//this.primaryColor = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 	
 	private Text(Text src) {
@@ -38,10 +36,11 @@ public class Text extends AGUIElement {
 		Text t = (Text) previous;
 		return(
 			this.id.equals(t.id) && 
-			this.transform.equals(t.transform) && 
-			this.primaryColor.equals(t.primaryColor) && 
-			this.secondaryColor.equals(t.secondaryColor) && 
-			this.font == t.font && 
+			//this.transform.equals(t.transform) && 
+			//this.primaryColor.equals(t.primaryColor) && 
+			//this.secondaryColor.equals(t.secondaryColor) && 
+			this.font == t.font &&
+			this.properties.equals(t.getProperties()) && 
 			this.content.equals(t.content)
 		);
 	}

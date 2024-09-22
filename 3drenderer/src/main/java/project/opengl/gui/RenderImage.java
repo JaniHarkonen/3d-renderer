@@ -20,6 +20,7 @@ public class RenderImage implements IRenderStrategy<GUIRenderPass> {
 	@Override
 	public void execute(IRenderer renderer, GUIRenderPass renderPass, IRenderable renderable) {
 		Image element = (Image) renderable;
+		Context renderContext = renderPass.context;
 		
 		TextureGL textureGL = (TextureGL) element.getTexture().getGraphics();
 		Vector4f primaryColor = element.getPrimaryColor();

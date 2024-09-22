@@ -6,6 +6,7 @@ import java.util.Map;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL46;
 
+import project.Window;
 import project.asset.AssetUtils;
 import project.asset.sceneasset.Mesh;
 import project.core.GameState;
@@ -23,31 +24,34 @@ import project.opengl.shader.uniform.UInteger1;
 import project.opengl.shader.uniform.UVector4f;
 
 public class GUIRenderPass implements IRenderPass {
+		// Shared context
+	Context context;
 	Mesh imagePlane;
 	ShaderProgram shaderProgram;
-	float lineHeight;
-	float baseLine;
 	
+		// Uniforms
 	UVector4f uPrimaryColor;
 	UAMatrix4f uObjectTransform;
 	private UAMatrix4f uProjection;
 	private UInteger1 uDiffuseSampler;
 	
+	private final Matrix4f projectionMatrix;
 	private GameState gameState;
 	private RenderStrategyManager<GUIRenderPass> renderStrategyManager;
 	
 	public GUIRenderPass() {
+		this.projectionMatrix = new Matrix4f();
+		this.context = null;
 		this.gameState = null;
 		this.imagePlane = null;
 		this.shaderProgram = new ShaderProgram();
-		this.lineHeight = 22.0f;
-		this.baseLine = 16.0f;
 		
 		this.renderStrategyManager = 
 			new RenderStrategyManager<>(new NullRenderStrategy<GUIRenderPass>())
 		.addStrategy(Text.class, new RenderText())
 		.addStrategy(Image.class, new RenderImage());
 	}
+	
 	
 	@Override
 	public boolean initialize() {
@@ -78,6 +82,7 @@ public class GUIRenderPass implements IRenderPass {
 
 	@Override
 	public void render(IRenderer renderer, GameState gameState) {
+		this.context = new Context();
 		this.gameState = gameState;
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 		
@@ -85,13 +90,11 @@ public class GUIRenderPass implements IRenderPass {
         this.uDiffuseSampler.update(0);
         
         	// Calculate and update projection
-        float windowCenterX = renderer.getClientWindow().getWidth() / 2;
-		float windowCenterY = renderer.getClientWindow().getHeight() / 2;
-		Matrix4f projectionMatrix = 
-			new Matrix4f().identity().setOrtho2D(0, windowCenterX * 2, windowCenterY * 2, 0);
-        this.uProjection.update(projectionMatrix);
+        Window window = renderer.getClientWindow();
+		this.projectionMatrix.identity().setOrtho2D(0, window.getWidth(), window.getHeight(), 0);
+        this.uProjection.update(this.projectionMatrix);
         
-        for( Map.Entry<String, AGUIElement> en : gameState.getActiveGUI().entrySet() ) {
+        for( Map.Entry<String, AGUIElement> en : gameState.getActiveCamera().entrySet() ) {
         	AGUIElement object = en.getValue();
         	this.renderStrategyManager.getStrategy(object.getClass())
         	.execute(renderer, this, object);

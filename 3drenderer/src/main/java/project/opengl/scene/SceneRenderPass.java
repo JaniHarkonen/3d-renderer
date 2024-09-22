@@ -1,7 +1,5 @@
 package project.opengl.scene;
 
-import java.util.Map;
-
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -186,8 +184,7 @@ public class SceneRenderPass implements IRenderPass {
 			(boolean) gameState.getDebugData(TestDebugDataHandles.CASCADE_SHADOW_ENABLED) ? 1 : 0
 		);
 		
-        for( Map.Entry<Long, ASceneObject> en : gameState.getActiveScene().entrySet() ) {
-        	ASceneObject object = en.getValue();
+        for( ASceneObject object : gameState.getActiveScene() ) {
         	this.renderStrategyManager.getStrategy(object.getClass()).execute(renderer, this, object);
         }
 		

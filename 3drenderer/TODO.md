@@ -3,11 +3,23 @@
 ### Later
 - implement alpha maps
 
+### ASceneObject & AGUIElement
+- consider if references to the renderer can be removed (don't use method names like 'rendererEquals' or 'rendererCopy')
+
 ### ANetworkMessage
 - remove resolve(), must be handled separately by the server and the client
 
 ### Server-client shared
 - contains a lot of code dependent on either server or client, make the package agnostic
+
+### opengl.gui.Context
+- context currently holds no reference to a Font, implement font lookup by name
+
+### IRenderPass
+- why is there a getGameState? if render strategies use it, why not pass it in the execute() call?
+
+### IRenderStrategy
+- all render strategies should be package private
 
 ### Server
 - server scene architecture (Game) significantly differs from the client's, settle this
@@ -24,6 +36,7 @@
 
 ### GameState
 - it is unclear whether delta-checking procures any performance improvement compared to simply copying scene objects every tick
+- implement delistSceneObject() & delistGUIElement()
 
 ### Window
 - create getters and setters for window attributes (such as, dimensions, position, vsync, fullscreen mode, fps limiter, etc.)

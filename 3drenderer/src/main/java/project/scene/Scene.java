@@ -17,7 +17,6 @@ import project.input.Input;
 import project.input.InputSnapshot;
 import project.input.KeyHeld;
 import project.input.MouseMove;
-import project.shared.MMessage;
 import project.testing.ActionSet;
 import project.testing.TestAssets;
 import project.testing.TestDebugDataHandles;
@@ -243,9 +242,9 @@ public class Scene {
 		}
 		
 			// DEBUG - Send "pong" to server
-		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_T) ) {
-			this.app.getNetworker().queueMessage(new MMessage("TEST pong"));
-		}
+		//if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_T) ) {
+			//this.app.getNetworker().queueMessage(new MMessage("TEST pong"));
+		//}
 		
 		long time = System.nanoTime();
 		for( ASceneObject object : this.objects ) {

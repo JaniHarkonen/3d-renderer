@@ -2,7 +2,6 @@ package project.opengl.cshadow;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL46;
@@ -95,8 +94,7 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	    	GL46.glClear(GL46.GL_DEPTH_BUFFER_BIT);
 	        this.uLightView.update(this.cascadeShadows.get(i).getLightViewMatrix());
 	        
-	        for( Map.Entry<Long, ASceneObject> en : gameState.getActiveScene().entrySet() ) {
-	        	ASceneObject object = en.getValue();
+	        for( ASceneObject object : gameState.getActiveScene() ) {
 	        	this.renderStrategyManager.getStrategy(object.getClass())
 	        	.execute(renderer, this, object);
 	        }
