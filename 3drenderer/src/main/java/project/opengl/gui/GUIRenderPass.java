@@ -54,7 +54,7 @@ public class GUIRenderPass implements IRenderPass {
 	@Override
 	public boolean initialize() {
 		this.imagePlane = 
-			AssetUtils.createPlaneMesh("mesh-default-gui-plane", 0, 0, 16, 16, 0, 0, 1, 1);
+			AssetUtils.createPlaneMesh("mesh-default-gui-plane", 0, 0, 1, 1, 0, 0, 1, 1);
 		this.shaderProgram = new ShaderProgram();
 		this.uProjection = new UAMatrix4f(Uniforms.PROJECTION);
 		this.uDiffuseSampler = new UInteger1(Uniforms.DIFFUSE_SAMPLER);
@@ -103,6 +103,8 @@ public class GUIRenderPass implements IRenderPass {
 	}
 	
 	private void recursivelyRender(IRenderer renderer, AGUIElement element) {
+		this.context = new Context();
+		this.context.evaluateProperties(element.getProperties());
 		this.renderStrategyManager.getStrategy(element.getClass()).execute(renderer, this, element);
 		
 		for( AGUIElement child : element.getChildren() ) {

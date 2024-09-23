@@ -60,18 +60,6 @@ public class Property {
 		return this.value;
 	}
 	
-	public float getAsFloat() {
-		return (float) this.value;
-	}
-	
-	public String getAsString() {
-		return (String) this.value;
-	}
-	
-	public Vector4f getAsColor() {
-		return (Vector4f) this.value;
-	}
-	
 	@Override
 	public boolean equals(Object o) {
 		if( !(o instanceof Property) ) {
