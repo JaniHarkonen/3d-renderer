@@ -1,38 +1,32 @@
 package project.opengl.gui;
 
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
 
 import project.asset.font.Font;
-import project.component.Transform;
+import project.core.IRenderable;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
 import project.gui.Text;
 import project.opengl.TextureGL;
 import project.opengl.vao.VAO;
-import project.scene.ASceneObject;
 
 public class RenderText implements IRenderStrategy<GUIRenderPass> {
 
 	@Override
-	public void execute(IRenderer renderer, GUIRenderPass renderPass, ASceneObject target) {
-		Text element = (Text) target;
-		
-		Transform transform = element.getTransform();
-		Vector3f position = transform.getPosition();
-		Quaternionf rotation = transform.getRotator().getAsQuaternion();
-		
-		float textX = position.x;
-		float textY = position.y;
+	public void execute(IRenderer renderer, GUIRenderPass renderPass, IRenderable renderable) {
+		Text element = (Text) renderable;
+		Context renderContext = renderPass.context;
+		float textX = renderContext.left;
+		float textY = renderContext.top;
 		Text text = (Text) element;
 		Font font = text.getFont();
 		TextureGL textureGL = (TextureGL) font.getTexture().getGraphics();
-		Vector4f primaryColor = text.getPrimaryColor();
+		Vector4f primaryColor = renderContext.primaryColor;
 		
 		renderPass.uPrimaryColor.update(primaryColor);
+		renderPass.uHasTexture.update(1);
 		GL46.glActiveTexture(GL46.GL_TEXTURE0);
 		textureGL.bind();
 
@@ -42,11 +36,8 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 				renderPass.uObjectTransform.update(
 					new Matrix4f()
 					.translationRotateScale(
-						textX, textY + renderPass.baseLine - glyph.getOriginY(), 0.0f, 
-						rotation.x, 
-						rotation.y, 
-						rotation.z, 
-						rotation.w, 
+						textX, textY + renderContext.baseline - glyph.getOriginY(), 0.0f,
+						0, 0, 0, 0,
 						1.0f, 1.0f, 1.0f
 					)
 				);
@@ -64,7 +55,7 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 			}
 			
 			textX = 0.0f;
-			textY += renderPass.lineHeight;
+			textY += renderContext.lineHeight;
 		}
 	}
 }

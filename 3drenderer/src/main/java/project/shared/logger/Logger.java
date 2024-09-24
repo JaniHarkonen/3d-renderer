@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 public final class Logger {
 	public static final int MUTED = 0;
@@ -63,15 +63,21 @@ public final class Logger {
 		return new LoggerMessage(Thread.currentThread().getName(), severity, me);
 	}
 	
-	public void log(int severity, Object me, Consumer<LoggerMessage> batcher) {
+	public void log(int severity, Object me, Function<LoggerMessage, Boolean> batcher) {
 		LoggerMessage loggerMessage = this.createMessage(severity, me);
 		
 		if( loggerMessage == null ) {
 			return;
 		}
 		
+		boolean isLogged;
 		loggerMessage.timestamp();
-		batcher.accept(loggerMessage);
+		isLogged = batcher.apply(loggerMessage);
+		
+		if( !isLogged ) {
+			return;
+		}
+		
 		loggerMessage.timestamp();
 		this.log(loggerMessage);
 	}
@@ -97,7 +103,7 @@ public final class Logger {
 		}
 	}
 	
-	public void info(Object me, Consumer<LoggerMessage> batcher) {
+	public void info(Object me, Function<LoggerMessage, Boolean> batcher) {
 		this.log(INFO, me, batcher);
 	}
 	
@@ -105,7 +111,7 @@ public final class Logger {
 		this.log(INFO, me, messages);
 	}
 	
-	public void warn(Object me, Consumer<LoggerMessage> batcher) {
+	public void warn(Object me, Function<LoggerMessage, Boolean> batcher) {
 		this.log(WARN, me, batcher);
 	}
 	
@@ -113,7 +119,7 @@ public final class Logger {
 		this.log(WARN, me, messages);
 	}
 	
-	public void error(Object me, Consumer<LoggerMessage> batcher) {
+	public void error(Object me, Function<LoggerMessage, Boolean> batcher) {
 		this.log(ERROR, me, batcher);
 	}
 	
@@ -121,7 +127,7 @@ public final class Logger {
 		this.log(ERROR, me, messages);
 	}
 	
-	public void fatal(Object me, Consumer<LoggerMessage> batcher) {
+	public void fatal(Object me, Function<LoggerMessage, Boolean> batcher) {
 		this.log(FATAL, me, batcher);
 	}
 	

@@ -4,20 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
 
 import project.Application;
 import project.Window;
 import project.controls.Controller;
-import project.gui.AGUIElement;
+import project.gui.Div;
 import project.gui.GUI;
 import project.gui.Image;
-import project.gui.Text;
+import project.gui.props.Properties;
+import project.gui.props.Property;
 import project.input.Input;
 import project.input.InputSnapshot;
 import project.input.KeyHeld;
 import project.input.MouseMove;
-import project.shared.MMessage;
 import project.testing.ActionSet;
 import project.testing.TestAssets;
 import project.testing.TestDebugDataHandles;
@@ -35,8 +36,8 @@ public class Scene {
 	private int tickRate;
 	private Application app;
 	
-	private Image DEBUGcrosshair;
-	private Text DEBUGtextAppStatistics;
+	//private Image DEBUGcrosshair;
+	//private Text DEBUGtextAppStatistics;
 	private TestPointLight DEBUGtestPointLight0;
 	private Vector3f DEBUGshadowLightPosition;
 	private boolean DEBUGareNormalsActive;
@@ -53,8 +54,8 @@ public class Scene {
 		this.setTickRate(tickRate);
 		this.app = app;
 		
-		this.DEBUGcrosshair = null;
-		this.DEBUGtextAppStatistics = null;
+		//this.DEBUGcrosshair = null;
+		//this.DEBUGtextAppStatistics = null;
 		this.DEBUGtestPointLight0 = null;
 		this.DEBUGshadowLightPosition = null;
 		this.DEBUGareNormalsActive = true;
@@ -155,11 +156,11 @@ public class Scene {
 		Application.getApp().getAssetManager().processTaskResults(System.nanoTime());
 		appWindow.pollInput();
 		
-		if( this.DEBUGcrosshair != null ) {
-			this.DEBUGcrosshair.getTransform().setPosition(
-				this.app.getWindow().getWidth() / 2, this.app.getWindow().getHeight() / 2, 0
-			);
-		}
+		//if( this.DEBUGcrosshair != null ) {
+			//this.DEBUGcrosshair.getTransform().setPosition(
+				//this.app.getWindow().getWidth() / 2, this.app.getWindow().getHeight() / 2, 0
+			//);
+		//}
 		
 		for( ASceneObject object : this.objects ) {
 			object.tick(deltaTime);
@@ -172,7 +173,7 @@ public class Scene {
 		Vector3f pl0Color = this.DEBUGtestPointLight0.getPointLight().getColor();
 		
 		if( this.gui != null ) {
-			this.DEBUGtextAppStatistics.setContent(
+			/*this.DEBUGtextAppStatistics.setContent(
 				"FPS: " + appWindow.getFPS() + " / " + appWindow.getMaxFPS() + "\n" +
 				"TICK: " + this.tickRate + " (d: " + deltaTime + ")\n" +
 				"HEAP: " + this.convertToLargestByte(memoryUsage) + " (" + memoryUsage + " bytes)\n" +
@@ -208,7 +209,7 @@ public class Scene {
 				"    3/4 to change point light green value\n" +
 				"    5/6 to change point light blue value\n" +
 				"    H to toggle HUD\n"
-			);
+			);*/
 		}
 		
 		InputSnapshot inputSnapshot = this.app.getWindow().getInputSnapshot();
@@ -243,9 +244,9 @@ public class Scene {
 		}
 		
 			// DEBUG - Send "pong" to server
-		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_T) ) {
-			this.app.getNetworker().queueMessage(new MMessage("TEST pong"));
-		}
+		//if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_T) ) {
+			//this.app.getNetworker().queueMessage(new MMessage("TEST pong"));
+		//}
 		
 		long time = System.nanoTime();
 		for( ASceneObject object : this.objects ) {
@@ -253,9 +254,8 @@ public class Scene {
 		}
 		
 		if( this.gui != null ) {
-			for( AGUIElement element : this.gui.getElements() ) {
-				element.submitToRenderer();
-			}
+			this.gui.tick(deltaTime);
+			this.gui.getBody().submitToRenderer();
 		}
 		
 		Application.getApp().getRenderer().getBackGameState()
@@ -288,15 +288,66 @@ public class Scene {
 	}
 	
 	private void createGUI() {
-		this.DEBUGtextAppStatistics = new Text(this.gui, "");
-		this.gui = new GUI(this);
+		//this.DEBUGtextAppStatistics = new Text(this.gui, "test-text", "");
+		this.gui = new GUI();
 		this.gui.initialize();
-		this.gui.addElement(this.DEBUGtextAppStatistics);
 		
-		this.DEBUGcrosshair = new Image(this.gui, TestAssets.TEX_GUI_CROSSHAIR);
-		this.DEBUGcrosshair.getTransform().setPosition(400, 300, 0);
-		this.DEBUGcrosshair.setAnchor(8, 8);
-		this.gui.addElement(this.DEBUGcrosshair);
+		Properties props;
+		
+		Div div = new Div(this.gui, "test-div");
+			props = div.getProperties();
+			props.getProperty(Properties.WIDTH).set(1, Property.PC);
+			props.getProperty(Properties.HEIGHT).set(0.25f, Property.PC);
+			props.getProperty(Properties.COLS).set(10, Property.NUMBER);
+			props.getProperty(Properties.ROWS).set(10, Property.NUMBER);
+			props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(0, 0, 0, 1/3f), Property.COLOR);
+			
+			Div cdiv = new Div(this.gui, "test-div-child");
+				props = cdiv.getProperties();
+				props.getProperty(Properties.LEFT).set(1, Property.C);
+				props.getProperty(Properties.WIDTH).set(8, Property.C);
+				props.getProperty(Properties.TOP).set(1, Property.R);
+				props.getProperty(Properties.HEIGHT).set(8, Property.R);
+				Image image = new Image(this.gui, "test-image", TestAssets.TEX_GUI_CROSSHAIR);
+					props = image.getProperties();
+					props.getProperty(Properties.WIDTH).set(1, Property.PC);
+					props.getProperty(Properties.HEIGHT).set(1, Property.PC);
+					props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(1, 1, 1, 1), Property.COLOR);
+				this.gui.addChildTo(cdiv, image);
+			this.gui.addChildTo(div, cdiv);
+			
+			/*Text text = new Text(this.gui, "test-text", "Hello world!");
+				props = text.getProperties();
+				props.getProperty(Properties.LEFT).set(1, Property.C);
+				props.getProperty(Properties.TOP).set(1, Property.R);
+				props.getProperty(Properties.WIDTH).set(8, Property.C);
+				props.getProperty(Properties.HEIGHT).set(1, Property.R);
+				props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(1, 1, 1, 1), Property.COLOR);
+			this.gui.addChildTo(div, text);*/
+			
+		this.gui.addChildTo(this.gui.getBody(), div);
+		
+		/*Div div = new Div(this.gui, "test-div");
+			props = div.getProperties();
+			props.getProperty(Properties.LEFT).set(0, Property.PC);
+			props.getProperty(Properties.WIDTH).set(0.5f, Property.C);
+			props.getProperty(Properties.HEIGHT).set(32, Property.PX);
+			props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(1, 1, 1, 1), Property.COLOR);
+		this.gui.addChildTo(div, this.gui.getBody());
+		
+		Div div2 = new Div(this.gui, "test-div-2");
+			props = div2.getProperties();
+			props.getProperty(Properties.LEFT).set(0.5f, Property.PC);
+			props.getProperty(Properties.WIDTH).set(0.5f, Property.PC);
+			props.getProperty(Properties.HEIGHT).set(32, Property.PX);
+		this.gui.addChildTo(div2, this.gui.getBody());*/
+			
+		//this.gui.addElement(this.DEBUGtextAppStatistics);
+		
+		//this.DEBUGcrosshair = new Image(this.gui, "test-image", TestAssets.TEX_GUI_CROSSHAIR);
+		//this.DEBUGcrosshair.getTransform().setPosition(400, 300, 0);
+		//this.DEBUGcrosshair.setAnchor(8, 8);
+		//this.gui.addElement(this.DEBUGcrosshair);
 	}
 	
 	public void addObject(ASceneObject sceneObject) {

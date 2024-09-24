@@ -1,27 +1,50 @@
 package project.gui;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import project.scene.Scene;
+import project.core.ITickable;
+import project.shared.logger.Logger;
 
-public class GUI {
-	private List<AGUIElement> elements;
+public class GUI implements ITickable {
+	private Body body;
+	private Map<String, AGUIElement> elementTable;
 	
-	public GUI(Scene scene) {
-		this.elements = null;
+	public GUI() {
+		this.body = null;
+		this.elementTable = new HashMap<>();
 	}
 	
 	
 	public void initialize() {
-		this.elements = new ArrayList<>();
+		this.body = new Body(this);
 	}
 	
-	public void addElement(AGUIElement element) {
-		this.elements.add(element);
+	@Override
+	public void tick(float deltaTime) {
+		this.body.tick(deltaTime);
 	}
 	
-	public List<AGUIElement> getElements() {
-		return this.elements;
+	public boolean addChildTo(AGUIElement parent, AGUIElement child) {
+		if( this.getElementByID(child.getID()) != null ) {
+			Logger.get().warn(
+				this, 
+				"Failed to add element with ID '" + child.getID() + "'!", 
+				"Such an element already exists in the GUI."
+			);
+			return false;
+		}
+		
+		this.elementTable.put(child.getID(), child);
+		parent.addChild(child);
+		return true;
+	}
+	
+	public Body getBody() {
+		return this.body;
+	}
+	
+	public AGUIElement getElementByID(String id) {
+		return this.elementTable.get(id);
 	}
 }
