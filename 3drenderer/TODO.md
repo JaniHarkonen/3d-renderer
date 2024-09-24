@@ -15,8 +15,14 @@
 ### opengl.gui.Context
 - context currently holds no reference to a Font, implement font lookup by name
 
+### Div
+- rename Div into something else
+
 ### IRenderPass
 - why is there a getGameState? if render strategies use it, why not pass it in the execute() call?
+
+### DebugUtils
+- get rid of DebugUtils.log(), switch to using Logger
 
 ### IRenderStrategy
 - all render strategies should be package private

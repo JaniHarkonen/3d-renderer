@@ -20,6 +20,7 @@ import project.opengl.shader.ShaderProgram;
 import project.opengl.shader.uniform.UAMatrix4f;
 import project.opengl.shader.uniform.UInteger1;
 import project.opengl.shader.uniform.UVector4f;
+import project.gui.Div;
 
 public class GUIRenderPass implements IRenderPass {
 		// Shared context
@@ -46,6 +47,7 @@ public class GUIRenderPass implements IRenderPass {
 		
 		this.renderStrategyManager = 
 			new RenderStrategyManager<>(new NullRenderStrategy<GUIRenderPass>())
+		.addStrategy(Div.class, new RenderDiv())
 		.addStrategy(Text.class, new RenderText())
 		.addStrategy(Image.class, new RenderImage());
 	}
@@ -92,18 +94,12 @@ public class GUIRenderPass implements IRenderPass {
 		this.projectionMatrix.identity().setOrtho2D(0, window.getWidth(), window.getHeight(), 0);
         this.uProjection.update(this.projectionMatrix);
         
-        /*for( Map.Entry<String, AGUIElement> en : gameState.getActiveCamera().entrySet() ) {
-        	AGUIElement object = en.getValue();
-        	this.renderStrategyManager.getStrategy(object.getClass())
-        	.execute(renderer, this, object);
-        }*/
         this.recursivelyRender(renderer, gameState.getActiveGUIRoot());
-		
 		activeShaderProgram.unbind();
 	}
 	
 	private void recursivelyRender(IRenderer renderer, AGUIElement element) {
-		this.context = new Context();
+		this.context = new Context(this.context);
 		this.context.evaluateProperties(element.getProperties());
 		this.renderStrategyManager.getStrategy(element.getClass()).execute(renderer, this, element);
 		

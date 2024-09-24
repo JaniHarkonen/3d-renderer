@@ -15,11 +15,8 @@ public class RenderDiv implements IRenderStrategy<GUIRenderPass> {
 	public void execute(IRenderer renderer, GUIRenderPass renderPass, IRenderable renderable) {
 		Context renderContext = renderPass.context;
 		
-		//TextureGL textureGL = (TextureGL) element.getTexture().getGraphics();
 		Vector4f primaryColor = renderContext.primaryColor;
 		renderPass.uPrimaryColor.update(primaryColor);
-		//GL46.glActiveTexture(GL46.GL_TEXTURE0);
-		//textureGL.bind();
 		
 		float x = renderContext.left;
 		float y = renderContext.top;

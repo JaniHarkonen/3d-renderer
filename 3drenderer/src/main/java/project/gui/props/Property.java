@@ -18,10 +18,14 @@ public class Property {
 	private String type;
 	private Object value;
 	
-	public Property(String name) {
+	public Property(String name, Object value, String type) {
 		this.name = name;
-		this.type = null;
-		this.value = null;
+		this.value = value;
+		this.type = type;
+	}
+	
+	public Property(String name) {
+		this(name, null, null);
 	}
 	
 	public Property(Property src) {

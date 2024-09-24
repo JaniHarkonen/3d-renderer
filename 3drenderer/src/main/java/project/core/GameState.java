@@ -15,7 +15,6 @@ import project.scene.Camera;
 
 public class GameState {
 	private final Map<Long, ASceneObject> activeScene;
-	//private final Map<String, AGUIElement> activeGUI;
 	private final Deque<IGraphicsAsset> graphicsGenerationRequests;
 	private final Deque<IGraphicsAsset> graphicsDisposalRequests;
 	private final Map<String, Object> debugData;
@@ -25,7 +24,6 @@ public class GameState {
 	
 	public GameState() {
 		this.activeScene = new LinkedHashMap<>();
-		//this.activeGUI = new LinkedHashMap<>();
 		this.graphicsGenerationRequests = new ArrayDeque<>();
 		this.graphicsDisposalRequests = new ArrayDeque<>();
 		this.debugData = new HashMap<>();
@@ -34,7 +32,6 @@ public class GameState {
 	
 	public GameState(GameState src) {
 		this.activeScene = new LinkedHashMap<>(src.activeScene);
-		//this.activeGUI = new LinkedHashMap<>(src.activeGUI);
 		this.graphicsGenerationRequests = new ArrayDeque<>();
 		this.graphicsDisposalRequests = new ArrayDeque<>();
 		this.debugData = new HashMap<>();
@@ -60,59 +57,15 @@ public class GameState {
 		}
 	}
 	
-	/*public void listGUIElement(AGUIElement element) {
-		String elementID = element.getID();
-		AGUIElement previous = this.activeGUI.get(elementID);
-		
-		if( previous == null || !element.rendererEquals(previous) ) {
-			this.activeGUI.put(elementID, element.rendererCopy());
-		}
-	}*/
-	
 	public void listGUIRoot(AGUIElement root) {
-		//if( !this.activeGUIRoot.rendererEquals(root) ) {
-			//this.activeGUIRoot = root.rendererCopy();
-		//} else {
-			//this.listChildGUINodes(root, this.activeGUIRoot);
-		//}
-		this.activeGUIRoot = this.listChildGUINodes(root, this.activeGUIRoot);
-	}
-	
-	private AGUIElement listChildGUINodes(AGUIElement real, AGUIElement copy) {
-		if( !copy.rendererEquals(real) ) {
-			return real.rendererCopy();
+		if( this.activeGUIRoot == null ) {
+			this.activeGUIRoot = root.rendererCopy();
 		} else {
-			List<AGUIElement> realChildren = real.getChildren();
-			List<AGUIElement> copyChildren = copy.getChildren();
-			int minChildCount = Math.min(realChildren.size(), copyChildren.size());
-			
-				// Check all similar children, exit when dissimilar child found
-			int i;
-			for( i = 0; i < minChildCount; i++ ) {
-				AGUIElement realChild = realChildren.get(i);
-				AGUIElement copyChild = copyChildren.get(i);
-				
-				if( !copyChild.rendererEquals(realChild) ) {
-					break;
-				}
-				
-				this.listChildGUINodes(realChild, copyChild);
-			}
-			
-				// Remove dissimilar and everything after it
-			while( copyChildren.size() > i ) {
-				copyChildren.remove(copyChildren.size() - 1);
-			}
-			
-				// Copy the rest of real children
-			for( ; i < realChildren.size(); i++ ) {
-				copyChildren.add(realChildren.get(i).rendererCopy());
-			}
+			this.listChildGUINodes(root, this.activeGUIRoot);
 		}
-		return copy;
 	}
 	
-	private void listChildGUINodes2(AGUIElement real, AGUIElement copy) {
+	private void listChildGUINodes(AGUIElement real, AGUIElement copy) {
 		List<AGUIElement> realChildren = real.getChildren();
 		List<AGUIElement> copyChildren = copy.getChildren();
 		int minChildCount = Math.min(realChildren.size(), copyChildren.size());
@@ -169,10 +122,6 @@ public class GameState {
 	public Collection<ASceneObject> getActiveScene() {
 		return this.activeScene.values();
 	}
-	
-	/*public Map<String, AGUIElement> getActiveGUI() {
-		return this.activeGUI;
-	}*/
 	
 	public AGUIElement getActiveGUIRoot() {
 		return this.activeGUIRoot;

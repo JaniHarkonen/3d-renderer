@@ -9,5 +9,6 @@ uniform vec4 uPrimaryColor;
 
 void main() 
 {
-  fragColor = texture(uDiffuseSampler, outTextureCoordinate) * uPrimaryColor;
+  //fragColor = texture(uDiffuseSampler, outTextureCoordinate) * uPrimaryColor;
+  fragColor = uPrimaryColor;
 }

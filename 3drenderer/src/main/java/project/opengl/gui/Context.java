@@ -2,15 +2,12 @@ package project.opengl.gui;
 
 import org.joml.Vector4f;
 
+import project.gui.AGUIElement;
 import project.gui.props.Properties;
 import project.gui.props.Property;
+import project.shared.logger.Logger;
 
 class Context {
-	static final float DEFAULT_LINE_HEIGHT = 22;
-	static final float DEFAULT_BASELINE = 16;
-	static final Vector4f DEFAULT_PRIMARY_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
-	static final Vector4f DEFAULT_SECONDARY_COLOR = new Vector4f(1.0f, 1.0f, 1.0f, 0.0f);
-	
 	float left;
 	float top;
 	float width;
@@ -25,18 +22,33 @@ class Context {
 	Vector4f secondaryColor;
 	
 	Context() {
-		this.left = 0;
-		this.top = 0;
-		this.width = 0;
-		this.height = 0;
-		this.columns = 1;
-		this.rows = 1;
-		this.lineHeight = DEFAULT_LINE_HEIGHT;
-		this.baseline = DEFAULT_BASELINE;
-		this.anchorX = 0;
-		this.anchorY = 0;
-		this.primaryColor = DEFAULT_PRIMARY_COLOR;
-		this.secondaryColor = DEFAULT_SECONDARY_COLOR;
+		this.left = Properties.DEFAULT_LEFT;
+		this.top = Properties.DEFAULT_TOP;
+		this.width = Properties.DEFAULT_WIDTH;
+		this.height = Properties.DEFAULT_HEIGHT;
+		this.columns = Properties.DEFAULT_COLS;
+		this.rows = Properties.DEFAULT_ROWS;
+		this.lineHeight = Properties.DEFAULT_LINE_HEIGHT;
+		this.baseline = Properties.DEFAULT_BASELINE;
+		this.anchorX = Properties.DEFAULT_ANCHOR_X;
+		this.anchorY = Properties.DEFAULT_ANCHOR_Y;
+		this.primaryColor = Properties.DEFAULT_PRIMARY_COLOR;
+		this.secondaryColor = Properties.DEFAULT_SECONDARY_COLOR;
+	}
+	
+	Context(Context src) {
+		this.left = src.left;
+		this.top = src.top;
+		this.width = src.width;
+		this.height = src.height;
+		this.columns = src.columns;
+		this.rows = src.rows;
+		this.lineHeight = src.lineHeight;
+		this.baseline = src.baseline;
+		this.anchorX = src.anchorX;
+		this.anchorY = src.anchorY;
+		this.primaryColor = src.primaryColor;
+		this.secondaryColor = src.secondaryColor;
 	}
 	
 	
@@ -49,8 +61,8 @@ class Context {
 		float rows = this.evaluateFloat(properties.getProperty(Properties.ROWS));
 		float anchorX = this.evaluateFloat(properties.getProperty(Properties.ANCHOR_X));
 		float anchorY = this.evaluateFloat(properties.getProperty(Properties.ANCHOR_Y));
-		//float lineHeight = this.evaluateFloat(properties.getProperty(Properties.LINE_HEIGHT));
-		//float baseline = this.evaluateFloat(properties.getProperty(Properties.BASELINE));
+		float lineHeight = this.evaluateFloat(properties.getProperty(Properties.LINE_HEIGHT));
+		float baseline = this.evaluateFloat(properties.getProperty(Properties.BASELINE));
 		Vector4f primaryColor = this.evaluateColor(properties.getProperty(Properties.PRIMARY_COLOR));
 		Vector4f secondaryColor = this.evaluateColor(properties.getProperty(Properties.SECONDARY_COLOR));
 		
@@ -62,10 +74,29 @@ class Context {
 		this.rows = rows;
 		this.anchorX = anchorX;
 		this.anchorY = anchorY;
-		//this.lineHeight = lineHeight;
-		//this.baseline = baseline;
+		this.lineHeight = lineHeight;
+		this.baseline = baseline;
 		this.primaryColor = primaryColor;
 		this.secondaryColor = secondaryColor;
+		
+		Logger.get().warn(this, (message) -> {
+			if( width != 0 && height != 0 ) {
+				return false;
+			}
+			
+			AGUIElement owner = properties.getOwner();
+			
+			if( width == 0 ) {
+				message.addMessage("Width of element '" + owner.getID() + "' is 0!");
+			}
+			
+			if( height == 0 ) {
+				message.addMessage("Height of element '" + owner.getID() + "' is 0!");
+			}
+			
+			message.addMessage("OWNER: " + owner);
+			return true;
+		});
 	}
 	
 	private float evaluateFloat(Property property) {
@@ -92,7 +123,11 @@ class Context {
 				float target;
 				
 					// Avoid equals(), unless custom properties are introduced
-				if( propertyName == Properties.WIDTH || propertyName == Properties.ANCHOR_X ) {
+				if(
+					propertyName == Properties.LEFT || 
+					propertyName == Properties.WIDTH || 
+					propertyName == Properties.ANCHOR_X 
+				) {
 					target = this.width;
 				} else {
 					target = this.height;
@@ -109,7 +144,7 @@ class Context {
 			case Property.COLOR: {
 					// Avoid equals(), unless custom properties are introduced
 				Vector4f defaultColor = (property.getName() == Properties.PRIMARY_COLOR) ? 
-					DEFAULT_PRIMARY_COLOR : DEFAULT_SECONDARY_COLOR;
+					Properties.DEFAULT_PRIMARY_COLOR : Properties.DEFAULT_SECONDARY_COLOR;
 				return this.returnOrDefault((Vector4f) property.getValue(), defaultColor);
 			}
 				// Evaluate expression
