@@ -17,24 +17,14 @@ public class RenderImage implements IRenderStrategy<GUIRenderPass> {
 	public void execute(IRenderer renderer, GUIRenderPass renderPass, IRenderable renderable) {
 		Image element = (Image) renderable;
 		Context renderContext = renderPass.context;
-		//Properties props = element.getProperties();
-		
 		TextureGL textureGL = (TextureGL) element.getTexture().getGraphics();
-		//Vector4f primaryColor = renderContext.evaluateColor(props.getProperty(Properties.PRIMARY_COLOR));//element.getPrimaryColor();
 		Vector4f primaryColor = renderContext.primaryColor;
 		
 		renderPass.uPrimaryColor.update(primaryColor);
+		renderPass.uHasTexture.update(1);
 		GL46.glActiveTexture(GL46.GL_TEXTURE0);
 		textureGL.bind();
 		
-		//Transform transform = element.getTransform();
-		//Vector3f position = transform.getPosition();
-		//Vector2f anchor = element.getAnchor();
-		//Quaternionf rotation = transform.getRotator().getAsQuaternion();
-		//float x = renderContext.evaluateFloat(props.getProperty(Properties.LEFT));
-		//float y = renderContext.evaluateFloat(props.getProperty(Properties.TOP));
-		//float anchorX = renderContext.evaluateFloat(props.getProperty(Properties.ANCHOR_X));
-		//float anchorY = renderContext.evaluateFloat(props.getProperty(Properties.ANCHOR_Y));
 		float x = renderContext.left;
 		float y = renderContext.top;
 		float width = renderContext.width;

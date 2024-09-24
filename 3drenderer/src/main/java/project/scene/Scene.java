@@ -12,6 +12,7 @@ import project.Window;
 import project.controls.Controller;
 import project.gui.Div;
 import project.gui.GUI;
+import project.gui.Image;
 import project.gui.props.Properties;
 import project.gui.props.Property;
 import project.input.Input;
@@ -295,6 +296,39 @@ public class Scene {
 		
 		Div div = new Div(this.gui, "test-div");
 			props = div.getProperties();
+			props.getProperty(Properties.WIDTH).set(1, Property.PC);
+			props.getProperty(Properties.HEIGHT).set(0.25f, Property.PC);
+			props.getProperty(Properties.COLS).set(10, Property.NUMBER);
+			props.getProperty(Properties.ROWS).set(10, Property.NUMBER);
+			props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(0, 0, 0, 1/3f), Property.COLOR);
+			
+			Div cdiv = new Div(this.gui, "test-div-child");
+				props = cdiv.getProperties();
+				props.getProperty(Properties.LEFT).set(1, Property.C);
+				props.getProperty(Properties.WIDTH).set(8, Property.C);
+				props.getProperty(Properties.TOP).set(1, Property.R);
+				props.getProperty(Properties.HEIGHT).set(8, Property.R);
+				Image image = new Image(this.gui, "test-image", TestAssets.TEX_GUI_CROSSHAIR);
+					props = image.getProperties();
+					props.getProperty(Properties.WIDTH).set(1, Property.PC);
+					props.getProperty(Properties.HEIGHT).set(1, Property.PC);
+					props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(1, 1, 1, 1), Property.COLOR);
+				this.gui.addChildTo(cdiv, image);
+			this.gui.addChildTo(div, cdiv);
+			
+			/*Text text = new Text(this.gui, "test-text", "Hello world!");
+				props = text.getProperties();
+				props.getProperty(Properties.LEFT).set(1, Property.C);
+				props.getProperty(Properties.TOP).set(1, Property.R);
+				props.getProperty(Properties.WIDTH).set(8, Property.C);
+				props.getProperty(Properties.HEIGHT).set(1, Property.R);
+				props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(1, 1, 1, 1), Property.COLOR);
+			this.gui.addChildTo(div, text);*/
+			
+		this.gui.addChildTo(this.gui.getBody(), div);
+		
+		/*Div div = new Div(this.gui, "test-div");
+			props = div.getProperties();
 			props.getProperty(Properties.LEFT).set(0, Property.PC);
 			props.getProperty(Properties.WIDTH).set(0.5f, Property.C);
 			props.getProperty(Properties.HEIGHT).set(32, Property.PX);
@@ -306,7 +340,7 @@ public class Scene {
 			props.getProperty(Properties.LEFT).set(0.5f, Property.PC);
 			props.getProperty(Properties.WIDTH).set(0.5f, Property.PC);
 			props.getProperty(Properties.HEIGHT).set(32, Property.PX);
-		this.gui.addChildTo(div2, this.gui.getBody());
+		this.gui.addChildTo(div2, this.gui.getBody());*/
 			
 		//this.gui.addElement(this.DEBUGtextAppStatistics);
 		

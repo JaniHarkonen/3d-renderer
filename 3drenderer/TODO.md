@@ -1,7 +1,13 @@
 ## TO DO
 
-### Later
-- implement alpha maps
+### Priority
+- properties:
+ -- min/max values
+ -- right/bottom
+ -- prop expression parsing
+ -- responsive values
+- rename Div into something else
+- Context currently holds no reference to a Font, implement font lookup by name
 
 ### ASceneObject & AGUIElement
 - consider if references to the renderer can be removed (don't use method names like 'rendererEquals' or 'rendererCopy')
@@ -11,12 +17,6 @@
 
 ### Server-client shared
 - contains a lot of code dependent on either server or client, make the package agnostic
-
-### opengl.gui.Context
-- context currently holds no reference to a Font, implement font lookup by name
-
-### Div
-- rename Div into something else
 
 ### IRenderPass
 - why is there a getGameState? if render strategies use it, why not pass it in the execute() call?
@@ -32,9 +32,6 @@
 
 ### ConnectionHandler
 - server side connection handlers should run on separate threads, currently running on the Networker thread
-
-### General
-- there is still a lot of repetition among render passes, however, this should be further examined once instanced rendering is considered
 
 ### Scene
 - remove debug-related code
@@ -59,3 +56,6 @@
 
 ### Application
 - tick rate and frame rate seem to cause issues with reading input, revamp input so that all events are queued
+
+### Later
+- implement alpha maps

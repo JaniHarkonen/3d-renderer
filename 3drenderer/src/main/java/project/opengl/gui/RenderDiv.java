@@ -26,6 +26,7 @@ public class RenderDiv implements IRenderStrategy<GUIRenderPass> {
 		Matrix4f transform = new Matrix4f()
 		.translationRotateScale(x, y, 0.0f, 0, 0, 0, 0, width, height, 1.0f);
 		renderPass.uObjectTransform.update(transform);
+		renderPass.uHasTexture.update(0);
 		
 		VAO vao = (VAO) renderPass.imagePlane.getGraphics();
 		vao.bind();

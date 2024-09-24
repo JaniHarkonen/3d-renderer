@@ -25,7 +25,7 @@ public class GUI implements ITickable {
 		this.body.tick(deltaTime);
 	}
 	
-	public boolean addChildTo(AGUIElement child, AGUIElement parent) {
+	public boolean addChildTo(AGUIElement parent, AGUIElement child) {
 		if( this.getElementByID(child.getID()) != null ) {
 			Logger.get().warn(
 				this, 

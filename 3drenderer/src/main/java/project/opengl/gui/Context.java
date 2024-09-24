@@ -66,8 +66,8 @@ class Context {
 		Vector4f primaryColor = this.evaluateColor(properties.getProperty(Properties.PRIMARY_COLOR));
 		Vector4f secondaryColor = this.evaluateColor(properties.getProperty(Properties.SECONDARY_COLOR));
 		
-		this.left = left;
-		this.top = top;
+		this.left += left;
+		this.top += top;
 		this.width = width;
 		this.height = height;
 		this.columns = columns;

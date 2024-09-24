@@ -13,6 +13,7 @@ import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
 import project.core.renderer.RenderStrategyManager;
 import project.gui.AGUIElement;
+import project.gui.Div;
 import project.gui.Image;
 import project.gui.Text;
 import project.opengl.shader.Shader;
@@ -20,7 +21,6 @@ import project.opengl.shader.ShaderProgram;
 import project.opengl.shader.uniform.UAMatrix4f;
 import project.opengl.shader.uniform.UInteger1;
 import project.opengl.shader.uniform.UVector4f;
-import project.gui.Div;
 
 public class GUIRenderPass implements IRenderPass {
 		// Shared context
@@ -33,6 +33,7 @@ public class GUIRenderPass implements IRenderPass {
 	UAMatrix4f uObjectTransform;
 	private UAMatrix4f uProjection;
 	private UInteger1 uDiffuseSampler;
+	UInteger1 uHasTexture;
 	
 	private final Matrix4f projectionMatrix;
 	private GameState gameState;
@@ -46,7 +47,8 @@ public class GUIRenderPass implements IRenderPass {
 		this.shaderProgram = new ShaderProgram();
 		
 		this.renderStrategyManager = 
-			new RenderStrategyManager<>(new NullRenderStrategy<GUIRenderPass>())
+			new RenderStrategyManager<>(new NullRenderStrategy<GUIRenderPass>());
+		this.renderStrategyManager
 		.addStrategy(Div.class, new RenderDiv())
 		.addStrategy(Text.class, new RenderText())
 		.addStrategy(Image.class, new RenderImage());
@@ -62,12 +64,14 @@ public class GUIRenderPass implements IRenderPass {
 		this.uDiffuseSampler = new UInteger1(Uniforms.DIFFUSE_SAMPLER);
 		this.uPrimaryColor = new UVector4f(Uniforms.PRIMARY_COLOR);
 		this.uObjectTransform = new UAMatrix4f(Uniforms.OBJECT_TRANSFORM);
+		this.uHasTexture = new UInteger1(Uniforms.HAS_TEXTURE);
 		
 		this.shaderProgram
 		.declareUniform(this.uProjection)
 		.declareUniform(this.uDiffuseSampler)
 		.declareUniform(this.uObjectTransform)
-		.declareUniform(this.uPrimaryColor);
+		.declareUniform(this.uPrimaryColor)
+		.declareUniform(this.uHasTexture);
 		
 		this.shaderProgram.addShader(
 			new Shader("shaders/gui/gui.vert", GL46.GL_VERTEX_SHADER)
@@ -107,6 +111,7 @@ public class GUIRenderPass implements IRenderPass {
 			Context currentContext = this.context;	// Stash context
 			this.recursivelyRender(renderer, child);
 			this.context = currentContext;
+			
 		}
 	}
 	

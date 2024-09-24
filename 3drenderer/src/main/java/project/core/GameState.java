@@ -58,7 +58,7 @@ public class GameState {
 	}
 	
 	public void listGUIRoot(AGUIElement root) {
-		if( this.activeGUIRoot == null ) {
+		if( this.activeGUIRoot == null || !this.activeGUIRoot.rendererEquals(root) ) {
 			this.activeGUIRoot = root.rendererCopy();
 		} else {
 			this.listChildGUINodes(root, this.activeGUIRoot);
