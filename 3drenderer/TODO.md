@@ -2,10 +2,10 @@
 
 ### Priority
 - properties:
- -- min/max values
  -- right/bottom
  -- prop expression parsing
  -- responsive values
+- reconsider storing properties as fields in Context due to redundancy
 - rename Div into something else
 - Context currently holds no reference to a Font, implement font lookup by name
 

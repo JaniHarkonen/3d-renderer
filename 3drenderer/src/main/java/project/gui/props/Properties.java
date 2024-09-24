@@ -11,8 +11,14 @@ import project.gui.AGUIElement;
 public class Properties {
 	public static final float DEFAULT_LEFT = 0;
 	public static final float DEFAULT_TOP = 0;
+	
+	public static final float DEFAULT_MIN_WIDTH = 0;
+	public static final float DEFAULT_MIN_HEIGHT = 0;
+	public static final float DEFAULT_MAX_WIDTH = Float.MAX_VALUE;
+	public static final float DEFAULT_MAX_HEIGHT = Float.MAX_VALUE;
 	public static final float DEFAULT_WIDTH = 0;
 	public static final float DEFAULT_HEIGHT = 0;
+	
 	public static final float DEFAULT_COLS = 1;
 	public static final float DEFAULT_ROWS = 1;
 	public static final Vector4f DEFAULT_PRIMARY_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
@@ -24,8 +30,14 @@ public class Properties {
 	
 	public static final String LEFT = "left";
 	public static final String TOP = "top";
+	
+	public static final String MIN_WIDTH = "minWidth";
+	public static final String MIN_HEIGHT = "minHeight";
+	public static final String MAX_WIDTH = "maxWidth";
+	public static final String MAX_HEIGHT = "maxHeight";
 	public static final String WIDTH = "width";
 	public static final String HEIGHT = "height";
+	
 	public static final String COLS = "cols";
 	public static final String ROWS = "rows";
 	public static final String PRIMARY_COLOR = "primaryColor";
@@ -43,6 +55,10 @@ public class Properties {
 		this.propertiesMap = new LinkedHashMap<>();
 		this.addProperty(new Property(LEFT, DEFAULT_LEFT, Property.PX))
 		.addProperty(new Property(TOP, DEFAULT_TOP, Property.PX))
+		.addProperty(new Property(MIN_WIDTH, DEFAULT_MIN_WIDTH, Property.PX))
+		.addProperty(new Property(MIN_HEIGHT, DEFAULT_MIN_HEIGHT, Property.PX))
+		.addProperty(new Property(MAX_WIDTH, DEFAULT_MAX_WIDTH, Property.PX))
+		.addProperty(new Property(MAX_HEIGHT, DEFAULT_MAX_HEIGHT, Property.PX))
 		.addProperty(new Property(WIDTH, DEFAULT_WIDTH, Property.PX))
 		.addProperty(new Property(HEIGHT, DEFAULT_HEIGHT, Property.PX))
 		.addProperty(new Property(COLS, DEFAULT_COLS, Property.NUMBER))

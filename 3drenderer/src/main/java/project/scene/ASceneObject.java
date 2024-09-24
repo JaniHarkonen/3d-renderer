@@ -6,9 +6,10 @@ import java.util.List;
 import project.Application;
 import project.component.Transform;
 import project.core.IRenderable;
+import project.core.ITickable;
 import project.core.UUID;
 
-public abstract class ASceneObject implements IRenderable {
+public abstract class ASceneObject implements IRenderable, ITickable {
 
 	protected final long id;
 	protected final Scene scene;
@@ -28,8 +29,9 @@ public abstract class ASceneObject implements IRenderable {
 	}
 	
 	
+	@Override
 	public void tick(float deltaTime) {
-		
+		// Empty by default
 	}
 	
 	@Override

@@ -10,8 +10,14 @@ import project.shared.logger.Logger;
 class Context {
 	float left;
 	float top;
+	
+	float minWidth;
+	float minHeight;
+	float maxWidth;
+	float maxHeight;
 	float width;
 	float height;
+	
 	float columns;
 	float rows;
 	float lineHeight;
@@ -24,8 +30,14 @@ class Context {
 	Context() {
 		this.left = Properties.DEFAULT_LEFT;
 		this.top = Properties.DEFAULT_TOP;
+		
+		this.minWidth = Properties.DEFAULT_MIN_WIDTH;
+		this.minHeight = Properties.DEFAULT_MIN_HEIGHT;
+		this.maxWidth = Properties.DEFAULT_MAX_WIDTH;
+		this.maxHeight = Properties.DEFAULT_MAX_HEIGHT;
 		this.width = Properties.DEFAULT_WIDTH;
 		this.height = Properties.DEFAULT_HEIGHT;
+		
 		this.columns = Properties.DEFAULT_COLS;
 		this.rows = Properties.DEFAULT_ROWS;
 		this.lineHeight = Properties.DEFAULT_LINE_HEIGHT;
@@ -39,8 +51,14 @@ class Context {
 	Context(Context src) {
 		this.left = src.left;
 		this.top = src.top;
+		
+		this.minWidth = src.minWidth;
+		this.minHeight = src.minHeight;
+		this.maxWidth = src.maxWidth;
+		this.maxHeight = src.maxHeight;
 		this.width = src.width;
 		this.height = src.height;
+		
 		this.columns = src.columns;
 		this.rows = src.rows;
 		this.lineHeight = src.lineHeight;
@@ -55,8 +73,14 @@ class Context {
 	void evaluateProperties(Properties properties) {
 		float left = this.evaluateFloat(properties.getProperty(Properties.LEFT));
 		float top = this.evaluateFloat(properties.getProperty(Properties.TOP));
+		
+		float minWidth = this.evaluateFloat(properties.getProperty(Properties.MIN_WIDTH));
+		float minHeight = this.evaluateFloat(properties.getProperty(Properties.MIN_HEIGHT));
+		float maxWidth = this.evaluateFloat(properties.getProperty(Properties.MAX_WIDTH));
+		float maxHeight = this.evaluateFloat(properties.getProperty(Properties.MAX_HEIGHT));
 		float width = this.evaluateFloat(properties.getProperty(Properties.WIDTH));
 		float height = this.evaluateFloat(properties.getProperty(Properties.HEIGHT));
+		
 		float columns = this.evaluateFloat(properties.getProperty(Properties.COLS));
 		float rows = this.evaluateFloat(properties.getProperty(Properties.ROWS));
 		float anchorX = this.evaluateFloat(properties.getProperty(Properties.ANCHOR_X));
@@ -68,8 +92,14 @@ class Context {
 		
 		this.left += left;
 		this.top += top;
-		this.width = width;
-		this.height = height;
+		
+		this.minWidth = minWidth;
+		this.minHeight = minHeight;
+		this.maxWidth = maxWidth;
+		this.maxHeight = maxHeight;
+		this.width = Math.max(this.minWidth, Math.min(this.maxWidth, width));
+		this.height = Math.max(this.minHeight, Math.min(this.maxHeight, height));
+		
 		this.columns = columns;
 		this.rows = rows;
 		this.anchorX = anchorX;

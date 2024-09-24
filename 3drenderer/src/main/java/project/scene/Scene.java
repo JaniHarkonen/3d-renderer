@@ -301,6 +301,8 @@ public class Scene {
 			props.getProperty(Properties.COLS).set(10, Property.NUMBER);
 			props.getProperty(Properties.ROWS).set(10, Property.NUMBER);
 			props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(0, 0, 0, 1/3f), Property.COLOR);
+			props.getProperty(Properties.MIN_WIDTH).set(500, Property.PX);
+			props.getProperty(Properties.MIN_HEIGHT).set(500, Property.PX);
 			
 			Div cdiv = new Div(this.gui, "test-div-child");
 				props = cdiv.getProperties();
