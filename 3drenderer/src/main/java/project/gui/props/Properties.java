@@ -1,7 +1,8 @@
 package project.gui.props;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.joml.Vector4f;
@@ -28,6 +29,7 @@ public class Properties {
 	public static final float DEFAULT_LINE_HEIGHT = 22;
 	public static final float DEFAULT_BASELINE = 16;
 	
+	
 	public static final String LEFT = "left";
 	public static final String TOP = "top";
 	
@@ -47,50 +49,126 @@ public class Properties {
 	public static final String LINE_HEIGHT = "lineHeight";
 	public static final String BASELINE = "baseline";
 	
+	public class Style {
+		private RQuery responsivenessQuery;
+		private Map<String, Property> properties;
+		
+		private Style(RQuery responsivenessQuery, Map<String, Property> properties) {
+			this.responsivenessQuery = responsivenessQuery;
+			this.properties = properties;
+		}
+		
+		public void addProperty(Property property) {
+			this.properties.put(property.getName(), property);
+		}
+	}
+	
 	private final AGUIElement owner;
-	private final Map<String, Property> propertiesMap;
+	private final List<Style> stylesByResponsivity;
 	
 	public Properties(AGUIElement owner) {
 		this.owner = owner;
-		this.propertiesMap = new LinkedHashMap<>();
-		this.addProperty(new Property(LEFT, DEFAULT_LEFT, Property.PX))
-		.addProperty(new Property(TOP, DEFAULT_TOP, Property.PX))
-		.addProperty(new Property(MIN_WIDTH, DEFAULT_MIN_WIDTH, Property.PX))
-		.addProperty(new Property(MIN_HEIGHT, DEFAULT_MIN_HEIGHT, Property.PX))
-		.addProperty(new Property(MAX_WIDTH, DEFAULT_MAX_WIDTH, Property.PX))
-		.addProperty(new Property(MAX_HEIGHT, DEFAULT_MAX_HEIGHT, Property.PX))
-		.addProperty(new Property(WIDTH, DEFAULT_WIDTH, Property.PX))
-		.addProperty(new Property(HEIGHT, DEFAULT_HEIGHT, Property.PX))
-		.addProperty(new Property(COLS, DEFAULT_COLS, Property.NUMBER))
-		.addProperty(new Property(ROWS, DEFAULT_ROWS, Property.NUMBER))
-		.addProperty(new Property(PRIMARY_COLOR, DEFAULT_PRIMARY_COLOR, Property.COLOR))
-		.addProperty(new Property(SECONDARY_COLOR, DEFAULT_SECONDARY_COLOR, Property.COLOR))
-		.addProperty(new Property(ANCHOR_X, DEFAULT_ANCHOR_X, Property.PX))
-		.addProperty(new Property(ANCHOR_Y, DEFAULT_ANCHOR_Y, Property.PX))
-		.addProperty(new Property(LINE_HEIGHT, DEFAULT_LINE_HEIGHT, Property.PX))
-		.addProperty(new Property(BASELINE, DEFAULT_BASELINE, Property.PX));
+		this.stylesByResponsivity = new ArrayList<>();
+		
+		Map<String, Property> defaultProperties = new LinkedHashMap<>();
+		this.addProperty(new Property(LEFT, DEFAULT_LEFT, Property.PX), defaultProperties);
+		this.addProperty(new Property(TOP, DEFAULT_TOP, Property.PX), defaultProperties);
+		this.addProperty(
+			new Property(MIN_WIDTH, DEFAULT_MIN_WIDTH, Property.PX), defaultProperties
+		);
+		this.addProperty(
+			new Property(MIN_HEIGHT, DEFAULT_MIN_HEIGHT, Property.PX), defaultProperties
+		);
+		this.addProperty(
+			new Property(MAX_WIDTH, DEFAULT_MAX_WIDTH, Property.PX), defaultProperties
+		);
+		this.addProperty(
+			new Property(MAX_HEIGHT, DEFAULT_MAX_HEIGHT, Property.PX), defaultProperties
+		);
+		this.addProperty(new Property(WIDTH, DEFAULT_WIDTH, Property.PX), defaultProperties);
+		this.addProperty(new Property(HEIGHT, DEFAULT_HEIGHT, Property.PX), defaultProperties);
+		this.addProperty(new Property(COLS, DEFAULT_COLS, Property.NUMBER), defaultProperties);
+		this.addProperty(new Property(ROWS, DEFAULT_ROWS, Property.NUMBER), defaultProperties);
+		this.addProperty(new Property(
+			PRIMARY_COLOR, DEFAULT_PRIMARY_COLOR, Property.COLOR), defaultProperties
+		);
+		this.addProperty(new Property(
+			SECONDARY_COLOR, DEFAULT_SECONDARY_COLOR, Property.COLOR), defaultProperties
+		);
+		this.addProperty(new Property(ANCHOR_X, DEFAULT_ANCHOR_X, Property.PX), defaultProperties);
+		this.addProperty(new Property(ANCHOR_Y, DEFAULT_ANCHOR_Y, Property.PX), defaultProperties);
+		this.addProperty(
+			new Property(LINE_HEIGHT, DEFAULT_LINE_HEIGHT, Property.PX), defaultProperties
+		);
+		this.addProperty(new Property(BASELINE, DEFAULT_BASELINE, Property.PX), defaultProperties);
+		
+		this.stylesByResponsivity.add(new Style(new RQuery(), defaultProperties));
 	}
 	
 	public Properties(Properties src) {
 		this.owner = src.owner;
-		this.propertiesMap = new LinkedHashMap<>(src.propertiesMap.size());
-		for( Map.Entry<String, Property> en : src.propertiesMap.entrySet() ) {
-			this.propertiesMap.put(en.getKey(), new Property(en.getValue()));
+		this.stylesByResponsivity = new ArrayList<>(src.stylesByResponsivity.size());
+		
+		for( Style style : src.stylesByResponsivity ) {
+			Map<String, Property> propertiesMap = new LinkedHashMap<>(style.properties.size());
+			for( Map.Entry<String, Property> en : style.properties.entrySet() ) {
+				propertiesMap.put(en.getKey(), new Property(en.getValue()));
+			}
+			this.stylesByResponsivity.add(
+				new Style(new RQuery(style.responsivenessQuery), propertiesMap)
+			);
 		}
 	}
 	
 	
-	private Properties addProperty(Property property) {
-		this.propertiesMap.put(property.getName(), property);
+	private Properties addProperty(Property property, Map<String, Property> properties) {
+		properties.put(property.getName(), property);
 		return this;
 	}
 	
-	public Property getProperty(String key) {
-		return this.propertiesMap.get(key);
+	public Style addResponsiveStyle(RQuery responsivenessQuery) {
+		Style style = new Style(responsivenessQuery, new LinkedHashMap<>());
+		this.stylesByResponsivity.add(this.stylesByResponsivity.size() - 1, style);
+		return style;
 	}
 	
-	public Collection<Property> getAsCollection() {
-		return this.propertiesMap.values();
+	/**
+	 * Returns a property given its name from the default property map. The default
+	 * property map is always the last map in the list of props entries. If the 
+	 * property cannot be found, null is returned.
+	 * 
+	 * @param key Name of the property to be returned.
+	 * @return Property with the given name, or null if no such property exists in 
+	 * the default property map.
+	 */
+	public Property getProperty(String key) {
+		Style style = this.stylesByResponsivity.get(this.stylesByResponsivity.size() - 1);
+		return style.properties.get(key);
+	}
+	
+	/**
+	 * Returns an appropriate property given its name whose responsiveness criteria
+	 * matches current window dimensions. If no responsiveness criteria matches the
+	 * window size, the default properties map will be queried. If the property 
+	 * cannot be found in any property map, null is returned.
+	 * 
+	 * @param key Name of the property to be returned.
+	 * @param windowWidth Window width that will be used in the responsiveness query.
+	 * @param window HeightWindow width that will be used in the responsiveness query.
+	 * @return Property with the given name that matches the responsiveness criteria, 
+	 * or null if no such property exists.
+	 */
+	public Property getProperty(String key, float windowWidth, float windowHeight) {
+		for( Style style : this.stylesByResponsivity ) {
+			Property property;
+			if( 
+				style.responsivenessQuery.check(windowWidth, windowHeight) && 
+				(property = style.properties.get(key)) != null 
+			) {
+				return property;
+			}
+		}
+		return null;
 	}
 	
 	public AGUIElement getOwner() {
@@ -104,9 +182,27 @@ public class Properties {
 		}
 		
 		Properties p = (Properties) o;
-		for( Map.Entry<String, Property> en : this.propertiesMap.entrySet() ) {
-			if( !en.getValue().equals(p.getProperty(en.getKey())) ) {
+		
+		if( this.stylesByResponsivity.size() != p.stylesByResponsivity.size() ) {
+			return false;
+		}
+		
+		for( int i = 0; i < this.stylesByResponsivity.size(); i++ ) {
+			Style style = this.stylesByResponsivity.get(i);
+			Style otherStyle = p.stylesByResponsivity.get(i);
+			
+			if( style.properties.size() != otherStyle.properties.size() ) {
 				return false;
+			}
+			
+			if( !style.responsivenessQuery.equals(otherStyle.responsivenessQuery) ) {
+				return false;
+			}
+			
+			for( Map.Entry<String, Property> en : style.properties.entrySet() ) {
+				if( !en.getValue().equals(otherStyle.properties.get(en.getKey())) ) {
+					return false;
+				}
 			}
 		}
 		

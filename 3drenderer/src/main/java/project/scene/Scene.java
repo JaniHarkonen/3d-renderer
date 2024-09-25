@@ -15,6 +15,7 @@ import project.gui.GUI;
 import project.gui.Image;
 import project.gui.props.Properties;
 import project.gui.props.Property;
+import project.gui.props.RQuery;
 import project.input.Input;
 import project.input.InputSnapshot;
 import project.input.KeyHeld;
@@ -293,6 +294,7 @@ public class Scene {
 		this.gui.initialize();
 		
 		Properties props;
+		Properties.Style style;
 		
 		Div div = new Div(this.gui, "test-div");
 			props = div.getProperties();
@@ -310,6 +312,9 @@ public class Scene {
 				props.getProperty(Properties.WIDTH).set(8, Property.C);
 				props.getProperty(Properties.TOP).set(1, Property.R);
 				props.getProperty(Properties.HEIGHT).set(8, Property.R);
+				style = props.addResponsiveStyle(new RQuery(400, Float.MAX_VALUE));
+				style.addProperty(new Property(Properties.WIDTH, 200, Property.PX));
+				
 				Image image = new Image(this.gui, "test-image", TestAssets.TEX_GUI_CROSSHAIR);
 					props = image.getProperties();
 					props.getProperty(Properties.WIDTH).set(1, Property.PC);

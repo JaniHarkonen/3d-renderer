@@ -2,6 +2,7 @@ package project.opengl.gui;
 
 import org.joml.Vector4f;
 
+import project.Window;
 import project.gui.AGUIElement;
 import project.gui.props.Properties;
 import project.gui.props.Property;
@@ -20,14 +21,18 @@ class Context {
 	
 	float columns;
 	float rows;
+	Vector4f primaryColor;
+	Vector4f secondaryColor;
 	float lineHeight;
 	float baseline;
 	float anchorX;
 	float anchorY;
-	Vector4f primaryColor;
-	Vector4f secondaryColor;
 	
-	Context() {
+	private final Window window;
+	
+	Context(Window window) {
+		this.window = window;
+		
 		this.left = Properties.DEFAULT_LEFT;
 		this.top = Properties.DEFAULT_TOP;
 		
@@ -40,15 +45,17 @@ class Context {
 		
 		this.columns = Properties.DEFAULT_COLS;
 		this.rows = Properties.DEFAULT_ROWS;
+		this.primaryColor = Properties.DEFAULT_PRIMARY_COLOR;
+		this.secondaryColor = Properties.DEFAULT_SECONDARY_COLOR;
 		this.lineHeight = Properties.DEFAULT_LINE_HEIGHT;
 		this.baseline = Properties.DEFAULT_BASELINE;
 		this.anchorX = Properties.DEFAULT_ANCHOR_X;
 		this.anchorY = Properties.DEFAULT_ANCHOR_Y;
-		this.primaryColor = Properties.DEFAULT_PRIMARY_COLOR;
-		this.secondaryColor = Properties.DEFAULT_SECONDARY_COLOR;
 	}
 	
 	Context(Context src) {
+		this.window = src.window;
+		
 		this.left = src.left;
 		this.top = src.top;
 		
@@ -61,34 +68,42 @@ class Context {
 		
 		this.columns = src.columns;
 		this.rows = src.rows;
+		this.primaryColor = src.primaryColor;
+		this.secondaryColor = src.secondaryColor;
 		this.lineHeight = src.lineHeight;
 		this.baseline = src.baseline;
 		this.anchorX = src.anchorX;
 		this.anchorY = src.anchorY;
-		this.primaryColor = src.primaryColor;
-		this.secondaryColor = src.secondaryColor;
 	}
 	
 	
 	void evaluateProperties(Properties properties) {
-		float left = this.evaluateFloat(properties.getProperty(Properties.LEFT));
-		float top = this.evaluateFloat(properties.getProperty(Properties.TOP));
+		float ww = window.getWidth();
+		float wh = window.getHeight();
+		float left = this.evaluateFloat(properties.getProperty(Properties.LEFT, ww, wh));
+		float top = this.evaluateFloat(properties.getProperty(Properties.TOP, ww, wh));
 		
-		float minWidth = this.evaluateFloat(properties.getProperty(Properties.MIN_WIDTH));
-		float minHeight = this.evaluateFloat(properties.getProperty(Properties.MIN_HEIGHT));
-		float maxWidth = this.evaluateFloat(properties.getProperty(Properties.MAX_WIDTH));
-		float maxHeight = this.evaluateFloat(properties.getProperty(Properties.MAX_HEIGHT));
-		float width = this.evaluateFloat(properties.getProperty(Properties.WIDTH));
-		float height = this.evaluateFloat(properties.getProperty(Properties.HEIGHT));
+		float minWidth = this.evaluateFloat(properties.getProperty(Properties.MIN_WIDTH, ww, wh));
+		float minHeight = this.evaluateFloat(properties.getProperty(Properties.MIN_HEIGHT, ww, wh));
+		float maxWidth = this.evaluateFloat(properties.getProperty(Properties.MAX_WIDTH, ww, wh));
+		float maxHeight = this.evaluateFloat(properties.getProperty(Properties.MAX_HEIGHT, ww, wh));
+		float _width = this.evaluateFloat(properties.getProperty(Properties.WIDTH, ww, wh));
+		float _height = this.evaluateFloat(properties.getProperty(Properties.HEIGHT, ww, wh));
 		
-		float columns = this.evaluateFloat(properties.getProperty(Properties.COLS));
-		float rows = this.evaluateFloat(properties.getProperty(Properties.ROWS));
-		float anchorX = this.evaluateFloat(properties.getProperty(Properties.ANCHOR_X));
-		float anchorY = this.evaluateFloat(properties.getProperty(Properties.ANCHOR_Y));
-		float lineHeight = this.evaluateFloat(properties.getProperty(Properties.LINE_HEIGHT));
-		float baseline = this.evaluateFloat(properties.getProperty(Properties.BASELINE));
-		Vector4f primaryColor = this.evaluateColor(properties.getProperty(Properties.PRIMARY_COLOR));
-		Vector4f secondaryColor = this.evaluateColor(properties.getProperty(Properties.SECONDARY_COLOR));
+		float columns = this.evaluateFloat(properties.getProperty(Properties.COLS, ww, wh));
+		float rows = this.evaluateFloat(properties.getProperty(Properties.ROWS, ww, wh));
+		Vector4f primaryColor = this.evaluateColor(
+			properties.getProperty(Properties.PRIMARY_COLOR, ww, wh)
+		);
+		Vector4f secondaryColor = this.evaluateColor(
+			properties.getProperty(Properties.SECONDARY_COLOR, ww, wh)
+		);
+		float anchorX = this.evaluateFloat(properties.getProperty(Properties.ANCHOR_X, ww, wh));
+		float anchorY = this.evaluateFloat(properties.getProperty(Properties.ANCHOR_Y, ww, wh));
+		float lineHeight = this.evaluateFloat(
+			properties.getProperty(Properties.LINE_HEIGHT, ww, wh)
+		);
+		float baseline = this.evaluateFloat(properties.getProperty(Properties.BASELINE, ww, wh));
 		
 		this.left += left;
 		this.top += top;
@@ -97,17 +112,17 @@ class Context {
 		this.minHeight = minHeight;
 		this.maxWidth = maxWidth;
 		this.maxHeight = maxHeight;
-		this.width = Math.max(this.minWidth, Math.min(this.maxWidth, width));
-		this.height = Math.max(this.minHeight, Math.min(this.maxHeight, height));
+		this.width = Math.max(this.minWidth, Math.min(this.maxWidth, _width));
+		this.height = Math.max(this.minHeight, Math.min(this.maxHeight, _height));
 		
 		this.columns = columns;
 		this.rows = rows;
+		this.primaryColor = primaryColor;
+		this.secondaryColor = secondaryColor;
 		this.anchorX = anchorX;
 		this.anchorY = anchorY;
 		this.lineHeight = lineHeight;
 		this.baseline = baseline;
-		this.primaryColor = primaryColor;
-		this.secondaryColor = secondaryColor;
 		
 		Logger.get().warn(this, (message) -> {
 			if( width != 0 && height != 0 ) {

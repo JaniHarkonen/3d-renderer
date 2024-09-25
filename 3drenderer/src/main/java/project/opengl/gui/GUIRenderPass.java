@@ -86,7 +86,7 @@ public class GUIRenderPass implements IRenderPass {
 
 	@Override
 	public void render(IRenderer renderer, GameState gameState) {
-		this.context = new Context();
+		this.context = new Context(renderer.getClientWindow());
 		this.gameState = gameState;
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 		

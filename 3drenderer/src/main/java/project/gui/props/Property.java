@@ -3,7 +3,6 @@ package project.gui.props;
 import org.joml.Vector4f;
 
 public class Property {
-
 	public static final String PX = "px";
 	public static final String PC = "%";
 	public static final String C = "c";
@@ -22,6 +21,10 @@ public class Property {
 		this.name = name;
 		this.value = value;
 		this.type = type;
+	}
+	
+	public Property(String name, float value, String type) {
+		this(name, (Object) value, type);
 	}
 	
 	public Property(String name) {
