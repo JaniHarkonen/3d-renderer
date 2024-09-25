@@ -64,11 +64,11 @@ public class Properties {
 	}
 	
 	private final AGUIElement owner;
-	private final List<Style> stylesByResponsivity;
+	private final List<Style> stylesByResponsiveness;
 	
 	public Properties(AGUIElement owner) {
 		this.owner = owner;
-		this.stylesByResponsivity = new ArrayList<>();
+		this.stylesByResponsiveness = new ArrayList<>();
 		
 		Map<String, Property> defaultProperties = new LinkedHashMap<>();
 		this.addProperty(new Property(LEFT, DEFAULT_LEFT, Property.PX), defaultProperties);
@@ -102,19 +102,19 @@ public class Properties {
 		);
 		this.addProperty(new Property(BASELINE, DEFAULT_BASELINE, Property.PX), defaultProperties);
 		
-		this.stylesByResponsivity.add(new Style(new RQuery(), defaultProperties));
+		this.stylesByResponsiveness.add(new Style(new RQuery(), defaultProperties));
 	}
 	
 	public Properties(Properties src) {
 		this.owner = src.owner;
-		this.stylesByResponsivity = new ArrayList<>(src.stylesByResponsivity.size());
+		this.stylesByResponsiveness = new ArrayList<>(src.stylesByResponsiveness.size());
 		
-		for( Style style : src.stylesByResponsivity ) {
+		for( Style style : src.stylesByResponsiveness ) {
 			Map<String, Property> propertiesMap = new LinkedHashMap<>(style.properties.size());
 			for( Map.Entry<String, Property> en : style.properties.entrySet() ) {
 				propertiesMap.put(en.getKey(), new Property(en.getValue()));
 			}
-			this.stylesByResponsivity.add(
+			this.stylesByResponsiveness.add(
 				new Style(new RQuery(style.responsivenessQuery), propertiesMap)
 			);
 		}
@@ -128,7 +128,7 @@ public class Properties {
 	
 	public Style addResponsiveStyle(RQuery responsivenessQuery) {
 		Style style = new Style(responsivenessQuery, new LinkedHashMap<>());
-		this.stylesByResponsivity.add(this.stylesByResponsivity.size() - 1, style);
+		this.stylesByResponsiveness.add(this.stylesByResponsiveness.size() - 1, style);
 		return style;
 	}
 	
@@ -142,7 +142,7 @@ public class Properties {
 	 * the default property map.
 	 */
 	public Property getProperty(String key) {
-		Style style = this.stylesByResponsivity.get(this.stylesByResponsivity.size() - 1);
+		Style style = this.stylesByResponsiveness.get(this.stylesByResponsiveness.size() - 1);
 		return style.properties.get(key);
 	}
 	
@@ -159,7 +159,7 @@ public class Properties {
 	 * or null if no such property exists.
 	 */
 	public Property getProperty(String key, float windowWidth, float windowHeight) {
-		for( Style style : this.stylesByResponsivity ) {
+		for( Style style : this.stylesByResponsiveness ) {
 			Property property;
 			if( 
 				style.responsivenessQuery.check(windowWidth, windowHeight) && 
@@ -183,13 +183,13 @@ public class Properties {
 		
 		Properties p = (Properties) o;
 		
-		if( this.stylesByResponsivity.size() != p.stylesByResponsivity.size() ) {
+		if( this.stylesByResponsiveness.size() != p.stylesByResponsiveness.size() ) {
 			return false;
 		}
 		
-		for( int i = 0; i < this.stylesByResponsivity.size(); i++ ) {
-			Style style = this.stylesByResponsivity.get(i);
-			Style otherStyle = p.stylesByResponsivity.get(i);
+		for( int i = 0; i < this.stylesByResponsiveness.size(); i++ ) {
+			Style style = this.stylesByResponsiveness.get(i);
+			Style otherStyle = p.stylesByResponsiveness.get(i);
 			
 			if( style.properties.size() != otherStyle.properties.size() ) {
 				return false;
