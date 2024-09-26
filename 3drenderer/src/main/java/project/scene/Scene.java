@@ -296,10 +296,10 @@ public class Scene {
 		Properties props;
 		Properties.Style style;
 		
-		Div div = new Div(this.gui, "test-div");
+		/*Div div = new Div(this.gui, "test-div");
 			props = div.getProperties();
-			props.getProperty(Properties.WIDTH).set(1, Property.PC);
-			props.getProperty(Properties.HEIGHT).set(0.25f, Property.PC);
+			props.getProperty(Properties.WIDTH).set(1, Property.WPC);
+			props.getProperty(Properties.HEIGHT).set(0.25f, Property.HPC);
 			props.getProperty(Properties.COLS).set(10, Property.NUMBER);
 			props.getProperty(Properties.ROWS).set(10, Property.NUMBER);
 			props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(0, 0, 0, 1/3f), Property.COLOR);
@@ -315,13 +315,8 @@ public class Scene {
 				style = props.addResponsiveStyle(new RQuery(400, Float.MAX_VALUE));
 				style.addProperty(new Property(Properties.WIDTH, 200, Property.PX));
 				
-				Image image = new Image(this.gui, "test-image", TestAssets.TEX_GUI_CROSSHAIR);
-					props = image.getProperties();
-					props.getProperty(Properties.WIDTH).set(1, Property.PC);
-					props.getProperty(Properties.HEIGHT).set(1, Property.PC);
-					props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(1, 1, 1, 1), Property.COLOR);
-				this.gui.addChildTo(cdiv, image);
-			this.gui.addChildTo(div, cdiv);
+				
+			this.gui.addChildTo(div, cdiv);*/
 			
 			/*Text text = new Text(this.gui, "test-text", "Hello world!");
 				props = text.getProperties();
@@ -332,7 +327,18 @@ public class Scene {
 				props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(1, 1, 1, 1), Property.COLOR);
 			this.gui.addChildTo(div, text);*/
 			
-		this.gui.addChildTo(this.gui.getBody(), div);
+		//this.gui.addChildTo(this.gui.getBody(), div);
+		
+		Image image = new Image(this.gui, "img-crosshair", TestAssets.TEX_GUI_CROSSHAIR);
+			props = image.getProperties();
+			props.getProperty(Properties.LEFT).set(0.5f, Property.WPC);
+			props.getProperty(Properties.TOP).set(0.5f, Property.HPC);
+			props.getProperty(Properties.WIDTH).set(16, Property.PX);
+			props.getProperty(Properties.HEIGHT).set(16, Property.PX);
+			props.getProperty(Properties.ANCHOR_X).set(0.5f, Property.WPC);
+			props.getProperty(Properties.ANCHOR_Y).set(0.5f, Property.WPC);
+			props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(1, 1, 1, 1), Property.COLOR);
+		this.gui.addChildTo(this.gui.getBody(), image);
 		
 		/*Div div = new Div(this.gui, "test-div");
 			props = div.getProperties();

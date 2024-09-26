@@ -1,5 +1,7 @@
 package project.opengl.gui;
 
+import java.util.List;
+
 import org.joml.Vector4f;
 
 import project.Window;
@@ -7,6 +9,7 @@ import project.gui.AGUIElement;
 import project.gui.props.Properties;
 import project.gui.props.Property;
 import project.shared.logger.Logger;
+import project.utils.DebugUtils;
 
 class Context {
 	float left;
@@ -98,12 +101,6 @@ class Context {
 		Vector4f secondaryColor = this.evaluateColor(
 			properties.getProperty(Properties.SECONDARY_COLOR, ww, wh)
 		);
-		float anchorX = this.evaluateFloat(properties.getProperty(Properties.ANCHOR_X, ww, wh));
-		float anchorY = this.evaluateFloat(properties.getProperty(Properties.ANCHOR_Y, ww, wh));
-		float lineHeight = this.evaluateFloat(
-			properties.getProperty(Properties.LINE_HEIGHT, ww, wh)
-		);
-		float baseline = this.evaluateFloat(properties.getProperty(Properties.BASELINE, ww, wh));
 		
 		this.left += left;
 		this.top += top;
@@ -119,11 +116,19 @@ class Context {
 		this.rows = rows;
 		this.primaryColor = primaryColor;
 		this.secondaryColor = secondaryColor;
-		this.anchorX = anchorX;
-		this.anchorY = anchorY;
-		this.lineHeight = lineHeight;
-		this.baseline = baseline;
 		
+			// It is crucial that these properties are evaluated after the dimensions of 
+			// the element have been evaluated (see "width" and "height" above), as their
+			// percentages are dependent on the dimensions of the element itself (e.g.
+			// percent values in ANCHOR_X correspond to the element rather than the parent)
+		this.anchorX = this.evaluateFloat(properties.getProperty(Properties.ANCHOR_X, ww, wh));
+		this.anchorY = this.evaluateFloat(properties.getProperty(Properties.ANCHOR_Y, ww, wh));
+		this.lineHeight = this.evaluateFloat(
+			properties.getProperty(Properties.LINE_HEIGHT, ww, wh)
+		);
+		this.baseline = this.evaluateFloat(properties.getProperty(Properties.BASELINE, ww, wh));
+		
+			// Warn of elements that are invisible due to their dimensions
 		Logger.get().warn(this, (message) -> {
 			if( width != 0 && height != 0 ) {
 				return false;
@@ -144,47 +149,44 @@ class Context {
 		});
 	}
 	
-	private float evaluateFloat(Property property) {
+	float evaluateFloat(Property property) {
 		return (float) this.evaluate(property);
 	}
 	
-	private String evaluateString(Property property) {
+	String evaluateString(Property property) {
 		return (String) this.evaluate(property);
 	}
 	
-	private Vector4f evaluateColor(Property property) {
+	Vector4f evaluateColor(Property property) {
 		return (Vector4f) this.evaluate(property);
 	}
 	
 	private Object evaluate(Property property) {
+		ExpressionParser parser = new ExpressionParser();
+		//List<ExpressionParser.Token> l = parser.tokenize("expr(6*7/5*12px)");
+		//DebugUtils.log(this, l.size());
+		//DebugUtils.log(this, l.get(0).getValue(), l.get(0).getType());
+		//DebugUtils.log(this, l.get(1).getValue());
+		//DebugUtils.log(this, ((Property)l.get(2).getValue()).getValue(), ((Property)l.get(2).getValue()).getType());
+		//DebugUtils.log(this, l.get(1).getType(), "'" + ((Property)l.get(1).getValue()).getValue() + "'");
+		//DebugUtils.log(this, ((Property) l.get(0).getValue()).getValue(), ((Property) l.get(0).getValue()).getType());
+		
 		switch( property.getType() ) {
 				// Direct return, no evaluation needed
 			case Property.NUMBER:
 			case Property.STRING:
 			case Property.PX: return property.getValue();
-				// Calculate width or height depending on prop name
-			case Property.PC: {
-				String propertyName = property.getName();
-				float target;
-				
-					// Avoid equals(), unless custom properties are introduced
-				if(
-					propertyName == Properties.LEFT || 
-					propertyName == Properties.WIDTH || 
-					propertyName == Properties.ANCHOR_X 
-				) {
-					target = this.width;
-				} else {
-					target = this.height;
-				}
-				
-				return ((float) property.getValue()) * target;
-			}
+			
+				// Relative dimensions
+			case Property.WPC: return ((float) property.getValue()) * this.width;
+			case Property.HPC: return ((float) property.getValue()) * this.height;
+			
 				// Grid dimensions
 			case Property.C: 
 				return this.width / this.columns * ((float) property.getValue());
 			case Property.R: 
 				return this.height / this.rows * ((float) property.getValue());
+				
 				// Return primary or secondary color depending on prop name
 			case Property.COLOR: {
 					// Avoid equals(), unless custom properties are introduced
@@ -192,17 +194,18 @@ class Context {
 					Properties.DEFAULT_PRIMARY_COLOR : Properties.DEFAULT_SECONDARY_COLOR;
 				return this.returnOrDefault((Vector4f) property.getValue(), defaultColor);
 			}
+			
 				// Evaluate expression
 			case Property.EXPRESSION: 
 				return this.evaluate(this.parseExpression((String) property.getValue()));
+				
 			case Property.THEME: break;	// to be implemented
 		}
 		return null;
 	}
 	
 	private Property parseExpression(String expression) {
-		Property result = new Property((String) null); // Temporary prop, doesn't have to be named 
-		String[] tokens = expression.split(" ");
+		Property result = new Property((String) null); // Temporary prop, doesn't have to be named
 		return result;
 	}
 	

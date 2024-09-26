@@ -32,6 +32,8 @@ public class Properties {
 	
 	public static final String LEFT = "left";
 	public static final String TOP = "top";
+	public static final String RIGHT = "right";
+	public static final String BOTTOM = "bottom";
 	
 	public static final String MIN_WIDTH = "minWidth";
 	public static final String MIN_HEIGHT = "minHeight";

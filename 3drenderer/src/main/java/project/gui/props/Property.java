@@ -3,15 +3,16 @@ package project.gui.props;
 import org.joml.Vector4f;
 
 public class Property {
-	public static final String PX = "px";
-	public static final String PC = "%";
-	public static final String C = "c";
-	public static final String R = "r";
-	public static final String THEME = "theme";
-	public static final String STRING = "str";
-	public static final String NUMBER = "num";
-	public static final String EXPRESSION = "expr";
-	public static final String COLOR = "color";
+	public static final String PX = "px";			// Pixels (float)
+	public static final String WPC = "%w";			// Parent's width percent (float)
+	public static final String HPC = "%h";			// Parent's height percent (float)
+	public static final String C = "c";				// Width of column in parent's grid (float)
+	public static final String R = "r";				// Height of row in parent's grid (float)
+	public static final String THEME = "theme";		// Theme property reference (String)
+	public static final String STRING = "str";		// String
+	public static final String NUMBER = "num";		// Floating point value
+	public static final String EXPRESSION = "expr";	// Expression (String)
+	public static final String COLOR = "color";		// RGBA-color (Vector4f)
 	
 	private final String name;
 	private String type;
@@ -74,11 +75,9 @@ public class Property {
 		}
 		
 		Property p = (Property) o;
-		
-			// DON'T USE EQUALS FOR NAME AND TYPE AS THEY REFERENCE STATIC FIELDS
 		return (
-			this.name == p.name &&
-			this.type == p.type &&
+			this.name.equals(p.name)  &&
+			this.type.equals(p.type) &&
 			this.value.equals(p.value)
 		);
 	}

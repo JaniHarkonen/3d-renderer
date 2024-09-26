@@ -2,9 +2,7 @@
 
 ### Priority
 - properties:
- -- right/bottom
  -- prop expression parsing
- -- responsive values
 - reconsider storing properties as fields in Context due to redundancy
 - Context currently holds no reference to a Font, implement font lookup by name
 
