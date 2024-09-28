@@ -3,10 +3,13 @@
 ### Priority
 - properties:
  -- prop expression parsing (add hex color values)
+ -- add an isNumeric-flag to properties to avoid instanceof or data type checks
 - see if property names, property types can be changed from Strings to enums
 - get rid of width percent and height percent, add a new property field 'orientation' for additional info, or find another way of determining orientation from prop name dynamically
 - reconsider storing properties as fields in Context due to redundancy
 - Context currently holds no reference to a Font, implement font lookup by name
+- implement themes
+- rename ASTNode to Evaluable as the class now contains functionality for the nodes to be evaluated
 
 ### ASceneObject & AGUIElement
 - consider if references to the renderer can be removed (don't use method names like 'rendererEquals' or 'rendererCopy')

@@ -10,7 +10,6 @@ import project.gui.props.Properties;
 import project.gui.props.Property;
 import project.gui.tokenizer.ExpressionTokenizer;
 import project.gui.tokenizer.Token;
-import project.opengl.gui.EP.ASTNode;
 import project.shared.logger.Logger;
 import project.utils.DebugUtils;
 
@@ -88,7 +87,7 @@ class Context {
 		//List<Token> tokens = tokenizer.tokenize(null, "expr(5+6-1*7)");
 		//List<Token> tokens = tokenizer.tokenize(null, "expr(1+2-3*3/4+9-7+6+4*2-1/1)");
 		List<Token> tokens = tokenizer.tokenize(null, "expr(2*1+3*4+1*1%+1)");
-		EP parser = new EP();
+		ExpressionParser parser = new ExpressionParser();
 		ASTNode ast = parser.parse(tokens);
 		Property prop = ast.evaluate(this);
 		DebugUtils.log(this, prop.getValue(), prop.getType());
