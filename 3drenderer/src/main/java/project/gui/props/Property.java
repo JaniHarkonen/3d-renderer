@@ -1,5 +1,8 @@
 package project.gui.props;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.joml.Vector4f;
 
 public class Property {
@@ -13,6 +16,28 @@ public class Property {
 	public static final String NUMBER = "num";		// Floating point value
 	public static final String EXPRESSION = "expr";	// Expression (String)
 	public static final String COLOR = "color";		// RGBA-color (Vector4f)
+	
+	public static final String FUNCTION_THEME = "t";		// Theme property getter function
+	public static final String FUNCTION_MIN = "min";		// Returns minimum of a set of values
+	public static final String FUNCTION_MAX = "max";		// Returns maximum of a set of values
+	public static final String FUNCTION_CLAMP = "clamp";	// Limits a value between two edges
+	public static final String FUNCTION_RGB = "rgb";		// Creates an RGB-color with 1 alpha
+	public static final String FUNCTION_RGBA = "rgba";		// Creates an RGBA-color
+	
+	private static final Set<String> functionSet;
+	static {
+		functionSet = new HashSet<>();
+		functionSet.add(FUNCTION_THEME);
+		functionSet.add(FUNCTION_MIN);
+		functionSet.add(FUNCTION_MAX);
+		functionSet.add(FUNCTION_CLAMP);
+		functionSet.add(FUNCTION_RGB);
+		functionSet.add(FUNCTION_RGBA);
+	}
+	
+	public static boolean functionExists(String propertyName) {
+		return functionSet.contains(propertyName);
+	}
 	
 	private final String name;
 	private String type;

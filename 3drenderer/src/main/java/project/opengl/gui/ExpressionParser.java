@@ -1,259 +1,204 @@
 package project.opengl.gui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import project.gui.props.Property;
+import project.gui.tokenizer.Token;
+import project.gui.tokenizer.TokenType;
 import project.shared.logger.Logger;
-import project.utils.DebugUtils;
 
 public class ExpressionParser {
-
-	private static final Operator OP_MUL = new Operator("*", 1);
-	private static final Operator OP_DIV = new Operator("/", 1);
-	private static final Operator OP_MOD = new Operator("%", 1);
-	private static final Operator OP_ADD = new Operator("+", 2);
-	private static final Operator OP_SUB = new Operator("-", 2);
-	
-	private static class Operator {
-		private final String code;
-		private final int precedence;
-		
-		private Operator(String code, int precedence) {
-			this.code = code;
-			this.precedence = precedence;
-		}
+	private static final Map<Character, Integer> precedenceTable;
+	static {
+		precedenceTable = new HashMap<>();
+		precedenceTable.put('*', 1);
+		precedenceTable.put('/', 1);
+		precedenceTable.put('%', 1);
+		precedenceTable.put('+', 2);
+		precedenceTable.put('-', 2);
+		precedenceTable.put(null, Integer.MAX_VALUE);
 	}
 	
-	public class Operation {
-		private static final int MAX_ARGUMENT_COUNT = 8;
-		private final List<Object> arguments;
-		private Operator operator;
+	
+	private enum OpCode {
+		MULTIPLY,
+		DIVIDE,
+		MODULO,
+		ADD,
+		SUBTRACT,
+		CALL,
+		AST_NODE
+	}
+	
+	private class ASTNode {
+		private ASTNode parent;
+		private OpCode opCode;
+		private List<Object> arguments;
 		
-		private Operation(Operator operator) {
+		private ASTNode(OpCode opCode) {
+			this.opCode = opCode;
 			this.arguments = new ArrayList<>();
-			this.arguments.add(null);
-			this.operator = operator;
 		}
 		
-		
-		private void setArgument(int argumentIndex, Object argument) {
-			this.arguments.set(argumentIndex, argument);
+		private ASTNode() {
+			this(null);
 		}
 		
-		private void addArgument(Object argument) {
-			this.arguments.add(argument);
+		/*protected void resolve(Context context) {
+			Object currentValue = this.arguments.get(0);
+			for( int i = 1; i < this.arguments.size(); i++ ) {
+				currentValue = this.calculation(currentValue, this.arguments.get(i));
+			}
 		}
 		
-		/*public Property execute(Context context) {
-			Property result = new Property((String) null);
-			
-		}*/
+		protected abstract Object calculation(Object currentValue, Object nextValue);*/
 	}
 	
-	class Token {
-		private static final String SPECIAL_CHARACTER = "special";
-		private static final String EVALUABLE = "evaluable";
-		private static final String PERCENTAGE = "percentage";
-		
-		private final String type;
-		private final Object value;
-		
-		private Token(String type, Object value) {
-			this.type = type;
-			this.value = value;
+	/*private class StringAdd extends ASTNode {
+
+		protected StringAdd(OpCode opCode) {
+			super(opCode);
+		}
+
+		@Override
+		protected Object calculation(Object currentValue, Object nextValue) {
+			return currentValue.toString() + nextValue.toString();
+		}
+	}*/
+	
+	private class Sub extends ASTNode {
+
+		protected Sub() {
+			super(OpCode.SUBTRACT);
+			// TODO Auto-generated constructor stub
 		}
 		
-		public Object getValue() {
-			return this.value;
-		}
-		
-		public String getType() {
-			return this.type;
-		}
 	}
 	
+	private class Frame {
+		private int position = 0;
+		private ASTNode ast = null;
+		private ASTNode currentNode = null;
+		private Character previousOperator = null;
+	}
+	
+	private List<Token> tokens;
+	private Frame frame;
 	
 	public ExpressionParser() {
-		
+		this.tokens = new ArrayList<>();
+		this.frame = new Frame();
 	}
 	
 	
-	public List<Token> tokenize(String expression) {
-		final String expressionStart = Property.EXPRESSION + "(";
-		final int length = expression.length();
-		
-		if( 
-			expression.length() < expressionStart.length()
-		) {
-			Logger.get().error(
-				this, 
-				"Failed to parse expression: " + expression, 
-				"Expression must begin with 'expr' and its calculation must be confined "
-				+ "between parenthesis."
-			);
-			return null;
+	public void parse(List<Token> tokens) {
+		if( tokens.size() <= 1 ) {
+			Logger.get().error(this, "Failed to parse expression tokens!", "No parsable tokens.");
+			return;
 		}
 		
-		if( expression.charAt(expression.length() - 1) != ')' ) {
-			Logger.get().error(
-				this, 
-				"Failed to parse expression: " + expression, 
-				"Expression must end with a closing parenthesis ')'."
-			);
-			return null;
-		}
+		ASTNode node;
+		Character previousOperator = null;
+		Token firstToken = tokens.get(0);
+		int cursor = 0;
 		
-		List<Token> tokens = new ArrayList<>();
-		
-		int cursor = expressionStart.length();
-		while( cursor < length ) {
-			char charAt = expression.charAt(cursor);
-			//DebugUtils.log(this, "'" + charAt + "'");
+			// Handle special case where the first value is negated
+		if( firstToken.value.equals('-') ) {
+			node = new ASTNode(OpCode.SUBTRACT);
+			node.arguments.add(null);
 			
-			if( 
-				(charAt >= 'A' && charAt <= 'Z') || 
-				(charAt >= 'a' && charAt <= 'z') ||
-				charAt == '_'
-			) {
-					// Must be a function call
-				/*while( cursor < length ) {
-					
-				}*/
-			} else if( charAt >= '0' && charAt <= '9' ) {
-					// Must be a numeric value
-				boolean isDecimalFound = false;
-				float value = 0;
-				float factor = 10;
-				String type = "";
-				
-				while( cursor < length ) {
-					char numberChar = expression.charAt(cursor);
-					
-						// Handle decimal point
-					if( numberChar == '.' ) {
-						if( isDecimalFound ) {
-							Logger.get().error(
-								this, 
-								"Failed to parse expression: " + expression, 
-								"Expression contains a value with multiple decimal points."
-							);
-							return null;
-						}
-						
-						factor = 0.1f;
-						isDecimalFound = true;
-					} else if( numberChar >= '0' && numberChar <= '9' ) {
-							// Handle digits
-						float digit = numberChar - '0';
-						if( factor < 1 ) {
-							value += digit * factor;
-							factor /= 10;
-						} else {
-							value = value * factor + digit;
-						}
-					} else if(
-						(numberChar >= 'A' && numberChar <= 'Z') || 
-						(numberChar >= 'a' && numberChar <= 'z') 
-					) {
-							// Handle property type
-						type += Character.toString(numberChar).toLowerCase();
-					} else if( numberChar =='%' ) {
-							// Handle percent (not evaluable as of yet)
-						tokens.add(new Token(Token.PERCENTAGE, value));
-						break;
-					} else {
-						// Validate property type
-						switch( type ) {
-							case Property.PX:
-							case Property.C:
-							case Property.R: {
-								tokens.add(new Token(Token.EVALUABLE, new Property(null, value, type)));
-							} break;
-							case "": {
-								tokens.add(new Token(Token.EVALUABLE, new Property(null, value, Property.NUMBER)));
-							} break;
-							
-							default: {
-								Logger.get().error(
-									this, 
-									"Failed to parse expression: " + expression, 
-									"Invalid property type '" + type + "'."
-								);
-								return null;
-							}
-						}
-						
-						cursor--;
-						break;
-					}
-					
-					cursor++;
-				}
-			} else if( charAt == '"' || charAt == '\'' || charAt == '`' ) {
-					// Must be a string
-				int end = cursor + 1;
-				boolean ignoreNext = false;
-				char endChar = 0;
-				while( end < length ) {
-					endChar = expression.charAt(end);
-					
-					if( endChar == charAt && !ignoreNext ) {
-						break;
-					} else if( endChar == '\\' ) {
-						ignoreNext = !ignoreNext;
-						end++;
-						continue;
-					}
-					
-					ignoreNext = false;
-					end++;
-				}
-				
-				if( ignoreNext || endChar != charAt ) {
-					Logger.get().error(
-						this, 
-						"Failed to parse expression: " + expression, 
-						"Expression contains a non-closed string."
-					);
-					return null;
-				}
-				
-				Property evaluable = new Property(
-					null, expression.substring(cursor + 1, end), Property.STRING
-				);
-				tokens.add(new Token(Token.EVALUABLE, evaluable));
-				cursor = end;
-			} else if(
-				charAt == '(' || charAt == ')' || charAt == '+' || charAt == '-' || 
-				charAt == '*' || charAt == '/' || charAt == '%'
-			) {
-					// Allowed special characters
-				tokens.add(new Token(Token.SPECIAL_CHARACTER, charAt));
+			previousOperator = '-';
+			cursor++;
+		} else {
+			node = new ASTNode();
+		}
+		
+		while( cursor < tokens.size() ) {
+			Token token = tokens.get(cursor);
+			
+			if( token.type == TokenType.EVALUABLE ) {
+				node.arguments.add(token);
 			}
+			
+			
 			
 			cursor++;
 		}
+	}
+	
+	private void parse(List<Token> tokens, int startPosition) {
 		
-		if( tokens.size() == 0 ) {
-			Logger.get().error(
-				this, 
-				"Failed to parse expression: " + expression, 
-				"Expression contains no calculation."
-			);
+	}
+	
+	private boolean hasTokens() {
+		return (this.frame.position < this.tokens.size());
+	}
+	
+	/*private ASTNode expression() {
+		if( this.hasTokens() ) {
 			return null;
 		}
 		
-		tokens.remove(tokens.size() - 1);	// Remove expr closing parenthesis
-		return tokens;
-	}
-	
-	public Property parse(String expression) {
-		Property result = new Property((String) null);
+		Token token = this.tokens.get(this.frame.position);
+		ASTNode result = null;
+		
+		if( token.type == TokenType.SPECIAL_CHARACTER ) {
+			if( token.value.equals('(') ) {
+				ASTNode current = this.currentNode;
+				result = this.expression();
+				this.currentNode = current;
+			} else if( token.value.equals('-') ) {
+				result = new Sub();
+				result.arguments.add(null);
+				
+				result.arguments.add(e);
+				this.currentNode = result;
+				this.position++;
+			}
+		} else if(
+			(result = this.evaluable()) != null ||
+			(result = this.percentage()) != null ||
+			(result = this.function()) != null
+		) {
+			this.currentNode = result;
+			return result;
+		}
+		
 		return result;
 	}
 	
-	/*private Operation generateAST() {
+	private ASTNode evaluable() {
+		Token token = this.tokens.get(this.position);
+		ASTNode result = null;
+		
+		if( token.type != TokenType.EVALUABLE ) {
+			return null;
+		}
+		
+		this.position++;
+		
+		if( !this.hasTokens() ) {
+			this.position--;
+			return null;
+		}
+		
+		result = this.operator();
+		
+		
+		return result;
+	}
+	
+	private ASTNode percentage() {
+		return null;
+	}
+	
+	private ASTNode function() {
+		return null;
+	}
+	
+	private ASTNode operator() {
 		
 	}*/
 }

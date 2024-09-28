@@ -8,6 +8,9 @@ import project.Window;
 import project.gui.AGUIElement;
 import project.gui.props.Properties;
 import project.gui.props.Property;
+import project.gui.tokenizer.ExpressionTokenizer;
+import project.gui.tokenizer.Token;
+import project.opengl.gui.EP.ASTNode;
 import project.shared.logger.Logger;
 import project.utils.DebugUtils;
 
@@ -161,15 +164,41 @@ class Context {
 		return (Vector4f) this.evaluate(property);
 	}
 	
+	private float tester(ASTNode node) {
+		Object arg1 = node.arguments.get(0);
+		Object arg2 = node.arguments.get(1);
+		if( arg1 instanceof ASTNode ) arg1 = tester(((ASTNode) arg1));
+		if( arg2 instanceof ASTNode ) arg2 = tester(((ASTNode) arg2));
+		if( arg1 instanceof Property ) arg1 = ((Property) arg1).getValue();
+		if( arg2 instanceof Property ) arg2 = ((Property) arg2).getValue();
+		
+		float farg1 = (float) arg1;//((float) ((Property) arg1).getValue());
+		float farg2 = (float) arg2;//((float) ((Property) arg2).getValue());
+		
+		switch( node.opCode ) {
+			case ADD: return farg1 + farg2;
+			case SUB: return farg1 - farg2;
+			case MUL: return farg1 * farg2;
+			case DIV: return farg1 / farg2;
+		}
+		
+		return 0;
+	}
+	
 	private Object evaluate(Property property) {
-		ExpressionParser parser = new ExpressionParser();
-		//List<ExpressionParser.Token> l = parser.tokenize("expr(6*7/5*12px)");
-		//DebugUtils.log(this, l.size());
-		//DebugUtils.log(this, l.get(0).getValue(), l.get(0).getType());
-		//DebugUtils.log(this, l.get(1).getValue());
-		//DebugUtils.log(this, ((Property)l.get(2).getValue()).getValue(), ((Property)l.get(2).getValue()).getType());
-		//DebugUtils.log(this, l.get(1).getType(), "'" + ((Property)l.get(1).getValue()).getValue() + "'");
-		//DebugUtils.log(this, ((Property) l.get(0).getValue()).getValue(), ((Property) l.get(0).getValue()).getType());
+		ExpressionTokenizer tokenizer = new ExpressionTokenizer();
+		//List<Token> tokens = tokenizer.tokenize(null, "expr(5+6-1*7)");
+		//List<Token> tokens = tokenizer.tokenize(null, "expr(1+2-3*3/4+9-7+6+4*2-1/1)");
+		List<Token> tokens = tokenizer.tokenize(null, "expr(2*1+3*4+1*7+1)");
+		//1+2-3*3/4+9-7+6+4*2-1/1
+		//DebugUtils.log(this, ((Property)tokens.get(0).value).getValue(), tokens.get(1).value, ((Property)tokens.get(2).value).getValue());
+		EP parser = new EP();
+		ASTNode ast = parser.parse(tokens);
+		DebugUtils.log(this, tester(ast));
+		//DebugUtils.log(this, ast.arguments.size());
+		//DebugUtils.log(this, ((Property) ast.arguments.get(0)).getValue(), ast.opCode, ((Property) ast.arguments.get(1)).getValue());
+		//DebugUtils.log(this, ast.opCode, ast.arguments.get(0), ((Property) ast.arguments.get(1)).getValue());
+		//DebugUtils.log(this, ast.arguments.get(0), ast.opCode, ast.arguments.get(1));
 		
 		switch( property.getType() ) {
 				// Direct return, no evaluation needed
@@ -189,8 +218,7 @@ class Context {
 				
 				// Return primary or secondary color depending on prop name
 			case Property.COLOR: {
-					// Avoid equals(), unless custom properties are introduced
-				Vector4f defaultColor = (property.getName() == Properties.PRIMARY_COLOR) ? 
+				Vector4f defaultColor = property.getName().equals(Properties.PRIMARY_COLOR) ? 
 					Properties.DEFAULT_PRIMARY_COLOR : Properties.DEFAULT_SECONDARY_COLOR;
 				return this.returnOrDefault((Vector4f) property.getValue(), defaultColor);
 			}
