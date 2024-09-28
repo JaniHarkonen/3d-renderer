@@ -5,18 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import project.gui.props.Property;
 import project.gui.tokenizer.Token;
 import project.gui.tokenizer.TokenType;
-import project.utils.DebugUtils;
+import project.shared.logger.Logger;
 
 public class EP {
 	public static enum OpCode {
 		MUL,
 		DIV,
-		MOD,
 		ADD,
 		SUB,
 		NEGATE,
+		CALL,
 		NONE
 	}
 	
@@ -27,7 +28,6 @@ public class EP {
 		charToPrecedence = new HashMap<>();
 		charToPrecedence.put('*', 1);
 		charToPrecedence.put('/', 1);
-		charToPrecedence.put('%', 1);
 		charToPrecedence.put('+', 2);
 		charToPrecedence.put('-', 2);
 		charToPrecedence.put(null, Integer.MAX_VALUE);
@@ -35,20 +35,19 @@ public class EP {
 		opCodeToChar = new HashMap<>();
 		opCodeToChar.put(OpCode.MUL, '*');
 		opCodeToChar.put(OpCode.DIV, '/');
-		opCodeToChar.put(OpCode.MOD, '%');
 		opCodeToChar.put(OpCode.ADD, '+');
 		opCodeToChar.put(OpCode.SUB, '-');
 		
 		charToOpCode = new HashMap<>();
 		charToOpCode.put('*', OpCode.MUL);
 		charToOpCode.put('/', OpCode.DIV);
-		charToOpCode.put('%', OpCode.MOD);
 		charToOpCode.put('+', OpCode.ADD);
 		charToOpCode.put('-', OpCode.SUB);
 	}
 	
+	
 	public class ASTNode {
-		public ASTNode parent;
+		private ASTNode parent;
 		public OpCode opCode;
 		public List<Object> arguments;
 		
@@ -56,6 +55,111 @@ public class EP {
 			this.parent = null;
 			this.opCode = OpCode.NONE;
 			this.arguments = new ArrayList<>();
+		}
+		
+		@SuppressWarnings("incomplete-switch")
+		public Property evaluate(Context context) {
+			
+				// Handle non two-operand operations
+			if( this.opCode == OpCode.CALL ) {
+				
+			} else if( this.opCode == OpCode.NEGATE ) {
+				Property arg1 = this.evaluateArgument(this.arguments.get(0), context);
+				Object o1 = arg1.getValue();
+				String propertyName = arg1.getName();
+				
+				if( !(o1 instanceof Float) ) {
+					Logger.get().error(
+						this, 
+						"Failed to parse expression!", 
+						"Negation is only possible with numeric values."
+					);
+					return new Property(propertyName, 1.0f, Property.PX);
+				}
+				
+				return new Property(propertyName, -((float) o1), Property.PX);
+			}
+			
+			Property arg1 = this.evaluateArgument(this.arguments.get(0), context);
+			Property arg2 = this.evaluateArgument(this.arguments.get(1), context);
+			String propertyName = arg1.getName();
+			
+			switch( this.opCode ) {
+				case MUL: 
+				case DIV: {
+						// Allow multiplication and division only for floats
+					if( !(arg1.getValue() instanceof Float) || !(arg2.getValue() instanceof Float) ) {
+						Logger.get().error(
+							this, 
+							"Failed to parse expression!", 
+							"Multiplication, division and are only possible with numeric "
+							+ "values, such as pixels, percentages, rows, columns or numbers"
+						);
+						break;
+					}
+					
+					float f1 = (float) arg1.getValue();
+					float f2 = (float) arg2.getValue();
+					
+					if( this.opCode == OpCode.DIV ) {
+						if( f2 == 0.0f ) {
+							Logger.get().error(this, "Failed to parse expression!", "Division by 0.0");
+							break;
+						}
+						
+						f2 = 1.0f / f2; // Flip to divide through multiplication
+					}
+					
+					return new Property(propertyName, f1 * f2, Property.PX);
+				}
+				case ADD: 
+				case SUB: {
+					Object o1 = arg1.getValue();
+					Object o2 = arg2.getValue();
+					boolean isStringConcatenation = (
+						this.opCode == OpCode.ADD && (o1 instanceof String || o2 instanceof String)
+					);
+					
+					if( this.opCode == OpCode.SUB || !isStringConcatenation ) {
+						if( (!(o1 instanceof Float) || !(o2 instanceof Float)) ) {
+							Logger.get().error(
+								this, 
+								"Failed to parse expression!", 
+								"Addition is only possible with numeric values and strings, and "
+								+ "subtraction is only possible with numerical values."
+							);
+							break;
+						}
+					}
+					
+					if( isStringConcatenation ) {
+						return (
+							new Property(propertyName, o1.toString() + o2.toString(), Property.STRING)
+						);
+					}
+					
+					float f1 = (float) o1;
+					float f2 = (this.opCode == OpCode.ADD) ? (float) o2 : -(float) o2; // Flip
+					return new Property(propertyName, f1 + f2, Property.PX);
+				}
+				case NONE: return null;
+			}
+			
+			return new Property(propertyName, 1.0f, Property.PX);
+		}
+		
+		private Property evaluateArgument(Object argument, Context context) {
+			if( argument instanceof ASTNode ) {
+				return ((ASTNode) argument).evaluate(context);
+			}
+			
+			Property initial = (Property) argument;
+			
+			if( initial.getType().equals(Property.STRING) ) {
+				return initial;
+			}
+			
+			return new Property(initial.getName(), context.evaluate(initial), Property.PX);
 		}
 		
 		private void addArgument(ASTNode node) {
@@ -176,7 +280,7 @@ public class EP {
 		
 		if (
 			token.value.equals('-') || token.value.equals('+') || token.value.equals('*') || 
-			token.value.equals('/') || token.value.equals('%')
+			token.value.equals('/')
 		) {
 			return (Character) token.value;
 		}
@@ -192,14 +296,6 @@ public class EP {
 		}
 		
 		
-	}*/
-	
-	/*private void isPercentage(Token token) {
-		if( token != null && token.type == TokenType.PERCENTAGE ) {
-			return (Property) token.value;
-		}
-		
-		return null;
 	}*/
 	
 	private void function() {

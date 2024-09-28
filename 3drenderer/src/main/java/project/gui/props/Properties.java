@@ -1,6 +1,7 @@
 package project.gui.props;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,28 @@ import org.joml.Vector4f;
 import project.gui.AGUIElement;
 
 public class Properties {
+	/**
+	 * This enum holds the axes a property can pertain to. For example, "width" or 
+	 * "left" properties pertain to the horizontal axis, while "height" and "top"
+	 * pertain to the vertical axis. These orientations are returned by the 
+	 * Properties.getOrientation(String)-method that maps a property name to its 
+	 * orientation.
+	 * 
+	 * @author User Jani Härkönen
+	 *
+	 */
+	public static enum Orientation {
+		/**
+		 * Property pertains to the horizontal axis.
+		 */
+		HORIZONTAL,
+		
+		/**
+		 * Property pertains to the vertical axis.
+		 */
+		VERTICAL
+	}
+	
 	public static final float DEFAULT_LEFT = 0;
 	public static final float DEFAULT_TOP = 0;
 	
@@ -50,6 +73,29 @@ public class Properties {
 	public static final String ANCHOR_Y = "anchorY";
 	public static final String LINE_HEIGHT = "lineHeight";
 	public static final String BASELINE = "baseline";
+	
+	private static final Map<String, Orientation> propertyToOrientation;
+	static {
+		propertyToOrientation = new HashMap<>();
+		propertyToOrientation.put(LEFT, Orientation.HORIZONTAL);
+		propertyToOrientation.put(WIDTH, Orientation.HORIZONTAL);
+		propertyToOrientation.put(MIN_WIDTH, Orientation.HORIZONTAL);
+		propertyToOrientation.put(MAX_WIDTH, Orientation.HORIZONTAL);
+		propertyToOrientation.put(ANCHOR_X, Orientation.HORIZONTAL);
+		
+		propertyToOrientation.put(TOP, Orientation.VERTICAL);
+		propertyToOrientation.put(HEIGHT, Orientation.VERTICAL);
+		propertyToOrientation.put(MIN_HEIGHT, Orientation.VERTICAL);
+		propertyToOrientation.put(MAX_HEIGHT, Orientation.VERTICAL);
+		propertyToOrientation.put(ANCHOR_Y, Orientation.VERTICAL);
+		propertyToOrientation.put(LINE_HEIGHT, Orientation.VERTICAL);
+		propertyToOrientation.put(BASELINE, Orientation.VERTICAL);
+	}
+	
+	public static Orientation getOrientation(String propertyName) {
+		return propertyToOrientation.get(propertyName);
+	}
+	
 	
 	public class Style {
 		private RQuery responsivenessQuery;

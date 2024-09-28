@@ -3,13 +3,14 @@ package project.gui.tokenizer;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.gui.props.Properties;
 import project.gui.props.Property;
 import project.shared.logger.Logger;
 
 public class ExpressionTokenizer {
 
 	public List<Token> tokenize(String propertyName, String expression) {
-		final String expressionStart = Property.EXPRESSION + "(";
+		final String expressionStart = "expr(";
 		final int length = expression.length();
 		
 		if( expression.length() < expressionStart.length() ) {
@@ -95,19 +96,25 @@ public class ExpressionTokenizer {
 						type += Character.toString(numberChar).toLowerCase();
 					} else if( numberChar == '%' ) {
 							// Handle percent (not evaluable as of yet)
-						tokens.add(new Token(TokenType.PERCENTAGE, value));
+						Properties.Orientation orientation = Properties.getOrientation(propertyName);
+						String dataType = 
+							(orientation == Properties.Orientation.HORIZONTAL) ? Property.WPC : Property.HPC;
+						tokens.add(new Token(TokenType.EVALUABLE, new Property(propertyName, value / 100f, dataType)));
 						break;
 					} else {
-						// Validate property type
+							// Validate property type
 						switch( type ) {
 							case Property.PX:
 							case Property.C:
 							case Property.R: {
-								tokens.add(new Token(TokenType.EVALUABLE, new Property(null, value, type)));
+								tokens.add(
+									new Token(TokenType.EVALUABLE, 
+									new Property(propertyName, value, type))
+								);
 							} break;
 							case "": {
 								tokens.add(
-									new Token(TokenType.EVALUABLE, new Property(null, value, Property.NUMBER))
+									new Token(TokenType.EVALUABLE, new Property(propertyName, value, Property.NUMBER))
 								);
 							} break;
 							
@@ -157,7 +164,7 @@ public class ExpressionTokenizer {
 				}
 				
 				Property evaluable = 
-					new Property(null, expression.substring(cursor + 1, end), Property.STRING);
+					new Property(propertyName, expression.substring(cursor + 1, end), Property.STRING);
 				tokens.add(new Token(TokenType.EVALUABLE, evaluable));
 				cursor = end;
 			} else if( this.isSpecialCharacter(charAt) ) {
@@ -190,8 +197,7 @@ public class ExpressionTokenizer {
 	
 	private boolean isSpecialCharacter(char c) {
 		return (
-			c == '(' || c == ')' || c == '+' || c == '-' || c == '*' || c == '/' 
-			|| c == '%' || c == ','
+			c == '(' || c == ')' || c == '+' || c == '-' || c == '*' || c == '/' || c == ','
 		);
 	}
 	

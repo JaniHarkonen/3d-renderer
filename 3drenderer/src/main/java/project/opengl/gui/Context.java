@@ -84,6 +84,14 @@ class Context {
 	
 	
 	void evaluateProperties(Properties properties) {
+		ExpressionTokenizer tokenizer = new ExpressionTokenizer();
+		//List<Token> tokens = tokenizer.tokenize(null, "expr(5+6-1*7)");
+		//List<Token> tokens = tokenizer.tokenize(null, "expr(1+2-3*3/4+9-7+6+4*2-1/1)");
+		List<Token> tokens = tokenizer.tokenize(null, "expr(2*1+3*4+1*1%+1)");
+		EP parser = new EP();
+		ASTNode ast = parser.parse(tokens);
+		Property prop = ast.evaluate(this);
+		DebugUtils.log(this, prop.getValue(), prop.getType());
 		float ww = window.getWidth();
 		float wh = window.getHeight();
 		float left = this.evaluateFloat(properties.getProperty(Properties.LEFT, ww, wh));
@@ -164,42 +172,7 @@ class Context {
 		return (Vector4f) this.evaluate(property);
 	}
 	
-	private float tester(ASTNode node) {
-		Object arg1 = node.arguments.get(0);
-		Object arg2 = node.arguments.get(1);
-		if( arg1 instanceof ASTNode ) arg1 = tester(((ASTNode) arg1));
-		if( arg2 instanceof ASTNode ) arg2 = tester(((ASTNode) arg2));
-		if( arg1 instanceof Property ) arg1 = ((Property) arg1).getValue();
-		if( arg2 instanceof Property ) arg2 = ((Property) arg2).getValue();
-		
-		float farg1 = (float) arg1;//((float) ((Property) arg1).getValue());
-		float farg2 = (float) arg2;//((float) ((Property) arg2).getValue());
-		
-		switch( node.opCode ) {
-			case ADD: return farg1 + farg2;
-			case SUB: return farg1 - farg2;
-			case MUL: return farg1 * farg2;
-			case DIV: return farg1 / farg2;
-		}
-		
-		return 0;
-	}
-	
-	private Object evaluate(Property property) {
-		ExpressionTokenizer tokenizer = new ExpressionTokenizer();
-		//List<Token> tokens = tokenizer.tokenize(null, "expr(5+6-1*7)");
-		//List<Token> tokens = tokenizer.tokenize(null, "expr(1+2-3*3/4+9-7+6+4*2-1/1)");
-		List<Token> tokens = tokenizer.tokenize(null, "expr(2*1+3*4+1*7+1)");
-		//1+2-3*3/4+9-7+6+4*2-1/1
-		//DebugUtils.log(this, ((Property)tokens.get(0).value).getValue(), tokens.get(1).value, ((Property)tokens.get(2).value).getValue());
-		EP parser = new EP();
-		ASTNode ast = parser.parse(tokens);
-		DebugUtils.log(this, tester(ast));
-		//DebugUtils.log(this, ast.arguments.size());
-		//DebugUtils.log(this, ((Property) ast.arguments.get(0)).getValue(), ast.opCode, ((Property) ast.arguments.get(1)).getValue());
-		//DebugUtils.log(this, ast.opCode, ast.arguments.get(0), ((Property) ast.arguments.get(1)).getValue());
-		//DebugUtils.log(this, ast.arguments.get(0), ast.opCode, ast.arguments.get(1));
-		
+	Object evaluate(Property property) {
 		switch( property.getType() ) {
 				// Direct return, no evaluation needed
 			case Property.NUMBER:
