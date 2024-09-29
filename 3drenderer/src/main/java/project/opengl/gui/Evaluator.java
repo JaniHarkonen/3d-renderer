@@ -8,12 +8,11 @@ import org.joml.Vector4f;
 import project.gui.props.Property;
 import project.gui.tokenizer.Operator;
 import project.shared.logger.Logger;
-import project.utils.DebugUtils;
 
-class Evaluator {
+class Evaluator implements IEvaluator {
 	Evaluator parent;
 	Operator operator;
-	List<Object> arguments;
+	List<IEvaluator> arguments;
 	
 	Evaluator() {
 		this.parent = null;
@@ -22,10 +21,11 @@ class Evaluator {
 	}
 	
 	@SuppressWarnings("incomplete-switch")
+	@Override
 	public Property evaluate(Context context) {
 		
 			// Handle non two-operand operations
-		if( this.isOperator(ExpressionParser.OP_FUNCTION_CALL) ) {
+		/*if( this.isOperator(ExpressionParser.OP_FUNCTION_CALL) ) {
 			String functionName = (String) this.arguments.get(0);
 			switch( functionName ) {
 				case Property.FUNCTION_MIN: return this.min(context);
@@ -34,8 +34,8 @@ class Evaluator {
 				case Property.FUNCTION_RGB: return this.rgb(context);
 				case Property.FUNCTION_RGBA:return this.rgba(context);
 			}
-		} else if( this.isOperator(ExpressionParser.OP_NEGATE) ) {
-			Property arg1 = this.evaluateArgument(this.arguments.get(0), context);
+		} else*/ if( this.isOperator(ExpressionParser.OP_NEGATE) ) {
+			Property arg1 = this.arguments.get(0).evaluate(context);
 			Object o1 = arg1.getValue();
 			String propertyName = arg1.getName();
 			
@@ -47,8 +47,8 @@ class Evaluator {
 			return new Property(propertyName, -((float) o1), Property.PX);
 		}
 		
-		Property arg1 = this.evaluateArgument(this.arguments.get(0), context);
-		Property arg2 = this.evaluateArgument(this.arguments.get(1), context);
+		Property arg1 = this.arguments.get(0).evaluate(context);
+		Property arg2 = this.arguments.get(1).evaluate(context);
 		
 			// Arbitrary, both arguments should have the same name
 		String propertyName = arg1.getName();
@@ -117,23 +117,8 @@ class Evaluator {
 			}
 			case Operator.ID_NONE: return null;
 		}
-		
-		DebugUtils.log(this, "fail");
-		return new Property(propertyName, 1.0f, Property.PX);
-	}
 	
-	private Property evaluateArgument(Object argument, Context context) {
-		if( argument instanceof Evaluator ) {
-			return ((Evaluator) argument).evaluate(context);
-		}
-		
-		Property initial = (Property) argument;
-		
-		if( initial.getType().equals(Property.STRING) ) {
-			return initial;
-		}
-		
-		return new Property(initial.getName(), context.evaluate(initial), Property.PX, true);
+		return new Property(propertyName, 1.0f, Property.PX);
 	}
 	
 	void addArgument(Evaluator node) {
@@ -141,7 +126,7 @@ class Evaluator {
 		node.parent = this;
 	}
 	
-	void addArgument(Object ambiguous) {
+	void addArgument(IEvaluator ambiguous) {
 		this.arguments.add(ambiguous);
 	}
 	

@@ -6,8 +6,6 @@ import java.util.Set;
 import org.joml.Vector4f;
 
 public class Property {
-
-	
 	public static final String PX = "px";			// Pixels (float)
 	public static final String WPC = "%w";			// Parent's width percent (float)
 	public static final String HPC = "%h";			// Parent's height percent (float)
@@ -35,8 +33,6 @@ public class Property {
 		functionSet.add(FUNCTION_CLAMP);
 		functionSet.add(FUNCTION_RGB);
 		functionSet.add(FUNCTION_RGBA);
-		
-		
 	}
 	
 	public static boolean functionExists(String propertyName) {

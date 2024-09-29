@@ -85,11 +85,11 @@ class Context {
 	void evaluateProperties(Properties properties) {
 		ExpressionTokenizer tokenizer = new ExpressionTokenizer();
 		//List<Token> tokens = tokenizer.tokenize(null, "expr(5+6-1*7)");
-		//List<Token> tokens = tokenizer.tokenize(null, "expr(1+2-3*3/4+9-7+6+4*2-1/1)");
 		List<Token> tokens = tokenizer.tokenize(null, "expr(1+2-3*3/4+9-7+6+4*2-1/1)");
+		//List<Token> tokens = tokenizer.tokenize(null, "expr((1+1)*(2+2)");
 		ExpressionParser parser = new ExpressionParser();
-		Evaluator ast = parser.parse(tokens);
-		DebugUtils.log(this, ast.operator.id, ast.getArgument(0), ast.getArgument(1));
+		IEvaluator ast = parser.parse(tokens);
+		//DebugUtils.log(this, ast.operator.id, ast.getArgument(0), ast.getArgument(1));
 		Property prop = ast.evaluate(this);
 		DebugUtils.log(this, prop.getValue(), prop.getType());
 		
