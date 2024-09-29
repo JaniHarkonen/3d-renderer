@@ -2,12 +2,11 @@
 
 ### Priority
 - properties:
- -- min/max values
- -- right/bottom
- -- prop expression parsing
- -- responsive values
-- rename Div into something else
+ -- prop expression parsing (add hex color values)
+- see if property names can be changed from Strings to enums
+- reconsider storing properties as fields in Context due to redundancy
 - Context currently holds no reference to a Font, implement font lookup by name
+- implement themes
 
 ### ASceneObject & AGUIElement
 - consider if references to the renderer can be removed (don't use method names like 'rendererEquals' or 'rendererCopy')
