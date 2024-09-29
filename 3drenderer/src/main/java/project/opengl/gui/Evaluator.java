@@ -9,12 +9,12 @@ import project.gui.props.Property;
 import project.opengl.gui.ExpressionParser.OpCode;
 import project.shared.logger.Logger;
 
-class ASTNode {
-	ASTNode parent;
+class Evaluator {
+	Evaluator parent;
 	OpCode opCode;
 	List<Object> arguments;
 	
-	ASTNode() {
+	Evaluator() {
 		this.parent = null;
 		this.opCode = OpCode.NONE;
 		this.arguments = new ArrayList<>();
@@ -24,7 +24,7 @@ class ASTNode {
 	public Property evaluate(Context context) {
 		
 			// Handle non two-operand operations
-		if( this.opCode == OpCode.CALL ) {
+		if( this.opCode == OpCode.FUNCTION_CALL ) {
 			String functionName = (String) this.arguments.get(0);
 			switch( functionName ) {
 				case Property.FUNCTION_MIN: return this.min(context);
@@ -38,12 +38,8 @@ class ASTNode {
 			Object o1 = arg1.getValue();
 			String propertyName = arg1.getName();
 			
-			if( !(o1 instanceof Float) ) {
-				Logger.get().error(
-					this, 
-					ExpressionParser.FAILED_TO_PARSE, 
-					"Negation is only possible with numeric values."
-				);
+			String errorMessage = "Negation is only possible with numeric values";
+			if( !this.requireFloat(errorMessage, arg1) ) {
 				return new Property(propertyName, 1.0f, Property.PX);
 			}
 			
@@ -52,19 +48,19 @@ class ASTNode {
 		
 		Property arg1 = this.evaluateArgument(this.arguments.get(0), context);
 		Property arg2 = this.evaluateArgument(this.arguments.get(1), context);
+		
+			// Arbitrary, both arguments should have the same name
 		String propertyName = arg1.getName();
 		
 		switch( this.opCode ) {
 			case MUL: 
 			case DIV: {
 					// Allow multiplication and division only for floats
-				if( !(arg1.getValue() instanceof Float) || !(arg2.getValue() instanceof Float) ) {
-					Logger.get().error(
-						this, 
-						ExpressionParser.FAILED_TO_PARSE, 
-						"Multiplication, division and are only possible with numeric "
-						+ "values, such as pixels, percentages, rows, columns or numbers"
-					);
+				String errorMessage = (
+					"Multiplication, division and are only possible with numeric "
+					+ "values, such as pixels, percentages, rows, columns or numbers"
+				);
+				if( !this.requireFloat(errorMessage, arg1, arg2) ) {
 					break;
 				}
 				
@@ -86,18 +82,17 @@ class ASTNode {
 			case SUB: {
 				Object o1 = arg1.getValue();
 				Object o2 = arg2.getValue();
+				
 				boolean isStringConcatenation = (
 					this.opCode == OpCode.ADD && (o1 instanceof String || o2 instanceof String)
 				);
 				
 				if( this.opCode == OpCode.SUB || !isStringConcatenation ) {
-					if( (!(o1 instanceof Float) || !(o2 instanceof Float)) ) {
-						Logger.get().error(
-							this, 
-							ExpressionParser.FAILED_TO_PARSE, 
-							"Addition is only possible with numeric values and strings, and "
-							+ "subtraction is only possible with numerical values."
-						);
+					String errorMessage = (
+						"Addition is only possible with numeric values and strings, and "
+						+ "subtraction is only possible with numerical values."
+					);
+					if( this.requireFloat(errorMessage, arg1, arg2) ) {
 						break;
 					}
 				}
@@ -119,8 +114,8 @@ class ASTNode {
 	}
 	
 	private Property evaluateArgument(Object argument, Context context) {
-		if( argument instanceof ASTNode ) {
-			return ((ASTNode) argument).evaluate(context);
+		if( argument instanceof Evaluator ) {
+			return ((Evaluator) argument).evaluate(context);
 		}
 		
 		Property initial = (Property) argument;
@@ -129,10 +124,10 @@ class ASTNode {
 			return initial;
 		}
 		
-		return new Property(initial.getName(), context.evaluate(initial), Property.PX);
+		return new Property(initial.getName(), context.evaluate(initial), Property.PX, true);
 	}
 	
-	void addArgument(ASTNode node) {
+	void addArgument(Evaluator node) {
 		this.arguments.add(node);
 		node.parent = this;
 	}
@@ -141,9 +136,9 @@ class ASTNode {
 		this.arguments.add(ambiguous);
 	}
 	
-	private boolean requireFloat(String errorMessage, Object... values) {
-		for( Object value : values ) {
-			if( !(value instanceof Float) ) {
+	private boolean requireFloat(String errorMessage, Property... properties) {
+		for( Property property : properties ) {
+			if( !property.isNumeric() ) {
 				Logger.get().error(
 					this, ExpressionParser.FAILED_TO_PARSE, errorMessage
 				);
@@ -187,7 +182,7 @@ class ASTNode {
 				Property arg = this.evaluateArgument(this.arguments.get(i), context);
 				propertyName = arg.getName();
 				
-				if( !this.requireFloat("min() only accepts numeric values.", arg.getValue()) ) {
+				if( !this.requireFloat("min() only accepts numeric values.", arg) ) {
 					break;
 				}
 				
@@ -208,7 +203,7 @@ class ASTNode {
 				Property arg = this.evaluateArgument(this.arguments.get(i), context);
 				propertyName = arg.getName();
 				
-				if( !this.requireFloat("max() only accepts numeric values.", arg.getValue()) ) {
+				if( !this.requireFloat("max() only accepts numeric values.", arg) ) {
 					break;
 				}
 				
@@ -227,8 +222,7 @@ class ASTNode {
 			Property value = this.evaluateArgument(this.arguments.get(1), context);
 			Property max = this.evaluateArgument(this.arguments.get(2), context);
 			boolean areFloats = this.requireFloat(
-				"clamp() only accepts numeric values.", 
-				min.getValue(), value.getValue(), max.getValue()
+				"clamp() only accepts numeric values.", min, value, max 
 			);
 			
 			if( !areFloats ) {
@@ -252,8 +246,7 @@ class ASTNode {
 			Property g = this.evaluateArgument(this.arguments.get(1), context);
 			Property b = this.evaluateArgument(this.arguments.get(2), context);
 			boolean areFloats = this.requireFloat(
-				"rgb() only accepts numeric values.", 
-				r.getValue(), g.getValue(), b.getValue()
+				"rgb() only accepts numeric values.", r, g, b
 			);
 			
 			if( !areFloats ) {
@@ -278,8 +271,7 @@ class ASTNode {
 			Property b = this.evaluateArgument(this.arguments.get(2), context);
 			Property a = this.evaluateArgument(this.arguments.get(3), context);
 			boolean areFloats = this.requireFloat(
-				"rgba() only accepts numeric values.", 
-				r.getValue(), g.getValue(), b.getValue(), a.getValue()
+				"rgba() only accepts numeric values.", r, g, b, a 
 			);
 			
 			if( !areFloats ) {

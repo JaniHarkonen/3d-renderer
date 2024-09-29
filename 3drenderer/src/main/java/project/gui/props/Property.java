@@ -46,19 +46,29 @@ public class Property {
 	private final String name;
 	private String type;
 	private Object value;
+	private boolean isNumeric;
 	
-	public Property(String name, Object value, String type) {
+	public Property(String name, Object value, String type, boolean isNumeric) {
 		this.name = name;
 		this.value = value;
 		this.type = type;
+		this.isNumeric = isNumeric;
 	}
 	
 	public Property(String name, float value, String type) {
-		this(name, (Object) value, type);
+		this(name, (Object) value, type, true);
+	}
+	
+	public Property(String name, String value, String type) {
+		this(name, (Object) value, type, false);
+	}
+	
+	public Property(String name, Vector4f value, String type) {
+		this(name, (Object) value, type, false);
 	}
 	
 	public Property(String name) {
-		this(name, null, null);
+		this(name, null, null, false);
 	}
 	
 	public Property(Property src) {
@@ -69,14 +79,17 @@ public class Property {
 	
 	
 	public void set(float value, String type) {
+		this.isNumeric = true;
 		this.set((Object) value, type);
 	}
 	
 	public void set(String value, String type) {
+		this.isNumeric = false;
 		this.set((Object) value, type);
 	}
 	
 	public void set(Vector4f value, String type) {
+		this.isNumeric = false;
 		this.set((Object) value, type);
 	}
 	
@@ -95,6 +108,10 @@ public class Property {
 	
 	public Object getValue() {
 		return this.value;
+	}
+	
+	public boolean isNumeric() {
+		return this.isNumeric;
 	}
 	
 	@Override

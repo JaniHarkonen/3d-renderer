@@ -14,7 +14,7 @@ public class ExpressionParser {
 		ADD,
 		SUB,
 		NEGATE,
-		CALL,
+		FUNCTION_CALL,
 		NONE
 	}
 	
@@ -43,9 +43,6 @@ public class ExpressionParser {
 		charToOpCode.put('+', OpCode.ADD);
 		charToOpCode.put('-', OpCode.SUB);
 	}
-	
-	
-	
 
 	private List<Token> tokens;
 	private int cursor;
@@ -56,12 +53,12 @@ public class ExpressionParser {
 	}
 	
 	
-	public ASTNode parse(List<Token> tokens) {
+	public Evaluator parse(List<Token> tokens) {
 		this.tokens = tokens;
 		return this.expression();
 	}
 	
-	private ASTNode expression() {
+	private Evaluator expression() {
 		Token tNextOperator = this.lookupToken(this.cursor + 1);
 		Character nextOperatorCharacter;
 		
@@ -72,13 +69,13 @@ public class ExpressionParser {
 			return null;
 		}
 		
-		ASTNode root = new ASTNode();
+		Evaluator root = new Evaluator();
 		root.addArgument(this.lookupToken(this.cursor).value);
 		root.opCode = charToOpCode.get(nextOperatorCharacter);
 		
 		this.cursor += 2;
 		
-		ASTNode current = root;
+		Evaluator current = root;
 		Token token;
 		while( (token = this.lookupToken(this.cursor)) != null ) {
 			if( token.type != TokenType.EVALUABLE ) {
@@ -101,14 +98,14 @@ public class ExpressionParser {
 			if( currentOperatorPrecedence <= nextOperatorPrecedence ) {
 				current.addArgument(token.value);
 				
-				ASTNode node = current;
-				ASTNode lastValid = current;
+				Evaluator node = current;
+				Evaluator lastValid = current;
 				while( node != null && charToPrecedence.get(opCodeToChar.get(node.opCode)) <= nextOperatorPrecedence) {
 					lastValid = node;
 					node = node.parent;
 				}
 				
-				current = new ASTNode();
+				current = new Evaluator();
 				current.opCode = charToOpCode.get(nextOperatorCharacter);
 				
 				if( lastValid.parent == null ) {
@@ -124,7 +121,7 @@ public class ExpressionParser {
 				
 				current.addArgument(lastValid);
 			} else {
-				current.addArgument(current = new ASTNode());	// 'current' swap
+				current.addArgument(current = new Evaluator());	// 'current' swap
 				current.opCode = charToOpCode.get(nextOperatorCharacter);
 				current.addArgument(token.value);
 			}
@@ -157,16 +154,6 @@ public class ExpressionParser {
 		
 		return null;
 	}
-	
-	/*private ASTNode negation() {
-		Token token = this.lookupToken(this.position);
-		
-		if( token.type != TokenType.SPECIAL_CHARACTER || !token.value.equals('-') ) {
-			return null;
-		}
-		
-		
-	}*/
 	
 	private void function() {
 		
