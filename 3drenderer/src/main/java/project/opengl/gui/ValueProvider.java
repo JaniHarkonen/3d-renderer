@@ -23,4 +23,9 @@ class ValueProvider implements IEvaluator {
 		
 		return new Property(initial.getName(), context.evaluate(initial), Property.PX, true);
 	}
+
+	@Override
+	public void setParent(Evaluator parent) {
+		
+	}
 }

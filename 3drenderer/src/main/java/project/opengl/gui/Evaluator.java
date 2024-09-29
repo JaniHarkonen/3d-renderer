@@ -34,7 +34,7 @@ class Evaluator implements IEvaluator {
 				case Property.FUNCTION_RGB: return this.rgb(context);
 				case Property.FUNCTION_RGBA:return this.rgba(context);
 			}
-		} else*/ if( this.isOperator(ExpressionParser.OP_NEGATE) ) {
+		} else*/ if( this.isOperator(Operator.OP_NEGATE) ) {
 			Property arg1 = this.arguments.get(0).evaluate(context);
 			Object o1 = arg1.getValue();
 			String propertyName = arg1.getName();
@@ -50,9 +50,8 @@ class Evaluator implements IEvaluator {
 		Property arg1 = this.arguments.get(0).evaluate(context);
 		Property arg2 = this.arguments.get(1).evaluate(context);
 		
-			// Arbitrary, both arguments should have the same name
+			// Arbitrary getter, both arguments should have the same name
 		String propertyName = arg1.getName();
-		
 		switch( this.operator.id ) {
 			case Operator.ID_MUL: 
 			case Operator.ID_DIV: {
@@ -128,11 +127,17 @@ class Evaluator implements IEvaluator {
 	
 	void addArgument(IEvaluator ambiguous) {
 		this.arguments.add(ambiguous);
+		ambiguous.setParent(this);
 	}
 	
 	void setArgument(int index, Evaluator node) {
 		this.arguments.set(index, node);
 		node.parent = this;
+	}
+	
+	@Override
+	public void setParent(Evaluator parent) {
+		this.parent = parent;
 	}
 	
 	Object getArgument(int index) {
