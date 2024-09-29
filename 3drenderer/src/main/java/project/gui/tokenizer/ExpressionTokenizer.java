@@ -8,6 +8,7 @@ import project.gui.props.Property;
 import project.shared.logger.Logger;
 
 public class ExpressionTokenizer {
+	
 
 	public List<Token> tokenize(String propertyName, String expression) {
 		final String expressionStart = "expr(";
@@ -167,8 +168,11 @@ public class ExpressionTokenizer {
 					new Property(propertyName, expression.substring(cursor + 1, end), Property.STRING);
 				tokens.add(new Token(TokenType.EVALUABLE, evaluable));
 				cursor = end;
+			} else if( this.isOperator(charAt) ) {
+					// Recognized operator
+				tokens.add(new Token(TokenType.OPERATOR, Operator.getOperator(charAt)));
 			} else if( this.isSpecialCharacter(charAt) ) {
-					// Allowed special characters
+					// Recognized special character
 				tokens.add(new Token(TokenType.SPECIAL_CHARACTER, charAt));
 			}
 			
@@ -197,7 +201,13 @@ public class ExpressionTokenizer {
 	
 	private boolean isSpecialCharacter(char c) {
 		return (
-			c == '(' || c == ')' || c == '+' || c == '-' || c == '*' || c == '/' || c == ','
+			c == '(' || c == ')' || c == ','
+		);
+	}
+	
+	private boolean isOperator(char c) {
+		return (
+			c == '+' || c == '-' || c == '*' || c == '/'
 		);
 	}
 	

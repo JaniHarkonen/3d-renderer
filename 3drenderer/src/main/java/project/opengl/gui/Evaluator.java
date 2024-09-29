@@ -6,17 +6,18 @@ import java.util.List;
 import org.joml.Vector4f;
 
 import project.gui.props.Property;
-import project.opengl.gui.ExpressionParser.OpCode;
+import project.gui.tokenizer.Operator;
 import project.shared.logger.Logger;
+import project.utils.DebugUtils;
 
 class Evaluator {
 	Evaluator parent;
-	OpCode opCode;
+	Operator operator;
 	List<Object> arguments;
 	
 	Evaluator() {
 		this.parent = null;
-		this.opCode = OpCode.NONE;
+		this.operator = Operator.OP_NONE;
 		this.arguments = new ArrayList<>();
 	}
 	
@@ -24,7 +25,7 @@ class Evaluator {
 	public Property evaluate(Context context) {
 		
 			// Handle non two-operand operations
-		if( this.opCode == OpCode.FUNCTION_CALL ) {
+		if( this.isOperator(ExpressionParser.OP_FUNCTION_CALL) ) {
 			String functionName = (String) this.arguments.get(0);
 			switch( functionName ) {
 				case Property.FUNCTION_MIN: return this.min(context);
@@ -33,7 +34,7 @@ class Evaluator {
 				case Property.FUNCTION_RGB: return this.rgb(context);
 				case Property.FUNCTION_RGBA:return this.rgba(context);
 			}
-		} else if( this.opCode == OpCode.NEGATE ) {
+		} else if( this.isOperator(ExpressionParser.OP_NEGATE) ) {
 			Property arg1 = this.evaluateArgument(this.arguments.get(0), context);
 			Object o1 = arg1.getValue();
 			String propertyName = arg1.getName();
@@ -52,14 +53,15 @@ class Evaluator {
 			// Arbitrary, both arguments should have the same name
 		String propertyName = arg1.getName();
 		
-		switch( this.opCode ) {
-			case MUL: 
-			case DIV: {
+		switch( this.operator.id ) {
+			case Operator.ID_MUL: 
+			case Operator.ID_DIV: {
 					// Allow multiplication and division only for floats
 				String errorMessage = (
 					"Multiplication, division and are only possible with numeric "
 					+ "values, such as pixels, percentages, rows, columns or numbers"
 				);
+				
 				if( !this.requireFloat(errorMessage, arg1, arg2) ) {
 					break;
 				}
@@ -67,32 +69,33 @@ class Evaluator {
 				float f1 = (float) arg1.getValue();
 				float f2 = (float) arg2.getValue();
 				
-				if( this.opCode == OpCode.DIV ) {
+				if( this.isOperator(Operator.OP_DIV) ) {
 					if( f2 == 0.0f ) {
 						Logger.get().error(this, ExpressionParser.FAILED_TO_PARSE, "Division by 0.0");
 						break;
 					}
 					
-					f2 = 1.0f / f2; // Flip to divide through multiplication
+					return new Property(propertyName, f1 / f2, Property.PX);
 				}
 				
 				return new Property(propertyName, f1 * f2, Property.PX);
 			}
-			case ADD: 
-			case SUB: {
+			case Operator.ID_ADD: 
+			case Operator.ID_SUB: {
 				Object o1 = arg1.getValue();
 				Object o2 = arg2.getValue();
 				
 				boolean isStringConcatenation = (
-					this.opCode == OpCode.ADD && (o1 instanceof String || o2 instanceof String)
+					this.isOperator(Operator.OP_ADD) && 
+					(o1 instanceof String || o2 instanceof String)
 				);
 				
-				if( this.opCode == OpCode.SUB || !isStringConcatenation ) {
+				if( this.isOperator(Operator.OP_SUB) || !isStringConcatenation ) {
 					String errorMessage = (
 						"Addition is only possible with numeric values and strings, and "
 						+ "subtraction is only possible with numerical values."
 					);
-					if( this.requireFloat(errorMessage, arg1, arg2) ) {
+					if( !this.requireFloat(errorMessage, arg1, arg2) ) {
 						break;
 					}
 				}
@@ -104,12 +107,18 @@ class Evaluator {
 				}
 				
 				float f1 = (float) o1;
-				float f2 = (this.opCode == OpCode.ADD) ? (float) o2 : -(float) o2; // Flip
-				return new Property(propertyName, f1 + f2, Property.PX);
+				float f2 = (float) o2;
+				
+				if( this.isOperator(Operator.OP_ADD) ) {
+					return new Property(propertyName, f1 + f2, Property.PX);
+				}
+				
+				return new Property(propertyName, f1 - f2, Property.PX);
 			}
-			case NONE: return null;
+			case Operator.ID_NONE: return null;
 		}
 		
+		DebugUtils.log(this, "fail");
 		return new Property(propertyName, 1.0f, Property.PX);
 	}
 	
@@ -134,6 +143,15 @@ class Evaluator {
 	
 	void addArgument(Object ambiguous) {
 		this.arguments.add(ambiguous);
+	}
+	
+	void setArgument(int index, Evaluator node) {
+		this.arguments.set(index, node);
+		node.parent = this;
+	}
+	
+	Object getArgument(int index) {
+		return this.arguments.get(index);
 	}
 	
 	private boolean requireFloat(String errorMessage, Property... properties) {
@@ -286,5 +304,9 @@ class Evaluator {
 		}
 		
 		return new Property(propertyName, new Vector4f(0.0f), Property.COLOR);
+	}
+	
+	private boolean isOperator(Operator operator) {
+		return (this.operator == operator);
 	}
 }

@@ -12,6 +12,12 @@ public enum TokenType {
 	SPECIAL_CHARACTER,
 	
 	/**
+	 * Token's value is an operator (Operator), and will never be evaluable.
+	 */
+	OPERATOR,
+	
+	
+	/**
 	 * Token's value is the name of a built-in function (String), and will never be evaluable.
 	 */
 	FUNCTION
