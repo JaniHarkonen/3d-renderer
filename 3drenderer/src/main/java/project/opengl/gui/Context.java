@@ -8,9 +8,9 @@ import project.Window;
 import project.gui.AGUIElement;
 import project.gui.props.Properties;
 import project.gui.props.Property;
-import project.gui.tokenizer.ExpressionTokenizer;
-import project.gui.tokenizer.IContext;
-import project.gui.tokenizer.Token;
+import project.gui.props.parser.ExpressionTokenizer;
+import project.gui.props.parser.IContext;
+import project.gui.props.parser.Token;
 import project.shared.logger.Logger;
 import project.utils.DebugUtils;
 

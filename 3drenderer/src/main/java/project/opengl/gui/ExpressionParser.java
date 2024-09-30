@@ -3,9 +3,9 @@ package project.opengl.gui;
 import java.util.List;
 
 import project.gui.props.Property;
-import project.gui.tokenizer.Operator;
-import project.gui.tokenizer.Token;
-import project.gui.tokenizer.TokenType;
+import project.gui.props.parser.Operator;
+import project.gui.props.parser.Token;
+import project.gui.props.parser.TokenType;
 import project.shared.logger.Logger;
 
 public class ExpressionParser {

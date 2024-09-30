@@ -1,7 +1,7 @@
 package project.opengl.gui;
 
 import project.gui.props.Property;
-import project.gui.tokenizer.IContext;
+import project.gui.props.parser.IContext;
 import project.shared.logger.Logger;
 
 class FunctionRGB extends Evaluator {

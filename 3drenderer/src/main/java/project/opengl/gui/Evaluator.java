@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import project.gui.props.Property;
-import project.gui.tokenizer.IContext;
-import project.gui.tokenizer.Operator;
+import project.gui.props.parser.IContext;
+import project.gui.props.parser.Operator;
 import project.shared.logger.Logger;
 
 class Evaluator implements IEvaluator {

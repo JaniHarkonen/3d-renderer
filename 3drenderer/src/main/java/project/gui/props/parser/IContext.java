@@ -1,4 +1,4 @@
-package project.gui.tokenizer;
+package project.gui.props.parser;
 
 import org.joml.Vector4f;
 

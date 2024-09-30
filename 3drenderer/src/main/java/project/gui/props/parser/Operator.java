@@ -1,4 +1,4 @@
-package project.gui.tokenizer;
+package project.gui.props.parser;
 
 public class Operator {
 	public static final int ID_NONE = 0;
