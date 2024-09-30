@@ -1,12 +1,11 @@
-package project.opengl.gui;
+package project.gui.props.parser;
 
 import project.gui.props.Property;
-import project.gui.props.parser.IContext;
 import project.shared.logger.Logger;
 
 class FunctionClamp extends Evaluator {
 	@Override
-	public Property evaluate(IContext context) {
+	public Property evaluate(IStyleCascade context) {
 		String propertyName = null;
 		if( this.arguments.size() != 3 ) {
 			Logger.get().error(

@@ -1,8 +1,8 @@
-package project.opengl.gui;
+package project.gui.props.parser;
 
 import project.gui.props.Property;
 
-class ValueProvider implements IEvaluator {
+class ValueProvider extends Evaluator {
 	Property value;
 	
 	ValueProvider(Property value) {
@@ -14,7 +14,7 @@ class ValueProvider implements IEvaluator {
 	}
 
 	@Override
-	public Property evaluate(Context context) {
+	public Property evaluate(IStyleCascade context) {
 		Property initial = value;
 		String type = initial.getType();
 		

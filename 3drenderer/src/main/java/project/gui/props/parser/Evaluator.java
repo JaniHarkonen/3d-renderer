@@ -1,15 +1,13 @@
-package project.opengl.gui;
+package project.gui.props.parser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import project.gui.props.Property;
-import project.gui.props.parser.IContext;
-import project.gui.props.parser.Operator;
 import project.shared.logger.Logger;
 
 class Evaluator implements IEvaluator {
-	public static Float checkIfNumeric(IEvaluator evaluator, IContext context) {
+	public static Float checkIfNumeric(IEvaluator evaluator, IStyleCascade context) {
 		Property property = evaluator.evaluate(context);
 		return (property != null && property.isNumeric()) ? (float) property.getValue() : null;
 	}
@@ -26,7 +24,7 @@ class Evaluator implements IEvaluator {
 	
 	@SuppressWarnings("incomplete-switch")
 	@Override
-	public Property evaluate(IContext context) {
+	public Property evaluate(IStyleCascade context) {
 		
 			// Handle non two-operand operations
 		if( this.isOperator(ExpressionParser.OP_FUNCTION_CALL) ) {

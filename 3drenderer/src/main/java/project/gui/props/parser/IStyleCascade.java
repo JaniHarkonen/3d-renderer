@@ -5,7 +5,7 @@ import org.joml.Vector4f;
 import project.gui.props.Properties;
 import project.gui.props.Property;
 
-public interface IContext {
+public interface IStyleCascade {
 
 	public void evaluateProperties(Properties properties);
 	

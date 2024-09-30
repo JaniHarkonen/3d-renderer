@@ -1,11 +1,8 @@
-package project.opengl.gui;
+package project.gui.props.parser;
 
 import java.util.List;
 
 import project.gui.props.Property;
-import project.gui.props.parser.Operator;
-import project.gui.props.parser.Token;
-import project.gui.props.parser.TokenType;
 import project.shared.logger.Logger;
 
 public class ExpressionParser {

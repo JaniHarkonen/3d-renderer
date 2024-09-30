@@ -24,7 +24,7 @@ import project.opengl.shader.uniform.UVector4f;
 
 public class GUIRenderPass implements IRenderPass {
 		// Shared context
-	Context context;
+	StyleCascade context;
 	Mesh imagePlane;
 	ShaderProgram shaderProgram;
 	
@@ -86,7 +86,7 @@ public class GUIRenderPass implements IRenderPass {
 
 	@Override
 	public void render(IRenderer renderer, GameState gameState) {
-		this.context = new Context(renderer.getClientWindow());
+		this.context = new StyleCascade(renderer.getClientWindow());
 		this.gameState = gameState;
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 		
@@ -103,12 +103,12 @@ public class GUIRenderPass implements IRenderPass {
 	}
 	
 	private void recursivelyRender(IRenderer renderer, AGUIElement element) {
-		this.context = new Context(this.context);
+		this.context = new StyleCascade(this.context);
 		this.context.evaluateProperties(element.getProperties());
 		this.renderStrategyManager.getStrategy(element.getClass()).execute(renderer, this, element);
 		
 		for( AGUIElement child : element.getChildren() ) {
-			Context currentContext = this.context;	// Stash context
+			StyleCascade currentContext = this.context;	// Stash context
 			this.recursivelyRender(renderer, child);
 			this.context = currentContext;
 			

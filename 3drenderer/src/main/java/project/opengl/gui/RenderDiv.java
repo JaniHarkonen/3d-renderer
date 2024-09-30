@@ -13,7 +13,7 @@ public class RenderDiv implements IRenderStrategy<GUIRenderPass> {
 
 	@Override
 	public void execute(IRenderer renderer, GUIRenderPass renderPass, IRenderable renderable) {
-		Context renderContext = renderPass.context;
+		StyleCascade renderContext = renderPass.context;
 		
 		Vector4f primaryColor = renderContext.primaryColor;
 		renderPass.uPrimaryColor.update(primaryColor);

@@ -8,13 +8,15 @@ import project.Window;
 import project.gui.AGUIElement;
 import project.gui.props.Properties;
 import project.gui.props.Property;
+import project.gui.props.parser.ExpressionParser;
 import project.gui.props.parser.ExpressionTokenizer;
-import project.gui.props.parser.IContext;
+import project.gui.props.parser.IEvaluator;
+import project.gui.props.parser.IStyleCascade;
 import project.gui.props.parser.Token;
 import project.shared.logger.Logger;
 import project.utils.DebugUtils;
 
-class Context implements IContext {
+class StyleCascade implements IStyleCascade {
 	float left;
 	float top;
 	
@@ -36,7 +38,7 @@ class Context implements IContext {
 	
 	private final Window window;
 	
-	Context(Window window) {
+	StyleCascade(Window window) {
 		this.window = window;
 		
 		this.left = Properties.DEFAULT_LEFT;
@@ -59,7 +61,7 @@ class Context implements IContext {
 		this.anchorY = Properties.DEFAULT_ANCHOR_Y;
 	}
 	
-	Context(Context src) {
+	StyleCascade(StyleCascade src) {
 		this.window = src.window;
 		
 		this.left = src.left;
@@ -88,7 +90,7 @@ class Context implements IContext {
 		ExpressionTokenizer tokenizer = new ExpressionTokenizer();
 		//List<Token> tokens = tokenizer.tokenize(null, "expr(5+6-1*7)");
 		//List<Token> tokens = tokenizer.tokenize(null, "expr(1+2-3*3/4+9-7+6+4*2-1/1)");
-		List<Token> tokens = tokenizer.tokenize(null, "expr(min(85752,72,241,042,45324)");
+		List<Token> tokens = tokenizer.tokenize(null, "expr(min(85752,72,241,042,45324)+1)");
 		ExpressionParser parser = new ExpressionParser();
 		IEvaluator ast = parser.parse(tokens);
 		//DebugUtils.log(this, ast.operator.id, ast.getArgument(0), ast.getArgument(1));
