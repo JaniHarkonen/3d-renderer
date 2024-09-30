@@ -73,8 +73,7 @@ public class ExpressionParser {
 			
 				// Handle negation, unary operator detected
 			if( this.checkToken(currentToken, TokenType.OPERATOR, Operator.OP_SUB) ) {
-				unary = getOperatorEvaluator(Operator.OP_NEGATE);//new Evaluator();
-				//unary.operator = Operator.OP_NEGATE;
+				unary = getOperatorEvaluator(Operator.OP_NEGATE);
 				this.cursor++;
 				currentToken = this.lookupToken(this.cursor);
 			}
@@ -133,9 +132,6 @@ public class ExpressionParser {
 				}
 				
 				AEvaluator next = getOperatorEvaluator(nextOperator);
-				//Evaluator next = new Evaluator();
-				//next = new Evaluator();
-				//next.operator = nextOperator;
 				
 				if( lastValid.parent == null ) {
 					root = next;
@@ -148,8 +144,7 @@ public class ExpressionParser {
 			} else {
 					// Lower precedence compared to previous operator:
 					// Add this node as the second argument to the previous node
-				//AEvaluator next = new AEvaluator();
-				AEvaluator next = getOperatorEvaluator(nextOperator);//operatorIdToEvaluator[nextOperator.id].createInstance();
+				AEvaluator next = getOperatorEvaluator(nextOperator);
 				
 					// Handle first node
 				if( current == null ) {
