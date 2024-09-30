@@ -3,8 +3,6 @@ package project.opengl.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.joml.Vector4f;
-
 import project.gui.props.Property;
 import project.gui.tokenizer.Operator;
 import project.shared.logger.Logger;
@@ -25,16 +23,20 @@ class Evaluator implements IEvaluator {
 	public Property evaluate(Context context) {
 		
 			// Handle non two-operand operations
-		/*if( this.isOperator(ExpressionParser.OP_FUNCTION_CALL) ) {
-			String functionName = (String) this.arguments.get(0);
+		if( this.isOperator(ExpressionParser.OP_FUNCTION_CALL) ) {
+			String functionName = (String) this.arguments.get(0).evaluate(context).getValue();//(String) this.arguments.get(0);
 			switch( functionName ) {
-				case Property.FUNCTION_MIN: return this.min(context);
+				/*case Property.FUNCTION_MIN: return this.min(context);
 				case Property.FUNCTION_MAX: return this.max(context);
 				case Property.FUNCTION_CLAMP: return this.clamp(context);
 				case Property.FUNCTION_RGB: return this.rgb(context);
-				case Property.FUNCTION_RGBA:return this.rgba(context);
+				case Property.FUNCTION_RGBA:return this.rgba(context);*/
+				//default: DebugUtils.log(this, functionName, Math.min(Float.class.cast(this.arguments.get(1).evaluate(context).getValue()),Float.class.cast(this.arguments.get(2).evaluate(context).getValue())));
+				default: {
+					return new Property((String)this.arguments.get(0).evaluate(context).getValue(), Math.min(Float.class.cast(this.arguments.get(1).evaluate(context).getValue()),Float.class.cast(this.arguments.get(2).evaluate(context).getValue())), Property.PX);
+				}
 			}
-		} else*/ if( this.isOperator(Operator.OP_NEGATE) ) {
+		} else if( this.isOperator(Operator.OP_NEGATE) ) {
 			Property arg1 = this.arguments.get(0).evaluate(context);
 			Object o1 = arg1.getValue();
 			String propertyName = arg1.getName();
@@ -179,7 +181,7 @@ class Evaluator implements IEvaluator {
 		}
 		return true;
 	}
-	
+	/*
 	private Property min(Context context) {
 		String propertyName = "";
 		float min = 1;
@@ -295,7 +297,7 @@ class Evaluator implements IEvaluator {
 		
 		return new Property(propertyName, new Vector4f(0.0f), Property.COLOR);
 	}
-	
+	*/
 	private boolean isOperator(Operator operator) {
 		return (this.operator == operator);
 	}

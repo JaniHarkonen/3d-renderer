@@ -6,16 +6,11 @@ import project.gui.props.Property;
 import project.gui.tokenizer.Operator;
 import project.gui.tokenizer.Token;
 import project.gui.tokenizer.TokenType;
+import project.shared.logger.Logger;
 
 public class ExpressionParser {
-	//public static final int ID_NEGATE = Operator.FINAL_ID + 1;
 	public static final int ID_FUNCTION_CALL = Operator.FINAL_ID + 1;
-	//public static final int ID_VALUE = ID_FUNCTION_CALL + 1;
-	
-	//public static final Operator OP_NEGATE = new Operator(ID_NEGATE);
 	public static final Operator OP_FUNCTION_CALL = new Operator(ID_FUNCTION_CALL);
-	//public static final Operator OP_VALUE = new Operator(ID_VALUE);
-	
 	public static final String FAILED_TO_PARSE = "Failed to parse expression!";
 
 	private List<Token> tokens;
@@ -35,30 +30,37 @@ public class ExpressionParser {
 	private IEvaluator expression() {
 		Evaluator root = null;
 		Evaluator current = root;
-		Token token;
+		Token currentToken;
 		Operator previousOperator = Operator.OP_NONE;
 		
-		while( (token = this.lookupToken(this.cursor)) != null ) {
-			//IEvaluator provider = new ValueProvider();	// Use this to avoid casting
+		while( (currentToken = this.lookupToken(this.cursor)) != null ) {
 			IEvaluator evaluator;
 			Evaluator unary = null;	// This will contain an evaluator for a unary operation, if one is detected
 			
 				// Handle negation
-			if( this.checkToken(token, TokenType.OPERATOR, Operator.OP_SUB) ) {
+			if( this.checkToken(currentToken, TokenType.OPERATOR, Operator.OP_SUB) ) {
 				unary = new Evaluator();
 				unary.operator = Operator.OP_NEGATE;
 				this.cursor++;
-				token = this.lookupToken(this.cursor);
+				currentToken = this.lookupToken(this.cursor);
 			}
 			
-				// Handle parenthesis (sub-expressions)
-			if( this.checkToken(token, TokenType.SPECIAL_CHARACTER, '(') ) {
+			if( this.checkToken(currentToken, TokenType.EVALUABLE) ) {
+					// Constant values will be provided by a value provider
+				evaluator = new ValueProvider((Property) currentToken.value);
+			} else if( this.checkToken(currentToken, TokenType.SPECIAL_CHARACTER, '(') ) {
+					// Handle parenthesis (sub-expressions)
 				this.cursor++;
 				evaluator = this.expression();
 				this.cursor++;
-			} else {
-					// Constant values will be provided by a value provider
-				evaluator = new ValueProvider((Property) token.value);
+			}  else {
+					// Handle function call
+				IEvaluator function = this.functionCall();
+				if( function != null ) {
+					evaluator = function;
+				} else {
+					return null;	// This is not an expression
+				}
 			}
 			
 				// Current evaluator is added as an argument to the unary evaluator, and
@@ -132,8 +134,46 @@ public class ExpressionParser {
 		return root;
 	}
 	
-	private void function() {
+	private IEvaluator functionCall() {
+			// Determine start of a function call
+		Token functionName = this.lookupToken(this.cursor);
+		if( !this.checkToken(functionName, TokenType.FUNCTION) ) {
+			return null;
+		}
 		
+		this.cursor++;
+		Token argumentsStart = this.lookupToken(this.cursor);
+		
+		if( !this.checkToken(argumentsStart, TokenType.SPECIAL_CHARACTER, '(') ) {
+			Logger.get().error(this, FAILED_TO_PARSE, "Arguments expected after function call.");
+			return null;
+		}
+		
+		Evaluator functionCall = new Evaluator();
+		functionCall.operator = OP_FUNCTION_CALL;
+		functionCall.addArgument(
+			new ValueProvider(new Property(null, (String) functionName.value, Property.STRING))
+		);
+		
+		this.cursor++;
+		
+			// Extract arguments, if any
+		Token currentToken;
+		while( (currentToken = this.lookupToken(this.cursor)) != null ) {
+			if( this.checkToken(currentToken, TokenType.SPECIAL_CHARACTER, ',') ) {
+				this.cursor++;
+				continue;
+			}
+			
+			if( this.checkToken(currentToken, TokenType.SPECIAL_CHARACTER, ')') ) {
+				break;
+			}
+			
+			functionCall.addArgument(this.expression());
+			this.cursor++;
+		}
+		
+		return functionCall;
 	}
 	
 	private boolean checkToken(Token token, TokenType type) {

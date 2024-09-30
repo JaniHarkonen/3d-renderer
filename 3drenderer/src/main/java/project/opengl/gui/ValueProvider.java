@@ -16,8 +16,9 @@ class ValueProvider implements IEvaluator {
 	@Override
 	public Property evaluate(Context context) {
 		Property initial = value;
+		String type = initial.getType();
 		
-		if( initial.getType().equals(Property.STRING) ) {
+		if( type.equals(Property.STRING) ) {
 			return initial;
 		}
 		

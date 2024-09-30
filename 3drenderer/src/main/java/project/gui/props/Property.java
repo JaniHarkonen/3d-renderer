@@ -24,6 +24,8 @@ public class Property {
 	public static final String FUNCTION_RGB = "rgb";		// Creates an RGB-color with 1 alpha
 	public static final String FUNCTION_RGBA = "rgba";		// Creates an RGBA-color
 	
+	public static final String FUNCTION_TEST = "test";
+	
 	private static final Set<String> functionSet;
 	static {
 		functionSet = new HashSet<>();
@@ -33,6 +35,7 @@ public class Property {
 		functionSet.add(FUNCTION_CLAMP);
 		functionSet.add(FUNCTION_RGB);
 		functionSet.add(FUNCTION_RGBA);
+		functionSet.add(FUNCTION_TEST);
 	}
 	
 	public static boolean functionExists(String propertyName) {
