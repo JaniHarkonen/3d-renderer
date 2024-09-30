@@ -4,9 +4,14 @@ import org.joml.Vector4f;
 
 import project.gui.props.Property;
 import project.gui.props.parser.AEvaluator;
+import project.gui.props.parser.ExpressionParser;
 import project.gui.props.parser.IStyleCascade;
 
 public class FunctionRGB extends AEvaluator {
+	public FunctionRGB() {
+		this.operator = ExpressionParser.OP_FUNCTION_CALL;
+	}
+	
 	@Override
 	public Property evaluate(IStyleCascade context) {
 		Property pRed = AEvaluator.evaluateArgument(this.getArgument(0), context);
@@ -33,7 +38,7 @@ public class FunctionRGB extends AEvaluator {
 	}
 
 	@Override
-	protected AEvaluator createInstance() {
+	public AEvaluator createInstance() {
 		return new FunctionRGB();
 	}
 }

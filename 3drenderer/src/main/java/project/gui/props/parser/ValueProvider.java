@@ -26,7 +26,7 @@ class ValueProvider extends AEvaluator {
 	}
 
 	@Override
-	protected AEvaluator createInstance() {
+	public AEvaluator createInstance() {
 		return new ValueProvider();
 	}
 }

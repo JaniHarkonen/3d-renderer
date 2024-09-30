@@ -2,10 +2,15 @@ package project.gui.props.parser.functions;
 
 import project.gui.props.Property;
 import project.gui.props.parser.AEvaluator;
+import project.gui.props.parser.ExpressionParser;
 import project.gui.props.parser.IStyleCascade;
 import project.utils.DebugUtils;
 
 public class FunctionMin extends AEvaluator {
+	public FunctionMin() {
+		this.operator = ExpressionParser.OP_FUNCTION_CALL;
+	}
+	
 	@Override
 	public Property evaluate(IStyleCascade context) {
 		if( this.arguments.size() == 0 ) {
@@ -36,7 +41,7 @@ public class FunctionMin extends AEvaluator {
 	}
 
 	@Override
-	protected AEvaluator createInstance() {
+	public AEvaluator createInstance() {
 		return new FunctionMin();
 	}
 }

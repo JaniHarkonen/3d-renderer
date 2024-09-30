@@ -2,9 +2,13 @@ package project.gui.props.parser.functions;
 
 import project.gui.props.Property;
 import project.gui.props.parser.AEvaluator;
+import project.gui.props.parser.ExpressionParser;
 import project.gui.props.parser.IStyleCascade;
 
 public class FunctionClamp extends AEvaluator {
+	public FunctionClamp() {
+		this.operator = ExpressionParser.OP_FUNCTION_CALL;
+	}
 
 	@Override
 	public Property evaluate(IStyleCascade context) {
@@ -31,7 +35,7 @@ public class FunctionClamp extends AEvaluator {
 	}
 
 	@Override
-	protected AEvaluator createInstance() {
+	public AEvaluator createInstance() {
 		return new FunctionClamp();
 	}
 }

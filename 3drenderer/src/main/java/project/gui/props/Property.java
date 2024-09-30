@@ -52,6 +52,10 @@ public class Property {
 		return (property == null) ? "" : property.getType();
 	}
 	
+	public static boolean typeOf(Property property, String type) {
+		return (property == null) ? false : property.getType().equals(type);
+	}
+	
 	private final String name;
 	private String type;
 	private Object value;

@@ -2,9 +2,14 @@ package project.gui.props.parser.functions;
 
 import project.gui.props.Property;
 import project.gui.props.parser.AEvaluator;
+import project.gui.props.parser.ExpressionParser;
 import project.gui.props.parser.IStyleCascade;
 
 public class FunctionMax extends AEvaluator {
+	public FunctionMax() {
+		this.operator = ExpressionParser.OP_FUNCTION_CALL;
+	}
+	
 	@Override
 	public Property evaluate(IStyleCascade context) {
 		if( this.arguments.size() == 0 ) {
@@ -34,7 +39,7 @@ public class FunctionMax extends AEvaluator {
 	}
 
 	@Override
-	protected AEvaluator createInstance() {
+	public AEvaluator createInstance() {
 		return new FunctionMax();
 	}
 }

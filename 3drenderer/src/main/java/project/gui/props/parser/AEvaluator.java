@@ -22,8 +22,8 @@ public abstract class AEvaluator {
 		);
 	}
 	
-	AEvaluator parent;
-	Operator operator;
+	public AEvaluator parent;
+	public Operator operator;
 	protected List<AEvaluator> arguments;
 	
 	public AEvaluator() {
@@ -34,7 +34,7 @@ public abstract class AEvaluator {
 
 	public abstract Property evaluate(IStyleCascade cascade);
 	
-	protected abstract AEvaluator createInstance();
+	public abstract AEvaluator createInstance();
 	
 	void addArgument(AEvaluator evaluator) {
 		this.arguments.add(evaluator);

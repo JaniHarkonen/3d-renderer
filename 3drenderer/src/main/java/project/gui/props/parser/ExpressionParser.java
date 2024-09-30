@@ -10,6 +10,11 @@ import project.gui.props.parser.functions.FunctionMax;
 import project.gui.props.parser.functions.FunctionMin;
 import project.gui.props.parser.functions.FunctionRGB;
 import project.gui.props.parser.functions.FunctionRGBA;
+import project.gui.props.parser.ops.AddEvaluator;
+import project.gui.props.parser.ops.DivEvaluator;
+import project.gui.props.parser.ops.MulEvaluator;
+import project.gui.props.parser.ops.NegationEvaluator;
+import project.gui.props.parser.ops.SubEvaluator;
 import project.shared.logger.Logger;
 
 public class ExpressionParser {
@@ -27,6 +32,19 @@ public class ExpressionParser {
 		functionEvaluatorByName.put(Property.FUNCTION_CLAMP, new FunctionClamp());
 		functionEvaluatorByName.put(Property.FUNCTION_RGB, new FunctionRGB());
 		functionEvaluatorByName.put(Property.FUNCTION_RGBA, new FunctionRGBA());
+	}
+	
+	private static final AEvaluator[] operatorIdToEvaluator = new AEvaluator[] {
+		null, 
+		new MulEvaluator(), 
+		new DivEvaluator(), 
+		new AddEvaluator(), 
+		new SubEvaluator(), 
+		new NegationEvaluator()
+	};
+	
+	private static AEvaluator getOperatorEvaluator(Operator operator) {
+		return operatorIdToEvaluator[operator.id].createInstance();
 	}
 
 	private List<Token> tokens;
@@ -55,8 +73,8 @@ public class ExpressionParser {
 			
 				// Handle negation, unary operator detected
 			if( this.checkToken(currentToken, TokenType.OPERATOR, Operator.OP_SUB) ) {
-				unary = new Evaluator();
-				unary.operator = Operator.OP_NEGATE;
+				unary = getOperatorEvaluator(Operator.OP_NEGATE);//new Evaluator();
+				//unary.operator = Operator.OP_NEGATE;
 				this.cursor++;
 				currentToken = this.lookupToken(this.cursor);
 			}
@@ -114,9 +132,10 @@ public class ExpressionParser {
 					node = node.parent;
 				}
 				
-				Evaluator next = new Evaluator();
-				next = new Evaluator();
-				next.operator = nextOperator;
+				AEvaluator next = getOperatorEvaluator(nextOperator);
+				//Evaluator next = new Evaluator();
+				//next = new Evaluator();
+				//next.operator = nextOperator;
 				
 				if( lastValid.parent == null ) {
 					root = next;
@@ -129,7 +148,8 @@ public class ExpressionParser {
 			} else {
 					// Lower precedence compared to previous operator:
 					// Add this node as the second argument to the previous node
-				Evaluator next = new Evaluator();
+				//AEvaluator next = new AEvaluator();
+				AEvaluator next = getOperatorEvaluator(nextOperator);//operatorIdToEvaluator[nextOperator.id].createInstance();
 				
 					// Handle first node
 				if( current == null ) {
@@ -138,7 +158,7 @@ public class ExpressionParser {
 					current.addArgument(next);
 				}
 				
-				next.operator = nextOperator;
+				//next.operator = nextOperator;
 				next.addArgument(evaluator);
 				current = next;
 			}
@@ -168,19 +188,18 @@ public class ExpressionParser {
 		String functionName = (String) functionNameToken.value;
 		AEvaluator functionCall = functionEvaluatorByName.get(functionName);
 		functionCall.operator = OP_FUNCTION_CALL;
-		
 		this.cursor++;
 		
 			// Extract arguments, if any
 		Token currentToken;
 		while( (currentToken = this.lookupToken(this.cursor)) != null ) {
+			if( this.checkToken(currentToken, TokenType.SPECIAL_CHARACTER, ')') ) {
+				break;
+			}
+			
 			if( this.checkToken(currentToken, TokenType.SPECIAL_CHARACTER, ',') ) {
 				this.cursor++;
 				continue;
-			}
-			
-			if( this.checkToken(currentToken, TokenType.SPECIAL_CHARACTER, ')') ) {
-				break;
 			}
 			
 			functionCall.addArgument(this.expression());
