@@ -4,13 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import project.gui.props.Property;
+import project.gui.tokenizer.IContext;
 import project.gui.tokenizer.Operator;
 import project.shared.logger.Logger;
 
 class Evaluator implements IEvaluator {
+	public static Float checkIfNumeric(IEvaluator evaluator, IContext context) {
+		Property property = evaluator.evaluate(context);
+		return (property != null && property.isNumeric()) ? (float) property.getValue() : null;
+	}
+	
 	Evaluator parent;
 	Operator operator;
-	List<IEvaluator> arguments;
+	protected List<IEvaluator> arguments;
 	
 	Evaluator() {
 		this.parent = null;
@@ -20,7 +26,7 @@ class Evaluator implements IEvaluator {
 	
 	@SuppressWarnings("incomplete-switch")
 	@Override
-	public Property evaluate(Context context) {
+	public Property evaluate(IContext context) {
 		
 			// Handle non two-operand operations
 		if( this.isOperator(ExpressionParser.OP_FUNCTION_CALL) ) {
@@ -31,10 +37,6 @@ class Evaluator implements IEvaluator {
 				case Property.FUNCTION_CLAMP: return this.clamp(context);
 				case Property.FUNCTION_RGB: return this.rgb(context);
 				case Property.FUNCTION_RGBA:return this.rgba(context);*/
-				//default: DebugUtils.log(this, functionName, Math.min(Float.class.cast(this.arguments.get(1).evaluate(context).getValue()),Float.class.cast(this.arguments.get(2).evaluate(context).getValue())));
-				default: {
-					return new Property((String)this.arguments.get(0).evaluate(context).getValue(), Math.min(Float.class.cast(this.arguments.get(1).evaluate(context).getValue()),Float.class.cast(this.arguments.get(2).evaluate(context).getValue())), Property.PX);
-				}
 			}
 		} else if( this.isOperator(Operator.OP_NEGATE) ) {
 			Property arg1 = this.arguments.get(0).evaluate(context);
@@ -119,7 +121,7 @@ class Evaluator implements IEvaluator {
 			case Operator.ID_NONE: return null;
 		}
 	
-		return new Property(propertyName, 1.0f, Property.PX);
+		return new Property(propertyName, 0, Property.PX);
 	}
 	
 	void addArgument(Evaluator node) {
@@ -142,7 +144,11 @@ class Evaluator implements IEvaluator {
 		this.parent = parent;
 	}
 	
-	Object getArgument(int index) {
+	IEvaluator getArgument(int index) {
+		if( index < 0 || index >= this.arguments.size() ) {
+			return null;
+		}
+		
 		return this.arguments.get(index);
 	}
 	

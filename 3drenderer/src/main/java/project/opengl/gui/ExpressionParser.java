@@ -149,7 +149,11 @@ public class ExpressionParser {
 			return null;
 		}
 		
-		Evaluator functionCall = new Evaluator();
+		Evaluator functionCall = null;
+		if( functionName.value.equals(Property.FUNCTION_MIN) ) {
+			functionCall = new FunctionMin();
+		}
+		
 		functionCall.operator = OP_FUNCTION_CALL;
 		functionCall.addArgument(
 			new ValueProvider(new Property(null, (String) functionName.value, Property.STRING))

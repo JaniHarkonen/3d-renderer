@@ -9,6 +9,7 @@
 - implement themes
 - consider using an abstract class (AEvaluator) for evaluators instead of an interface to give each evaluator a parent, arguments and operator
 - ERROR: stop using equals() on token value to figure out if the token equals the expected token, ALWAYS check both type and value OR only type
+- change name of IContext, Context into something more descriptive
 
 ### ASceneObject & AGUIElement
 - consider if references to the renderer can be removed (don't use method names like 'rendererEquals' or 'rendererCopy')

@@ -9,11 +9,12 @@ import project.gui.AGUIElement;
 import project.gui.props.Properties;
 import project.gui.props.Property;
 import project.gui.tokenizer.ExpressionTokenizer;
+import project.gui.tokenizer.IContext;
 import project.gui.tokenizer.Token;
 import project.shared.logger.Logger;
 import project.utils.DebugUtils;
 
-class Context {
+class Context implements IContext {
 	float left;
 	float top;
 	
@@ -82,11 +83,12 @@ class Context {
 	}
 	
 	
-	void evaluateProperties(Properties properties) {
+	@Override
+	public void evaluateProperties(Properties properties) {
 		ExpressionTokenizer tokenizer = new ExpressionTokenizer();
 		//List<Token> tokens = tokenizer.tokenize(null, "expr(5+6-1*7)");
 		//List<Token> tokens = tokenizer.tokenize(null, "expr(1+2-3*3/4+9-7+6+4*2-1/1)");
-		List<Token> tokens = tokenizer.tokenize(null, "expr(test(1, 66) + test(99,100))");
+		List<Token> tokens = tokenizer.tokenize(null, "expr(min(85752,72,241,042,45324)");
 		ExpressionParser parser = new ExpressionParser();
 		IEvaluator ast = parser.parse(tokens);
 		//DebugUtils.log(this, ast.operator.id, ast.getArgument(0), ast.getArgument(1));
@@ -161,19 +163,23 @@ class Context {
 		});
 	}
 	
-	float evaluateFloat(Property property) {
+	@Override
+	public float evaluateFloat(Property property) {
 		return (float) this.evaluate(property);
 	}
 	
-	String evaluateString(Property property) {
+	@Override
+	public String evaluateString(Property property) {
 		return (String) this.evaluate(property);
 	}
 	
-	Vector4f evaluateColor(Property property) {
+	@Override
+	public Vector4f evaluateColor(Property property) {
 		return (Vector4f) this.evaluate(property);
 	}
 	
-	Object evaluate(Property property) {
+	@Override
+	public Object evaluate(Property property) {
 		switch( property.getType() ) {
 				// Direct return, no evaluation needed
 			case Property.NUMBER:
