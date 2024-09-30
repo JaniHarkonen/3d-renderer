@@ -14,9 +14,9 @@ class FunctionRGB extends Evaluator {
 				"Received " + this.arguments.size() + " arguments."
 			);
 		} else {
-			IEvaluator aMin = this.getArgument(0);
-			IEvaluator aValue = this.getArgument(1);
-			IEvaluator aMax = this.getArgument(2);
+			Evaluator aMin = this.getArgument(0);
+			Evaluator aValue = this.getArgument(1);
+			Evaluator aMax = this.getArgument(2);
 			
 			Float min = Evaluator.checkIfNumeric(aMin, context);
 			Float value = Evaluator.checkIfNumeric(aValue, context);

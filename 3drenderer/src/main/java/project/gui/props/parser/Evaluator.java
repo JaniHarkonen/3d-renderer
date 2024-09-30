@@ -6,15 +6,15 @@ import java.util.List;
 import project.gui.props.Property;
 import project.shared.logger.Logger;
 
-class Evaluator implements IEvaluator {
-	public static Float checkIfNumeric(IEvaluator evaluator, IStyleCascade context) {
+public class Evaluator {
+	public static Float checkIfNumeric(Evaluator evaluator, IStyleCascade context) {
 		Property property = evaluator.evaluate(context);
 		return (property != null && property.isNumeric()) ? (float) property.getValue() : null;
 	}
 	
 	Evaluator parent;
 	Operator operator;
-	protected List<IEvaluator> arguments;
+	protected List<Evaluator> arguments;
 	
 	Evaluator() {
 		this.parent = null;
@@ -23,7 +23,6 @@ class Evaluator implements IEvaluator {
 	}
 	
 	@SuppressWarnings("incomplete-switch")
-	@Override
 	public Property evaluate(IStyleCascade context) {
 		
 			// Handle non two-operand operations
@@ -122,12 +121,12 @@ class Evaluator implements IEvaluator {
 		return new Property(propertyName, 0, Property.PX);
 	}
 	
-	void addArgument(Evaluator node) {
+	/*void addArgument(Evaluator node) {
 		this.arguments.add(node);
 		node.parent = this;
-	}
+	}*/
 	
-	void addArgument(IEvaluator ambiguous) {
+	void addArgument(Evaluator ambiguous) {
 		this.arguments.add(ambiguous);
 		ambiguous.setParent(this);
 	}
@@ -137,12 +136,11 @@ class Evaluator implements IEvaluator {
 		node.parent = this;
 	}
 	
-	@Override
 	public void setParent(Evaluator parent) {
 		this.parent = parent;
 	}
 	
-	IEvaluator getArgument(int index) {
+	Evaluator getArgument(int index) {
 		if( index < 0 || index >= this.arguments.size() ) {
 			return null;
 		}

@@ -19,19 +19,19 @@ public class ExpressionParser {
 	}
 	
 	
-	public IEvaluator parse(List<Token> tokens) {
+	public Evaluator parse(List<Token> tokens) {
 		this.tokens = tokens;
 		return this.expression();
 	}
 	
-	private IEvaluator expression() {
+	private Evaluator expression() {
 		Evaluator root = null;
 		Evaluator current = root;
 		Token currentToken;
 		Operator previousOperator = Operator.OP_NONE;
 		
 		while( (currentToken = this.lookupToken(this.cursor)) != null ) {
-			IEvaluator evaluator;
+			Evaluator evaluator;
 			Evaluator unary = null;	// This will contain an evaluator for a unary operation, if one is detected
 			
 				// Handle negation
@@ -52,7 +52,7 @@ public class ExpressionParser {
 				this.cursor++;
 			}  else {
 					// Handle function call
-				IEvaluator function = this.functionCall();
+				Evaluator function = this.functionCall();
 				if( function != null ) {
 					evaluator = function;
 				} else {
@@ -131,7 +131,7 @@ public class ExpressionParser {
 		return root;
 	}
 	
-	private IEvaluator functionCall() {
+	private Evaluator functionCall() {
 			// Determine start of a function call
 		Token functionName = this.lookupToken(this.cursor);
 		if( !this.checkToken(functionName, TokenType.FUNCTION) ) {
