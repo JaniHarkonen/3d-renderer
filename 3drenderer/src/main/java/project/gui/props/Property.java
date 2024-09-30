@@ -24,7 +24,10 @@ public class Property {
 	public static final String FUNCTION_RGB = "rgb";		// Creates an RGB-color with 1 alpha
 	public static final String FUNCTION_RGBA = "rgba";		// Creates an RGBA-color
 	
-	public static final String FUNCTION_TEST = "test";
+	public static final Property NULL_PX = 
+		new Property(null, 0.0f, Property.PX);	// Null property, 0px
+	public static final Property NULL_COLOR = 
+		new Property(null, new Vector4f(0, 0, 0, 1), Property.COLOR);	// Null color, (0, 0, 0, 1)
 	
 	private static final Set<String> functionSet;
 	static {
@@ -35,11 +38,18 @@ public class Property {
 		functionSet.add(FUNCTION_CLAMP);
 		functionSet.add(FUNCTION_RGB);
 		functionSet.add(FUNCTION_RGBA);
-		functionSet.add(FUNCTION_TEST);
 	}
 	
 	public static boolean functionExists(String propertyName) {
 		return functionSet.contains(propertyName);
+	}
+	
+	public static boolean isNumeric(Property property) {
+		return (property == null) ? false : property.isNumeric();
+	}
+	
+	public static String getType(Property property) {
+		return (property == null) ? "" : property.getType();
 	}
 	
 	private final String name;

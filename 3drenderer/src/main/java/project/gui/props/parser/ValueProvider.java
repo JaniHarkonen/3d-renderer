@@ -2,7 +2,7 @@ package project.gui.props.parser;
 
 import project.gui.props.Property;
 
-class ValueProvider extends Evaluator {
+class ValueProvider extends AEvaluator {
 	Property value;
 	
 	ValueProvider(Property value) {
@@ -12,21 +12,21 @@ class ValueProvider extends Evaluator {
 	ValueProvider() {
 		this(null);
 	}
-
+	
 	@Override
-	public Property evaluate(IStyleCascade context) {
-		Property initial = value;
-		String type = initial.getType();
-		
-		if( type.equals(Property.STRING) ) {
-			return initial;
+	public Property evaluate(IStyleCascade cascade) {
+		if( !this.value.isNumeric() ) {
+			return this.value;
 		}
-		
-		return new Property(initial.getName(), context.evaluate(initial), Property.PX, true);
+			// So far, only numeric values must evaluated by the cascade as
+			// they may depend on the parent or the element dimensions
+		return new Property(
+			this.value.getName(), cascade.evaluateFloat(this.value), Property.PX
+		);
 	}
 
 	@Override
-	public void setParent(Evaluator parent) {
-		
+	protected AEvaluator createInstance() {
+		return new ValueProvider();
 	}
 }
