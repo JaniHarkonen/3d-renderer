@@ -1,4 +1,4 @@
-package project.gui.tokenizer;
+package project.gui.props.parser;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,8 +6,6 @@ import java.util.Set;
 import org.joml.Vector4f;
 
 public class Property {
-
-	
 	public static final String PX = "px";			// Pixels (float)
 	public static final String WPC = "%w";			// Parent's width percent (float)
 	public static final String HPC = "%h";			// Parent's height percent (float)
@@ -26,6 +24,11 @@ public class Property {
 	public static final String FUNCTION_RGB = "rgb";		// Creates an RGB-color with 1 alpha
 	public static final String FUNCTION_RGBA = "rgba";		// Creates an RGBA-color
 	
+	public static final Property NULL_PX = 
+		new Property(null, 0.0f, Property.PX);	// Null property, 0px
+	public static final Property NULL_COLOR = 
+		new Property(null, new Vector4f(0, 0, 0, 1), Property.COLOR);	// Null color, (0, 0, 0, 1)
+	
 	private static final Set<String> functionSet;
 	static {
 		functionSet = new HashSet<>();
@@ -35,12 +38,22 @@ public class Property {
 		functionSet.add(FUNCTION_CLAMP);
 		functionSet.add(FUNCTION_RGB);
 		functionSet.add(FUNCTION_RGBA);
-		
-		
 	}
 	
 	public static boolean functionExists(String propertyName) {
 		return functionSet.contains(propertyName);
+	}
+	
+	public static boolean isNumeric(Property property) {
+		return (property == null) ? false : property.isNumeric();
+	}
+	
+	public static String getType(Property property) {
+		return (property == null) ? "" : property.getType();
+	}
+	
+	public static boolean typeOf(Property property, String type) {
+		return (property == null) ? false : property.getType().equals(type);
 	}
 	
 	private final String name;

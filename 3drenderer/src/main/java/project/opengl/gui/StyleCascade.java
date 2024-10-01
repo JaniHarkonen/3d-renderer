@@ -1,19 +1,17 @@
 package project.opengl.gui;
 
-import java.util.List;
-
 import org.joml.Vector4f;
 
 import project.Window;
 import project.gui.AGUIElement;
 import project.gui.props.Properties;
 import project.gui.props.Property;
-import project.gui.tokenizer.ExpressionTokenizer;
-import project.gui.tokenizer.Token;
+import project.gui.props.parser.ExpressionRunner;
+import project.gui.props.parser.IStyleCascade;
 import project.shared.logger.Logger;
 import project.utils.DebugUtils;
 
-class Context {
+class StyleCascade implements IStyleCascade {
 	float left;
 	float top;
 	
@@ -35,7 +33,7 @@ class Context {
 	
 	private final Window window;
 	
-	Context(Window window) {
+	StyleCascade(Window window) {
 		this.window = window;
 		
 		this.left = Properties.DEFAULT_LEFT;
@@ -58,7 +56,7 @@ class Context {
 		this.anchorY = Properties.DEFAULT_ANCHOR_Y;
 	}
 	
-	Context(Context src) {
+	StyleCascade(StyleCascade src) {
 		this.window = src.window;
 		
 		this.left = src.left;
@@ -82,16 +80,22 @@ class Context {
 	}
 	
 	
-	void evaluateProperties(Properties properties) {
-		ExpressionTokenizer tokenizer = new ExpressionTokenizer();
+	@Override
+	public void evaluateProperties(Properties properties) {
+		ExpressionRunner runner = new ExpressionRunner();
+		//Property p = runner.evaluateExpression(Properties.LEFT, "expr(1+2-3*3/4+9-7+6+4*2-1/1)", this);
+		Property p = runner.evaluateExpression(Properties.LEFT, "expr(min(-4, 4))", this);
+		DebugUtils.log(this, p.getValue());
+		//ExpressionTokenizer tokenizer = new ExpressionTokenizer();
 		//List<Token> tokens = tokenizer.tokenize(null, "expr(5+6-1*7)");
 		//List<Token> tokens = tokenizer.tokenize(null, "expr(1+2-3*3/4+9-7+6+4*2-1/1)");
-		List<Token> tokens = tokenizer.tokenize(null, "expr(1+2-3*3/4+9-7+6+4*2-1/1)");
-		ExpressionParser parser = new ExpressionParser();
-		Evaluator ast = parser.parse(tokens);
-		DebugUtils.log(this, ast.operator.id, ast.getArgument(0), ast.getArgument(1));
-		Property prop = ast.evaluate(this);
-		DebugUtils.log(this, prop.getValue(), prop.getType());
+		//List<Token> tokens = tokenizer.tokenize(null, "expr(min(85752,72,241,042,45324)+1)");
+		//List<Token> tokens = tokenizer.tokenize(null, "expr(9)");
+		//ExpressionParser parser = new ExpressionParser();
+		//AEvaluator ast = parser.parse(tokens);
+		//DebugUtils.log(this, ast.operator.id, ast.getArgument(0), ast.getArgument(1));
+		//Property prop = ast.evaluate(this);
+		//DebugUtils.log(this, prop.getValue(), prop.getType());
 		
 		float ww = window.getWidth();
 		float wh = window.getHeight();
@@ -161,19 +165,23 @@ class Context {
 		});
 	}
 	
-	float evaluateFloat(Property property) {
+	@Override
+	public float evaluateFloat(Property property) {
 		return (float) this.evaluate(property);
 	}
 	
-	String evaluateString(Property property) {
+	@Override
+	public String evaluateString(Property property) {
 		return (String) this.evaluate(property);
 	}
 	
-	Vector4f evaluateColor(Property property) {
+	@Override
+	public Vector4f evaluateColor(Property property) {
 		return (Vector4f) this.evaluate(property);
 	}
 	
-	Object evaluate(Property property) {
+	@Override
+	public Object evaluate(Property property) {
 		switch( property.getType() ) {
 				// Direct return, no evaluation needed
 			case Property.NUMBER:

@@ -3,10 +3,10 @@
 ### Priority
 - properties:
  -- prop expression parsing (add hex color values)
-- see if property names can be changed from Strings to enums
 - reconsider storing properties as fields in Context due to redundancy
 - Context currently holds no reference to a Font, implement font lookup by name
 - implement themes
+- ERROR: stop using equals() on token value to figure out if the token equals the expected token, ALWAYS check both type and value OR only type
 
 ### ASceneObject & AGUIElement
 - consider if references to the renderer can be removed (don't use method names like 'rendererEquals' or 'rendererCopy')

@@ -17,7 +17,7 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 	@Override
 	public void execute(IRenderer renderer, GUIRenderPass renderPass, IRenderable renderable) {
 		Text element = (Text) renderable;
-		Context renderContext = renderPass.context;
+		StyleCascade renderContext = renderPass.context;
 		float textX = renderContext.left;
 		float textY = renderContext.top;
 		Text text = (Text) element;

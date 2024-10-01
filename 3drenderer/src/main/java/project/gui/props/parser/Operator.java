@@ -1,4 +1,4 @@
-package project.gui.tokenizer;
+package project.gui.props.parser;
 
 public class Operator {
 	public static final int ID_NONE = 0;
@@ -6,13 +6,15 @@ public class Operator {
 	public static final int ID_DIV = 2;
 	public static final int ID_ADD = 3;
 	public static final int ID_SUB = 4;
-	public static final int FINAL_ID = ID_SUB;
+	public static final int ID_NEGATE = 5;
+	public static final int FINAL_ID = ID_NEGATE;
 	
 	public static final Operator OP_NONE = new Operator(ID_NONE);
-	public static final Operator OP_MUL = new Operator(ID_MUL, '*', 1);
-	public static final Operator OP_DIV = new Operator(ID_DIV, '/', 1);
-	public static final Operator OP_ADD = new Operator(ID_ADD, '+', 2);
-	public static final Operator OP_SUB = new Operator(ID_SUB, '-', 2);
+	public static final Operator OP_NEGATE = new Operator(ID_NEGATE, (char) 0, 1);
+	public static final Operator OP_MUL = new Operator(ID_MUL, '*', 2);
+	public static final Operator OP_DIV = new Operator(ID_DIV, '/', 2);
+	public static final Operator OP_ADD = new Operator(ID_ADD, '+', 3);
+	public static final Operator OP_SUB = new Operator(ID_SUB, '-', 3);
 	
 	private static final Operator[] charToOperator = new Operator[] {
 		OP_MUL, OP_ADD, OP_NONE, OP_SUB, OP_NONE, OP_DIV
