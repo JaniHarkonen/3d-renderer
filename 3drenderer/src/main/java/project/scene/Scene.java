@@ -337,7 +337,7 @@ public class Scene {
 			props.getProperty(Properties.HEIGHT).set(16, Property.PX);
 			props.getProperty(Properties.ANCHOR_X).set(0.5f, Property.WPERCENT);
 			props.getProperty(Properties.ANCHOR_Y).set(0.5f, Property.HPERCENT);
-			props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(1, 1, 1, 1), Property.COLOR);
+			props.getProperty(Properties.PRIMARY_COLOR).set("9fd3c7", Property.COLOR_HEX);
 		this.gui.addChildTo(this.gui.getBody(), image);
 		
 		/*Div div = new Div(this.gui, "test-div");

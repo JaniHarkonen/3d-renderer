@@ -16,6 +16,7 @@ public class Property {
 	public static final String NUMBER = "NUMBER";			// Floating point value
 	public static final String EXPRESSION = "EXPRESSION";	// Expression (String)
 	public static final String COLOR = "COLOR";				// RGBA-color (Vector4f)
+	public static final String COLOR_HEX = "COLOR_HEX";		// Hexadecimal color (Vector4f)
 	
 	public static final String FUNCTION_THEME = "t";		// Theme property getter function
 	public static final String FUNCTION_MIN = "min";		// Returns minimum of a set of values

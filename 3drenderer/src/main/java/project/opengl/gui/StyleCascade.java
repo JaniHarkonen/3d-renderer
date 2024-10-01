@@ -12,6 +12,10 @@ import project.shared.logger.Logger;
 import project.utils.DebugUtils;
 
 class StyleCascade implements IStyleCascade {
+	static final int[] hexToInt = new int[] {
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1, -1, -1, -1, -1, -1, -1, 10, 11, 12, 13, 14, 15
+	};
+	
 	float left;
 	float top;
 	
@@ -82,12 +86,12 @@ class StyleCascade implements IStyleCascade {
 	
 	@Override
 	public void evaluateProperties(Properties properties) {
-		ExpressionRunner runner = new ExpressionRunner();
+		//ExpressionRunner runner = new ExpressionRunner();
 		//Property p = runner.evaluateExpression(Properties.LEFT, "expr(1+2-3*3/4+9-7+6+4*2-1/1)", this);
-		Property p = runner.evaluateExpression(Properties.LEFT, "e(3)(", this);
+		//Property p = runner.evaluateExpression(Properties.LEFT, "e(3)(", this);
 		//Property p = runner.evaluateExpression(Properties.LEFT, "expr(rgba(255,255,255,128))", this);
 		//DebugUtils.log(this, ((Vector4f) p.getValue()).w);
-		DebugUtils.log(this, p.getValue());
+		//DebugUtils.log(this, p.getValue());
 		//ExpressionTokenizer tokenizer = new ExpressionTokenizer();
 		//List<Token> tokens = tokenizer.tokenize(null, "expr(5+6-1*7)");
 		//List<Token> tokens = tokenizer.tokenize(null, "expr(1+2-3*3/4+9-7+6+4*2-1/1)");
@@ -201,10 +205,34 @@ class StyleCascade implements IStyleCascade {
 				return this.height / this.rows * ((float) property.getValue());
 				
 				// Return primary or secondary color depending on prop name
-			case Property.COLOR: {
+			case Property.COLOR: 
+			case Property.COLOR_HEX: {
 				Vector4f defaultColor = property.getName().equals(Properties.PRIMARY_COLOR) ? 
 					Properties.DEFAULT_PRIMARY_COLOR : Properties.DEFAULT_SECONDARY_COLOR;
-				return this.returnOrDefault((Vector4f) property.getValue(), defaultColor);
+				Vector4f color;
+				
+					// Handle hex color
+				if( property.getType().equals(Property.COLOR_HEX) ) {
+					String hexString = ((String) property.getValue()).toUpperCase();
+					float alpha = 1;
+					
+						// Alpha value was included
+					if( hexString.length() == 8 ) {
+						alpha = this.charsToVector4fColorValue(
+							hexString.charAt(6), hexString.charAt(7)
+						);
+					}
+					color = new Vector4f(
+						this.charsToVector4fColorValue(hexString.charAt(0), hexString.charAt(1)), 
+						this.charsToVector4fColorValue(hexString.charAt(2), hexString.charAt(3)), 
+						this.charsToVector4fColorValue(hexString.charAt(4), hexString.charAt(5)), 
+						alpha
+					);
+				} else {
+					color = (Vector4f) property.getValue();
+				}
+				
+				return this.returnOrDefault(color, defaultColor);
 			}
 			
 				// Evaluate expression
@@ -223,5 +251,9 @@ class StyleCascade implements IStyleCascade {
 	
 	private Object returnOrDefault(Object value, Object defaultValue) {
 		return (value == null) ? defaultValue : value;
+	}
+	
+	private float charsToVector4fColorValue(char c1, char c2) {
+		return (hexToInt[c1 - '0'] * 16 + hexToInt[c2 - '0']) / 255f;
 	}
 }
