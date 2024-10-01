@@ -83,7 +83,8 @@ class StyleCascade implements IStyleCascade {
 	@Override
 	public void evaluateProperties(Properties properties) {
 		ExpressionRunner runner = new ExpressionRunner();
-		Property p = runner.evaluateExpression(Properties.LEFT, "expr(1+2-3*3/4+9-7+6+4*2-1/1)", this);
+		//Property p = runner.evaluateExpression(Properties.LEFT, "expr(1+2-3*3/4+9-7+6+4*2-1/1)", this);
+		Property p = runner.evaluateExpression(Properties.LEFT, "e(3)(", this);
 		//Property p = runner.evaluateExpression(Properties.LEFT, "expr(rgba(255,255,255,128))", this);
 		//DebugUtils.log(this, ((Vector4f) p.getValue()).w);
 		DebugUtils.log(this, p.getValue());

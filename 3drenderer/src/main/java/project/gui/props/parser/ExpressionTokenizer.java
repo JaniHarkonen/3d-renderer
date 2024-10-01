@@ -90,6 +90,13 @@ public class ExpressionTokenizer {
 				wasSuccessful = true;
 			} else if( this.isSpecialCharacter(charAt) ) {
 				wasSuccessful = this.specialCharacter(charAt);
+			} else if( this.charAtCursor() == '.' ) {
+				tokenizerError(
+					this,
+					"Numeric values starting with decimal point are not allowed.",
+					this.expression
+				);
+				wasSuccessful = false;
 			}
 			
 			if( !wasSuccessful ) {
@@ -99,7 +106,8 @@ public class ExpressionTokenizer {
 			this.cursor++;
 		}
 		
-		if( tokens.size() == 0 ) {
+			// No tokens, there is nothing to evaluate
+		if( this.tokens.size() == 1 ) {
 			tokenizerError(
 				this,
 				"Expression contains no calculation.",
@@ -108,7 +116,8 @@ public class ExpressionTokenizer {
 			return null;
 		}
 		
-		if( parenthesisCount > 0 ) {
+			// Make sure all parenthesis were closed
+		if( this.parenthesisCount > 0 ) {
 			tokenizerError(
 				this,
 				"Expected " + this.parenthesisCount + " more closing parenthesis.",
@@ -117,7 +126,8 @@ public class ExpressionTokenizer {
 			return null;
 		}
 		
-		return this.tokens;	// NOTICE: This result will contain the final parenthesis
+			// NOTICE: This result will contain the final parenthesis
+		return this.tokens;
 	}
 	
 	private boolean function(char charAt) {
@@ -251,7 +261,7 @@ public class ExpressionTokenizer {
 			tokenizerError(
 				this,
 				"String beginning with character " + charAt 
-				+ ", must also end with that character.",
+				+ " must also end with that character.",
 				this.expression
 			);
 			return false;
@@ -277,6 +287,15 @@ public class ExpressionTokenizer {
 			tokenizerError(
 				this,
 				"Encountered unexpected closing parenthesis.",
+				this.expression
+			);
+			return false;
+		} 
+			// Expression shouldn't close before the last character in expression
+		else if( this.parenthesisCount == 0 && this.cursor < this.expression.length() - 1 ) {
+			tokenizerError(
+				this,
+				"Expression has content outside its parenthesis.",
 				this.expression
 			);
 			return false;
