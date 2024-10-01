@@ -27,7 +27,7 @@ public class NegationEvaluator extends AEvaluator {
 		}
 		
 		float value = (float) arg1.getValue();
-		return new Property(propertyName, value, Property.PX);
+		return new Property(propertyName, -value, Property.PX);
 	}
 
 	@Override

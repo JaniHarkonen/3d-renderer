@@ -1,19 +1,13 @@
 package project.opengl.gui;
 
-import java.util.List;
-
 import org.joml.Vector4f;
 
 import project.Window;
 import project.gui.AGUIElement;
 import project.gui.props.Properties;
 import project.gui.props.Property;
-import project.gui.props.parser.AEvaluator;
-import project.gui.props.parser.ExpressionParser;
 import project.gui.props.parser.ExpressionRunner;
-import project.gui.props.parser.ExpressionTokenizer;
 import project.gui.props.parser.IStyleCascade;
-import project.gui.props.parser.Token;
 import project.shared.logger.Logger;
 import project.utils.DebugUtils;
 
@@ -88,16 +82,20 @@ class StyleCascade implements IStyleCascade {
 	
 	@Override
 	public void evaluateProperties(Properties properties) {
-		ExpressionTokenizer tokenizer = new ExpressionTokenizer();
+		ExpressionRunner runner = new ExpressionRunner();
+		//Property p = runner.evaluateExpression(Properties.LEFT, "expr(1+2-3*3/4+9-7+6+4*2-1/1)", this);
+		Property p = runner.evaluateExpression(Properties.LEFT, "expr(min(-4, 4))", this);
+		DebugUtils.log(this, p.getValue());
+		//ExpressionTokenizer tokenizer = new ExpressionTokenizer();
 		//List<Token> tokens = tokenizer.tokenize(null, "expr(5+6-1*7)");
-		List<Token> tokens = tokenizer.tokenize(null, "expr(1+2-3*3/4+9-7+6+4*2-1/1)");
+		//List<Token> tokens = tokenizer.tokenize(null, "expr(1+2-3*3/4+9-7+6+4*2-1/1)");
 		//List<Token> tokens = tokenizer.tokenize(null, "expr(min(85752,72,241,042,45324)+1)");
 		//List<Token> tokens = tokenizer.tokenize(null, "expr(9)");
-		ExpressionParser parser = new ExpressionParser();
-		AEvaluator ast = parser.parse(tokens);
+		//ExpressionParser parser = new ExpressionParser();
+		//AEvaluator ast = parser.parse(tokens);
 		//DebugUtils.log(this, ast.operator.id, ast.getArgument(0), ast.getArgument(1));
-		Property prop = ast.evaluate(this);
-		DebugUtils.log(this, prop.getValue(), prop.getType());
+		//Property prop = ast.evaluate(this);
+		//DebugUtils.log(this, prop.getValue(), prop.getType());
 		
 		float ww = window.getWidth();
 		float wh = window.getHeight();

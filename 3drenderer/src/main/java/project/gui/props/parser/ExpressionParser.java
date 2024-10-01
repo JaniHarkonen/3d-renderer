@@ -16,6 +16,7 @@ import project.gui.props.parser.ops.MulEvaluator;
 import project.gui.props.parser.ops.NegationEvaluator;
 import project.gui.props.parser.ops.SubEvaluator;
 import project.shared.logger.Logger;
+import project.utils.DebugUtils;
 
 public class ExpressionParser {
 	public static final int ID_FUNCTION_CALL = Operator.FINAL_ID + 1;
@@ -68,7 +69,7 @@ public class ExpressionParser {
 		Operator previousOperator = Operator.OP_NONE;
 		
 		while( (currentToken = this.lookupToken(this.cursor)) != null ) {
-			AEvaluator evaluator;
+			AEvaluator evaluator;	// Evaluator for the next value
 			AEvaluator unary = null;	// This will contain an evaluator for a unary operation, if one is detected
 			
 				// Handle negation, unary operator detected
@@ -86,7 +87,7 @@ public class ExpressionParser {
 				this.cursor++;
 				evaluator = this.expression();
 				this.cursor++;
-			}  else {
+			} else {
 					// Handle function call
 				AEvaluator function = this.functionCall();
 				if( function != null ) {
@@ -100,15 +101,14 @@ public class ExpressionParser {
 				// the unary evaluator becomes the current evaluator
 			if( unary != null ) {
 				unary.addArgument(evaluator);
-				previousOperator = unary.operator;
 				evaluator = unary;
 			}
 			
 			Token nextToken = this.lookupToken(this.cursor + 1);
 			if( !this.checkToken(nextToken, TokenType.OPERATOR) ) {
-					// 'evaluator' holds either a value provider or an unary evaluator at
+					// 'evaluator' holds either a value provider or a unary evaluator at
 					// this point
-				if( previousOperator == Operator.OP_NONE || unary != null ) {
+				if( current == null ) {
 					return evaluator;
 				}
 				
@@ -153,7 +153,6 @@ public class ExpressionParser {
 					current.addArgument(next);
 				}
 				
-				//next.operator = nextOperator;
 				next.addArgument(evaluator);
 				current = next;
 			}
