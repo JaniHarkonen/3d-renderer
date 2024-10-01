@@ -83,8 +83,9 @@ class StyleCascade implements IStyleCascade {
 	@Override
 	public void evaluateProperties(Properties properties) {
 		ExpressionRunner runner = new ExpressionRunner();
-		//Property p = runner.evaluateExpression(Properties.LEFT, "expr(1+2-3*3/4+9-7+6+4*2-1/1)", this);
-		Property p = runner.evaluateExpression(Properties.LEFT, "expr(min(-4, 4))", this);
+		Property p = runner.evaluateExpression(Properties.LEFT, "expr(1+2-3*3/4+9-7+6+4*2-1/1)", this);
+		//Property p = runner.evaluateExpression(Properties.LEFT, "expr(rgba(255,255,255,128))", this);
+		//DebugUtils.log(this, ((Vector4f) p.getValue()).w);
 		DebugUtils.log(this, p.getValue());
 		//ExpressionTokenizer tokenizer = new ExpressionTokenizer();
 		//List<Token> tokens = tokenizer.tokenize(null, "expr(5+6-1*7)");
@@ -189,8 +190,8 @@ class StyleCascade implements IStyleCascade {
 			case Property.PX: return property.getValue();
 			
 				// Relative dimensions
-			case Property.WPC: return ((float) property.getValue()) * this.width;
-			case Property.HPC: return ((float) property.getValue()) * this.height;
+			case Property.WPERCENT: return ((float) property.getValue()) * this.width;
+			case Property.HPERCENT: return ((float) property.getValue()) * this.height;
 			
 				// Grid dimensions
 			case Property.C: 

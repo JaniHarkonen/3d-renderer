@@ -11,6 +11,7 @@ public class ExpressionRunner {
 	) {
 		ExpressionTokenizer tokenizer = new ExpressionTokenizer();
 		List<Token> tokens = tokenizer.tokenize(propertyName, expression);
+		//return Property.NULL_COLOR;
 		ExpressionParser parser = new ExpressionParser();
 		AEvaluator parse = parser.parse(tokens);
 		return parse.evaluate(cascade);

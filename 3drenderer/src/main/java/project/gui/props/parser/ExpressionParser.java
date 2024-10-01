@@ -16,7 +16,6 @@ import project.gui.props.parser.ops.MulEvaluator;
 import project.gui.props.parser.ops.NegationEvaluator;
 import project.gui.props.parser.ops.SubEvaluator;
 import project.shared.logger.Logger;
-import project.utils.DebugUtils;
 
 public class ExpressionParser {
 	public static final int ID_FUNCTION_CALL = Operator.FINAL_ID + 1;
@@ -180,7 +179,7 @@ public class ExpressionParser {
 		}
 		
 		String functionName = (String) functionNameToken.value;
-		AEvaluator functionCall = functionEvaluatorByName.get(functionName);
+		AEvaluator functionCall = functionEvaluatorByName.get(functionName).createInstance();
 		functionCall.operator = OP_FUNCTION_CALL;
 		this.cursor++;
 		

@@ -331,12 +331,12 @@ public class Scene {
 		
 		Image image = new Image(this.gui, "img-crosshair", TestAssets.TEX_GUI_CROSSHAIR);
 			props = image.getProperties();
-			props.getProperty(Properties.LEFT).set(0.5f, Property.WPC);
-			props.getProperty(Properties.TOP).set(0.5f, Property.HPC);
+			props.getProperty(Properties.LEFT).set(0.5f, Property.WPERCENT);
+			props.getProperty(Properties.TOP).set(0.5f, Property.HPERCENT);
 			props.getProperty(Properties.WIDTH).set(16, Property.PX);
 			props.getProperty(Properties.HEIGHT).set(16, Property.PX);
-			props.getProperty(Properties.ANCHOR_X).set(0.5f, Property.WPC);
-			props.getProperty(Properties.ANCHOR_Y).set(0.5f, Property.WPC);
+			props.getProperty(Properties.ANCHOR_X).set(0.5f, Property.WPERCENT);
+			props.getProperty(Properties.ANCHOR_Y).set(0.5f, Property.HPERCENT);
 			props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(1, 1, 1, 1), Property.COLOR);
 		this.gui.addChildTo(this.gui.getBody(), image);
 		
