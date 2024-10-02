@@ -228,8 +228,7 @@ class StyleCascade implements IStyleCascade {
 			}
 			
 				// Evaluate expression
-			case Property.EXPRESSION:
-				return this.evaluate(this.parseExpression(property));
+			case Property.EXPRESSION: return this.evaluate(this.parseExpression(property));
 				
 			case Property.THEME: {
 				String key = (String) property.getValue();
