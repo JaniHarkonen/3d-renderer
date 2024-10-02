@@ -12,6 +12,11 @@ public class FunctionClamp extends AEvaluator {
 
 	@Override
 	public Property evaluate(IStyleCascade context) {
+		if( this.arguments.size() != 3 ) {
+			AEvaluator.logArgumentCountMismatch(this, "clamp", 3, this.arguments.size());
+			return Property.NULL_PX;
+		}
+		
 		Property pMin = AEvaluator.evaluateArgument(this.getArgument(0), context);
 		Property pValue = AEvaluator.evaluateArgument(this.getArgument(1), context);
 		Property pMax = AEvaluator.evaluateArgument(this.getArgument(2), context);
@@ -19,7 +24,7 @@ public class FunctionClamp extends AEvaluator {
 		
 		if( 
 			!Property.isNumeric(incorrect = pMin) || !Property.isNumeric(incorrect = pValue) || 
-			!Property.isNumeric(incorrect = pMax) 
+			!Property.isNumeric(incorrect = pMax)
 		) {
 			AEvaluator.logErrorInSignature(
 				this, 

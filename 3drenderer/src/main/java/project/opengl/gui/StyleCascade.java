@@ -4,6 +4,7 @@ import org.joml.Vector4f;
 
 import project.Window;
 import project.gui.AGUIElement;
+import project.gui.Theme;
 import project.gui.props.Properties;
 import project.gui.props.Property;
 import project.gui.props.parser.ExpressionRunner;
@@ -12,6 +13,15 @@ import project.shared.logger.Logger;
 import project.utils.DebugUtils;
 
 class StyleCascade implements IStyleCascade {
+	static final int[] hexToInt = new int[] {
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1, -1, -1, -1, -1, -1, -1, 10, 11, 12, 13, 14, 15
+	};
+	
+	private static final ExpressionRunner RUNNER;
+	static {
+		RUNNER = new ExpressionRunner();
+	}
+	
 	float left;
 	float top;
 	
@@ -32,9 +42,11 @@ class StyleCascade implements IStyleCascade {
 	float anchorY;
 	
 	private final Window window;
+	private final Theme activeTheme;
 	
-	StyleCascade(Window window) {
+	StyleCascade(Window window, Theme activeTheme) {
 		this.window = window;
+		this.activeTheme = activeTheme;
 		
 		this.left = Properties.DEFAULT_LEFT;
 		this.top = Properties.DEFAULT_TOP;
@@ -58,6 +70,7 @@ class StyleCascade implements IStyleCascade {
 	
 	StyleCascade(StyleCascade src) {
 		this.window = src.window;
+		this.activeTheme = src.activeTheme;
 		
 		this.left = src.left;
 		this.top = src.top;
@@ -82,21 +95,6 @@ class StyleCascade implements IStyleCascade {
 	
 	@Override
 	public void evaluateProperties(Properties properties) {
-		ExpressionRunner runner = new ExpressionRunner();
-		//Property p = runner.evaluateExpression(Properties.LEFT, "expr(1+2-3*3/4+9-7+6+4*2-1/1)", this);
-		Property p = runner.evaluateExpression(Properties.LEFT, "expr(min(-4, 4))", this);
-		DebugUtils.log(this, p.getValue());
-		//ExpressionTokenizer tokenizer = new ExpressionTokenizer();
-		//List<Token> tokens = tokenizer.tokenize(null, "expr(5+6-1*7)");
-		//List<Token> tokens = tokenizer.tokenize(null, "expr(1+2-3*3/4+9-7+6+4*2-1/1)");
-		//List<Token> tokens = tokenizer.tokenize(null, "expr(min(85752,72,241,042,45324)+1)");
-		//List<Token> tokens = tokenizer.tokenize(null, "expr(9)");
-		//ExpressionParser parser = new ExpressionParser();
-		//AEvaluator ast = parser.parse(tokens);
-		//DebugUtils.log(this, ast.operator.id, ast.getArgument(0), ast.getArgument(1));
-		//Property prop = ast.evaluate(this);
-		//DebugUtils.log(this, prop.getValue(), prop.getType());
-		
 		float ww = window.getWidth();
 		float wh = window.getHeight();
 		float left = this.evaluateFloat(properties.getProperty(Properties.LEFT, ww, wh));
@@ -189,8 +187,8 @@ class StyleCascade implements IStyleCascade {
 			case Property.PX: return property.getValue();
 			
 				// Relative dimensions
-			case Property.WPC: return ((float) property.getValue()) * this.width;
-			case Property.HPC: return ((float) property.getValue()) * this.height;
+			case Property.WPERCENT: return ((float) property.getValue()) * this.width;
+			case Property.HPERCENT: return ((float) property.getValue()) * this.height;
 			
 				// Grid dimensions
 			case Property.C: 
@@ -199,27 +197,65 @@ class StyleCascade implements IStyleCascade {
 				return this.height / this.rows * ((float) property.getValue());
 				
 				// Return primary or secondary color depending on prop name
-			case Property.COLOR: {
+			case Property.COLOR: 
+			case Property.COLOR_HEX: {
 				Vector4f defaultColor = property.getName().equals(Properties.PRIMARY_COLOR) ? 
 					Properties.DEFAULT_PRIMARY_COLOR : Properties.DEFAULT_SECONDARY_COLOR;
-				return this.returnOrDefault((Vector4f) property.getValue(), defaultColor);
+				Vector4f color;
+				
+					// Handle hex color
+				if( property.getType().equals(Property.COLOR_HEX) ) {
+					String hexString = ((String) property.getValue()).toUpperCase();
+					float alpha = 1;
+					
+						// Alpha value was included
+					if( hexString.length() == 8 ) {
+						alpha = this.charsToVector4fColorValue(
+							hexString.charAt(6), hexString.charAt(7)
+						);
+					}
+					color = new Vector4f(
+						this.charsToVector4fColorValue(hexString.charAt(0), hexString.charAt(1)), 
+						this.charsToVector4fColorValue(hexString.charAt(2), hexString.charAt(3)), 
+						this.charsToVector4fColorValue(hexString.charAt(4), hexString.charAt(5)), 
+						alpha
+					);
+				} else {
+					color = (Vector4f) property.getValue();
+				}
+				
+				return this.returnOrDefault(color, defaultColor);
 			}
 			
 				// Evaluate expression
-			case Property.EXPRESSION: 
-				return this.evaluate(this.parseExpression((String) property.getValue()));
+			case Property.EXPRESSION: return this.evaluate(this.parseExpression(property));
 				
-			case Property.THEME: break;	// to be implemented
+			case Property.THEME: {
+				String key = (String) property.getValue();
+				Property themeProperty = this.activeTheme.getProperty(key);
+				
+					// Property not found in theme
+				if( themeProperty == null ) {
+					// handle property not found in theme
+				}
+				
+				return this.evaluate(themeProperty);
+			}
 		}
 		return null;
 	}
 	
-	private Property parseExpression(String expression) {
-		Property result = new Property((String) null); // Temporary prop, doesn't have to be named
-		return result;
+	private Property parseExpression(Property expression) {
+		return RUNNER.evaluateExpression(
+			expression.getName(), (String) expression.getValue(), this
+		);
 	}
 	
 	private Object returnOrDefault(Object value, Object defaultValue) {
 		return (value == null) ? defaultValue : value;
+	}
+	
+	private float charsToVector4fColorValue(char c1, char c2) {
+		return (hexToInt[c1 - '0'] * 16 + hexToInt[c2 - '0']) / 255f;
 	}
 }

@@ -22,6 +22,17 @@ public abstract class AEvaluator {
 		);
 	}
 	
+	public static void logArgumentCountMismatch(
+		Object me, String function, int expected, int received
+	) {
+		Logger.get().error(
+			me, 
+			ExpressionParser.FAILED_TO_EVALUATE, 
+			function + " expects " + expected + " arguments.", 
+			"Received " + received + "arguments."
+		);
+	}
+	
 	public AEvaluator parent;
 	public Operator operator;
 	protected List<AEvaluator> arguments;
@@ -56,42 +67,6 @@ public abstract class AEvaluator {
 		}
 		
 		return this.arguments.get(index);
-	}
-	
-	protected boolean requireFloat(String errorMessage, Property... properties) {
-		for( Property property : properties ) {
-			if( !property.isNumeric() ) {
-				Logger.get().error(
-					this, ExpressionParser.FAILED_TO_PARSE, errorMessage
-				);
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	protected boolean requireArgumentMinCount(int count, String functionName) {
-		if( this.arguments.size() >= count ) {
-			Logger.get().error(
-				this, 
-				ExpressionParser.FAILED_TO_PARSE, 
-				functionName + "() requires at least one value."
-			);
-			return false;
-		}
-		return true;
-	}
-	
-	protected boolean requireExactArgumentCount(int count, String functionName) {
-		if( this.arguments.size() == count ) {
-			Logger.get().error(
-				this, 
-				ExpressionParser.FAILED_TO_PARSE, 
-				functionName + "() requires " + count + " values."
-			);
-			return false;
-		}
-		return true;
 	}
 	
 	public boolean isOperator(Operator operator) {

@@ -6,16 +6,17 @@ import java.util.Set;
 import org.joml.Vector4f;
 
 public class Property {
-	public static final String PX = "px";			// Pixels (float)
-	public static final String WPC = "%w";			// Parent's width percent (float)
-	public static final String HPC = "%h";			// Parent's height percent (float)
-	public static final String C = "c";				// Width of column in parent's grid (float)
-	public static final String R = "r";				// Height of row in parent's grid (float)
-	public static final String THEME = "theme";		// Theme property reference (String)
-	public static final String STRING = "str";		// String
-	public static final String NUMBER = "num";		// Floating point value
-	public static final String EXPRESSION = "expr";	// Expression (String)
-	public static final String COLOR = "color";		// RGBA-color (Vector4f)
+	public static final String PX = "px";					// Pixels (float)
+	public static final String WPERCENT = "WIDTH%";			// Parent's width percent (float)
+	public static final String HPERCENT = "HEIGHT%";		// Parent's height percent (float)
+	public static final String C = "c";						// Width of column in parent's grid (float)
+	public static final String R = "r";						// Height of row in parent's grid (float)
+	public static final String THEME = "THEME";				// Theme property reference (String)
+	public static final String STRING = "STRING";			// String
+	public static final String NUMBER = "NUMBER";			// Floating point value
+	public static final String EXPRESSION = "EXPRESSION";	// Expression (String)
+	public static final String COLOR = "COLOR";				// RGBA-color (Vector4f)
+	public static final String COLOR_HEX = "COLOR_HEX";		// Hexadecimal color (Vector4f)
 	
 	public static final String FUNCTION_THEME = "t";		// Theme property getter function
 	public static final String FUNCTION_MIN = "min";		// Returns minimum of a set of values

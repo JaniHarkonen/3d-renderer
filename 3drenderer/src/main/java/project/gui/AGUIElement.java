@@ -3,7 +3,6 @@ package project.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import project.Application;
 import project.core.IRenderable;
 import project.core.ITickable;
 import project.gui.props.Properties;
@@ -43,7 +42,7 @@ public abstract class AGUIElement implements IRenderable, ITickable {
 	
 	@Override
 	public void submitToRenderer() {
-		Application.getApp().getRenderer().getBackGameState().listGUIRoot(this);
+		//Application.getApp().getRenderer().getBackGameState().listGUIRoot(this);
 	}
 	
 	public abstract AGUIElement rendererCopy();

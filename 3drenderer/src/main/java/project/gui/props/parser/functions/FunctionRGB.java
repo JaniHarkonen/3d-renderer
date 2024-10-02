@@ -14,6 +14,11 @@ public class FunctionRGB extends AEvaluator {
 	
 	@Override
 	public Property evaluate(IStyleCascade context) {
+		if( this.arguments.size() != 3 ) {
+			AEvaluator.logArgumentCountMismatch(this, "rgb", 3, this.arguments.size());
+			return Property.NULL_COLOR;
+		}
+		
 		Property pRed = AEvaluator.evaluateArgument(this.getArgument(0), context);
 		Property pGreen = AEvaluator.evaluateArgument(this.getArgument(1), context);
 		Property pBlue = AEvaluator.evaluateArgument(this.getArgument(2), context);
@@ -31,9 +36,9 @@ public class FunctionRGB extends AEvaluator {
 			return Property.NULL_COLOR;
 		}
 		
-		float red = (float) pRed.getValue();
-		float green = (float) pGreen.getValue();
-		float blue = (float) pBlue.getValue();
+		float red = (float) pRed.getValue() / 255f;
+		float green = (float) pGreen.getValue() / 255f;
+		float blue = (float) pBlue.getValue() / 255f;
 		return new Property(pRed.getName(), new Vector4f(red, green, blue, 1.0f), Property.COLOR);
 	}
 

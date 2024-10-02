@@ -10,6 +10,8 @@ import java.util.Map;
 
 import project.core.asset.IGraphicsAsset;
 import project.gui.AGUIElement;
+import project.gui.GUI;
+import project.gui.Theme;
 import project.scene.ASceneObject;
 import project.scene.Camera;
 
@@ -21,6 +23,7 @@ public class GameState {
 	
 	private Camera activeCamera;
 	private AGUIElement activeGUIRoot;
+	private Theme activeGUITheme;
 	
 	public GameState() {
 		this.activeScene = new LinkedHashMap<>();
@@ -28,6 +31,7 @@ public class GameState {
 		this.graphicsDisposalRequests = new ArrayDeque<>();
 		this.debugData = new HashMap<>();
 		this.activeGUIRoot = null;
+		this.activeGUITheme = null;
 	}
 	
 	public GameState(GameState src) {
@@ -35,7 +39,8 @@ public class GameState {
 		this.graphicsGenerationRequests = new ArrayDeque<>();
 		this.graphicsDisposalRequests = new ArrayDeque<>();
 		this.debugData = new HashMap<>();
-		this.activeGUIRoot = src.getActiveGUIRoot();
+		this.activeGUIRoot = src.activeGUIRoot;
+		this.activeGUITheme = src.activeGUITheme;
 	}
 	
 	
@@ -57,7 +62,14 @@ public class GameState {
 		}
 	}
 	
-	public void listGUIRoot(AGUIElement root) {
+	public void listGUI(GUI gui) {
+		AGUIElement root = gui.getBody();
+		this.activeGUITheme = gui.getActiveTheme();
+		
+		if( this.activeGUITheme != Theme.NULL_THEME ) {
+			this.activeGUITheme = new Theme(gui.getActiveTheme());
+		}
+		
 		if( this.activeGUIRoot == null || !this.activeGUIRoot.rendererEquals(root) ) {
 			this.activeGUIRoot = root.rendererCopy();
 		} else {
@@ -129,5 +141,9 @@ public class GameState {
 	
 	public Camera getActiveCamera() {
 		return this.activeCamera;
+	}
+	
+	public Theme getActiveGUITheme() {
+		return this.activeGUITheme;
 	}
 }
