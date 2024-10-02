@@ -4,18 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 import org.lwjgl.glfw.GLFW;
 
 import project.Application;
 import project.Window;
 import project.controls.Controller;
-import project.gui.Div;
 import project.gui.GUI;
 import project.gui.Image;
+import project.gui.Theme;
 import project.gui.props.Properties;
 import project.gui.props.Property;
-import project.gui.props.RQuery;
 import project.input.Input;
 import project.input.InputSnapshot;
 import project.input.KeyHeld;
@@ -256,7 +254,8 @@ public class Scene {
 		
 		if( this.gui != null ) {
 			this.gui.tick(deltaTime);
-			this.gui.getBody().submitToRenderer();
+			this.gui.submitToRenderer();
+			//this.gui.getBody().submitToRenderer();
 		}
 		
 		Application.getApp().getRenderer().getBackGameState()
@@ -292,6 +291,16 @@ public class Scene {
 		//this.DEBUGtextAppStatistics = new Text(this.gui, "test-text", "");
 		this.gui = new GUI();
 		this.gui.initialize();
+		
+			// Theme
+		Theme t = new Theme();
+		t.setProperty(new Property("epic-prop", "ffcab0", Property.COLOR_HEX));
+			Theme subt = new Theme();
+			//subt.setProperty(new Property("sub-prop", "fdffcd", Property.COLOR_HEX));
+			subt.setProperty(new Property("sub-prop", "e(rgba(0,0,255,255))", Property.EXPRESSION));
+		t.setSection("sub-section", subt);
+		this.gui.addTheme("epic-theme", t);
+		this.gui.setActiveTheme("epic-theme");
 		
 		Properties props;
 		Properties.Style style;
@@ -337,7 +346,8 @@ public class Scene {
 			props.getProperty(Properties.HEIGHT).set(16, Property.PX);
 			props.getProperty(Properties.ANCHOR_X).set(0.5f, Property.WPERCENT);
 			props.getProperty(Properties.ANCHOR_Y).set(0.5f, Property.HPERCENT);
-			props.getProperty(Properties.PRIMARY_COLOR).set("9fd3c7", Property.COLOR_HEX);
+			props.getProperty(Properties.PRIMARY_COLOR).set("sub-section.sub-prop", Property.THEME);
+			//props.getProperty(Properties.PRIMARY_COLOR).set("9fd3c7", Property.COLOR_HEX);
 		this.gui.addChildTo(this.gui.getBody(), image);
 		
 		/*Div div = new Div(this.gui, "test-div");

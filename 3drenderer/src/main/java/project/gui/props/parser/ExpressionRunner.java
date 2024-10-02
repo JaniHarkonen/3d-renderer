@@ -12,7 +12,7 @@ public class ExpressionRunner {
 	) {
 		ExpressionTokenizer tokenizer = new ExpressionTokenizer();
 		List<Token> tokens = tokenizer.tokenize(propertyName, expression);
-		DebugUtils.log(this, tokens.get(0).value);
+		//DebugUtils.log(this, tokens.get(0).value);
 		//return Property.NULL_COLOR;
 		ExpressionParser parser = new ExpressionParser();
 		AEvaluator parse = parser.parse(tokens);

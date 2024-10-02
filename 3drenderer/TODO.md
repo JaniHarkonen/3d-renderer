@@ -3,8 +3,8 @@
 ### Priority
 - reconsider storing properties as fields in Context due to redundancy
 - Context currently holds no reference to a Font, implement font lookup by name
-- implement themes
-- ERROR: stop using equals() on token value to figure out if the token equals the expected token, ALWAYS check both type and value OR only type
+- implement a markup language for building UIs with
+- hex colors should probably be calculated before they are assigned to elements, no point in having COLOR_HEX, calculate it in markup parsing
 
 ### ASceneObject & AGUIElement
 - consider if references to the renderer can be removed (don't use method names like 'rendererEquals' or 'rendererCopy')

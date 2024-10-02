@@ -4,6 +4,7 @@ import org.joml.Vector4f;
 
 import project.Window;
 import project.gui.AGUIElement;
+import project.gui.Theme;
 import project.gui.props.Properties;
 import project.gui.props.Property;
 import project.gui.props.parser.ExpressionRunner;
@@ -15,6 +16,11 @@ class StyleCascade implements IStyleCascade {
 	static final int[] hexToInt = new int[] {
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1, -1, -1, -1, -1, -1, -1, 10, 11, 12, 13, 14, 15
 	};
+	
+	private static final ExpressionRunner RUNNER;
+	static {
+		RUNNER = new ExpressionRunner();
+	}
 	
 	float left;
 	float top;
@@ -36,9 +42,11 @@ class StyleCascade implements IStyleCascade {
 	float anchorY;
 	
 	private final Window window;
+	private final Theme activeTheme;
 	
-	StyleCascade(Window window) {
+	StyleCascade(Window window, Theme activeTheme) {
 		this.window = window;
+		this.activeTheme = activeTheme;
 		
 		this.left = Properties.DEFAULT_LEFT;
 		this.top = Properties.DEFAULT_TOP;
@@ -62,6 +70,7 @@ class StyleCascade implements IStyleCascade {
 	
 	StyleCascade(StyleCascade src) {
 		this.window = src.window;
+		this.activeTheme = src.activeTheme;
 		
 		this.left = src.left;
 		this.top = src.top;
@@ -86,23 +95,6 @@ class StyleCascade implements IStyleCascade {
 	
 	@Override
 	public void evaluateProperties(Properties properties) {
-		//ExpressionRunner runner = new ExpressionRunner();
-		//Property p = runner.evaluateExpression(Properties.LEFT, "expr(1+2-3*3/4+9-7+6+4*2-1/1)", this);
-		//Property p = runner.evaluateExpression(Properties.LEFT, "e(3)(", this);
-		//Property p = runner.evaluateExpression(Properties.LEFT, "expr(rgba(255,255,255,128))", this);
-		//DebugUtils.log(this, ((Vector4f) p.getValue()).w);
-		//DebugUtils.log(this, p.getValue());
-		//ExpressionTokenizer tokenizer = new ExpressionTokenizer();
-		//List<Token> tokens = tokenizer.tokenize(null, "expr(5+6-1*7)");
-		//List<Token> tokens = tokenizer.tokenize(null, "expr(1+2-3*3/4+9-7+6+4*2-1/1)");
-		//List<Token> tokens = tokenizer.tokenize(null, "expr(min(85752,72,241,042,45324)+1)");
-		//List<Token> tokens = tokenizer.tokenize(null, "expr(9)");
-		//ExpressionParser parser = new ExpressionParser();
-		//AEvaluator ast = parser.parse(tokens);
-		//DebugUtils.log(this, ast.operator.id, ast.getArgument(0), ast.getArgument(1));
-		//Property prop = ast.evaluate(this);
-		//DebugUtils.log(this, prop.getValue(), prop.getType());
-		
 		float ww = window.getWidth();
 		float wh = window.getHeight();
 		float left = this.evaluateFloat(properties.getProperty(Properties.LEFT, ww, wh));
@@ -236,17 +228,28 @@ class StyleCascade implements IStyleCascade {
 			}
 			
 				// Evaluate expression
-			case Property.EXPRESSION: 
-				return this.evaluate(this.parseExpression((String) property.getValue()));
+			case Property.EXPRESSION:
+				return this.evaluate(this.parseExpression(property));
 				
-			case Property.THEME: break;	// to be implemented
+			case Property.THEME: {
+				String key = (String) property.getValue();
+				Property themeProperty = this.activeTheme.getProperty(key);
+				
+					// Property not found in theme
+				if( themeProperty == null ) {
+					// handle property not found in theme
+				}
+				
+				return this.evaluate(themeProperty);
+			}
 		}
 		return null;
 	}
 	
-	private Property parseExpression(String expression) {
-		Property result = new Property((String) null); // Temporary prop, doesn't have to be named
-		return result;
+	private Property parseExpression(Property expression) {
+		return RUNNER.evaluateExpression(
+			expression.getName(), (String) expression.getValue(), this
+		);
 	}
 	
 	private Object returnOrDefault(Object value, Object defaultValue) {
