@@ -90,7 +90,7 @@ public class ExpressionParser {
 			if( this.checkToken(currentToken, TokenType.EVALUABLE) ) {
 				PropertyBuilder builder = (PropertyBuilder) currentToken.value;
 				evaluator = new ValueProvider(builder.build(this.propertyName));
-			} else if( this.checkToken(currentToken, TokenType.SPECIAL_CHARACTER, '(') ) {
+			} else if( this.checkToken(currentToken, TokenType.EXPRESSION_START) ) {
 					// Handle parenthesis (sub-expressions)
 				this.cursor++;
 				evaluator = this.expression();
@@ -182,7 +182,7 @@ public class ExpressionParser {
 		this.cursor++;
 		Token argumentsStart = this.lookupToken(this.cursor);
 		
-		if( !this.checkToken(argumentsStart, TokenType.SPECIAL_CHARACTER, '(') ) {
+		if( !this.checkToken(argumentsStart, TokenType.EXPRESSION_START) ) {
 			Logger.get().error(this, FAILED_TO_PARSE, "Arguments expected after function call.");
 			return null;
 		}
@@ -195,11 +195,11 @@ public class ExpressionParser {
 			// Extract arguments, if any
 		Token currentToken;
 		while( (currentToken = this.lookupToken(this.cursor)) != null ) {
-			if( this.checkToken(currentToken, TokenType.SPECIAL_CHARACTER, ')') ) {
+			if( this.checkToken(currentToken, TokenType.EXPRESSION_END) ) {
 				break;
 			}
 			
-			if( this.checkToken(currentToken, TokenType.SPECIAL_CHARACTER, ',') ) {
+			if( this.checkToken(currentToken, TokenType.EXPRESSION_SEPARATOR) ) {
 				this.cursor++;
 				continue;
 			}

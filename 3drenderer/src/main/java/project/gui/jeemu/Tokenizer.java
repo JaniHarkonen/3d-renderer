@@ -1,13 +1,68 @@
 package project.gui.jeemu;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import project.gui.props.PercentageBuilder;
 import project.gui.props.Property;
 import project.gui.props.PropertyBuilder;
 
 public class Tokenizer {
+	public static final String KEYWORD_BODY = "body";
+	public static final String KEYWORD_DIV = "div";
+	public static final String KEYWORD_BUTTON = "button";
+	public static final String KEYWORD_IMAGE = "image";
+	public static final String KEYWORD_TEXT = "text";
+	public static final String KEYWORD_COLLECTION = "collection";
+	public static final String KEYWORD_AS = "as";
+	public static final String KEYWORD_THEME = "theme";
+	
+	public static final String RQUERY_RESPONSIVE = "responsive";
+	public static final String RQUERY_WINDOW = "window";
+	public static final String RQUERY_RATIO = "ratio";
+	
+	private static final Set<String> KEYWORDS;
+	private static final Set<String> RQUERY_WORDS;
+	static {
+		KEYWORDS = new HashSet<>();
+		KEYWORDS.add(KEYWORD_BODY);
+		KEYWORDS.add(KEYWORD_DIV);
+		KEYWORDS.add(KEYWORD_BUTTON);
+		KEYWORDS.add(KEYWORD_IMAGE);
+		KEYWORDS.add(KEYWORD_TEXT);
+		KEYWORDS.add(KEYWORD_COLLECTION);
+		KEYWORDS.add(KEYWORD_AS);
+		KEYWORDS.add(KEYWORD_THEME);
+		
+		RQUERY_WORDS = new HashSet<>();
+		RQUERY_WORDS.add(RQUERY_RESPONSIVE);
+		RQUERY_WORDS.add(RQUERY_WINDOW);
+		RQUERY_WORDS.add(RQUERY_RATIO);
+	}
+	
+	private static boolean isKeyword(String literal) {
+		return KEYWORDS.contains(literal);
+	}
+	
+	private static boolean isRQuery(String literal) {
+		return RQUERY_WORDS.contains(literal);
+	}
+	
+	private static Map<Character, TokenType> specialCharacterToTokenType;
+	static {
+		specialCharacterToTokenType = new HashMap<>();
+		specialCharacterToTokenType.put('(', TokenType.EXPRESSION_START);
+		specialCharacterToTokenType.put(')', TokenType.EXPRESSION_END);
+		specialCharacterToTokenType.put('{', TokenType.BLOCK_START);
+		specialCharacterToTokenType.put('}', TokenType.BLOCK_END);
+		specialCharacterToTokenType.put(',', TokenType.EXPRESSION_SEPARATOR);
+		specialCharacterToTokenType.put(':', TokenType.FIELD_SEPARATOR);
+	}
+	
 	public class Result {
 		public boolean wasSuccessful;
 		public String errorMessage;
@@ -36,7 +91,7 @@ public class Tokenizer {
 	private int positionInLine;
 	
 	public Tokenizer() {
-		this.tokens = new ArrayList<>();
+		this.tokens = null;
 		this.jeemuString = null;
 		this.cursor = 0;
 		this.parenthesisCount = 0;
@@ -58,6 +113,15 @@ public class Tokenizer {
 		this.positionInLine = 0;
 		
 		while( this.cursor < this.jeemuString.length() ) {
+			Result error = null;
+			error = this.comment();
+			
+			if( error != null ) {
+				return error;
+			}
+			
+			error = null;
+			
 			char charAt = this.jeemuString.charAt(this.cursor);
 			
 			if( charAt == '\n' ) {
@@ -66,19 +130,17 @@ public class Tokenizer {
 				continue;
 			}
 			
-			Result error = null;
-			
-			if( this.isIdentifier(charAt) ) {
-				error = this.function(charAt);
+			if( this.isLiteral(charAt) ) {
+				error = this.literal();
 			} else if( this.isDigit(charAt) ) {
-				error = this.numeric(charAt);
-			} else if( charAt == '"' || charAt == '\'' || charAt == '`' ) {
-				error = this.string(charAt);
+				error = this.numeric();
+			} else if( this.isString(charAt) ) {
+				error = this.string();
 			} else if( this.isOperator(charAt) ) {
 				this.token(new Token(TokenType.OPERATOR, Operator.getOperator(charAt)));
 				error = null;
 			} else if( this.isSpecialCharacter(charAt) ) {
-				error = this.specialCharacter(charAt);
+				error = this.specialCharacter();
 			} else if( this.charAtCursor() == '.' ) {
 				return this.tokenizerError(
 					"Numeric values starting with decimal point are not allowed.", this.cursor
@@ -107,28 +169,35 @@ public class Tokenizer {
 		return new Result(this.tokens);
 	}
 	
-	private Result function(char charAt) {
+	private Result literal() {
 		int start = this.cursor;
-		while( this.isIdentifier(this.charAtCursor()) ) {
+		while( this.isLiteral(this.charAtCursor()) ) {
 			this.advance();
 		}
 		
-			// Check if function is valid
-		String functionName = this.jeemuString.substring(start, this.cursor);
-		if( !Property.functionExists(functionName) ) {
-			return this.tokenizerError(
-				"Built-in function '" + functionName + "' does not exist.", this.cursor
-			);
+			// Determine if the identifier stands for a function, or if it's a reference
+			// to a custom item
+		String literal = this.jeemuString.substring(start, this.cursor);
+		TokenType type;
+		if( Property.functionExists(literal) ) {
+			type = TokenType.FUNCTION;
+		} else if( isKeyword(literal) ){
+			type = TokenType.KEYWORD;
+		} else if( isRQuery(literal) ) {
+			type = TokenType.RQUERY;
+		} else {
+			type = TokenType.IDENTIFIER;
 		}
 		
-		this.token(new Token(TokenType.FUNCTION, functionName));
+		this.token(new Token(type, literal));
 		this.backtrack();
 		return null;
 	}
 	
-	private Result numeric(char charAt) {
+	private Result numeric() {
 		boolean isDecimalFound = false;
 		float value = 0;
+		float firstValue = Float.POSITIVE_INFINITY; // This will be used in case an r-query value is read
 		float factor = 10;
 		String type = "";
 		
@@ -157,6 +226,21 @@ public class Tokenizer {
 			} else if( this.isLetter(numberChar) ) {
 					// Handle property type
 				type += Character.toString(numberChar).toLowerCase();
+					
+					// Handle responsiveness query types (e.g. '800x600')
+				if( 
+					type.length() == 0 && 
+					(this.isResolution(numberChar) || this.isAspectRatio(numberChar))
+				) {
+					if( firstValue != Float.POSITIVE_INFINITY ) {
+						return this.tokenizerError("Invalid r-query encountered.", this.cursor);
+					}
+					
+					firstValue = value;
+					value = 0;
+					factor = 10;
+					isDecimalFound = false;
+				}
 			} else if( numberChar == '%' ) {
 					// Handle percent
 				PercentageBuilder builder = new PercentageBuilder(value / 100f);
@@ -181,6 +265,10 @@ public class Tokenizer {
 						this.token(token);
 					} break;
 					
+					case Property.RQUERY_DIMENSION_SEPARATOR:
+					case Property.RQUERY_ASPECT_RATIO_SEPARATOR:
+						this.token(new Token(TokenType.RQUERY, firstValue + type + value));
+					
 						// Invalid property type
 					default:
 						return this.tokenizerError("Invalid property type '" + type + "'.", this.cursor);
@@ -196,7 +284,8 @@ public class Tokenizer {
 		return null;
 	}
 	
-	private Result string(char charAt) {
+	private Result string() {
+		char charAt = this.charAtCursor();
 		int start = this.cursor + 1;
 		boolean ignoreNext = false;
 		char endChar = 0;
@@ -229,7 +318,8 @@ public class Tokenizer {
 		return null;
 	}
 	
-	private Result specialCharacter(char charAt) {
+	private Result specialCharacter() {
+		char charAt = this.charAtCursor();
 		if( charAt == '(' ) {
 			this.parenthesisCount++;
 		} else if( charAt == ')' ) {
@@ -241,15 +331,49 @@ public class Tokenizer {
 			return this.tokenizerError(
 				"Encountered unexpected closing parenthesis.", this.cursor
 			);
-		} 
-			// Expression shouldn't close before the last character in expression
+		}
 		else if( this.parenthesisCount == 0 && this.cursor < this.jeemuString.length() - 1 ) {
+				// Expression shouldn't close before the last character in expression
 			return this.tokenizerError(
 				"Expression has content outside its parenthesis.", this.cursor
 			);
 		}
 		
-		this.token(new Token(TokenType.SPECIAL_CHARACTER, charAt));
+		TokenType type = 
+			specialCharacterToTokenType.getOrDefault(charAt, TokenType.SPECIAL_CHARACTER);
+		this.token(new Token(type, charAt));
+		return null;
+	}
+	
+	private Result comment() {
+		char nextChar = this.charAt(this.cursor + 1);
+		
+		if( this.charAtCursor() != '/' ) {
+			return null;
+		}
+		
+			// Single line comment, skip to end of the line
+		if( nextChar == '/' ) {
+			this.cursor = this.jeemuString.indexOf('\n', this.cursor + 1);
+			if( this.cursor == -1 ) {
+				this.cursor = this.jeemuString.length();
+			}
+		} else if( nextChar == '*' ) {
+				// Multi-line comment, skip to end of the comment
+			this.advance();
+			
+			int asteriskCount = 0;
+			char charAt;
+			while( (charAt = this.charAtCursor()) != 0 && charAt != '/' ) {
+				if( charAt == '*' ) {
+					asteriskCount++;
+				}
+			}
+			if( asteriskCount <= 1 ) {
+				return this.tokenizerError("Unexpected end of comment encountered.", this.cursor);
+			}
+		}
+		
 		return null;
 	}
 	
@@ -266,6 +390,10 @@ public class Tokenizer {
 	
 	private void token(Token token) {
 		this.tokens.add(token);
+	}
+	
+	private Token lastToken() {
+		return this.tokens.get(this.tokens.size() - 1);
 	}
 	
 	private void backtrack() {
@@ -298,7 +426,7 @@ public class Tokenizer {
 	
 	private boolean isSpecialCharacter(char c) {
 		return (
-			c == '(' || c == ')' || c == ','
+			c == '(' || c == ')' || c == ',' || c == '{' || c == '}' || c == ':'
 		);
 	}
 	
@@ -308,12 +436,24 @@ public class Tokenizer {
 		);
 	}
 	
-	private boolean isIdentifier(char c) {
-		return this.isLetter(c) || c == '_';
+	private boolean isLiteral(char c) {
+		return (this.isLetter(c) || c == '_');
+	}
+	
+	private boolean isString(char c) {
+		return (c == '"' || c == '\'' || c == '`');
 	}
 	
 	private boolean isEmpty(char c) {
-		return c == ' ' || c == '\n' || c == '\t';
+		return (c == ' ' || c == '\n' || c == '\t');
+	}
+	
+	private boolean isResolution(char c) {
+		return (c == 'x' || c == 'X');
+	}
+	
+	private boolean isAspectRatio(char c) {
+		return (c == ':');
 	}
 	
 	public Result error(String error) {

@@ -139,7 +139,7 @@ public class Parser {
 	}
 	
 	private Body body() {
-		
+		return null;
 	}
 	
 	private String literal() {

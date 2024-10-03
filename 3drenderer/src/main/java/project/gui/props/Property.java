@@ -25,6 +25,9 @@ public class Property {
 	public static final String FUNCTION_RGB = "rgb";		// Creates an RGB-color with 1 alpha
 	public static final String FUNCTION_RGBA = "rgba";		// Creates an RGBA-color
 	
+	public static final String RQUERY_DIMENSION_SEPARATOR = "x";
+	public static final String RQUERY_ASPECT_RATIO_SEPARATOR = ":";
+	
 	public static final Property NULL_PX = 
 		new Property(null, 0.0f, Property.PX);	// Null property, 0px
 	public static final Property NULL_COLOR = 
