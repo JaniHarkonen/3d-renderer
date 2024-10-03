@@ -3,12 +3,9 @@ package project.gui.jeemu;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.gui.props.PercentageBuilder;
 import project.gui.props.Property;
-import project.gui.props.parser.Operator;
-import project.gui.props.parser.PercentageBuilder;
-import project.gui.props.parser.PropertyBuilder;
-import project.gui.props.parser.Token;
-import project.gui.props.parser.TokenType;
+import project.gui.props.PropertyBuilder;
 
 public class Tokenizer {
 	public class Result {

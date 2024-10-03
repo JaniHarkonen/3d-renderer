@@ -1,4 +1,4 @@
-package project.gui.props.parser;
+package project.gui.jeemu;
 
 public class Operator {
 	public static final int ID_NONE = 0;

@@ -1,6 +1,4 @@
-package project.gui.props.parser;
-
-import project.gui.props.Property;
+package project.gui.props;
 
 public class PropertyBuilder {
 

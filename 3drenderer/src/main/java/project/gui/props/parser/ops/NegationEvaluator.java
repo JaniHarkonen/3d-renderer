@@ -1,10 +1,10 @@
 package project.gui.props.parser.ops;
 
+import project.gui.jeemu.Operator;
 import project.gui.props.Property;
 import project.gui.props.parser.AEvaluator;
 import project.gui.props.parser.ExpressionParser;
 import project.gui.props.parser.IStyleCascade;
-import project.gui.props.parser.Operator;
 import project.shared.logger.Logger;
 
 public class NegationEvaluator extends AEvaluator {

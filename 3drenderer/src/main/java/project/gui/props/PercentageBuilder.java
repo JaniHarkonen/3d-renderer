@@ -1,7 +1,4 @@
-package project.gui.props.parser;
-
-import project.gui.props.Properties;
-import project.gui.props.Property;
+package project.gui.props;
 
 public class PercentageBuilder extends PropertyBuilder {
 	public PercentageBuilder(float value) {

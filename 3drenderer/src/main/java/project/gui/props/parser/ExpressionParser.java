@@ -4,7 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import project.gui.jeemu.Operator;
+import project.gui.jeemu.Token;
+import project.gui.jeemu.TokenType;
 import project.gui.props.Property;
+import project.gui.props.PropertyBuilder;
 import project.gui.props.parser.functions.FunctionClamp;
 import project.gui.props.parser.functions.FunctionMax;
 import project.gui.props.parser.functions.FunctionMin;

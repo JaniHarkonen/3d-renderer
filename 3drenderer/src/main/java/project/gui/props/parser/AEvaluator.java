@@ -3,6 +3,7 @@ package project.gui.props.parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.gui.jeemu.Operator;
 import project.gui.props.Property;
 import project.shared.logger.Logger;
 
