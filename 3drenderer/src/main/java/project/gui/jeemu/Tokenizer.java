@@ -7,9 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.joml.Vector4f;
+
 import project.gui.props.PercentageBuilder;
 import project.gui.props.Property;
 import project.gui.props.PropertyBuilder;
+import project.utils.DebugUtils;
 
 public class Tokenizer {
 	public static final String KEYWORD_BODY = "body";
@@ -25,8 +28,12 @@ public class Tokenizer {
 	public static final String RQUERY_WINDOW = "window";
 	public static final String RQUERY_RATIO = "ratio";
 	
+	private static final int[] hexToInt = new int[] {
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1, -1, -1, -1, -1, -1, -1, 10, 11, 12, 13, 14, 15
+	};
 	private static final Set<String> KEYWORDS;
 	private static final Set<String> RQUERY_WORDS;
+	private static final Map<Character, TokenType> CHARACTER_TO_TOKEN;
 	static {
 		KEYWORDS = new HashSet<>();
 		KEYWORDS.add(KEYWORD_BODY);
@@ -42,6 +49,15 @@ public class Tokenizer {
 		RQUERY_WORDS.add(RQUERY_RESPONSIVE);
 		RQUERY_WORDS.add(RQUERY_WINDOW);
 		RQUERY_WORDS.add(RQUERY_RATIO);
+		
+		CHARACTER_TO_TOKEN = new HashMap<>();
+		CHARACTER_TO_TOKEN.put('(', TokenType.EXPRESSION_START);
+		CHARACTER_TO_TOKEN.put(')', TokenType.EXPRESSION_END);
+		CHARACTER_TO_TOKEN.put('{', TokenType.BLOCK_START);
+		CHARACTER_TO_TOKEN.put('}', TokenType.BLOCK_END);
+		CHARACTER_TO_TOKEN.put(',', TokenType.EXPRESSION_SEPARATOR);
+		CHARACTER_TO_TOKEN.put(':', TokenType.FIELD_SEPARATOR);
+		CHARACTER_TO_TOKEN.put(';', TokenType.FIELD_END);
 	}
 	
 	private static boolean isKeyword(String literal) {
@@ -52,15 +68,15 @@ public class Tokenizer {
 		return RQUERY_WORDS.contains(literal);
 	}
 	
-	private static Map<Character, TokenType> specialCharacterToTokenType;
-	static {
-		specialCharacterToTokenType = new HashMap<>();
-		specialCharacterToTokenType.put('(', TokenType.EXPRESSION_START);
-		specialCharacterToTokenType.put(')', TokenType.EXPRESSION_END);
-		specialCharacterToTokenType.put('{', TokenType.BLOCK_START);
-		specialCharacterToTokenType.put('}', TokenType.BLOCK_END);
-		specialCharacterToTokenType.put(',', TokenType.EXPRESSION_SEPARATOR);
-		specialCharacterToTokenType.put(':', TokenType.FIELD_SEPARATOR);
+	private static TokenType getSpecialCharacterToken(char c, TokenType defaultReturn) {
+		return CHARACTER_TO_TOKEN.getOrDefault(c, defaultReturn);
+	}
+	
+	private static int hexToInt(int hex) {
+		if( hex < 0 || hex >= hexToInt.length ) {
+			return -1;
+		}
+		return hexToInt[hex];
 	}
 	
 	public class Result {
@@ -122,11 +138,18 @@ public class Tokenizer {
 			
 			error = null;
 			
-			char charAt = this.jeemuString.charAt(this.cursor);
+			char charAt = this.charAtCursor();
+			char nextChar = this.charAt(this.cursor + 1);
+			boolean isWindowsNewLine = (charAt == '\r' && nextChar == '\n');
 			
-			if( charAt == '\n' ) {
+			if( charAt == '\n' || isWindowsNewLine ) {
 				this.newLine();
 				this.advance();
+				
+				if( isWindowsNewLine ) {
+					this.advance();
+				}
+				
 				continue;
 			}
 			
@@ -141,13 +164,15 @@ public class Tokenizer {
 				error = null;
 			} else if( this.isSpecialCharacter(charAt) ) {
 				error = this.specialCharacter();
+			} else if( this.isHexColor(charAt) ) {
+				error = this.hexColor();
 			} else if( this.charAtCursor() == '.' ) {
 				return this.tokenizerError(
 					"Numeric values starting with decimal point are not allowed.", this.cursor
 				);
 			} else if( !this.isEmpty(charAt) ) {
 				return this.tokenizerError(
-					"Unexpected character " + charAt + " encountered.", this.cursor
+					"Unexpected character " + charAt + "(" + (int) charAt + ") encountered.", this.cursor
 				);
 			}
 			
@@ -254,20 +279,18 @@ public class Tokenizer {
 					case Property.C:
 					case Property.R: {
 						PropertyBuilder builder = new PropertyBuilder(value, type);
-						this.token(
-							new Token(TokenType.EVALUABLE, builder)
-						);
+						this.token(new Token(TokenType.EVALUABLE, builder));
 					} break;
 						// Ambiguous numeric value
 					case "": {
 						PropertyBuilder builder = new PropertyBuilder(value, Property.NUMBER);
-						Token token = new Token(TokenType.EVALUABLE, builder);
-						this.token(token);
+						this.token(new Token(TokenType.EVALUABLE, builder));
 					} break;
-					
-					case Property.RQUERY_DIMENSION_SEPARATOR:
+						// R-queries
 					case Property.RQUERY_ASPECT_RATIO_SEPARATOR:
-						this.token(new Token(TokenType.RQUERY, firstValue + type + value));
+					case Property.RQUERY_DIMENSION_SEPARATOR:
+						this.token(new Token(TokenType.RQUERY, new float[] { firstValue, value }));
+						break;
 					
 						// Invalid property type
 					default:
@@ -331,18 +354,40 @@ public class Tokenizer {
 			return this.tokenizerError(
 				"Encountered unexpected closing parenthesis.", this.cursor
 			);
-		}
-		else if( this.parenthesisCount == 0 && this.cursor < this.jeemuString.length() - 1 ) {
+		}/* else if( this.parenthesisCount == 0 && this.cursor < this.jeemuString.length() - 1 ) {
 				// Expression shouldn't close before the last character in expression
 			return this.tokenizerError(
 				"Expression has content outside its parenthesis.", this.cursor
 			);
+		}*/
+		
+		Token previousToken = this.lastToken();
+		TokenType type = getSpecialCharacterToken(charAt, TokenType.SPECIAL_CHARACTER);
+		this.token(new Token(type, charAt));
+		
+			// Text elements are unique in that their text content is input between { }
+		if( 
+			previousToken != null && 
+			previousToken.type == TokenType.KEYWORD && 
+			((String) previousToken.value).equals(KEYWORD_TEXT) 
+		) {
+			this.readText();
+			this.backtrack();
 		}
 		
-		TokenType type = 
-			specialCharacterToTokenType.getOrDefault(charAt, TokenType.SPECIAL_CHARACTER);
-		this.token(new Token(type, charAt));
 		return null;
+	}
+	
+	private void readText() {
+		char charAt;
+		int start = this.cursor;
+		while( (charAt = this.charAtCursor()) != 0 && charAt != '}' ) {
+			this.advance();
+		}
+		
+		String text = this.jeemuString.substring(start, this.cursor);
+		PropertyBuilder builder = new PropertyBuilder(text, Property.STRING);
+		this.token(new Token(TokenType.EVALUABLE, builder));
 	}
 	
 	private Result comment() {
@@ -377,6 +422,55 @@ public class Tokenizer {
 		return null;
 	}
 	
+	private Result hexColor() {
+		float red;
+		float green;
+		float blue;
+		
+			// Read RGB values
+		if( 
+			(red = this.hexColorValue()) == -1 || 
+			(green = this.hexColorValue()) == -1 || 
+			(blue = this.hexColorValue()) == -1 
+		) {
+			char charAt = this.charAtCursor();
+			return this.tokenizerError(
+				"Unexpected character '" + charAt + "' (" + (int) charAt + ") encountered "
+				+ "in hexadecimal color notation.", 
+				this.cursor
+			);
+		}
+		
+			// Read possible alpha value
+		float alpha = this.hexColorValue();
+		if( alpha == -1 ) {
+			alpha = 255f;
+		}
+		
+		PropertyBuilder builder = 
+			new PropertyBuilder(new Vector4f(red, green, blue, alpha), Property.COLOR);
+		this.token(new Token(TokenType.EVALUABLE, builder));
+		
+		return null;
+	}
+	
+	private float hexColorValue() {
+		char c = this.charAt(this.advance());
+		float hex1 = hexToInt(c - '0');
+		if( hex1 == -1 ) {
+			this.backtrack();
+			return -1;
+		}
+		
+		float hex2 = hexToInt(this.charAt(this.advance()) - '0');
+		if( hex2 == -1 ) {
+			this.backtrack(2);
+			return -1;
+		}
+		
+		return hex1 * 16 + hex2;
+	}
+	
 	private char charAt(int index) {
 		if( index < 0 || index >= this.jeemuString.length() ) {
 			return 0;
@@ -393,17 +487,26 @@ public class Tokenizer {
 	}
 	
 	private Token lastToken() {
-		return this.tokens.get(this.tokens.size() - 1);
+		int index = this.tokens.size() - 1;
+		if( index < 0 || this.tokens.size() == 0 ) {
+			return null;
+		}
+		return this.tokens.get(index);
+	}
+	
+	private void backtrack(int count) {
+		this.cursor -= count;
+		this.positionInLine -= count;
 	}
 	
 	private void backtrack() {
-		this.cursor--;
-		this.positionInLine--;
+		this.backtrack(1);
 	}
 	
-	private void advance() {
+	private int advance() {
 		this.cursor++;
 		this.positionInLine++;
+		return this.cursor;
 	}
 	
 	private void newLine() {
@@ -426,7 +529,7 @@ public class Tokenizer {
 	
 	private boolean isSpecialCharacter(char c) {
 		return (
-			c == '(' || c == ')' || c == ',' || c == '{' || c == '}' || c == ':'
+			c == '(' || c == ')' || c == ',' || c == '{' || c == '}' || c == ':' || c == ';'
 		);
 	}
 	
@@ -454,6 +557,10 @@ public class Tokenizer {
 	
 	private boolean isAspectRatio(char c) {
 		return (c == ':');
+	}
+	
+	private boolean isHexColor(char c) {
+		return (c == '#');
 	}
 	
 	public Result error(String error) {

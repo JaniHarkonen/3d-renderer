@@ -294,7 +294,7 @@ public class Scene {
 		
 			// Theme
 		Theme t = new Theme();
-		t.setProperty(new Property("epic-prop", "ffcab0", Property.COLOR_HEX));
+		t.setProperty(new Property("epic-prop", "e(rgba(0,0,255,255))", Property.EXPRESSION));
 			Theme subt = new Theme();
 			//subt.setProperty(new Property("sub-prop", "fdffcd", Property.COLOR_HEX));
 			subt.setProperty(new Property("sub-prop", "e(rgba(0,0,255,255))", Property.EXPRESSION));

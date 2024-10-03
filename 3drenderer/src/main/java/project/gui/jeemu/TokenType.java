@@ -66,6 +66,12 @@ public enum TokenType {
 	FIELD_SEPARATOR,
 	
 	/**
+	 * Token's value is a special character (char) that denotes the end of a field, and 
+	 * will never be evaluable.
+	 */
+	FIELD_END,
+	
+	/**
 	 * Token's value is a special character (char) that denotes the beginning of a block,
 	 * and will never be evaluable.
 	 */
