@@ -69,6 +69,10 @@ public class Property {
 		this.isNumeric = isNumeric;
 	}
 	
+	public Property(String name, Object value, String type) {
+		this(name, value, type, value instanceof Float);
+	}
+	
 	public Property(String name, float value, String type) {
 		this(name, (Object) value, type, true);
 	}

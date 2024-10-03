@@ -7,7 +7,7 @@ import project.gui.props.Properties;
 import project.gui.props.Property;
 import project.shared.logger.Logger;
 
-public class ExpressionTokenizer {
+public class ExpressionTokenizerOLD {
 	public static final String FAILED_TO_TOKENIZE = "Failed to tokenize expression!";
 	public static final String EXPRESSION_START = "expr";
 	public static final String EXPRESSION_START_ABBR = "e";
@@ -27,7 +27,7 @@ public class ExpressionTokenizer {
 	private String propertyName;
 	private int parenthesisCount;
 	
-	public ExpressionTokenizer() {
+	public ExpressionTokenizerOLD() {
 		this.tokens = null;
 		this.cursor = 0;
 		this.expression = null;
@@ -35,7 +35,7 @@ public class ExpressionTokenizer {
 		this.parenthesisCount = 0;
 	}
 	
-	
+
 	public List<Token> tokenize(String propertyName, String ex) {
 		this.tokens = new ArrayList<>();
 		this.cursor = 0;
@@ -198,9 +198,9 @@ public class ExpressionTokenizer {
 				Properties.Orientation orientation = Properties.getOrientation(this.propertyName);
 				boolean isHorizontal = (orientation == Properties.Orientation.HORIZONTAL);
 				type = isHorizontal ? Property.WPERCENT : Property.HPERCENT;
-				PropertyBuilder builder = new PropertyBuilder(this.propertyName, value / 100f, type);
+				Property property = new Property(this.propertyName, value / 100f, type);
 				
-				this.token(new Token(TokenType.EVALUABLE, builder));
+				this.token(new Token(TokenType.EVALUABLE, property));
 				break;
 			} else {
 					// Validate property type
@@ -209,16 +209,16 @@ public class ExpressionTokenizer {
 					case Property.PX:
 					case Property.C:
 					case Property.R: {
-						PropertyBuilder builder = new PropertyBuilder(this.propertyName, value, type);
 						this.token(
-							new Token(TokenType.EVALUABLE, builder)
+							new Token(TokenType.EVALUABLE, new Property(this.propertyName, value, type))
 						);
 					} break;
 						// Ambiguous numeric value
 					case "": {
-						PropertyBuilder builder = 
-							new PropertyBuilder(this.propertyName, value, Property.NUMBER);
-						Token token = new Token(TokenType.EVALUABLE, builder);
+						Token token = new Token(
+							TokenType.EVALUABLE, 
+							new Property(this.propertyName, value, Property.NUMBER)
+						);
 						this.token(token);
 					} break;
 					
@@ -274,8 +274,8 @@ public class ExpressionTokenizer {
 		}
 		
 		String value = this.expression.substring(this.cursor + 1, end);
-		PropertyBuilder builder = new PropertyBuilder(this.propertyName, value, Property.STRING);
-		this.token(new Token(TokenType.EVALUABLE, builder));
+		Property evaluable = new Property(this.propertyName, value, Property.STRING);
+		this.token(new Token(TokenType.EVALUABLE, evaluable));
 		this.cursor = end;
 		
 		return true;

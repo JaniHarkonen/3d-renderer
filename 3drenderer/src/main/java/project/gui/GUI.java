@@ -12,12 +12,14 @@ public class GUI implements ITickable, IRenderable {
 	private Body body;
 	private Map<String, AGUIElement> elementTable;
 	private Map<String, Theme> themes;
+	private Map<String, AGUIElement> elementCollections;
 	private Theme activeTheme;
 	
 	public GUI() {
 		this.body = null;
 		this.elementTable = new HashMap<>();
 		this.themes = new HashMap<>();
+		this.elementCollections = new HashMap<>();
 		this.activeTheme = Theme.NULL_THEME;
 	}
 	
@@ -49,6 +51,10 @@ public class GUI implements ITickable, IRenderable {
 		this.elementTable.put(child.getID(), child);
 		parent.addChild(child);
 		return true;
+	}
+	
+	public void setBody(Body body) {
+		this.body = body;
 	}
 	
 	public void addTheme(String name, Theme theme) {

@@ -18,7 +18,7 @@ public class Properties {
 	 * Properties.getOrientation(String)-method that maps a property name to its 
 	 * orientation.
 	 * 
-	 * @author User Jani Härkönen
+	 * @author Jani Härkönen
 	 *
 	 */
 	public static enum Orientation {

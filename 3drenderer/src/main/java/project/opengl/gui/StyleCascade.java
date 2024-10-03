@@ -10,7 +10,6 @@ import project.gui.props.Property;
 import project.gui.props.parser.ExpressionRunner;
 import project.gui.props.parser.IStyleCascade;
 import project.shared.logger.Logger;
-import project.utils.DebugUtils;
 
 class StyleCascade implements IStyleCascade {
 	static final int[] hexToInt = new int[] {

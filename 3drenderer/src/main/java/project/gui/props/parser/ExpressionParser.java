@@ -56,6 +56,7 @@ public class ExpressionParser {
 	}
 	
 	
+	//public AEvaluator parse(List<Token> tokens) {
 	public AEvaluator parse(List<Token> tokens) {
 		this.tokens = tokens;
 		return this.expression();
@@ -80,7 +81,8 @@ public class ExpressionParser {
 			
 				// Constant values will be provided by a value provider
 			if( this.checkToken(currentToken, TokenType.EVALUABLE) ) {
-				evaluator = new ValueProvider((Property) currentToken.value);
+				PropertyBuilder builder = (PropertyBuilder) currentToken.value;
+				evaluator = new ValueProvider(builder.build());
 			} else if( this.checkToken(currentToken, TokenType.SPECIAL_CHARACTER, '(') ) {
 					// Handle parenthesis (sub-expressions)
 				this.cursor++;
