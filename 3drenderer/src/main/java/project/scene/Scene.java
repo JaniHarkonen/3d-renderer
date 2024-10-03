@@ -298,6 +298,7 @@ public class Scene {
 			Theme subt = new Theme();
 			//subt.setProperty(new Property("sub-prop", "fdffcd", Property.COLOR_HEX));
 			subt.setProperty(new Property("sub-prop", "e(rgba(0,0,255,255))", Property.EXPRESSION));
+			//subt.setProperty(new Property("sub-prop", "e(-1+59*612+4/45*41-1-6)", Property.EXPRESSION));
 		t.setSection("sub-section", subt);
 		this.gui.addTheme("epic-theme", t);
 		this.gui.setActiveTheme("epic-theme");

@@ -23,6 +23,11 @@ public class Properties {
 	 */
 	public static enum Orientation {
 		/**
+		 * Property has no orientation.
+		 */
+		NONE,
+		
+		/**
 		 * Property pertains to the horizontal axis.
 		 */
 		HORIZONTAL,
@@ -93,7 +98,7 @@ public class Properties {
 	}
 	
 	public static Orientation getOrientation(String propertyName) {
-		return propertyToOrientation.get(propertyName);
+		return propertyToOrientation.getOrDefault(propertyName, Orientation.NONE);
 	}
 	
 	

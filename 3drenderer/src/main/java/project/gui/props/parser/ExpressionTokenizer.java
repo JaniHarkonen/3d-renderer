@@ -3,6 +3,7 @@ package project.gui.props.parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.gui.jeemu.Tokenizer;
 import project.gui.props.Properties;
 import project.gui.props.Property;
 import project.shared.logger.Logger;
@@ -35,6 +36,49 @@ public class ExpressionTokenizer {
 		this.parenthesisCount = 0;
 	}
 	
+	
+	public Tokenizer.Result tokenize(String jeemuExpression) {
+		Tokenizer tokenizer = new Tokenizer();
+		int indexOfFirstParenthesis = jeemuExpression.indexOf('(');
+		String expressionStart = null;
+		
+		if(
+			indexOfFirstParenthesis == -1 || 
+			!(expressionStart = jeemuExpression.substring(0, indexOfFirstParenthesis))
+			.equals(EXPRESSION_START_ABBR) &&
+			!expressionStart.equals(EXPRESSION_START)
+		) {
+			String errorMessage = 
+				"Expression must begin with '" + EXPRESSION_START + "(' or '" 
+				+ EXPRESSION_START_ABBR + "(' and its calculation must be confined "
+				+ "between parenthesis.";
+			tokenizerError(this, errorMessage, this.expression);
+			return tokenizer.error(errorMessage);
+		}
+		
+			// Early exit if not ending in ')'
+		if(jeemuExpression.charAt(jeemuExpression.length() - 1) != ')' ) {
+			String errorMessage = "Expression must end with a closing parenthesis ')'.";
+			tokenizerError(this, errorMessage, this.expression);
+			return tokenizer.error(errorMessage);
+		}
+		
+		Tokenizer.Result result = 
+			tokenizer.tokenize(jeemuExpression, expressionStart.length() + 1, 1);
+		
+		// No tokens, there is nothing to evaluate
+		if( result.tokens.size() == 1 ) {
+			String errorMessage = "Expression contains no calculation.";
+			tokenizerError(this, errorMessage, this.expression);
+			return tokenizer.error(errorMessage);
+		}
+		
+		if( !result.wasSuccessful ) {
+			Logger.get().error(this, FAILED_TO_TOKENIZE, result.errorMessage);
+		}
+		
+		return result;
+	}
 	
 	public List<Token> tokenize(String propertyName, String ex) {
 		this.tokens = new ArrayList<>();
@@ -198,7 +242,7 @@ public class ExpressionTokenizer {
 				Properties.Orientation orientation = Properties.getOrientation(this.propertyName);
 				boolean isHorizontal = (orientation == Properties.Orientation.HORIZONTAL);
 				type = isHorizontal ? Property.WPERCENT : Property.HPERCENT;
-				PropertyBuilder builder = new PropertyBuilder(this.propertyName, value / 100f, type);
+				PropertyBuilder builder = new PropertyBuilder(/*this.propertyName, */value / 100f, type);
 				
 				this.token(new Token(TokenType.EVALUABLE, builder));
 				break;
@@ -209,7 +253,7 @@ public class ExpressionTokenizer {
 					case Property.PX:
 					case Property.C:
 					case Property.R: {
-						PropertyBuilder builder = new PropertyBuilder(this.propertyName, value, type);
+						PropertyBuilder builder = new PropertyBuilder(/*this.propertyName, */value, type);
 						this.token(
 							new Token(TokenType.EVALUABLE, builder)
 						);
@@ -217,7 +261,7 @@ public class ExpressionTokenizer {
 						// Ambiguous numeric value
 					case "": {
 						PropertyBuilder builder = 
-							new PropertyBuilder(this.propertyName, value, Property.NUMBER);
+							new PropertyBuilder(/*this.propertyName, */value, Property.NUMBER);
 						Token token = new Token(TokenType.EVALUABLE, builder);
 						this.token(token);
 					} break;
@@ -274,7 +318,7 @@ public class ExpressionTokenizer {
 		}
 		
 		String value = this.expression.substring(this.cursor + 1, end);
-		PropertyBuilder builder = new PropertyBuilder(this.propertyName, value, Property.STRING);
+		PropertyBuilder builder = new PropertyBuilder(/*this.propertyName, */value, Property.STRING);
 		this.token(new Token(TokenType.EVALUABLE, builder));
 		this.cursor = end;
 		

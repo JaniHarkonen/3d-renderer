@@ -10,6 +10,7 @@ import project.gui.props.Property;
 import project.gui.props.parser.ExpressionRunner;
 import project.gui.props.parser.IStyleCascade;
 import project.shared.logger.Logger;
+import project.utils.DebugUtils;
 
 class StyleCascade implements IStyleCascade {
 	static final int[] hexToInt = new int[] {
@@ -227,7 +228,10 @@ class StyleCascade implements IStyleCascade {
 			}
 			
 				// Evaluate expression
-			case Property.EXPRESSION: return this.evaluate(this.parseExpression(property));
+			case Property.EXPRESSION: 
+				Property p = this.parseExpression(property);
+				DebugUtils.log(this, p.getValue());
+				return this.evaluate(this.parseExpression(property));
 				
 			case Property.THEME: {
 				String key = (String) property.getValue();

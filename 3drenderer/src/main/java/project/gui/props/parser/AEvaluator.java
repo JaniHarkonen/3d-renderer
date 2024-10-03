@@ -29,7 +29,7 @@ public abstract class AEvaluator {
 			me, 
 			ExpressionParser.FAILED_TO_EVALUATE, 
 			function + " expects " + expected + " arguments.", 
-			"Received " + received + "arguments."
+			"Received " + received + " arguments."
 		);
 	}
 	

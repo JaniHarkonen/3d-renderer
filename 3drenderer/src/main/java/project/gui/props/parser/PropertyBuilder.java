@@ -4,18 +4,20 @@ import project.gui.props.Property;
 
 public class PropertyBuilder {
 
-	public final String name;
-	public final Object value;
-	public final String dataType;
+	public Object value;
+	public String dataType;
 	
-	public PropertyBuilder(String name, Object value, String dataType) {
-		this.name = name;
+	public PropertyBuilder(Object value, String dataType) {
 		this.value = value;
 		this.dataType = dataType;
 	}
 	
+	public PropertyBuilder(float value) {
+		this((Object) value, null);
+	}
 	
-	public Property build() {
-		return new Property(this.name, this.value, this.dataType);
+	
+	public Property build(String name) {
+		return new Property(name, this.value, this.dataType);
 	}
 }
