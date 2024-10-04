@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.joml.Vector4f;
 
+import project.gui.props.NumericBuilder;
 import project.gui.props.PercentageBuilder;
 import project.gui.props.Property;
 import project.gui.props.PropertyBuilder;
@@ -97,6 +98,9 @@ public class Tokenizer {
 			this.wasSuccessful = wasSuccessful;
 			this.errorMessage = errorMessage;
 			this.cursor = cursor;
+			this.atLine = atLine;
+			this.atPosition = atPosition;
+			this.tokens = tokens;
 		}
 		
 			// Error
@@ -217,8 +221,8 @@ public class Tokenizer {
 		
 			// Determine if the identifier stands for a function, or if it's a reference
 			// to a custom item
-		String literal = this.jeemuString.substring(start, this.cursor);
 		TokenType type;
+		String literal = this.jeemuString.substring(start, this.cursor);
 		if( Property.functionExists(literal) ) {
 			type = TokenType.FUNCTION;
 		} else if( isKeyword(literal) ){
@@ -283,7 +287,7 @@ public class Tokenizer {
 				}
 			} else if( numberChar == '%' ) {
 					// Handle percent
-				PercentageBuilder builder = new PercentageBuilder(value / 100f);
+				PercentageBuilder builder = new PercentageBuilder(value);
 				this.token(TokenType.EVALUABLE, builder);
 				break;
 			} else {
@@ -293,7 +297,7 @@ public class Tokenizer {
 					case Property.PX:
 					case Property.C:
 					case Property.R: {
-						PropertyBuilder builder = new PropertyBuilder(value, type);
+						NumericBuilder builder = new NumericBuilder(value, type);
 						this.token(TokenType.EVALUABLE, builder);
 					} break;
 						// Ambiguous numeric value
@@ -494,7 +498,7 @@ public class Tokenizer {
 	}
 	
 	private void token(TokenType type, Object value) {
-		this.tokens.add(new Token(type, value, this.positionInLine, this.currentLine));
+		this.tokens.add(new Token(type, value, this.currentLine, this.positionInLine));
 	}
 	
 	private Token lastToken() {

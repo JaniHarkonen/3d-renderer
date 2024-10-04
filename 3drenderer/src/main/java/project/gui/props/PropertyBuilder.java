@@ -14,8 +14,17 @@ public class PropertyBuilder {
 		this((Object) value, null);
 	}
 	
+	public PropertyBuilder() {
+		this(null, null);
+	}
+	
 	
 	public Property build(String name) {
 		return new Property(name, this.value, this.dataType);
+	}
+	
+	@Override
+	public String toString() {
+		return this.value.toString();
 	}
 }

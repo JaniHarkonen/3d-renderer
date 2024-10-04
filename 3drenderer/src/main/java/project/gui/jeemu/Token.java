@@ -17,6 +17,11 @@ package project.gui.jeemu;
 public class Token {
 	
 	/**
+	 * Null token with no type nor value. The line is set to 1 with the position of 0.
+	 */
+	public static final Token NULL_TOKEN = new Token(null, null, 1, 0);
+	
+	/**
 	 * Type of value stored in the token.
 	 */
 	public final TokenType type;

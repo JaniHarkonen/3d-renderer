@@ -20,7 +20,7 @@ public class GUI implements ITickable, IRenderable {
 		this.elementTable = new HashMap<>();
 		this.themes = new HashMap<>();
 		this.elementCollections = new HashMap<>();
-		this.activeTheme = Theme.NULL_THEME;
+		this.activeTheme = null;
 	}
 	
 	
@@ -75,5 +75,9 @@ public class GUI implements ITickable, IRenderable {
 	
 	public Theme getActiveTheme() {
 		return this.activeTheme;
+	}
+	
+	public Theme getTheme(String name) {
+		return this.themes.get(name);
 	}
 }

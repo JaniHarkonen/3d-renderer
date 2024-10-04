@@ -44,4 +44,9 @@ public class Operator {
 	public Operator(int id) {
 		this(id, (char) 0, Integer.MAX_VALUE);
 	}
+	
+	@Override
+	public String toString() {
+		return Character.toString(this.character);
+	}
 }

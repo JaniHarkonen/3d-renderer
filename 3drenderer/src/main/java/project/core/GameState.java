@@ -64,11 +64,11 @@ public class GameState {
 	
 	public void listGUI(GUI gui) {
 		AGUIElement root = gui.getBody();
-		this.activeGUITheme = gui.getActiveTheme();
+		//this.activeGUITheme = gui.getActiveTheme();
 		
-		if( this.activeGUITheme != Theme.NULL_THEME ) {
-			this.activeGUITheme = new Theme(gui.getActiveTheme());
-		}
+		//if( this.activeGUITheme != Theme.NULL_THEME ) {
+			//this.activeGUITheme = new Theme(gui.getActiveTheme());
+		//}
 		
 		if( this.activeGUIRoot == null || !this.activeGUIRoot.rendererEquals(root) ) {
 			this.activeGUIRoot = root.rendererCopy();

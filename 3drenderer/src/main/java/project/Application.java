@@ -3,6 +3,8 @@ package project;
 import project.core.Networker;
 import project.core.asset.AssetManager;
 import project.core.renderer.IRenderer;
+import project.gui.GUI;
+import project.gui.jeemu.DocumentParser;
 import project.gui.jeemu.Token;
 import project.gui.jeemu.Tokenizer;
 import project.opengl.RendererGL;
@@ -56,7 +58,7 @@ public class Application {
 		final int TICK_RATE = 60;
 		
 		Tokenizer tokenizer = new Tokenizer();
-		Tokenizer.Result result = tokenizer.tokenize("      // Declares a custom div called 'custom'\r\n" + 
+		/*Tokenizer.Result result = tokenizer.tokenize("      // Declares a custom div called 'custom'\r\n" + 
 				"    custom collection as div {\r\n" + 
 				"      width: 100px;\r\n" + 
 				"      height: 100px;\r\n" + 
@@ -79,13 +81,25 @@ public class Application {
 				"          }\r\n" + 
 				"        }\r\n" + 
 				"      }\r\n" + 
-				"    }");
-		//DebugUtils.log(this, result.errorMessage);
+				"    }");*/
+		Tokenizer.Result result = tokenizer.tokenize(
+			"casual theme {\n"
+			+ "someProp: expr(rgba(0, 6, 6, 55%));\n"
+			+ "subTheme{\n"
+			+ "subProp: 6px;\n"
+			+ "}\n"
+			+ "}"
+		);
+		DebugUtils.log(this, result.errorMessage);
 		String tokenString = "";
 		for( Token token : result.tokens ) {
 			tokenString += token.type + "\n";
 		}
-		DebugUtils.log(this, tokenString);
+		DocumentParser parser = new DocumentParser();
+		GUI test = new GUI();
+		DocumentParser.Result parse = parser.parse(test, result.tokens);
+		DebugUtils.log(this, parse.errorMessage);
+		DebugUtils.log(this, test.getTheme("casual").getPropertyBuilder("someProp").value);
 		
 			// Asset manager
 		this.assetManager = new AssetManager();

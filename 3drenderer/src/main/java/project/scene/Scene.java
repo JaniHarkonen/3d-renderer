@@ -294,12 +294,12 @@ public class Scene {
 		
 			// Theme
 		Theme t = new Theme();
-		t.setProperty(new Property("epic-prop", "e(rgba(0,0,255,255))", Property.EXPRESSION));
+		/*t.setProperty(new Property("epic-prop", "e(rgba(0,0,255,255))", Property.EXPRESSION));
 			Theme subt = new Theme();
 			//subt.setProperty(new Property("sub-prop", "fdffcd", Property.COLOR_HEX));
 			subt.setProperty(new Property("sub-prop", "e(rgba(0,0,255,255))", Property.EXPRESSION));
 			//subt.setProperty(new Property("sub-prop", "e(-1+59*612+4/45*41-1-6)", Property.EXPRESSION));
-		t.setSection("sub-section", subt);
+		t.setSection("sub-section", subt);*/
 		this.gui.addTheme("epic-theme", t);
 		this.gui.setActiveTheme("epic-theme");
 		
@@ -347,7 +347,7 @@ public class Scene {
 			props.getProperty(Properties.HEIGHT).set(16, Property.PX);
 			props.getProperty(Properties.ANCHOR_X).set(0.5f, Property.WPERCENT);
 			props.getProperty(Properties.ANCHOR_Y).set(0.5f, Property.HPERCENT);
-			props.getProperty(Properties.PRIMARY_COLOR).set("sub-section.sub-prop", Property.THEME);
+			//props.getProperty(Properties.PRIMARY_COLOR).set("sub-section.sub-prop", Property.THEME);
 			//props.getProperty(Properties.PRIMARY_COLOR).set("9fd3c7", Property.COLOR_HEX);
 		this.gui.addChildTo(this.gui.getBody(), image);
 		

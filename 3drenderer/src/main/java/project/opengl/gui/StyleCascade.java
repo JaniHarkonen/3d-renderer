@@ -203,7 +203,7 @@ class StyleCascade implements IStyleCascade {
 			case Property.EXPRESSION: 
 				return this.evaluate(this.parseExpression(property));
 				
-			case Property.THEME: {
+			/*case Property.THEME: {
 				String key = (String) property.getValue();
 				Property themeProperty = this.activeTheme.getProperty(key);
 				
@@ -213,7 +213,7 @@ class StyleCascade implements IStyleCascade {
 				}
 				
 				return this.evaluate(themeProperty);
-			}
+			}*/
 		}
 		return null;
 	}
