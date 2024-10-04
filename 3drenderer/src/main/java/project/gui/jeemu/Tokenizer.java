@@ -12,7 +12,6 @@ import org.joml.Vector4f;
 import project.gui.props.PercentageBuilder;
 import project.gui.props.Property;
 import project.gui.props.PropertyBuilder;
-import project.utils.DebugUtils;
 
 public class Tokenizer {
 	public static final String KEYWORD_BODY = "body";
@@ -82,20 +81,39 @@ public class Tokenizer {
 	public class Result {
 		public boolean wasSuccessful;
 		public String errorMessage;
-		public int errorAt;
+		public int cursor;
+		public int atLine;
+		public int atPosition;
 		public List<Token> tokens;
 		
-		public Result(String errorMessage, int errorAt) {
-			this.wasSuccessful = false;
+		public Result(
+			boolean wasSuccessful, 
+			String errorMessage, 
+			int cursor, 
+			int atLine, 
+			int atPosition, 
+			List<Token> tokens
+		) {
+			this.wasSuccessful = wasSuccessful;
 			this.errorMessage = errorMessage;
-			this.errorAt = errorAt;
+			this.cursor = cursor;
 		}
 		
+			// Error
+		public Result(String errorMessage) {
+			this(
+				false,
+				errorMessage, 
+				Tokenizer.this.cursor, 
+				Tokenizer.this.currentLine, 
+				Tokenizer.this.positionInLine,
+				new ArrayList<>(0)
+			);
+		}
+		
+			// Success
 		public Result(List<Token> tokens) {
-			this.wasSuccessful = true;
-			this.errorMessage = "";
-			this.errorAt = -1;
-			this.tokens = tokens;
+			this(true, "", -1, -1, -1, tokens);
 		}
 	}
 	
@@ -160,7 +178,7 @@ public class Tokenizer {
 			} else if( this.isString(charAt) ) {
 				error = this.string();
 			} else if( this.isOperator(charAt) ) {
-				this.token(new Token(TokenType.OPERATOR, Operator.getOperator(charAt)));
+				this.token(TokenType.OPERATOR, Operator.getOperator(charAt));
 				error = null;
 			} else if( this.isSpecialCharacter(charAt) ) {
 				error = this.specialCharacter();
@@ -168,11 +186,11 @@ public class Tokenizer {
 				error = this.hexColor();
 			} else if( this.charAtCursor() == '.' ) {
 				return this.tokenizerError(
-					"Numeric values starting with decimal point are not allowed.", this.cursor
+					"Numeric values starting with decimal point are not allowed."
 				);
 			} else if( !this.isEmpty(charAt) ) {
 				return this.tokenizerError(
-					"Unexpected character " + charAt + "(" + (int) charAt + ") encountered.", this.cursor
+					"Unexpected character " + charAt + "(" + (int) charAt + ") encountered."
 				);
 			}
 			
@@ -185,10 +203,7 @@ public class Tokenizer {
 		
 			// Make sure all parenthesis were closed
 		if( this.parenthesisCount > 0 ) {
-			return tokenizerError(
-				"Expected " + this.parenthesisCount + " more closing parenthesis.", 
-				this.cursor
-			);
+			return tokenizerError("Expected " + this.parenthesisCount + " more closing parenthesis.");
 		}
 		
 		return new Result(this.tokens);
@@ -214,7 +229,7 @@ public class Tokenizer {
 			type = TokenType.IDENTIFIER;
 		}
 		
-		this.token(new Token(type, literal));
+		this.token(type, literal);
 		this.backtrack();
 		return null;
 	}
@@ -233,7 +248,7 @@ public class Tokenizer {
 			if( numberChar == '.' ) {
 				if( isDecimalFound ) {
 					return this.tokenizerError(
-						"Expression contains a value with multiple decimal points.", this.cursor
+						"Expression contains a value with multiple decimal points."
 					);
 				}
 				
@@ -258,7 +273,7 @@ public class Tokenizer {
 					(this.isResolution(numberChar) || this.isAspectRatio(numberChar))
 				) {
 					if( firstValue != Float.POSITIVE_INFINITY ) {
-						return this.tokenizerError("Invalid r-query encountered.", this.cursor);
+						return this.tokenizerError("Invalid r-query encountered.");
 					}
 					
 					firstValue = value;
@@ -269,7 +284,7 @@ public class Tokenizer {
 			} else if( numberChar == '%' ) {
 					// Handle percent
 				PercentageBuilder builder = new PercentageBuilder(value / 100f);
-				this.token(new Token(TokenType.EVALUABLE, builder));
+				this.token(TokenType.EVALUABLE, builder);
 				break;
 			} else {
 					// Validate property type
@@ -279,22 +294,22 @@ public class Tokenizer {
 					case Property.C:
 					case Property.R: {
 						PropertyBuilder builder = new PropertyBuilder(value, type);
-						this.token(new Token(TokenType.EVALUABLE, builder));
+						this.token(TokenType.EVALUABLE, builder);
 					} break;
 						// Ambiguous numeric value
 					case "": {
 						PropertyBuilder builder = new PropertyBuilder(value, Property.NUMBER);
-						this.token(new Token(TokenType.EVALUABLE, builder));
+						this.token(TokenType.EVALUABLE, builder);
 					} break;
 						// R-queries
 					case Property.RQUERY_ASPECT_RATIO_SEPARATOR:
 					case Property.RQUERY_DIMENSION_SEPARATOR:
-						this.token(new Token(TokenType.RQUERY, new float[] { firstValue, value }));
+						this.token(TokenType.RQUERY, new float[] { firstValue, value });
 						break;
 					
 						// Invalid property type
 					default:
-						return this.tokenizerError("Invalid property type '" + type + "'.", this.cursor);
+						return this.tokenizerError("Invalid property type '" + type + "'.");
 				}
 				
 				this.backtrack();
@@ -329,14 +344,13 @@ public class Tokenizer {
 			// String didn't close
 		if( ignoreNext || endChar != charAt ) {
 			return this.tokenizerError(
-				"String beginning with character " + charAt + " must also end with that character.", 
-				this.cursor
+				"String beginning with character " + charAt + " must also end with that character."
 			);
 		}
 		
 		String value = this.jeemuString.substring(start, this.cursor + 1);
 		PropertyBuilder builder = new PropertyBuilder(value, Property.STRING);
-		this.token(new Token(TokenType.EVALUABLE, builder));
+		this.token(TokenType.EVALUABLE, builder);
 		
 		return null;
 	}
@@ -351,9 +365,7 @@ public class Tokenizer {
 		
 			// Count below zero indicates extra closing parenthesis
 		if( this.parenthesisCount < 0 ) {
-			return this.tokenizerError(
-				"Encountered unexpected closing parenthesis.", this.cursor
-			);
+			return this.tokenizerError("Encountered unexpected closing parenthesis.");
 		}/* else if( this.parenthesisCount == 0 && this.cursor < this.jeemuString.length() - 1 ) {
 				// Expression shouldn't close before the last character in expression
 			return this.tokenizerError(
@@ -363,7 +375,7 @@ public class Tokenizer {
 		
 		Token previousToken = this.lastToken();
 		TokenType type = getSpecialCharacterToken(charAt, TokenType.SPECIAL_CHARACTER);
-		this.token(new Token(type, charAt));
+		this.token(type, charAt);
 		
 			// Text elements are unique in that their text content is input between { }
 		if( 
@@ -387,7 +399,7 @@ public class Tokenizer {
 		
 		String text = this.jeemuString.substring(start, this.cursor);
 		PropertyBuilder builder = new PropertyBuilder(text, Property.STRING);
-		this.token(new Token(TokenType.EVALUABLE, builder));
+		this.token(TokenType.EVALUABLE, builder);
 	}
 	
 	private Result comment() {
@@ -415,7 +427,7 @@ public class Tokenizer {
 				}
 			}
 			if( asteriskCount <= 1 ) {
-				return this.tokenizerError("Unexpected end of comment encountered.", this.cursor);
+				return this.tokenizerError("Unexpected end of comment encountered.");
 			}
 		}
 		
@@ -436,8 +448,7 @@ public class Tokenizer {
 			char charAt = this.charAtCursor();
 			return this.tokenizerError(
 				"Unexpected character '" + charAt + "' (" + (int) charAt + ") encountered "
-				+ "in hexadecimal color notation.", 
-				this.cursor
+				+ "in hexadecimal color notation."
 			);
 		}
 		
@@ -449,7 +460,7 @@ public class Tokenizer {
 		
 		PropertyBuilder builder = 
 			new PropertyBuilder(new Vector4f(red, green, blue, alpha), Property.COLOR);
-		this.token(new Token(TokenType.EVALUABLE, builder));
+		this.token(TokenType.EVALUABLE, builder);
 		
 		return null;
 	}
@@ -482,8 +493,8 @@ public class Tokenizer {
 		return this.charAt(this.cursor);
 	}
 	
-	private void token(Token token) {
-		this.tokens.add(token);
+	private void token(TokenType type, Object value) {
+		this.tokens.add(new Token(type, value, this.positionInLine, this.currentLine));
 	}
 	
 	private Token lastToken() {
@@ -514,9 +525,9 @@ public class Tokenizer {
 		this.positionInLine = 0;
 	}
 	
-	private Result tokenizerError(String error, int at) {
+	private Result tokenizerError(String error) {
 		String message = error + " Line: " + this.currentLine + ", pos: " + this.positionInLine;
-		return new Result(message, at);
+		return new Result(message);
 	}
 	
 	private boolean isLetter(char c) {
@@ -564,6 +575,6 @@ public class Tokenizer {
 	}
 	
 	public Result error(String error) {
-		return new Result(error, -1);
+		return new Result(error);
 	}
 }

@@ -6,17 +6,20 @@ import java.util.Map;
 import project.gui.props.Property;
 
 public class Theme {
-	public static final Theme NULL_THEME = new Theme();
+	public static final Theme NULL_THEME = new Theme("NULL_THEME");
 	
+	private final String id;
 	private final Map<String, Theme> sections;
 	private final Map<String, Property> properties;
 	
-	public Theme() {
+	public Theme(String id) {
+		this.id = id;
 		this.sections = new HashMap<>();
 		this.properties = new HashMap<>();
 	}
 	
 	public Theme(Theme src) {
+		this.id = src.id;
 		this.sections = new HashMap<>(src.sections.size());
 		this.properties = new HashMap<>(src.properties.size());
 		
@@ -36,6 +39,10 @@ public class Theme {
 	
 	public void setProperty(Property property) {
 		this.properties.put(property.getName(), property);
+	}
+	
+	public String getID() {
+		return this.id;
 	}
 	
 	public Property getProperty(String key) {
