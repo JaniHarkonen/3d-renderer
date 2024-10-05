@@ -2,9 +2,11 @@ package project.gui.props;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.joml.Vector4f;
 
@@ -79,6 +81,7 @@ public class Properties {
 	public static final String LINE_HEIGHT = "lineHeight";
 	public static final String BASELINE = "baseline";
 	
+	private static final Set<String> propertySet;
 	private static final Map<String, Orientation> propertyToOrientation;
 	static {
 		propertyToOrientation = new HashMap<>();
@@ -95,10 +98,34 @@ public class Properties {
 		propertyToOrientation.put(ANCHOR_Y, Orientation.VERTICAL);
 		propertyToOrientation.put(LINE_HEIGHT, Orientation.VERTICAL);
 		propertyToOrientation.put(BASELINE, Orientation.VERTICAL);
+		
+		propertySet = new HashSet<>();
+		propertySet.add(LEFT);
+		propertySet.add(TOP);
+		propertySet.add(RIGHT);
+		propertySet.add(BOTTOM);
+		propertySet.add(MIN_WIDTH);
+		propertySet.add(MIN_HEIGHT);
+		propertySet.add(MAX_WIDTH);
+		propertySet.add(MAX_HEIGHT);
+		propertySet.add(WIDTH);
+		propertySet.add(HEIGHT);
+		propertySet.add(COLS);
+		propertySet.add(ROWS);
+		propertySet.add(PRIMARY_COLOR);
+		propertySet.add(SECONDARY_COLOR);
+		propertySet.add(ANCHOR_X);
+		propertySet.add(ANCHOR_Y);
+		propertySet.add(LINE_HEIGHT);
+		propertySet.add(BASELINE);
 	}
 	
 	public static Orientation getOrientation(String propertyName) {
 		return propertyToOrientation.getOrDefault(propertyName, Orientation.NONE);
+	}
+	
+	public static boolean isProperty(String propertyName) {
+		return propertySet.contains(propertyName);
 	}
 	
 	
@@ -183,6 +210,11 @@ public class Properties {
 		Style style = new Style(responsivenessQuery, new LinkedHashMap<>());
 		this.stylesByResponsiveness.add(this.stylesByResponsiveness.size() - 1, style);
 		return style;
+	}
+	
+	public void setProperty(String key, Property property) {
+		Style style = this.stylesByResponsiveness.get(this.stylesByResponsiveness.size() - 1);
+		style.properties.put(property.getName(), property);
 	}
 	
 	/**

@@ -7,6 +7,7 @@ import project.gui.GUI;
 import project.gui.jeemu.DocumentParser;
 import project.gui.jeemu.Token;
 import project.gui.jeemu.Tokenizer;
+import project.gui.props.Properties;
 import project.opengl.RendererGL;
 import project.scene.Scene;
 import project.shared.ConsoleRecorder;
@@ -83,10 +84,12 @@ public class Application {
 				"      }\r\n" + 
 				"    }");*/
 		Tokenizer.Result result = tokenizer.tokenize(
-			"casual theme {\n"
-			+ "someProp: expr(rgba(0, 6, 6, 55%));\n"
-			+ "subTheme{\n"
-			+ "subProp: 6px;\n"
+			"body{\n"
+			+ "div {\n"
+			+ "ID: 'testing';\n"
+			+ "width: 50%;\n"
+			+ "height:100px;\n"
+			+ "div{ID:'another-test'; minWidth: 6r;}\n"
 			+ "}\n"
 			+ "}"
 		);
@@ -95,11 +98,14 @@ public class Application {
 		for( Token token : result.tokens ) {
 			tokenString += token.type + "\n";
 		}
+		DebugUtils.log(this, tokenString);
 		DocumentParser parser = new DocumentParser();
 		GUI test = new GUI();
 		DocumentParser.Result parse = parser.parse(test, result.tokens);
 		DebugUtils.log(this, parse.errorMessage);
-		DebugUtils.log(this, test.getTheme("casual").getPropertyBuilder("someProp").value);
+		DebugUtils.log(this, test.getElementByID("another-test").getProperties().getProperty(Properties.MIN_WIDTH).getValue());
+		//DebugUtils.log(this, test.getTheme("casual").getPropertyBuilder(key));
+		//DebugUtils.log(this, test.getTheme("casual").getPropertyBuilder("someProp").value);
 		
 			// Asset manager
 		this.assetManager = new AssetManager();

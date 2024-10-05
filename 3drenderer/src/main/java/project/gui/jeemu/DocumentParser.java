@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import project.gui.AGUIElement;
+import project.gui.Body;
+import project.gui.Div;
 import project.gui.GUI;
 import project.gui.Theme;
 import project.gui.props.Property;
@@ -32,6 +34,10 @@ public class DocumentParser {
 			this(true, "", null, -1);
 		}
 	}
+	
+	private class BuilderHolder {
+		private PropertyBuilder builder;
+	}
 
 	private GUI targetUI;
 	private List<Token> tokens;
@@ -47,13 +53,12 @@ public class DocumentParser {
 	
 	
 	public Result parse(GUI targetUI, List<Token> tokens) {
-		Result error;
 		this.targetUI = targetUI;
 		this.tokens = tokens;
 		this.cursor = -1;
 		this.collections = new HashMap<>();
-		error = this.document();
 		
+		Result error = this.document();
 		if( error != null ) {
 			return error;
 		}
@@ -63,14 +68,11 @@ public class DocumentParser {
 	
 	private Result document() {
 		Result error = this.extractCustomStructures();
-		return error;
-		/*if( error != null ) {
+		if( error != null ) {
 			return error;
-		}*/
+		}
 		
-		
-		
-		//return this.targetUI.setBody(this.body());
+		return this.body();
 	}
 	
 	private Result extractCustomStructures() {
@@ -148,28 +150,14 @@ public class DocumentParser {
 					return this.parserError("Theme property value expected.");
 				}
 				
-				if( this.checkToken(nextToken, TokenType.EVALUABLE) ) {
-					parent.setProperty(identifier, (PropertyBuilder) nextToken.value);
-					this.advance();
-					
-					if( !this.checkToken(this.next(), TokenType.FIELD_END) ) {
-						return this.parserError("Semicolon ; expected after theme property.");
-					}
-				} else if( 
-					this.checkToken(nextToken, TokenType.FUNCTION) && 
-					(nextToken.value.equals(Property.FUNCTION_EXPR_ABBR) ||
-					nextToken.value.equals(Property.FUNCTION_EXPR))
-				) {
-						// Expression
-					PropertyBuilder builder = new PropertyBuilder();
-					Result error = this.expression(builder);
-					if( error != null ) {
-						return error;
-					}
-					parent.setProperty(identifier, builder);
-				} else {
-					return this.parserError("Expected a value after property name.");
+				BuilderHolder holder = new BuilderHolder();
+				Result error = this.propertyValue(holder);
+				
+				if( error != null ) {
+					return error;
 				}
+				
+				parent.setProperty(identifier, holder.builder);
 			} else {
 				return this.parserError("Can't distinguish between a section and a property in theme.");
 			}
@@ -184,14 +172,41 @@ public class DocumentParser {
 		}
 	}
 	
-	private Result expression(PropertyBuilder builder) {
+	private Result propertyValue(BuilderHolder holder) {
+		Token next = this.next();
+		if( this.checkToken(next, TokenType.EVALUABLE) ) {
+			this.advance();
+			if( !this.checkToken(this.next(), TokenType.FIELD_END) ) {
+				return this.parserError("Semicolon ; expected after property value.");
+			}
+			
+			holder.builder = (PropertyBuilder) next.value;
+		} else if( 
+			this.checkToken(next, TokenType.FUNCTION) && 
+			(next.value.equals(Property.FUNCTION_EXPR_ABBR) ||
+			next.value.equals(Property.FUNCTION_EXPR))
+		) {
+				// Expression
+			Result error = this.expression(holder);
+			if( error != null ) {
+				return error;
+			}
+		} else if( this.checkToken(next, TokenType.FUNCTION, Property.FUNCTION_THEME_ABBR) ) {
+			holder.builder = new PropertyBuilder(next.value, Property.THEME);
+		} else {
+			return this.parserError("Property value expected.");
+		}
+		
+		return null;
+	}
+	
+	private Result expression(BuilderHolder holder) {
 		Token nextToken;
 		StringBuilder stringBuilder = new StringBuilder();
 		
 		while( (nextToken = this.next()) != null ) {
 			if( this.checkToken(nextToken, TokenType.FIELD_END) ) {
-				builder.value = stringBuilder.toString();
-				builder.dataType = Property.EXPRESSION;
+				holder.builder = new PropertyBuilder(stringBuilder.toString(), Property.EXPRESSION);
 				return null;
 			}
 			
@@ -208,23 +223,134 @@ public class DocumentParser {
 	
 	private void addCollection(String name, AGUIElement collection) {
 		this.collections.put(name, collection);
-	}
+	}*/
 	
 	private Result body() {
+		Token nextToken = this.next();
+		if( !this.checkToken(nextToken, TokenType.KEYWORD, Tokenizer.KEYWORD_BODY) ) {
+			return this.parserError("UI body expected.");
+		}
 		
+		this.advance();
+		nextToken = this.next();
+		if( !this.checkToken(nextToken, TokenType.BLOCK_START) ) {
+			return this.parserError("Body block expected.");
+		}
+		
+		Body body = new Body(this.targetUI);
+		this.advance();
+		
+		Result error = this.children(body);
+		if( error != null ) {
+			return error;
+		}
+		
+		return null;
 	}
 	
-	private Div div() {
+	private Result children(AGUIElement parent) {
+		Token nextToken = this.next();
 		
+		if( this.checkToken(nextToken, TokenType.BLOCK_END) ) {
+			return null;
+		}
+		
+		while( (nextToken = this.next()) != null ) {
+			if( nextToken.type == TokenType.PROPERTY ) {
+					// Handle property
+				String propertyName = nextToken.value.toString();
+				this.advance();
+				if( !this.checkToken(this.next(), TokenType.FIELD_SEPARATOR) ) {
+					return this.parserError("Element body expected.");
+				}
+				
+				this.advance();
+				BuilderHolder holder = new BuilderHolder();
+				Result error = this.propertyValue(holder);
+				
+				if( error != null ) {
+					return error;
+				}
+				
+				parent.getProperties().setProperty(propertyName, holder.builder.build(propertyName));
+			} else if( nextToken.type == TokenType.KEYWORD ) {
+					// Handle children
+				this.advance();
+				
+				if( !this.checkToken(this.next(), TokenType.BLOCK_START) ) {
+					return this.parserError("Element body expected.");
+				}
+				
+				AGUIElement child;
+				this.advance();
+				
+					// Determine the ID of the child, so that it can be instantiated as IDs are 
+					// final (ID should be the first property)
+				String childID = this.readID();
+				if( childID == null ) {
+					return this.parserError(
+						"Element ID must be the first property of the element"
+						+ "and it must be unique."
+					);
+				}
+				
+				this.advance();
+				switch( (String) nextToken.value ) {
+					case Tokenizer.KEYWORD_DIV: child = new Div(this.targetUI, childID); break;
+					//case Tokenizer.KEYWORD_IMAGE: new Image(this.targetUI, childID); break;
+					//case Tokenizer.KEYWORD_TEXT: new Text(this.targetUI, childID, ""); break; // Special case
+					default: return this.parserError("Element declaration expected.");
+				}
+				
+				Result error = this.children(child);
+				if( error != null ) {
+					return error;
+				}
+				
+				boolean wasAdded = this.targetUI.addChildTo(parent, child);
+				if( !wasAdded ) {
+					return this.parserError("An element with ID '" + childID + "' already exists.");
+				}
+			}
+			
+			this.advance();
+			if( this.checkToken(this.next(), TokenType.BLOCK_END) ) {
+				return null;
+			}
+		}
+		
+		return this.parserError("Ran out of tokens while parsing an element.");
 	}
 	
-	private Image image() {
+	private String readID() {
+		if( !this.checkToken(this.next(), TokenType.RESERVED, Tokenizer.RESERVED_ID) ) {
+			return null;
+		}
 		
+		this.advance();
+		if( !this.checkToken(this.next(), TokenType.FIELD_SEPARATOR) ) {
+			return null;
+		}
+		
+		this.advance();
+		Token idToken = this.next();
+		
+		if( !this.checkToken(idToken, TokenType.EVALUABLE) ) {
+			return null;
+		}
+		
+		PropertyBuilder idBuilder = (PropertyBuilder) idToken.value;
+		if( !idBuilder.dataType.equals(Property.STRING) ) {
+			return null;
+		}
+		
+		this.advance();
+		if( !this.checkToken(this.next(), TokenType.FIELD_END) ) {
+			return null;
+		}
+		
+		return idBuilder.toString();
 	}
-	
-	private Text text() {
-		
-	}*/
 	
 	private int advance(int index) {
 		this.cursor += index;

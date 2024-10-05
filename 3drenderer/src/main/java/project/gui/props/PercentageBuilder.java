@@ -5,7 +5,7 @@ public class PercentageBuilder extends PropertyBuilder {
 		super((Object) value, null);
 	}
 	
-	
+	@Override
 	public Property build(String name) {
 		Properties.Orientation orientation = Properties.getOrientation(name);
 		if( orientation == Properties.Orientation.HORIZONTAL ) {

@@ -11,6 +11,7 @@ import org.joml.Vector4f;
 
 import project.gui.props.NumericBuilder;
 import project.gui.props.PercentageBuilder;
+import project.gui.props.Properties;
 import project.gui.props.Property;
 import project.gui.props.PropertyBuilder;
 
@@ -23,6 +24,8 @@ public class Tokenizer {
 	public static final String KEYWORD_COLLECTION = "collection";
 	public static final String KEYWORD_AS = "as";
 	public static final String KEYWORD_THEME = "theme";
+	
+	public static final String RESERVED_ID = "ID";
 	
 	public static final String RQUERY_RESPONSIVE = "responsive";
 	public static final String RQUERY_WINDOW = "window";
@@ -229,6 +232,10 @@ public class Tokenizer {
 			type = TokenType.KEYWORD;
 		} else if( isRQuery(literal) ) {
 			type = TokenType.RQUERY;
+		} else if( Properties.isProperty(literal) ) {
+			type = TokenType.PROPERTY;
+		} else if( literal.equals(RESERVED_ID) ) {
+			type = TokenType.RESERVED;
 		} else {
 			type = TokenType.IDENTIFIER;
 		}
@@ -328,7 +335,9 @@ public class Tokenizer {
 	
 	private Result string() {
 		char charAt = this.charAtCursor();
-		int start = this.cursor + 1;
+		this.advance();
+		
+		int start = this.cursor;
 		boolean ignoreNext = false;
 		char endChar = 0;
 		
@@ -352,7 +361,7 @@ public class Tokenizer {
 			);
 		}
 		
-		String value = this.jeemuString.substring(start, this.cursor + 1);
+		String value = this.jeemuString.substring(start, this.cursor);
 		PropertyBuilder builder = new PropertyBuilder(value, Property.STRING);
 		this.token(TokenType.EVALUABLE, builder);
 		

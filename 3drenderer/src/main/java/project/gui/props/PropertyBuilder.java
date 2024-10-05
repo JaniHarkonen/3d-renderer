@@ -1,7 +1,6 @@
 package project.gui.props;
 
 public class PropertyBuilder {
-
 	public Object value;
 	public String dataType;
 	
