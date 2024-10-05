@@ -1,4 +1,4 @@
-package project.gui.props.parser;
+package project.gui.jeemu;
 
 public class Operator {
 	public static final int ID_NONE = 0;
@@ -43,5 +43,10 @@ public class Operator {
 	
 	public Operator(int id) {
 		this(id, (char) 0, Integer.MAX_VALUE);
+	}
+	
+	@Override
+	public String toString() {
+		return Character.toString(this.character);
 	}
 }

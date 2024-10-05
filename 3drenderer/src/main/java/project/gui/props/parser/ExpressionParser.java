@@ -4,7 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import project.gui.jeemu.Operator;
+import project.gui.jeemu.Token;
+import project.gui.jeemu.TokenType;
 import project.gui.props.Property;
+import project.gui.props.PropertyBuilder;
 import project.gui.props.parser.functions.FunctionClamp;
 import project.gui.props.parser.functions.FunctionMax;
 import project.gui.props.parser.functions.FunctionMin;
@@ -49,15 +53,19 @@ public class ExpressionParser {
 
 	private List<Token> tokens;
 	private int cursor;
+	private String propertyName;
 	
 	public ExpressionParser() {
 		this.tokens = null;
 		this.cursor = 0;
+		this.propertyName = null;
 	}
 	
 	
-	public AEvaluator parse(List<Token> tokens) {
+	//public AEvaluator parse(List<Token> tokens) {
+	public AEvaluator parse(String propertyName, List<Token> tokens) {
 		this.tokens = tokens;
+		this.propertyName = propertyName;
 		return this.expression();
 	}
 	
@@ -80,8 +88,9 @@ public class ExpressionParser {
 			
 				// Constant values will be provided by a value provider
 			if( this.checkToken(currentToken, TokenType.EVALUABLE) ) {
-				evaluator = new ValueProvider((Property) currentToken.value);
-			} else if( this.checkToken(currentToken, TokenType.SPECIAL_CHARACTER, '(') ) {
+				PropertyBuilder builder = (PropertyBuilder) currentToken.value;
+				evaluator = new ValueProvider(builder.build(this.propertyName));
+			} else if( this.checkToken(currentToken, TokenType.EXPRESSION_START) ) {
 					// Handle parenthesis (sub-expressions)
 				this.cursor++;
 				evaluator = this.expression();
@@ -173,7 +182,7 @@ public class ExpressionParser {
 		this.cursor++;
 		Token argumentsStart = this.lookupToken(this.cursor);
 		
-		if( !this.checkToken(argumentsStart, TokenType.SPECIAL_CHARACTER, '(') ) {
+		if( !this.checkToken(argumentsStart, TokenType.EXPRESSION_START) ) {
 			Logger.get().error(this, FAILED_TO_PARSE, "Arguments expected after function call.");
 			return null;
 		}
@@ -186,11 +195,11 @@ public class ExpressionParser {
 			// Extract arguments, if any
 		Token currentToken;
 		while( (currentToken = this.lookupToken(this.cursor)) != null ) {
-			if( this.checkToken(currentToken, TokenType.SPECIAL_CHARACTER, ')') ) {
+			if( this.checkToken(currentToken, TokenType.EXPRESSION_END) ) {
 				break;
 			}
 			
-			if( this.checkToken(currentToken, TokenType.SPECIAL_CHARACTER, ',') ) {
+			if( this.checkToken(currentToken, TokenType.EXPRESSION_SEPARATOR) ) {
 				this.cursor++;
 				continue;
 			}

@@ -16,6 +16,10 @@ public class RQuery {
 		this(maxWidth, maxHeight, Float.MAX_VALUE);
 	}
 	
+	public RQuery(float maxAspectRatio) {
+		this(Float.MAX_VALUE, Float.MAX_VALUE, maxAspectRatio);
+	}
+	
 	public RQuery(RQuery src) {
 		this(src.maxWidth, src.maxHeight, src.maxAspectRatio);
 	}

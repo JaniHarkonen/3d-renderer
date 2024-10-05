@@ -10,13 +10,8 @@ import project.gui.props.Property;
 import project.gui.props.parser.ExpressionRunner;
 import project.gui.props.parser.IStyleCascade;
 import project.shared.logger.Logger;
-import project.utils.DebugUtils;
 
 class StyleCascade implements IStyleCascade {
-	static final int[] hexToInt = new int[] {
-		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1, -1, -1, -1, -1, -1, -1, 10, 11, 12, 13, 14, 15
-	};
-	
 	private static final ExpressionRunner RUNNER;
 	static {
 		RUNNER = new ExpressionRunner();
@@ -197,40 +192,18 @@ class StyleCascade implements IStyleCascade {
 				return this.height / this.rows * ((float) property.getValue());
 				
 				// Return primary or secondary color depending on prop name
-			case Property.COLOR: 
-			case Property.COLOR_HEX: {
+			case Property.COLOR: {
 				Vector4f defaultColor = property.getName().equals(Properties.PRIMARY_COLOR) ? 
 					Properties.DEFAULT_PRIMARY_COLOR : Properties.DEFAULT_SECONDARY_COLOR;
-				Vector4f color;
-				
-					// Handle hex color
-				if( property.getType().equals(Property.COLOR_HEX) ) {
-					String hexString = ((String) property.getValue()).toUpperCase();
-					float alpha = 1;
-					
-						// Alpha value was included
-					if( hexString.length() == 8 ) {
-						alpha = this.charsToVector4fColorValue(
-							hexString.charAt(6), hexString.charAt(7)
-						);
-					}
-					color = new Vector4f(
-						this.charsToVector4fColorValue(hexString.charAt(0), hexString.charAt(1)), 
-						this.charsToVector4fColorValue(hexString.charAt(2), hexString.charAt(3)), 
-						this.charsToVector4fColorValue(hexString.charAt(4), hexString.charAt(5)), 
-						alpha
-					);
-				} else {
-					color = (Vector4f) property.getValue();
-				}
-				
+				Vector4f color = (Vector4f) property.getValue();
 				return this.returnOrDefault(color, defaultColor);
 			}
 			
 				// Evaluate expression
-			case Property.EXPRESSION: return this.evaluate(this.parseExpression(property));
+			case Property.EXPRESSION: 
+				return this.evaluate(this.parseExpression(property));
 				
-			case Property.THEME: {
+			/*case Property.THEME: {
 				String key = (String) property.getValue();
 				Property themeProperty = this.activeTheme.getProperty(key);
 				
@@ -240,7 +213,7 @@ class StyleCascade implements IStyleCascade {
 				}
 				
 				return this.evaluate(themeProperty);
-			}
+			}*/
 		}
 		return null;
 	}
@@ -253,9 +226,5 @@ class StyleCascade implements IStyleCascade {
 	
 	private Object returnOrDefault(Object value, Object defaultValue) {
 		return (value == null) ? defaultValue : value;
-	}
-	
-	private float charsToVector4fColorValue(char c1, char c2) {
-		return (hexToInt[c1 - '0'] * 16 + hexToInt[c2 - '0']) / 255f;
 	}
 }

@@ -4,7 +4,11 @@
 - reconsider storing properties as fields in Context due to redundancy
 - Context currently holds no reference to a Font, implement font lookup by name
 - implement a markup language for building UIs with
-- hex colors should probably be calculated before they are assigned to elements, no point in having COLOR_HEX, calculate it in markup parsing
+ -- implement Jeemu parser that will generate 
+- expr parenthesis checking is currently broken
+- StyleCascade in 'opengl.gui' shouldn't have to evaluate the props, this should be done by the GUI
+ -- Property should propagate changes to Properties which should propagate changes to AGUIElement which should cascade changes to its children
+- rename GUI to UI across the code base
 
 ### ASceneObject & AGUIElement
 - consider if references to the renderer can be removed (don't use method names like 'rendererEquals' or 'rendererCopy')

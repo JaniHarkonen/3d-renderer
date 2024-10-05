@@ -37,4 +37,9 @@ public class Body extends AGUIElement {
 		}
 		return this.properties.equals(((Body) previous).properties);
 	}
+	
+	@Override
+	public Body createInstance(GUI ui, String id) {
+		return new Body(ui);
+	}
 }

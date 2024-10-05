@@ -9,6 +9,7 @@ public class Property {
 	public static final String PX = "px";					// Pixels (float)
 	public static final String WPERCENT = "WIDTH%";			// Parent's width percent (float)
 	public static final String HPERCENT = "HEIGHT%";		// Parent's height percent (float)
+	public static final String PERCENT = "%";				// Percentage (ambiguous type) (float)
 	public static final String C = "c";						// Width of column in parent's grid (float)
 	public static final String R = "r";						// Height of row in parent's grid (float)
 	public static final String THEME = "THEME";				// Theme property reference (String)
@@ -16,14 +17,18 @@ public class Property {
 	public static final String NUMBER = "NUMBER";			// Floating point value
 	public static final String EXPRESSION = "EXPRESSION";	// Expression (String)
 	public static final String COLOR = "COLOR";				// RGBA-color (Vector4f)
-	public static final String COLOR_HEX = "COLOR_HEX";		// Hexadecimal color (Vector4f)
 	
-	public static final String FUNCTION_THEME = "t";		// Theme property getter function
+	public static final String FUNCTION_THEME_ABBR = "t"; 	// Theme property getter function
+	public static final String FUNCTION_EXPR_ABBR = "e";	// Expression evaluation function (abbr.)
+	public static final String FUNCTION_EXPR = "expr";		// Expression evaluation function
 	public static final String FUNCTION_MIN = "min";		// Returns minimum of a set of values
 	public static final String FUNCTION_MAX = "max";		// Returns maximum of a set of values
 	public static final String FUNCTION_CLAMP = "clamp";	// Limits a value between two edges
 	public static final String FUNCTION_RGB = "rgb";		// Creates an RGB-color with 1 alpha
 	public static final String FUNCTION_RGBA = "rgba";		// Creates an RGBA-color
+	
+	public static final String RQUERY_DIMENSION_SEPARATOR = "x";
+	public static final String RQUERY_ASPECT_RATIO_SEPARATOR = ":";
 	
 	public static final Property NULL_PX = 
 		new Property(null, 0.0f, Property.PX);	// Null property, 0px
@@ -33,7 +38,9 @@ public class Property {
 	private static final Set<String> functionSet;
 	static {
 		functionSet = new HashSet<>();
-		functionSet.add(FUNCTION_THEME);
+		functionSet.add(FUNCTION_THEME_ABBR);
+		functionSet.add(FUNCTION_EXPR);
+		functionSet.add(FUNCTION_EXPR_ABBR);
 		functionSet.add(FUNCTION_MIN);
 		functionSet.add(FUNCTION_MAX);
 		functionSet.add(FUNCTION_CLAMP);
@@ -67,6 +74,10 @@ public class Property {
 		this.value = value;
 		this.type = type;
 		this.isNumeric = isNumeric;
+	}
+	
+	public Property(String name, Object value, String type) {
+		this(name, value, type, value instanceof Float);
 	}
 	
 	public Property(String name, float value, String type) {
