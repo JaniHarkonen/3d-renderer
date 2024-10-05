@@ -23,4 +23,9 @@ public class Div extends AGUIElement {
 		}
 		return this.properties.equals(((Div) previous).properties);
 	}
+	
+	@Override
+	public Div createInstance(GUI ui, String id) {
+		return new Div(ui, id);
+	}
 }

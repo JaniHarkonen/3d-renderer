@@ -36,6 +36,11 @@ public class Image extends AGUIElement {
 		);
 	}
 	
+	@Override
+	public Image createInstance(GUI ui, String id) {
+		return new Image(ui, id, null);
+	}
+	
 	public Texture getTexture() {
 		return this.imageTexture;
 	}

@@ -7,7 +7,6 @@ import project.gui.GUI;
 import project.gui.jeemu.DocumentParser;
 import project.gui.jeemu.Token;
 import project.gui.jeemu.Tokenizer;
-import project.gui.props.Properties;
 import project.opengl.RendererGL;
 import project.scene.Scene;
 import project.shared.ConsoleRecorder;
@@ -84,13 +83,16 @@ public class Application {
 				"      }\r\n" + 
 				"    }");*/
 		Tokenizer.Result result = tokenizer.tokenize(
-			"body{\n"
+			"casual theme {someProp:'this is a testprop';}\n"+
+			"box collection as image {\n"
+			+ "width:56px;}\n"+
+			 "body{\n"
 			+ "div {\n"
 			+ "ID: 'testing';\n"
 			+ "width: 50%;\n"
 			+ "height:100px;\n"
 			+ "div{ID:'another-test'; minWidth: 6r;}\n"
-			+ "}\n"
+			+ "} box {ID:'yet-another-div';}\n"
 			+ "}"
 		);
 		DebugUtils.log(this, result.errorMessage);
@@ -103,9 +105,12 @@ public class Application {
 		GUI test = new GUI();
 		DocumentParser.Result parse = parser.parse(test, result.tokens);
 		DebugUtils.log(this, parse.errorMessage);
-		DebugUtils.log(this, test.getElementByID("another-test").getProperties().getProperty(Properties.MIN_WIDTH).getValue());
-		//DebugUtils.log(this, test.getTheme("casual").getPropertyBuilder(key));
-		//DebugUtils.log(this, test.getTheme("casual").getPropertyBuilder("someProp").value);
+		DebugUtils.log(this, test.getElementByID("yet-another-div"));
+		//DebugUtils.log(this, test.getElementByID("another-test").getProperties().getProperty(Properties.MIN_WIDTH).getValue());
+		//DebugUtils.log(this, test.getElementByID("yet-another-test"));
+		
+		//DebugUtils.log(this, test.getTheme("casual").getPropertyBuilder("someProp"));
+		DebugUtils.log(this, test.getTheme("casual").getPropertyBuilder("someProp").value);
 		
 			// Asset manager
 		this.assetManager = new AssetManager();

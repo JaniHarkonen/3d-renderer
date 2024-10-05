@@ -41,6 +41,11 @@ public class Text extends AGUIElement {
 		);
 	}
 	
+	@Override
+	public Text createInstance(GUI ui, String id) {
+		return new Text(ui, id, "");
+	}
+	
 	public void setContent(String content) {
 		this.content = content;
 	}

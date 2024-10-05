@@ -8,7 +8,10 @@ import project.gui.AGUIElement;
 import project.gui.Body;
 import project.gui.Div;
 import project.gui.GUI;
+import project.gui.Image;
+import project.gui.Text;
 import project.gui.Theme;
+import project.gui.props.Properties;
 import project.gui.props.Property;
 import project.gui.props.PropertyBuilder;
 
@@ -33,6 +36,18 @@ public class DocumentParser {
 		public Result() {
 			this(true, "", null, -1);
 		}
+	}
+	
+	private static final Map<String, AGUIElement> elementsByType;
+	static {
+		elementsByType = new HashMap<>();
+		elementsByType.put(Tokenizer.KEYWORD_DIV, new Div(null, null));
+		elementsByType.put(Tokenizer.KEYWORD_IMAGE, new Image(null, null, null));
+		elementsByType.put(Tokenizer.KEYWORD_TEXT, new Text(null, null, ""));
+	}
+	
+	private static AGUIElement getElementByType(String elementType) {
+		return elementsByType.get(elementType);
 	}
 	
 	private class BuilderHolder {
@@ -71,7 +86,6 @@ public class DocumentParser {
 		if( error != null ) {
 			return error;
 		}
-		
 		return this.body();
 	}
 	
@@ -86,6 +100,7 @@ public class DocumentParser {
 			this.advance();
 			nextToken = this.next();
 			if( nextToken != null && nextToken.type == TokenType.KEYWORD ) {
+					// Extract theme
 				if( nextToken.value.equals(Tokenizer.KEYWORD_THEME) ) {
 					Theme theme = new Theme();
 					this.advance(2); // Skip also the first {
@@ -96,14 +111,46 @@ public class DocumentParser {
 					}
 					
 					this.targetUI.addTheme(identifier, theme);
-					
-					return null;
-				} /*else if( nextToken.value.equals(Tokenizer.KEYWORD_COLLECTION) ) {
+				} else if( nextToken.value.equals(Tokenizer.KEYWORD_COLLECTION) ) {
+						// Extract collection
 					this.advance();
+					nextToken = this.next();
 					
+					if( 
+						!this.checkToken(nextToken, TokenType.KEYWORD, Tokenizer.KEYWORD_AS) ||
+						!this.checkToken(this.tokenAt(this.cursor + 2), TokenType.KEYWORD)
+					) {
+						return this.parserError(
+							"Expected 'as' followed by the element the collection is derived from."
+						);
+					}
 					
-					return null;
-				}*/
+						// Determine the element from which the collection is derived
+					this.advance();
+					String elementType = (String) this.next().value;
+					AGUIElement superElement = this.createElement(elementType, this.targetUI, null);
+					
+					if( superElement == null ) {
+						return this.parserError("Attempting to derive a collection from a non-existing element.");
+					}
+					
+					this.advance();
+					if( !this.checkToken(this.next(), TokenType.BLOCK_START) ) {
+						return this.parserError("Collection body expected.");
+					}
+					
+						// Extract content
+					this.advance();
+					Result error = this.children(superElement);
+					
+					if( error != null ) {
+						return error;
+					}
+					
+					this.collections.put(identifier, superElement);
+				} else {
+					return this.parserError("Theme or collection declaration expected.");
+				}
 			}
 			
 			this.advance();
@@ -217,14 +264,6 @@ public class DocumentParser {
 		return this.parserError("Ran out of tokens while reading an expression.");
 	}
 	
-	/*private AGUIElement collection() {
-		
-	}
-	
-	private void addCollection(String name, AGUIElement collection) {
-		this.collections.put(name, collection);
-	}*/
-	
 	private Result body() {
 		Token nextToken = this.next();
 		if( !this.checkToken(nextToken, TokenType.KEYWORD, Tokenizer.KEYWORD_BODY) ) {
@@ -273,7 +312,7 @@ public class DocumentParser {
 				}
 				
 				parent.getProperties().setProperty(propertyName, holder.builder.build(propertyName));
-			} else if( nextToken.type == TokenType.KEYWORD ) {
+			} else if( nextToken.type == TokenType.KEYWORD || nextToken.type == TokenType.IDENTIFIER ) {
 					// Handle children
 				this.advance();
 				
@@ -281,32 +320,35 @@ public class DocumentParser {
 					return this.parserError("Element body expected.");
 				}
 				
-				AGUIElement child;
-				this.advance();
-				
 					// Determine the ID of the child, so that it can be instantiated as IDs are 
 					// final (ID should be the first property)
+				this.advance();
 				String childID = this.readID();
+				
 				if( childID == null ) {
 					return this.parserError(
-						"Element ID must be the first property of the element"
+						"Element ID must be the first property of the element "
 						+ "and it must be unique."
 					);
 				}
 				
-				this.advance();
-				switch( (String) nextToken.value ) {
-					case Tokenizer.KEYWORD_DIV: child = new Div(this.targetUI, childID); break;
-					//case Tokenizer.KEYWORD_IMAGE: new Image(this.targetUI, childID); break;
-					//case Tokenizer.KEYWORD_TEXT: new Text(this.targetUI, childID, ""); break; // Special case
-					default: return this.parserError("Element declaration expected.");
+					// Determine child's element type
+				String elementType = (String) nextToken.value;
+				AGUIElement child = this.createElement(elementType, this.targetUI, childID);
+				
+				if( child == null ) {
+					return this.parserError("'" + elementType + "' is not an element type nor a collection.");
 				}
 				
+					// Extract child's children
+				this.advance();
 				Result error = this.children(child);
+				
 				if( error != null ) {
 					return error;
 				}
 				
+					// Ensure that the child's ID is unique
 				boolean wasAdded = this.targetUI.addChildTo(parent, child);
 				if( !wasAdded ) {
 					return this.parserError("An element with ID '" + childID + "' already exists.");
@@ -320,6 +362,18 @@ public class DocumentParser {
 		}
 		
 		return this.parserError("Ran out of tokens while parsing an element.");
+	}
+	
+	private AGUIElement createElement(String elementType, GUI targetUI, String id) {
+		AGUIElement element = getElementByType(elementType);
+		if( element != null ) {
+			return element.createInstance(targetUI, id);
+		} else if( (element = this.collections.get(elementType)) != null ) {
+			AGUIElement derivation = element.createInstance(targetUI, id);
+			derivation.setProperties(new Properties(element.getProperties()));
+			return derivation;
+		}
+		return null;
 	}
 	
 	private String readID() {
@@ -381,20 +435,6 @@ public class DocumentParser {
 	
 	private boolean checkToken(Token token, TokenType type) {
 		return (token != null && token.type == type);
-	}
-	
-	private boolean orCheckToken(Token token, TokenType type, Object... values) {
-		if( token == null || token.type == type ) {
-			return false;
-		}
-		
-		for( Object value : values ) {
-			if( token.value.equals(value) ) {
-				return true;
-			}
-		}
-		
-		return false;
 	}
 	
 	private Result parserError(String errorMessage) {

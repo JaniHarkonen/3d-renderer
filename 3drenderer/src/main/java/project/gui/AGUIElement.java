@@ -49,12 +49,18 @@ public abstract class AGUIElement implements IRenderable, ITickable {
 	
 	public abstract boolean rendererEquals(AGUIElement previous);
 	
+	public abstract AGUIElement createInstance(GUI ui, String id);
+	
 	void addChild(AGUIElement... children) {
 		for( AGUIElement child : children ) {
 			this.children.add(child);
 		}
 	}
 	
+	
+	public void setProperties(Properties properties) {
+		this.properties = properties;
+	}
 	
 	public GUI getGUI() {
 		return this.gui;
