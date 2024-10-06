@@ -9,6 +9,7 @@
 - StyleCascade in 'opengl.gui' shouldn't have to evaluate the props, this should be done by the GUI
  -- Property should propagate changes to Properties which should propagate changes to AGUIElement which should cascade changes to its children
 - rename GUI to UI across the code base
+- AGUIElement's children-field should be private as all changes to children should be done through the GUI in order to keep the element table consistent
 
 ### ASceneObject & AGUIElement
 - consider if references to the renderer can be removed (don't use method names like 'rendererEquals' or 'rendererCopy')

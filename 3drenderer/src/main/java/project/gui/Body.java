@@ -6,9 +6,10 @@ import project.gui.props.Properties;
 import project.gui.props.Property;
 
 public class Body extends AGUIElement {
+	public static final String BODY_ID = "BODY";
 
 	public Body(GUI gui) {
-		super(gui, "BODY");
+		super(gui, BODY_ID);
 	}
 	
 	private Body(Body src) {

@@ -6,14 +6,15 @@ import java.util.Map;
 
 import project.gui.AGUIElement;
 import project.gui.Body;
+import project.gui.Collection;
 import project.gui.Div;
 import project.gui.GUI;
 import project.gui.Image;
 import project.gui.Text;
 import project.gui.Theme;
-import project.gui.props.Properties;
 import project.gui.props.Property;
 import project.gui.props.PropertyBuilder;
+import project.utils.DebugUtils;
 
 public class DocumentParser {
 	public class Result {
@@ -57,7 +58,7 @@ public class DocumentParser {
 	private GUI targetUI;
 	private List<Token> tokens;
 	private int cursor;
-	private Map<String, AGUIElement> collections;
+	private Map<String, Collection> collections;
 	
 	public DocumentParser() {
 		this.targetUI = null;
@@ -141,13 +142,14 @@ public class DocumentParser {
 					
 						// Extract content
 					this.advance();
-					Result error = this.children(superElement);
+					Collection collection = new Collection(superElement);
+					Result error = this.children(collection, superElement);
 					
 					if( error != null ) {
 						return error;
 					}
 					
-					this.collections.put(identifier, superElement);
+					this.collections.put(identifier, collection);
 				} else {
 					return this.parserError("Theme or collection declaration expected.");
 				}
@@ -277,17 +279,24 @@ public class DocumentParser {
 		}
 		
 		Body body = new Body(this.targetUI);
+		Collection pseudoCollection = new Collection(body);
 		this.advance();
 		
-		Result error = this.children(body);
+		Result error = this.children(pseudoCollection, body);
 		if( error != null ) {
 			return error;
 		}
 		
+		this.advance();
+		if( this.next() != null ) {
+			return this.parserError("Body declaration should be the last element in the document.");
+		}
+		
+		this.targetUI.bodyFromCollection(pseudoCollection);
 		return null;
 	}
 	
-	private Result children(AGUIElement parent) {
+	private Result children(Collection collection, AGUIElement parent) {
 		Token nextToken = this.next();
 		
 		if( this.checkToken(nextToken, TokenType.BLOCK_END) ) {
@@ -342,16 +351,14 @@ public class DocumentParser {
 				
 					// Extract child's children
 				this.advance();
-				Result error = this.children(child);
+				Result error = this.children(collection, child);
 				
 				if( error != null ) {
 					return error;
 				}
 				
-					// Ensure that the child's ID is unique
-				boolean wasAdded = this.targetUI.addChildTo(parent, child);
-				if( !wasAdded ) {
-					return this.parserError("An element with ID '" + childID + "' already exists.");
+				if( collection != null ) {
+					collection.addChildTo(parent, child);
 				}
 			}
 			
@@ -368,12 +375,15 @@ public class DocumentParser {
 		AGUIElement element = getElementByType(elementType);
 		if( element != null ) {
 			return element.createInstance(targetUI, id);
-		} else if( (element = this.collections.get(elementType)) != null ) {
-			AGUIElement derivation = element.createInstance(targetUI, id);
-			derivation.setProperties(new Properties(element.getProperties()));
-			return derivation;
 		}
-		return null;
+		
+		Collection collection = this.collections.get(elementType);
+		
+		if( collection == null ) {
+			return null;
+		}
+		
+		return collection.buildNode(targetUI, id);
 	}
 	
 	private String readID() {

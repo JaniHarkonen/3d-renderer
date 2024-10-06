@@ -7,26 +7,22 @@ import project.Application;
 import project.core.IRenderable;
 import project.core.ITickable;
 import project.shared.logger.Logger;
+import project.utils.DebugUtils;
 
 public class GUI implements ITickable, IRenderable {
 	private Body body;
 	private Map<String, AGUIElement> elementTable;
 	private Map<String, Theme> themes;
-	private Map<String, AGUIElement> elementCollections;
 	private Theme activeTheme;
 	
 	public GUI() {
 		this.body = null;
 		this.elementTable = new HashMap<>();
 		this.themes = new HashMap<>();
-		this.elementCollections = new HashMap<>();
 		this.activeTheme = null;
+		//this.body = new Body(this);
 	}
 	
-	
-	public void initialize() {
-		this.body = new Body(this);
-	}
 	
 	@Override
 	public void tick(float deltaTime) {
@@ -38,23 +34,111 @@ public class GUI implements ITickable, IRenderable {
 		Application.getApp().getRenderer().getBackGameState().listGUI(this);
 	}
 	
-	public boolean addChildTo(AGUIElement parent, AGUIElement child) {
-		if( this.getElementByID(child.getID()) != null ) {
-			Logger.get().warn(
-				this, 
-				"Failed to add element with ID '" + child.getID() + "'!", 
-				"Such an element already exists in the GUI."
-			);
+	public boolean addChildTo(String parentID, AGUIElement child) {
+		AGUIElement parent = this.getElementByID(parentID);
+		if( parent == null ) {
+			this.errorNonExistingParent(parentID, child.getID());
 			return false;
 		}
 		
-		this.elementTable.put(child.getID(), child);
+		AGUIElement error = this.canAddElement(child);
+		
+		if( error != null ) {
+			this.errorAlreadyExists(error.getID());
+			return false;
+		}
+		
+		this.registerElement(child);
 		parent.addChild(child);
 		return true;
 	}
 	
-	public void setBody(Body body) {
-		this.body = body;
+	public boolean addCollectionTo(String parentID, String childID, Collection childCollection) {
+		AGUIElement parent = this.getElementByID(parentID);
+		if( parent == null ) {
+			this.errorNonExistingParent(parentID, childID);
+			return false;
+		}
+		
+		AGUIElement childRoot = childCollection.buildNode(this, childID);
+		AGUIElement error = this.canAddElement(childRoot);
+		
+		if( error != null ) {
+			this.errorAlreadyExists(error.getID());
+			return false;
+		}
+		
+		
+		this.registerElement(childRoot);
+		parent.addChild(childRoot);
+		return true;
+	}
+	
+	private boolean registerElement(AGUIElement element) {
+		DebugUtils.log(this, element.getID());
+		if( this.getElementByID(element.getID()) != null ) {
+			Logger.get().warn(
+				this, 
+				"An element with an overlapping ID '" + element.getID() + "' was added.", 
+				"The previous element was replaced, which may lead to unexpected behavior."
+			);
+			return false;
+		}
+		
+		this.elementTable.put(element.getID(), element);
+		for( AGUIElement child : element.getChildren() ) {
+			if( !this.registerElement(child) ) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public void bodyFromCollection(Collection collection) {
+		if( !(collection.getRoot() instanceof Body) ) {
+			Logger.get().error(
+				this, 
+				"Unable to create a body from a collection.", 
+				"Collection root node is not a body."
+			);
+		}
+		
+		this.elementTable = new HashMap<>();
+		AGUIElement body = collection.buildNode(this, null);
+		this.registerElement(body);
+		this.body = (Body) body;
+	}
+	
+	private AGUIElement canAddElement(AGUIElement element) {
+		if( this.getElementByID(element.getID()) != null ) {
+			return element;
+		}
+		
+		for( AGUIElement child : element.getChildren() ) {
+			AGUIElement error = this.canAddElement(child);
+			if( error != null ) {
+				return error;
+			}
+		}
+		
+		return null;
+	}
+	
+	private void errorNonExistingParent(String parentID, String childID) {
+		Logger.get().error(
+			this, 
+			"Can't add a child '" + childID + "' to parent element '" + parentID + "'!", 
+			"Parent doesn't exist."
+		);
+	}
+	
+	private void errorAlreadyExists(String id) {
+		Logger.get().error(
+			this, 
+			"Failed to add element with ID '" + id + "'!", 
+			"Such an element already exists in the GUI."
+		);
 	}
 	
 	public void addTheme(String name, Theme theme) {

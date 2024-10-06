@@ -83,16 +83,17 @@ public class Application {
 				"      }\r\n" + 
 				"    }");*/
 		Tokenizer.Result result = tokenizer.tokenize(
-			"casual theme {someProp:'this is a testprop';}\n"+
-			"box collection as image {\n"
-			+ "width:56px;}\n"+
+			//"casual theme {someProp:'this is a testprop';}\n"+
+			"box collection as div {\n"
+			+ "width:56px; div{ID:'inner';}}\n"+
 			 "body{\n"
 			+ "div {\n"
 			+ "ID: 'testing';\n"
 			+ "width: 50%;\n"
 			+ "height:100px;\n"
 			+ "div{ID:'another-test'; minWidth: 6r;}\n"
-			+ "} box {ID:'yet-another-div';}\n"
+			+ "}\n"
+			+ " box {ID:'yet-another-div';div{ID:'placed-div';}}\n"
 			+ "}"
 		);
 		DebugUtils.log(this, result.errorMessage);
@@ -105,7 +106,9 @@ public class Application {
 		GUI test = new GUI();
 		DocumentParser.Result parse = parser.parse(test, result.tokens);
 		DebugUtils.log(this, parse.errorMessage);
-		DebugUtils.log(this, test.getElementByID("yet-another-div"));
+		//DebugUtils.log(this, test.getElementByID("BODY").getID());
+		//DebugUtils.log(this, test.getBody().getChildren().size());
+		DebugUtils.log(this, test.getElementByID("placed-div"));
 		//DebugUtils.log(this, test.getElementByID("another-test").getProperties().getProperty(Properties.MIN_WIDTH).getValue());
 		//DebugUtils.log(this, test.getElementByID("yet-another-test"));
 		

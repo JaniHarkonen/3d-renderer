@@ -290,7 +290,7 @@ public class Scene {
 	private void createGUI() {
 		//this.DEBUGtextAppStatistics = new Text(this.gui, "test-text", "");
 		this.gui = new GUI();
-		this.gui.initialize();
+		//this.gui.initialize();
 		
 			// Theme
 		Theme t = new Theme();
@@ -349,7 +349,7 @@ public class Scene {
 			props.getProperty(Properties.ANCHOR_Y).set(0.5f, Property.HPERCENT);
 			//props.getProperty(Properties.PRIMARY_COLOR).set("sub-section.sub-prop", Property.THEME);
 			//props.getProperty(Properties.PRIMARY_COLOR).set("9fd3c7", Property.COLOR_HEX);
-		this.gui.addChildTo(this.gui.getBody(), image);
+		//this.gui.addChildTo(this.gui.getBody(), image);
 		
 		/*Div div = new Div(this.gui, "test-div");
 			props = div.getProperties();
