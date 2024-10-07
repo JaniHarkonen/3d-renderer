@@ -107,11 +107,15 @@ public class GUIRenderPass implements IRenderPass {
 		this.context.evaluateProperties(element.getProperties());
 		this.renderStrategyManager.getStrategy(element.getClass()).execute(renderer, this, element);
 		
+		Text text = element.getText();
+		if( text != null ) {
+			this.renderStrategyManager.getStrategy(text.getClass()).execute(renderer, this, text);
+		}
+		
 		for( AGUIElement child : element.getChildren() ) {
 			StyleCascade currentContext = this.context;	// Stash context
 			this.recursivelyRender(renderer, child);
 			this.context = currentContext;
-			
 		}
 	}
 	

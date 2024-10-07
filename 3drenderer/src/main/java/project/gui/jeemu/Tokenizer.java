@@ -218,7 +218,8 @@ public class Tokenizer {
 	
 	private Result literal() {
 		int start = this.cursor;
-		while( this.isLiteral(this.charAtCursor()) ) {
+		char charAt;
+		while( this.isLiteral(charAt = this.charAtCursor()) || this.isDigit(charAt) ) {
 			this.advance();
 		}
 		
@@ -396,6 +397,7 @@ public class Tokenizer {
 			previousToken.type == TokenType.KEYWORD && 
 			((String) previousToken.value).equals(KEYWORD_TEXT) 
 		) {
+			this.advance();
 			this.readText();
 			this.backtrack();
 		}

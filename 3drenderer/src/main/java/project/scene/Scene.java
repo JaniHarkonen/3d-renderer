@@ -10,14 +10,13 @@ import project.Application;
 import project.Window;
 import project.controls.Controller;
 import project.gui.GUI;
-import project.gui.Image;
-import project.gui.Theme;
-import project.gui.props.Properties;
-import project.gui.props.Property;
+import project.gui.jeemu.DocumentParser;
+import project.gui.jeemu.Tokenizer;
 import project.input.Input;
 import project.input.InputSnapshot;
 import project.input.KeyHeld;
 import project.input.MouseMove;
+import project.shared.logger.Logger;
 import project.testing.ActionSet;
 import project.testing.TestAssets;
 import project.testing.TestDebugDataHandles;
@@ -25,6 +24,7 @@ import project.testing.TestDummy;
 import project.testing.TestPlayer;
 import project.testing.TestPointLight;
 import project.utils.DebugUtils;
+import project.utils.FileUtils;
 
 public class Scene {
 	private List<ASceneObject> objects;
@@ -126,7 +126,7 @@ public class Scene {
 		}*/
 		
 			// GUI
-		this.createGUI();
+		this.DEBUGcreateGUI();
 		DebugUtils.log(this, "GUI created!");
 
 			// Camera
@@ -215,7 +215,7 @@ public class Scene {
 		
 		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_H) ) {
 			if( this.gui == null ) {
-				this.createGUI();
+				this.DEBUGcreateGUI();
 			} else {
 				this.gui = null;
 			}
@@ -287,24 +287,45 @@ public class Scene {
 		return n + units[index];
 	}
 	
-	private void createGUI() {
-		//this.DEBUGtextAppStatistics = new Text(this.gui, "test-text", "");
+	private void DEBUGcreateGUI() {
+		String source = FileUtils.readTextFile(FileUtils.getResourcePath("ui/test.jeemu"));
+		DebugUtils.log(this, source);
+		
+		Tokenizer tokenizer = new Tokenizer();
+		Tokenizer.Result tokenizerResult = tokenizer.tokenize(source);
+		
+		if( !tokenizerResult.wasSuccessful ) {
+			Logger.get().error(this, tokenizerResult.errorMessage);
+			return;
+		}
+		
+		DocumentParser parser = new DocumentParser();
 		this.gui = new GUI();
+		DocumentParser.Result parserResult = parser.parse(this.gui, tokenizerResult.tokens);
+		
+		if( !parserResult.wasSuccessful ) {
+			Logger.get().error(this, parserResult.errorMessage);
+			return;
+		}
+		
+		DebugUtils.log(this, this.gui.getElementByID("hud").getText());
+		
+		//this.DEBUGtextAppStatistics = new Text(this.gui, "test-text", "");
 		//this.gui.initialize();
 		
 			// Theme
-		Theme t = new Theme();
+		//Theme t = new Theme();
 		/*t.setProperty(new Property("epic-prop", "e(rgba(0,0,255,255))", Property.EXPRESSION));
 			Theme subt = new Theme();
 			//subt.setProperty(new Property("sub-prop", "fdffcd", Property.COLOR_HEX));
 			subt.setProperty(new Property("sub-prop", "e(rgba(0,0,255,255))", Property.EXPRESSION));
 			//subt.setProperty(new Property("sub-prop", "e(-1+59*612+4/45*41-1-6)", Property.EXPRESSION));
 		t.setSection("sub-section", subt);*/
-		this.gui.addTheme("epic-theme", t);
+		/*this.gui.addTheme("epic-theme", t);
 		this.gui.setActiveTheme("epic-theme");
 		
 		Properties props;
-		Properties.Style style;
+		Properties.Style style;*/
 		
 		/*Div div = new Div(this.gui, "test-div");
 			props = div.getProperties();
@@ -339,14 +360,14 @@ public class Scene {
 			
 		//this.gui.addChildTo(this.gui.getBody(), div);
 		
-		Image image = new Image(this.gui, "img-crosshair", TestAssets.TEX_GUI_CROSSHAIR);
+		/*Image image = new Image(this.gui, "img-crosshair", TestAssets.TEX_GUI_CROSSHAIR);
 			props = image.getProperties();
 			props.getProperty(Properties.LEFT).set(0.5f, Property.WPERCENT);
 			props.getProperty(Properties.TOP).set(0.5f, Property.HPERCENT);
 			props.getProperty(Properties.WIDTH).set(16, Property.PX);
 			props.getProperty(Properties.HEIGHT).set(16, Property.PX);
 			props.getProperty(Properties.ANCHOR_X).set(0.5f, Property.WPERCENT);
-			props.getProperty(Properties.ANCHOR_Y).set(0.5f, Property.HPERCENT);
+			props.getProperty(Properties.ANCHOR_Y).set(0.5f, Property.HPERCENT);*/
 			//props.getProperty(Properties.PRIMARY_COLOR).set("sub-section.sub-prop", Property.THEME);
 			//props.getProperty(Properties.PRIMARY_COLOR).set("9fd3c7", Property.COLOR_HEX);
 		//this.gui.addChildTo(this.gui.getBody(), image);

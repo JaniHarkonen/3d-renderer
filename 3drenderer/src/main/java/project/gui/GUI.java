@@ -7,7 +7,6 @@ import project.Application;
 import project.core.IRenderable;
 import project.core.ITickable;
 import project.shared.logger.Logger;
-import project.utils.DebugUtils;
 
 public class GUI implements ITickable, IRenderable {
 	private Body body;
@@ -20,7 +19,6 @@ public class GUI implements ITickable, IRenderable {
 		this.elementTable = new HashMap<>();
 		this.themes = new HashMap<>();
 		this.activeTheme = null;
-		//this.body = new Body(this);
 	}
 	
 	
@@ -75,7 +73,6 @@ public class GUI implements ITickable, IRenderable {
 	}
 	
 	private boolean registerElement(AGUIElement element) {
-		DebugUtils.log(this, element.getID());
 		if( this.getElementByID(element.getID()) != null ) {
 			Logger.get().warn(
 				this, 

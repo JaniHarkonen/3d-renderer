@@ -57,7 +57,7 @@ public class Application {
 		final int FPS_MAX = 60;
 		final int TICK_RATE = 60;
 		
-		Tokenizer tokenizer = new Tokenizer();
+		//Tokenizer tokenizer = new Tokenizer();
 		/*Tokenizer.Result result = tokenizer.tokenize("      // Declares a custom div called 'custom'\r\n" + 
 				"    custom collection as div {\r\n" + 
 				"      width: 100px;\r\n" + 
@@ -82,7 +82,7 @@ public class Application {
 				"        }\r\n" + 
 				"      }\r\n" + 
 				"    }");*/
-		Tokenizer.Result result = tokenizer.tokenize(
+		/*Tokenizer.Result result = tokenizer.tokenize(
 			//"casual theme {someProp:'this is a testprop';}\n"+
 			"box collection as div {\n"
 			+ "width:56px; div{ID:'inner';}}\n"+
@@ -113,7 +113,7 @@ public class Application {
 		//DebugUtils.log(this, test.getElementByID("yet-another-test"));
 		
 		//DebugUtils.log(this, test.getTheme("casual").getPropertyBuilder("someProp"));
-		DebugUtils.log(this, test.getTheme("casual").getPropertyBuilder("someProp").value);
+		DebugUtils.log(this, test.getTheme("casual").getPropertyBuilder("someProp").value);*/
 		
 			// Asset manager
 		this.assetManager = new AssetManager();

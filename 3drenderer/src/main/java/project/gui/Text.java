@@ -7,13 +7,13 @@ public class Text extends AGUIElement {
 	private Font font;
 	private String content;
 	
-	public Text(GUI gui, String id, String content) {
-		super(gui, id);
+	public Text(GUI gui, String content) {
+		super(gui, null);
 		this.font = TestAssets.FONT_ARIAL_16;
 		this.content = content;
 	}
 	
-	private Text(Text src) {
+	public Text(Text src) {
 		super(src);
 		
 		this.font = src.font;
@@ -43,7 +43,7 @@ public class Text extends AGUIElement {
 	
 	@Override
 	public Text createInstance(GUI ui, String id) {
-		return new Text(ui, id, "");
+		return new Text(ui, "");
 	}
 	
 	public void setContent(String content) {

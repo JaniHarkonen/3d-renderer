@@ -14,12 +14,18 @@ public class RenderDiv implements IRenderStrategy<GUIRenderPass> {
 	@Override
 	public void execute(IRenderer renderer, GUIRenderPass renderPass, IRenderable renderable) {
 		StyleCascade renderContext = renderPass.context;
+		Vector4f backgroundColor = renderContext.secondaryColor;
 		
-		Vector4f primaryColor = renderContext.primaryColor;
-		renderPass.uPrimaryColor.update(primaryColor);
+			// Skip rendering if the div's alpha value is too low
+			// NOTICE: The content MAY still be rendered if children's primary colors aren't inherited
+		if( backgroundColor.w <= 0.00001f ) {
+			return;
+		}
 		
-		float x = renderContext.left;
-		float y = renderContext.top;
+		renderPass.uPrimaryColor.update(backgroundColor);
+		
+		float x = renderContext.left - renderContext.anchorX;
+		float y = renderContext.top - renderContext.anchorY;
 		float width = renderContext.width;
 		float height = renderContext.height;
 		

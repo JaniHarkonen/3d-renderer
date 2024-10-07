@@ -8,23 +8,41 @@ import project.core.ITickable;
 import project.gui.props.Properties;
 
 public abstract class AGUIElement implements IRenderable, ITickable {
+	public static boolean validateID(String id) {
+		for( int i = 0; i < id.length(); i++ ) {
+			char c = id.charAt(i);
+			if (
+				c == '#' || c == '.' || c == '?' || c == '\'' || c == '"' || c == '`' || c == '´' ||
+				c == '(' || c == ')' || c == '|' || c == '{' || c == '}' || c == ';'
+			) {
+				return false;
+			}
+		}
+		return true;
+	}
 	protected final GUI gui;
 	protected final String id;
 	
 	protected Properties properties;
 	protected List<AGUIElement> children;
+	protected Text text;
 	
 	public AGUIElement(GUI gui, String id) {
 		this.id = id;
 		this.gui = gui;
 		this.properties = new Properties(this);
 		this.children = new ArrayList<>();
+		this.text = null;
 	}
 	
 	protected AGUIElement(AGUIElement src) {
 		this.gui = null;
 		this.id = src.id;
 		this.properties = new Properties(src.properties);
+		
+		if( src.text != null ) {
+			this.text = new Text(src.text);
+		}
 		
 		this.children = new ArrayList<>(src.children.size());
 		for( AGUIElement child : src.children ) {
@@ -62,6 +80,10 @@ public abstract class AGUIElement implements IRenderable, ITickable {
 		this.properties = properties;
 	}
 	
+	public void setText(Text text) {
+		this.text = text;
+	}
+	
 	public GUI getGUI() {
 		return this.gui;
 	}
@@ -76,5 +98,9 @@ public abstract class AGUIElement implements IRenderable, ITickable {
 	
 	public List<AGUIElement> getChildren() {
 		return this.children;
+	}
+	
+	public Text getText() {
+		return this.text;
 	}
 }

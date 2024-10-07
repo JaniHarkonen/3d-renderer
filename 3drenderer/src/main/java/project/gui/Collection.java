@@ -29,6 +29,10 @@ public class Collection {
 		AGUIElement root = node.createInstance(ui, id);
 		root.setProperties(new Properties(node.getProperties()));
 		
+		if( node.getText() != null ) {
+			root.setText(new Text(node.getText()));
+		}
+		
 		for( AGUIElement child : node.getChildren() ) {
 			root.addChild(this.buildNode(ui, containerID, child));
 		}

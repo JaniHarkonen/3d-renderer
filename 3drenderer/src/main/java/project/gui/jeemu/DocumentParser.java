@@ -44,7 +44,7 @@ public class DocumentParser {
 		elementsByType = new HashMap<>();
 		elementsByType.put(Tokenizer.KEYWORD_DIV, new Div(null, null));
 		elementsByType.put(Tokenizer.KEYWORD_IMAGE, new Image(null, null, null));
-		elementsByType.put(Tokenizer.KEYWORD_TEXT, new Text(null, null, ""));
+			// NOTICE: Text is omitted here due to its special status
 	}
 	
 	private static AGUIElement getElementByType(String elementType) {
@@ -322,42 +322,53 @@ public class DocumentParser {
 				
 				parent.getProperties().setProperty(propertyName, holder.builder.build(propertyName));
 			} else if( nextToken.type == TokenType.KEYWORD || nextToken.type == TokenType.IDENTIFIER ) {
-					// Handle children
 				this.advance();
 				
 				if( !this.checkToken(this.next(), TokenType.BLOCK_START) ) {
 					return this.parserError("Element body expected.");
 				}
 				
-					// Determine the ID of the child, so that it can be instantiated as IDs are 
-					// final (ID should be the first property)
 				this.advance();
-				String childID = this.readID();
 				
-				if( childID == null ) {
-					return this.parserError(
-						"Element ID must be the first property of the element "
-						+ "and it must be unique."
-					);
-				}
-				
-					// Determine child's element type
-				String elementType = (String) nextToken.value;
-				AGUIElement child = this.createElement(elementType, this.targetUI, childID);
-				
-				if( child == null ) {
-					return this.parserError("'" + elementType + "' is not an element type nor a collection.");
-				}
-				
-					// Extract child's children
-				this.advance();
-				Result error = this.children(collection, child);
-				
-				if( error != null ) {
-					return error;
-				}
-				
-				if( collection != null ) {
+					// Handle text separately due to its special characteristics
+				if( nextToken.value.equals(Tokenizer.KEYWORD_TEXT) ) {
+					Text text = new Text(this.targetUI, null);
+					Result error = this.text(text);
+					
+					if( error != null ) {
+						return error;
+					}
+					
+					parent.setText(text);
+				} else {
+						// Determine the ID of the child, so that it can be instantiated as IDs are 
+						// final (ID should be the first property)
+					AGUIElement child;
+					String childID = this.readID();
+					
+					if( childID == null ) {
+						return this.parserError(
+							"Element ID must be the first property of the element "
+							+ "and it must be unique."
+						);
+					}
+					
+						// Determine child's element type
+					String elementType = (String) nextToken.value;
+					child = this.createElement(elementType, this.targetUI, childID);
+					
+					if( child == null ) {
+						return this.parserError("'" + elementType + "' is not an element type nor a collection.");
+					}
+					
+						// Extract child's children
+					this.advance();
+					Result error = this.children(collection, child);
+					
+					if( error != null ) {
+						return error;
+					}
+					
 					collection.addChildTo(parent, child);
 				}
 			}
@@ -369,6 +380,26 @@ public class DocumentParser {
 		}
 		
 		return this.parserError("Ran out of tokens while parsing an element.");
+	}
+	
+	private Result text(Text parent) {
+		Token next = this.next();
+		PropertyBuilder builder;
+		
+		if(
+			!this.checkToken(next, TokenType.EVALUABLE) || 
+			(builder = (PropertyBuilder) next.value).dataType != Property.STRING
+		) {
+			return this.parserError("Text elements can only contain text.");
+		}
+		
+		this.advance();
+		if( !this.checkToken(this.next(), TokenType.BLOCK_END) ) {
+			return this.parserError("Text elements can only contain a single text item.");
+		}
+		
+		parent.setContent(builder.toString());
+		return null;
 	}
 	
 	private AGUIElement createElement(String elementType, GUI targetUI, String id) {
@@ -413,7 +444,13 @@ public class DocumentParser {
 			return null;
 		}
 		
-		return idBuilder.toString();
+			// Make sure the ID is allowed
+		String id = idBuilder.toString();
+		if( !AGUIElement.validateID(id) ) {
+			return null;
+		}
+		
+		return id;
 	}
 	
 	private int advance(int index) {

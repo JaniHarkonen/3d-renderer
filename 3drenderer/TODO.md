@@ -1,6 +1,7 @@
 ## TO DO
 
 ### Priority
+- add responsiveness queries to Jeemu
 - reconsider storing properties as fields in Context due to redundancy
 - Context currently holds no reference to a Font, implement font lookup by name
 - implement a markup language for building UIs with
