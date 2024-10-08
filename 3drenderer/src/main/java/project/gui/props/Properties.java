@@ -151,37 +151,6 @@ public class Properties {
 		this.stylesByResponsiveness = new ArrayList<>();
 		
 		Map<String, Property> defaultProperties = new LinkedHashMap<>();
-		this.addProperty(new Property(LEFT, DEFAULT_LEFT, Property.PX), defaultProperties);
-		this.addProperty(new Property(TOP, DEFAULT_TOP, Property.PX), defaultProperties);
-		this.addProperty(
-			new Property(MIN_WIDTH, DEFAULT_MIN_WIDTH, Property.PX), defaultProperties
-		);
-		this.addProperty(
-			new Property(MIN_HEIGHT, DEFAULT_MIN_HEIGHT, Property.PX), defaultProperties
-		);
-		this.addProperty(
-			new Property(MAX_WIDTH, DEFAULT_MAX_WIDTH, Property.PX), defaultProperties
-		);
-		this.addProperty(
-			new Property(MAX_HEIGHT, DEFAULT_MAX_HEIGHT, Property.PX), defaultProperties
-		);
-		this.addProperty(new Property(WIDTH, DEFAULT_WIDTH, Property.PX), defaultProperties);
-		this.addProperty(new Property(HEIGHT, DEFAULT_HEIGHT, Property.PX), defaultProperties);
-		this.addProperty(new Property(COLS, DEFAULT_COLS, Property.NUMBER), defaultProperties);
-		this.addProperty(new Property(ROWS, DEFAULT_ROWS, Property.NUMBER), defaultProperties);
-		this.addProperty(new Property(
-			PRIMARY_COLOR, DEFAULT_PRIMARY_COLOR, Property.COLOR), defaultProperties
-		);
-		this.addProperty(new Property(
-			SECONDARY_COLOR, DEFAULT_SECONDARY_COLOR, Property.COLOR), defaultProperties
-		);
-		this.addProperty(new Property(ANCHOR_X, DEFAULT_ANCHOR_X, Property.PX), defaultProperties);
-		this.addProperty(new Property(ANCHOR_Y, DEFAULT_ANCHOR_Y, Property.PX), defaultProperties);
-		this.addProperty(
-			new Property(LINE_HEIGHT, DEFAULT_LINE_HEIGHT, Property.PX), defaultProperties
-		);
-		this.addProperty(new Property(BASELINE, DEFAULT_BASELINE, Property.PX), defaultProperties);
-		
 		this.stylesByResponsiveness.add(new Style(new RQuery(), defaultProperties));
 	}
 	
@@ -200,12 +169,6 @@ public class Properties {
 		}
 	}
 	
-	
-	private Properties addProperty(Property property, Map<String, Property> properties) {
-		properties.put(property.getName(), property);
-		return this;
-	}
-	
 	public Style addResponsiveStyle(RQuery responsivenessQuery) {
 		Style style = new Style(responsivenessQuery, new LinkedHashMap<>());
 		this.stylesByResponsiveness.add(this.stylesByResponsiveness.size() - 1, style);
@@ -218,9 +181,9 @@ public class Properties {
 	}
 	
 	/**
-	 * Returns a property given its name from the default property map. The default
-	 * property map is always the last map in the list of props entries. If the 
-	 * property cannot be found, null is returned.
+	 * Returns a property given its name from the default style. The default
+	 * style is always the last one in the list of styles. If the property cannot 
+	 * be found, null is returned.
 	 * 
 	 * @param key Name of the property to be returned.
 	 * @return Property with the given name, or null if no such property exists in 
@@ -239,7 +202,7 @@ public class Properties {
 	 * 
 	 * @param key Name of the property to be returned.
 	 * @param windowWidth Window width that will be used in the responsiveness query.
-	 * @param window HeightWindow width that will be used in the responsiveness query.
+	 * @param windowHeight Window width that will be used in the responsiveness query.
 	 * @return Property with the given name that matches the responsiveness criteria, 
 	 * or null if no such property exists.
 	 */

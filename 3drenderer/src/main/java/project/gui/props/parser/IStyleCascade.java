@@ -9,11 +9,11 @@ public interface IStyleCascade {
 
 	public void evaluateProperties(Properties properties);
 	
-	public float evaluateFloat(Property property);
+	public float evaluateFloat(Property property, float defaultValue);
 	
-	public String evaluateString(Property property);
+	public String evaluateString(Property property, String defaultValue);
 	
-	public Vector4f evaluateColor(Property property);
+	public Vector4f evaluateColor(Property property, Vector4f defaultValue);
 	
-	public Object evaluate(Property property);
+	public Object evaluate(Property property, Object defaultValue);
 }

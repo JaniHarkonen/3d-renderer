@@ -14,7 +14,6 @@ import project.gui.Text;
 import project.gui.Theme;
 import project.gui.props.Property;
 import project.gui.props.PropertyBuilder;
-import project.utils.DebugUtils;
 
 public class DocumentParser {
 	public class Result {

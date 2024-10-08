@@ -29,7 +29,7 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 		renderPass.uHasTexture.update(1);
 		GL46.glActiveTexture(GL46.GL_TEXTURE0);
 		textureGL.bind();
-
+		
 		for( String line : text.getContent().split("\n") ) {
 			for( int i = 0; i < line.length(); i++ ) {
 				Font.Glyph glyph = font.getGlyph(line.charAt(i));

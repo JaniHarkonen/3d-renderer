@@ -21,7 +21,7 @@ class ValueProvider extends AEvaluator {
 			// So far, only numeric values must evaluated by the cascade as
 			// they may depend on the parent or the element dimensions
 		return new Property(
-			this.value.getName(), cascade.evaluateFloat(this.value), Property.PX
+			this.value.getName(), cascade.evaluateFloat(this.value, 0.0f), Property.PX
 		);
 	}
 

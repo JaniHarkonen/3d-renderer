@@ -97,18 +97,22 @@ class StyleCascade implements IStyleCascade {
 		
 		float minWidth = this.evaluateFloat(properties.getProperty(Properties.MIN_WIDTH, ww, wh));
 		float minHeight = this.evaluateFloat(properties.getProperty(Properties.MIN_HEIGHT, ww, wh));
-		float maxWidth = this.evaluateFloat(properties.getProperty(Properties.MAX_WIDTH, ww, wh));
-		float maxHeight = this.evaluateFloat(properties.getProperty(Properties.MAX_HEIGHT, ww, wh));
+		float maxWidth = 
+			this.evaluateFloat(properties.getProperty(Properties.MAX_WIDTH, ww, wh), Float.MAX_VALUE);
+		float maxHeight = 
+			this.evaluateFloat(properties.getProperty(Properties.MAX_HEIGHT, ww, wh), Float.MAX_VALUE);
 		float _width = this.evaluateFloat(properties.getProperty(Properties.WIDTH, ww, wh));
 		float _height = this.evaluateFloat(properties.getProperty(Properties.HEIGHT, ww, wh));
 		
 		float columns = this.evaluateFloat(properties.getProperty(Properties.COLS, ww, wh));
 		float rows = this.evaluateFloat(properties.getProperty(Properties.ROWS, ww, wh));
 		Vector4f primaryColor = this.evaluateColor(
-			properties.getProperty(Properties.PRIMARY_COLOR, ww, wh)
+			properties.getProperty(Properties.PRIMARY_COLOR, ww, wh), 
+			this.primaryColor
 		);
 		Vector4f secondaryColor = this.evaluateColor(
-			properties.getProperty(Properties.SECONDARY_COLOR, ww, wh)
+			properties.getProperty(Properties.SECONDARY_COLOR, ww, wh), 
+			Properties.DEFAULT_SECONDARY_COLOR
 		);
 		
 		this.left += left;
@@ -133,9 +137,10 @@ class StyleCascade implements IStyleCascade {
 		this.anchorX = this.evaluateFloat(properties.getProperty(Properties.ANCHOR_X, ww, wh));
 		this.anchorY = this.evaluateFloat(properties.getProperty(Properties.ANCHOR_Y, ww, wh));
 		this.lineHeight = this.evaluateFloat(
-			properties.getProperty(Properties.LINE_HEIGHT, ww, wh)
+			properties.getProperty(Properties.LINE_HEIGHT, ww, wh), this.lineHeight
 		);
-		this.baseline = this.evaluateFloat(properties.getProperty(Properties.BASELINE, ww, wh));
+		this.baseline = 
+			this.evaluateFloat(properties.getProperty(Properties.BASELINE, ww, wh), this.baseline);
 		
 			// Warn of elements that are invisible due to their dimensions
 		Logger.get().warn(this, (message) -> {
@@ -158,27 +163,36 @@ class StyleCascade implements IStyleCascade {
 		});
 	}
 	
-	@Override
 	public float evaluateFloat(Property property) {
-		return (float) this.evaluate(property);
+		return this.evaluateFloat(property, 0.0f);
 	}
 	
 	@Override
-	public String evaluateString(Property property) {
-		return (String) this.evaluate(property);
+	public float evaluateFloat(Property property, float defaultValue) {
+		return (float) this.evaluate(property, defaultValue);
 	}
 	
 	@Override
-	public Vector4f evaluateColor(Property property) {
-		return (Vector4f) this.evaluate(property);
+	public String evaluateString(Property property, String defaultValue) {
+		return (String) this.evaluate(property, defaultValue);
 	}
 	
 	@Override
-	public Object evaluate(Property property) {
+	public Vector4f evaluateColor(Property property, Vector4f defaultValue) {
+		return (Vector4f) this.evaluate(property, defaultValue);
+	}
+	
+	@Override
+	public Object evaluate(Property property, Object defaultValue) {
+		if( property == null ) {
+			return defaultValue;
+		}
+		
 		switch( property.getType() ) {
 				// Direct return, no evaluation needed
 			case Property.NUMBER:
 			case Property.STRING:
+			case Property.COLOR:
 			case Property.PX: return property.getValue();
 			
 				// Relative dimensions
@@ -191,17 +205,9 @@ class StyleCascade implements IStyleCascade {
 			case Property.R: 
 				return this.height / this.rows * ((float) property.getValue());
 				
-				// Return primary or secondary color depending on prop name
-			case Property.COLOR: {
-				Vector4f defaultColor = property.getName().equals(Properties.PRIMARY_COLOR) ? 
-					Properties.DEFAULT_PRIMARY_COLOR : Properties.DEFAULT_SECONDARY_COLOR;
-				Vector4f color = (Vector4f) property.getValue();
-				return this.returnOrDefault(color, defaultColor);
-			}
-			
 				// Evaluate expression
 			case Property.EXPRESSION: 
-				return this.evaluate(this.parseExpression(property));
+				return this.evaluate(this.parseExpression(property), null);
 				
 			/*case Property.THEME: {
 				String key = (String) property.getValue();
@@ -222,9 +228,5 @@ class StyleCascade implements IStyleCascade {
 		return RUNNER.evaluateExpression(
 			expression.getName(), (String) expression.getValue(), this
 		);
-	}
-	
-	private Object returnOrDefault(Object value, Object defaultValue) {
-		return (value == null) ? defaultValue : value;
 	}
 }

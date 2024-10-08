@@ -10,6 +10,12 @@ public class Body extends AGUIElement {
 
 	public Body(GUI gui) {
 		super(gui, BODY_ID);
+		this.properties.setProperty(
+			Properties.WIDTH, new Property(Properties.WIDTH, 0.0f, Property.PX)
+		);
+		this.properties.setProperty(
+			Properties.HEIGHT, new Property(Properties.HEIGHT, 0.0f, Property.PX)
+		);
 	}
 	
 	private Body(Body src) {
