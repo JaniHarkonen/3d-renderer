@@ -20,6 +20,7 @@ public abstract class AGUIElement implements IRenderable, ITickable {
 		}
 		return true;
 	}
+	
 	protected final GUI gui;
 	protected final String id;
 	
