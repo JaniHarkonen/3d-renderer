@@ -10,10 +10,10 @@ import project.opengl.vao.VAO;
 import project.ui.AUIElement;
 import project.ui.props.Properties;
 
-public class RenderDiv implements IRenderStrategy<GUIRenderPass, AUIElement> {
+public class RenderDiv implements IRenderStrategy<UIRenderPass, AUIElement> {
 
 	@Override
-	public void execute(IRenderer renderer, GUIRenderPass renderPass, AUIElement element) {
+	public void execute(IRenderer renderer, UIRenderPass renderPass, AUIElement element) {
 		Properties.Statistics stats = element.getStatistics();
 		Vector4f backgroundColor = stats.secondaryColor;
 		

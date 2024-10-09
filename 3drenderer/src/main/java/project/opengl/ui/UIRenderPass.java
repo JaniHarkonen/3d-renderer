@@ -22,7 +22,7 @@ import project.ui.Div;
 import project.ui.Image;
 import project.ui.Text;
 
-public class GUIRenderPass implements IRenderPass {
+public class UIRenderPass implements IRenderPass {
 		// Shared context
 	Mesh imagePlane;
 	ShaderProgram shaderProgram;
@@ -36,16 +36,16 @@ public class GUIRenderPass implements IRenderPass {
 	
 	private final Matrix4f projectionMatrix;
 	private GameState gameState;
-	private RenderStrategyManager<GUIRenderPass, AUIElement> renderStrategyManager;
+	private RenderStrategyManager<UIRenderPass, AUIElement> renderStrategyManager;
 	
-	public GUIRenderPass() {
+	public UIRenderPass() {
 		this.projectionMatrix = new Matrix4f();
 		this.gameState = null;
 		this.imagePlane = null;
 		this.shaderProgram = new ShaderProgram();
 		
 		this.renderStrategyManager = 
-			new RenderStrategyManager<>(new NullRenderStrategy<GUIRenderPass, AUIElement>());
+			new RenderStrategyManager<>(new NullRenderStrategy<UIRenderPass, AUIElement>());
 		this.renderStrategyManager
 		.addStrategy(Div.class, new RenderDiv())
 		.addStrategy(Text.class, new RenderText())
@@ -56,7 +56,7 @@ public class GUIRenderPass implements IRenderPass {
 	@Override
 	public boolean initialize() {
 		this.imagePlane = 
-			AssetUtils.createPlaneMesh("mesh-default-gui-plane", 0, 0, 1, 1, 0, 0, 1, 1);
+			AssetUtils.createPlaneMesh("mesh-default-ui-plane", 0, 0, 1, 1, 0, 0, 1, 1);
 		this.shaderProgram = new ShaderProgram();
 		this.uProjection = new UAMatrix4f(Uniforms.PROJECTION);
 		this.uDiffuseSampler = new UInteger1(Uniforms.DIFFUSE_SAMPLER);

@@ -13,10 +13,10 @@ import project.ui.AUIElement;
 import project.ui.Text;
 import project.ui.props.Properties;
 
-public class RenderText implements IRenderStrategy<GUIRenderPass, AUIElement> {
+public class RenderText implements IRenderStrategy<UIRenderPass, AUIElement> {
 
 	@Override
-	public void execute(IRenderer renderer, GUIRenderPass renderPass, AUIElement element) {
+	public void execute(IRenderer renderer, UIRenderPass renderPass, AUIElement element) {
 		Properties.Statistics stats = element.getStatistics();
 		float textX = stats.left;
 		float textY = stats.top;

@@ -12,10 +12,10 @@ import project.ui.AUIElement;
 import project.ui.Image;
 import project.ui.props.Properties;
 
-public class RenderImage implements IRenderStrategy<GUIRenderPass, AUIElement> {
+public class RenderImage implements IRenderStrategy<UIRenderPass, AUIElement> {
 
 	@Override
-	public void execute(IRenderer renderer, GUIRenderPass renderPass, AUIElement element) {
+	public void execute(IRenderer renderer, UIRenderPass renderPass, AUIElement element) {
 		Image image = (Image) element;
 		Properties.Statistics stats = element.getStatistics();
 		TextureGL textureGL = (TextureGL) image.getTexture().getGraphics();
