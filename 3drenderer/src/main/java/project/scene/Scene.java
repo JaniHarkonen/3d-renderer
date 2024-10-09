@@ -36,8 +36,6 @@ public class Scene {
 	private int tickRate;
 	private Application app;
 	
-	//private Image DEBUGcrosshair;
-	//private Text DEBUGtextAppStatistics;
 	private TestPointLight DEBUGtestPointLight0;
 	private Vector3f DEBUGshadowLightPosition;
 	private boolean DEBUGareNormalsActive;
@@ -54,8 +52,6 @@ public class Scene {
 		this.setTickRate(tickRate);
 		this.app = app;
 		
-		//this.DEBUGcrosshair = null;
-		//this.DEBUGtextAppStatistics = null;
 		this.DEBUGtestPointLight0 = null;
 		this.DEBUGshadowLightPosition = null;
 		this.DEBUGareNormalsActive = true;
@@ -172,8 +168,50 @@ public class Scene {
 		Vector3f pl0Position = this.DEBUGtestPointLight0.getTransform().getPosition();
 		Vector3f pl0Color = this.DEBUGtestPointLight0.getPointLight().getColor();
 		
+		InputSnapshot inputSnapshot = this.app.getWindow().getInputSnapshot();
+		
+		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_H) ) {
+			if( this.ui == null ) {
+				this.DEBUGcreateUI();
+			} else {
+				this.ui = null;
+			}
+		}
+		GLFW.glfwSetWindowTitle(Application.getApp().getWindow().getHandle(), ""+Application.getApp().getWindow().getFPS());
+		
+		if( inputSnapshot.isKeyHeld(GLFW.GLFW_KEY_KP_8) ) {
+			this.DEBUGshadowLightPosition.add(0,1*deltaTime,0);
+		} else if( inputSnapshot.isKeyHeld(GLFW.GLFW_KEY_KP_2) ) {
+			this.DEBUGshadowLightPosition.sub(0,1*deltaTime,0);
+		}
+		
+			// DEBUG - Toggle normal maps
+		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_N) ) {
+			this.DEBUGareNormalsActive = !this.DEBUGareNormalsActive;
+		}
+		
+			// DEBUG - Toggle roughness maps
+		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_R) ) {
+			this.DEBUGisRoughnessActive = !this.DEBUGisRoughnessActive;
+		}
+		
+			// DEBUG - Toggle cascade shadow maps
+		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_C) ) {
+			this.DEBUGcascadeShadowEnabled = !this.DEBUGcascadeShadowEnabled;
+		}
+		
+			// DEBUG - Send "pong" to server
+		//if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_T) ) {
+			//this.app.getNetworker().queueMessage(new MMessage("TEST pong"));
+		//}
+		
+		long time = System.nanoTime();
+		for( ASceneObject object : this.objects ) {
+			object.submitToRenderer();
+		}
+		
 		if( this.ui != null ) {
-			/*this.DEBUGtextAppStatistics.setContent(
+			this.ui.getElementByID("hud").getText().setContent(
 				"FPS: " + appWindow.getFPS() + " / " + appWindow.getMaxFPS() + "\n" +
 				"TICK: " + this.tickRate + " (d: " + deltaTime + ")\n" +
 				"HEAP: " + this.convertToLargestByte(memoryUsage) + " (" + memoryUsage + " bytes)\n" +
@@ -209,51 +247,8 @@ public class Scene {
 				"    3/4 to change point light green value\n" +
 				"    5/6 to change point light blue value\n" +
 				"    H to toggle HUD\n"
-			);*/
-		}
+			);
 		
-		InputSnapshot inputSnapshot = this.app.getWindow().getInputSnapshot();
-		
-		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_H) ) {
-			if( this.ui == null ) {
-				this.DEBUGcreateUI();
-			} else {
-				this.ui = null;
-			}
-		}
-		
-		if( inputSnapshot.isKeyHeld(GLFW.GLFW_KEY_KP_8) ) {
-			this.DEBUGshadowLightPosition.add(0,1*deltaTime,0);
-		} else if( inputSnapshot.isKeyHeld(GLFW.GLFW_KEY_KP_2) ) {
-			this.DEBUGshadowLightPosition.sub(0,1*deltaTime,0);
-		}
-		
-			// DEBUG - Toggle normal maps
-		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_N) ) {
-			this.DEBUGareNormalsActive = !this.DEBUGareNormalsActive;
-		}
-		
-			// DEBUG - Toggle roughness maps
-		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_R) ) {
-			this.DEBUGisRoughnessActive = !this.DEBUGisRoughnessActive;
-		}
-		
-			// DEBUG - Toggle cascade shadow maps
-		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_C) ) {
-			this.DEBUGcascadeShadowEnabled = !this.DEBUGcascadeShadowEnabled;
-		}
-		
-			// DEBUG - Send "pong" to server
-		//if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_T) ) {
-			//this.app.getNetworker().queueMessage(new MMessage("TEST pong"));
-		//}
-		
-		long time = System.nanoTime();
-		for( ASceneObject object : this.objects ) {
-			object.submitToRenderer();
-		}
-		
-		if( this.ui != null ) {
 			StyleCascade cascade = 
 				new StyleCascade(Application.getApp().getWindow(), this.ui.getActiveTheme());
 			this.ui.tick(deltaTime);
@@ -292,7 +287,6 @@ public class Scene {
 	
 	private void DEBUGcreateUI() {
 		String source = FileUtils.readTextFile(FileUtils.getResourcePath("ui/test.jeemu"));
-		DebugUtils.log(this, source);
 		
 		Tokenizer tokenizer = new Tokenizer();
 		Tokenizer.Result tokenizerResult = tokenizer.tokenize(source);

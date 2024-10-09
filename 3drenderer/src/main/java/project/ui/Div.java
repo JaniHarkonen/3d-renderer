@@ -21,7 +21,12 @@ public class Div extends AUIElement {
 		if( !(previous instanceof Div) ) {
 			return false;
 		}
-		return this.statistics.equals(((Div) previous).statistics);
+		
+		Div div = (Div) previous;
+		return (
+			this.statistics.equals(div.statistics) && 
+			this.text.equals(div.text)
+		);
 	}
 	
 	@Override
