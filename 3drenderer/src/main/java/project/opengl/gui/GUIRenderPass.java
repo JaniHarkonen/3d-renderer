@@ -24,7 +24,6 @@ import project.opengl.shader.uniform.UVector4f;
 
 public class GUIRenderPass implements IRenderPass {
 		// Shared context
-	StyleCascade context;
 	Mesh imagePlane;
 	ShaderProgram shaderProgram;
 	
@@ -37,17 +36,16 @@ public class GUIRenderPass implements IRenderPass {
 	
 	private final Matrix4f projectionMatrix;
 	private GameState gameState;
-	private RenderStrategyManager<GUIRenderPass> renderStrategyManager;
+	private RenderStrategyManager<GUIRenderPass, AGUIElement> renderStrategyManager;
 	
 	public GUIRenderPass() {
 		this.projectionMatrix = new Matrix4f();
-		this.context = null;
 		this.gameState = null;
 		this.imagePlane = null;
 		this.shaderProgram = new ShaderProgram();
 		
 		this.renderStrategyManager = 
-			new RenderStrategyManager<>(new NullRenderStrategy<GUIRenderPass>());
+			new RenderStrategyManager<>(new NullRenderStrategy<GUIRenderPass, AGUIElement>());
 		this.renderStrategyManager
 		.addStrategy(Div.class, new RenderDiv())
 		.addStrategy(Text.class, new RenderText())
@@ -86,7 +84,6 @@ public class GUIRenderPass implements IRenderPass {
 
 	@Override
 	public void render(IRenderer renderer, GameState gameState) {
-		this.context = new StyleCascade(renderer.getClientWindow(), gameState.getActiveGUITheme());
 		this.gameState = gameState;
 		ShaderProgram activeShaderProgram = this.shaderProgram;
 		
@@ -103,19 +100,15 @@ public class GUIRenderPass implements IRenderPass {
 	}
 	
 	private void recursivelyRender(IRenderer renderer, AGUIElement element) {
-		this.context = new StyleCascade(this.context);
-		this.context.evaluateProperties(element.getProperties());
 		this.renderStrategyManager.getStrategy(element.getClass()).execute(renderer, this, element);
 		
-		Text text = element.getText();
-		if( text != null ) {
+		if( element.hasText() ) {
+			Text text = element.getText();
 			this.renderStrategyManager.getStrategy(text.getClass()).execute(renderer, this, text);
 		}
 		
 		for( AGUIElement child : element.getChildren() ) {
-			StyleCascade currentContext = this.context;	// Stash context
 			this.recursivelyRender(renderer, child);
-			this.context = currentContext;
 		}
 	}
 	

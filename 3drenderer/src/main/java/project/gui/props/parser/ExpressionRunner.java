@@ -1,6 +1,7 @@
 package project.gui.props.parser;
 
 import project.gui.jeemu.Tokenizer;
+import project.gui.props.IStyleCascade;
 import project.gui.props.Property;
 import project.utils.DebugUtils;
 

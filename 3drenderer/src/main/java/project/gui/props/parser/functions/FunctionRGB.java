@@ -2,10 +2,10 @@ package project.gui.props.parser.functions;
 
 import org.joml.Vector4f;
 
+import project.gui.props.IStyleCascade;
 import project.gui.props.Property;
 import project.gui.props.parser.AEvaluator;
 import project.gui.props.parser.ExpressionParser;
-import project.gui.props.parser.IStyleCascade;
 
 public class FunctionRGB extends AEvaluator {
 	public FunctionRGB() {

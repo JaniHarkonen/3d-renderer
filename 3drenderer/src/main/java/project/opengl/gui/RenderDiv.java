@@ -4,17 +4,18 @@ import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
 
-import project.core.IRenderable;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
+import project.gui.AGUIElement;
+import project.gui.props.Properties;
 import project.opengl.vao.VAO;
 
-public class RenderDiv implements IRenderStrategy<GUIRenderPass> {
+public class RenderDiv implements IRenderStrategy<GUIRenderPass, AGUIElement> {
 
 	@Override
-	public void execute(IRenderer renderer, GUIRenderPass renderPass, IRenderable renderable) {
-		StyleCascade renderContext = renderPass.context;
-		Vector4f backgroundColor = renderContext.secondaryColor;
+	public void execute(IRenderer renderer, GUIRenderPass renderPass, AGUIElement element) {
+		Properties.Statistics stats = element.getStatistics();
+		Vector4f backgroundColor = stats.secondaryColor;
 		
 			// Skip rendering if the div's alpha value is too low
 			// NOTICE: The content MAY still be rendered if children's primary colors aren't inherited
@@ -24,10 +25,10 @@ public class RenderDiv implements IRenderStrategy<GUIRenderPass> {
 		
 		renderPass.uPrimaryColor.update(backgroundColor);
 		
-		float x = renderContext.left - renderContext.anchorX;
-		float y = renderContext.top - renderContext.anchorY;
-		float width = renderContext.width;
-		float height = renderContext.height;
+		float x = stats.left - stats.anchorX;
+		float y = stats.top - stats.anchorY;
+		float width = stats.width;
+		float height = stats.height;
 		
 		Matrix4f transform = new Matrix4f()
 		.translationRotateScale(x, y, 0.0f, 0, 0, 0, 0, width, height, 1.0f);

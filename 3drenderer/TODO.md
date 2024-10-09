@@ -2,11 +2,8 @@
 
 ### Priority
 - add responsiveness queries to Jeemu document parser
-- reconsider storing properties as fields in Context due to redundancy
 - Context currently holds no reference to a Font, implement font lookup by name
 - expr parenthesis checking is currently broken
-- StyleCascade in 'opengl.gui' shouldn't have to evaluate the props, this should be done by the GUI
- -- Property should propagate changes to Properties which should propagate changes to AGUIElement which should cascade changes to its children
 - rename GUI to UI across the code base
 - AGUIElement's children-field should be private as all changes to children should be done through the GUI in order to keep the element table consistent
 - rename primaryColor & secondaryColor to color & background color respectively

@@ -6,6 +6,7 @@ import java.util.Map;
 import project.Application;
 import project.core.IRenderable;
 import project.core.ITickable;
+import project.gui.props.IStyleCascade;
 import project.shared.logger.Logger;
 
 public class GUI implements ITickable, IRenderable {
@@ -30,6 +31,25 @@ public class GUI implements ITickable, IRenderable {
 	@Override
 	public void submitToRenderer() {
 		Application.getApp().getRenderer().getBackGameState().listGUI(this);
+	}
+	
+	public void evaluateElementProperties(IStyleCascade cascade) {
+		if( this.body != null ) {
+			this.evaluateElementProperties(this.body, cascade);
+		}
+	}
+	
+	private void evaluateElementProperties(AGUIElement element, IStyleCascade cascade) {
+		element.evaluateStatistics(cascade);
+		IStyleCascade inheritedCascade = cascade.newCascade();
+		
+		if( element.hasText() ) {
+			element.getText().evaluateStatistics(cascade);
+		}
+		
+		for( AGUIElement child : element.children ) {
+			this.evaluateElementProperties(child, inheritedCascade);
+		}
 	}
 	
 	public boolean addChildTo(String parentID, AGUIElement child) {

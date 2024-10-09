@@ -10,6 +10,7 @@ import project.Application;
 import project.Window;
 import project.controls.Controller;
 import project.gui.GUI;
+import project.gui.StyleCascade;
 import project.gui.jeemu.DocumentParser;
 import project.gui.jeemu.Tokenizer;
 import project.input.Input;
@@ -253,9 +254,11 @@ public class Scene {
 		}
 		
 		if( this.gui != null ) {
+			StyleCascade cascade = 
+				new StyleCascade(Application.getApp().getWindow(), this.gui.getActiveTheme());
 			this.gui.tick(deltaTime);
+			this.gui.evaluateElementProperties(cascade);
 			this.gui.submitToRenderer();
-			//this.gui.getBody().submitToRenderer();
 		}
 		
 		Application.getApp().getRenderer().getBackGameState()

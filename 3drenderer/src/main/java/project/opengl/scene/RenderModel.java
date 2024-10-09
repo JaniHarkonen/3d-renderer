@@ -5,16 +5,16 @@ import org.lwjgl.opengl.GL46;
 import project.asset.sceneasset.Mesh;
 import project.asset.texture.Texture;
 import project.component.Material;
-import project.core.IRenderable;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
 import project.opengl.TextureGL;
 import project.opengl.shader.uniform.object.material.SSMaterial;
 import project.opengl.vao.VAO;
+import project.scene.ASceneObject;
 import project.scene.Model;
 import project.testing.TestDebugDataHandles;
 
-class RenderModel implements IRenderStrategy<SceneRenderPass> {
+class RenderModel implements IRenderStrategy<SceneRenderPass, ASceneObject> {
 	
 	private SSMaterial materialStruct;
 	
@@ -23,7 +23,7 @@ class RenderModel implements IRenderStrategy<SceneRenderPass> {
 	}
 
 	@Override
-	public void execute(IRenderer renderer, SceneRenderPass renderPass, IRenderable renderable) {
+	public void execute(IRenderer renderer, SceneRenderPass renderPass, ASceneObject renderable) {
 		Model model = (Model) renderable;
 		renderPass.uObjectTransform.update(model.getTransform().getAsMatrix());
 		

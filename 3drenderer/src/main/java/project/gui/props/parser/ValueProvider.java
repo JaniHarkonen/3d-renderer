@@ -1,5 +1,6 @@
 package project.gui.props.parser;
 
+import project.gui.props.IStyleCascade;
 import project.gui.props.Property;
 
 class ValueProvider extends AEvaluator {
@@ -21,7 +22,7 @@ class ValueProvider extends AEvaluator {
 			// So far, only numeric values must evaluated by the cascade as
 			// they may depend on the parent or the element dimensions
 		return new Property(
-			this.value.getName(), cascade.evaluateFloat(this.value, 0.0f), Property.PX
+			this.value.getName(), cascade.evaluateNumeric(this.value, 0.0f), Property.PX
 		);
 	}
 

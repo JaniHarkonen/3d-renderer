@@ -21,7 +21,7 @@ public class Div extends AGUIElement {
 		if( !(previous instanceof Div) ) {
 			return false;
 		}
-		return this.properties.equals(((Div) previous).properties);
+		return this.statistics.equals(((Div) previous).statistics);
 	}
 	
 	@Override

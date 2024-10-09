@@ -3,23 +3,27 @@ package project.core.renderer;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RenderStrategyManager<T extends IRenderPass> {
+import project.core.IRenderable;
 
-	private final Map<Class<?>, IRenderStrategy<T>> renderStrategies;
-	private final IRenderStrategy<T> defaultStrategy;
+public class RenderStrategyManager<P extends IRenderPass, R extends IRenderable> {
+
+	private final Map<Class<?>, IRenderStrategy<P, R>> renderStrategies;
+	private final IRenderStrategy<P, R> defaultStrategy;
 	
-	public RenderStrategyManager(IRenderStrategy<T> defaultStrategy) {
+	public RenderStrategyManager(IRenderStrategy<P, R> defaultStrategy) {
 		this.renderStrategies = new HashMap<>();
 		this.defaultStrategy = defaultStrategy;
 	}
 	
 	
-	public RenderStrategyManager<T> addStrategy(Class<?> clazz, IRenderStrategy<T> renderStrategy) {
+	public RenderStrategyManager<P, R> addStrategy(
+		Class<?> clazz, IRenderStrategy<P, R> renderStrategy
+	) {
 		this.renderStrategies.put(clazz, renderStrategy);
 		return this;
 	}
 	
-	public IRenderStrategy<T> getStrategy(Class<?> clazz) {
+	public IRenderStrategy<P, R> getStrategy(Class<?> clazz) {
 		return this.renderStrategies.getOrDefault(clazz, this.defaultStrategy);
 	}
 }

@@ -32,7 +32,7 @@ public class Image extends AGUIElement {
 		return (
 			this.id.equals(img.id) && 
 			this.imageTexture == img.imageTexture && 
-			this.properties.equals(img.getProperties())
+			this.statistics.equals(img.getStatistics())
 		);
 	}
 	

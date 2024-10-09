@@ -29,7 +29,7 @@ public class CascadeShadowRenderPass implements IRenderPass {
 	private UAMatrix4f uLightView;
 	
 	private GameState gameState;
-	private RenderStrategyManager<CascadeShadowRenderPass> renderStrategyManager;
+	private RenderStrategyManager<CascadeShadowRenderPass, ASceneObject> renderStrategyManager;
 	
 	public CascadeShadowRenderPass() {
 		this.shaderProgram = new ShaderProgram();
@@ -37,7 +37,7 @@ public class CascadeShadowRenderPass implements IRenderPass {
 		this.shadowBuffer = new ShadowBuffer();
 		
 		this.renderStrategyManager = 
-			new RenderStrategyManager<>(new NullRenderStrategy<CascadeShadowRenderPass>())
+			new RenderStrategyManager<>(new NullRenderStrategy<CascadeShadowRenderPass, ASceneObject>())
 		.addStrategy(Model.class, new RenderModel());
 	}
 	

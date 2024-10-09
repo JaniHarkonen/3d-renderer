@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import project.gui.jeemu.Operator;
+import project.gui.props.IStyleCascade;
 import project.gui.props.Property;
 import project.shared.logger.Logger;
 

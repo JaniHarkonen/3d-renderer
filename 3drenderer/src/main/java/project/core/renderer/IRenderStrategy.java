@@ -2,7 +2,7 @@ package project.core.renderer;
 
 import project.core.IRenderable;
 
-public interface IRenderStrategy<T extends IRenderPass> {
+public interface IRenderStrategy<P extends IRenderPass, R extends IRenderable> {
 
-	public void execute(IRenderer renderer, T renderPass, IRenderable renderable);
+	public void execute(IRenderer renderer, P renderPass, R renderable);
 }

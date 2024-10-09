@@ -5,25 +5,25 @@ import org.joml.Vector4f;
 import org.lwjgl.opengl.GL46;
 
 import project.asset.font.Font;
-import project.core.IRenderable;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
+import project.gui.AGUIElement;
 import project.gui.Text;
+import project.gui.props.Properties;
 import project.opengl.TextureGL;
 import project.opengl.vao.VAO;
 
-public class RenderText implements IRenderStrategy<GUIRenderPass> {
+public class RenderText implements IRenderStrategy<GUIRenderPass, AGUIElement> {
 
 	@Override
-	public void execute(IRenderer renderer, GUIRenderPass renderPass, IRenderable renderable) {
-		Text element = (Text) renderable;
-		StyleCascade renderContext = renderPass.context;
-		float textX = renderContext.left;
-		float textY = renderContext.top;
+	public void execute(IRenderer renderer, GUIRenderPass renderPass, AGUIElement element) {
+		Properties.Statistics stats = element.getStatistics();
+		float textX = stats.left;
+		float textY = stats.top;
 		Text text = (Text) element;
 		Font font = text.getFont();
 		TextureGL textureGL = (TextureGL) font.getTexture().getGraphics();
-		Vector4f primaryColor = renderContext.primaryColor;
+		Vector4f primaryColor = stats.primaryColor;
 		
 		renderPass.uPrimaryColor.update(primaryColor);
 		renderPass.uHasTexture.update(1);
@@ -36,7 +36,7 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 				renderPass.uObjectTransform.update(
 					new Matrix4f()
 					.translationRotateScale(
-						textX, textY + renderContext.baseline - glyph.getOriginY(), 0.0f,
+						textX, textY + stats.baseline - glyph.getOriginY(), 0.0f,
 						0, 0, 0, 0,
 						1.0f, 1.0f, 1.0f
 					)
@@ -55,7 +55,7 @@ public class RenderText implements IRenderStrategy<GUIRenderPass> {
 			}
 			
 			textX = 0.0f;
-			textY += renderContext.lineHeight;
+			textY += stats.lineHeight;
 		}
 	}
 }

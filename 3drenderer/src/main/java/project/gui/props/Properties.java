@@ -13,6 +13,102 @@ import org.joml.Vector4f;
 import project.gui.AGUIElement;
 
 public class Properties {
+	public static class Statistics {
+		public static final Statistics DEFAULT_EVALUATION = new Statistics();
+		public float left;
+		public float top;
+		
+		public float minWidth;
+		public float minHeight;
+		public float maxWidth;
+		public float maxHeight;
+		public float width;
+		public float height;
+		
+		public float columns;
+		public float rows;
+		public Vector4f primaryColor;
+		public Vector4f secondaryColor;
+		public float lineHeight;
+		public float baseline;
+		public float anchorX;
+		public float anchorY;
+		
+		public Statistics() {
+			this.left = 0;
+			this.top = 0;
+			
+			this.minWidth = 0;
+			this.minHeight = 0;
+			this.maxWidth = Float.MAX_VALUE;
+			this.maxHeight = Float.MAX_VALUE;
+			this.width = 0;
+			this.height = 0;
+			
+			this.columns = 1;
+			this.rows = 1;
+			this.primaryColor = new Vector4f(0, 0, 0, 1);
+			this.secondaryColor = new Vector4f(1, 1, 1, 0);
+			this.lineHeight = 22;
+			this.baseline = 16;
+			this.anchorX = 0;
+			this.anchorY = 0;
+		}
+		
+		public Statistics(Statistics src) {
+			this.left = src.left;
+			this.top = src.top;
+			
+			this.minWidth = src.minWidth;
+			this.minHeight = src.minHeight;
+			this.maxWidth = src.maxWidth;
+			this.maxHeight = src.maxHeight;
+			this.width = src.width;
+			this.height = src.height;
+			
+			this.columns = src.columns;
+			this.rows = src.rows;
+			this.primaryColor = new Vector4f(src.primaryColor);
+			this.secondaryColor = new Vector4f(src.secondaryColor);
+			this.lineHeight = src.lineHeight;
+			this.baseline = src.baseline;
+			this.anchorX = src.anchorX;
+			this.anchorY = src.anchorY;
+		}
+		
+		
+		@Override
+		public boolean equals(Object o) {
+			if( this == o ) {
+				return true;
+			}
+			
+			if( !(o instanceof Statistics) ) {
+				return false;
+			}
+			
+			Statistics s = (Statistics) o;
+			return (
+				this.left == s.left && 
+				this.top == s.top && 
+				this.minWidth == s.minWidth && 
+				this.minHeight == s.minHeight && 
+				this.maxWidth == s.maxWidth && 
+				this.maxHeight == s.maxHeight && 
+				this.width == s.width && 
+				this.height == s.height && 
+				this.columns == s.columns && 
+				this.rows == s.rows && 
+				this.primaryColor.equals(s.primaryColor) && 
+				this.secondaryColor.equals(s.secondaryColor) && 
+				this.lineHeight == s.lineHeight && 
+				this.baseline == s.baseline && 
+				this.anchorX == s.anchorX && 
+				this.anchorY == s.anchorY
+			);
+		}
+	}
+	
 	/**
 	 * This enum holds the axes a property can pertain to. For example, "width" or 
 	 * "left" properties pertain to the horizontal axis, while "height" and "top"
@@ -39,26 +135,6 @@ public class Properties {
 		 */
 		VERTICAL
 	}
-	
-	public static final float DEFAULT_LEFT = 0;
-	public static final float DEFAULT_TOP = 0;
-	
-	public static final float DEFAULT_MIN_WIDTH = 0;
-	public static final float DEFAULT_MIN_HEIGHT = 0;
-	public static final float DEFAULT_MAX_WIDTH = Float.MAX_VALUE;
-	public static final float DEFAULT_MAX_HEIGHT = Float.MAX_VALUE;
-	public static final float DEFAULT_WIDTH = 0;
-	public static final float DEFAULT_HEIGHT = 0;
-	
-	public static final float DEFAULT_COLS = 1;
-	public static final float DEFAULT_ROWS = 1;
-	public static final Vector4f DEFAULT_PRIMARY_COLOR = new Vector4f(0.0f, 0.0f, 0.0f, 1.0f);
-	public static final Vector4f DEFAULT_SECONDARY_COLOR = new Vector4f(1.0f, 1.0f, 1.0f, 0.0f);
-	public static final float DEFAULT_ANCHOR_X = 0;
-	public static final float DEFAULT_ANCHOR_Y = 0;
-	public static final float DEFAULT_LINE_HEIGHT = 22;
-	public static final float DEFAULT_BASELINE = 16;
-	
 	
 	public static final String LEFT = "left";
 	public static final String TOP = "top";
@@ -141,6 +217,10 @@ public class Properties {
 		public void addProperty(Property property) {
 			this.properties.put(property.getName(), property);
 		}
+		
+		public Property getProperty(String key) {
+			return this.properties.get(key);
+		}
 	}
 	
 	private final AGUIElement owner;
@@ -148,9 +228,8 @@ public class Properties {
 	
 	public Properties(AGUIElement owner) {
 		this.owner = owner;
-		this.stylesByResponsiveness = new ArrayList<>();
-		
 		Map<String, Property> defaultProperties = new LinkedHashMap<>();
+		this.stylesByResponsiveness = new ArrayList<>();
 		this.stylesByResponsiveness.add(new Style(new RQuery(), defaultProperties));
 	}
 	
@@ -192,6 +271,15 @@ public class Properties {
 	public Property getProperty(String key) {
 		Style style = this.stylesByResponsiveness.get(this.stylesByResponsiveness.size() - 1);
 		return style.properties.get(key);
+	}
+	
+	public Style getStyle(float windowWidth, float windowHeight) {
+		for( Style style : this.stylesByResponsiveness ) {
+			if( style.responsivenessQuery.check(windowWidth, windowHeight) ) {
+				return style;
+			}
+		}
+		return this.stylesByResponsiveness.get(this.stylesByResponsiveness.size() - 1);
 	}
 	
 	/**

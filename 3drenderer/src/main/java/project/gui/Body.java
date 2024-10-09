@@ -42,7 +42,7 @@ public class Body extends AGUIElement {
 		if( !(previous instanceof Body) ) {
 			return false;
 		}
-		return this.properties.equals(((Body) previous).properties);
+		return this.statistics.equals(((Body) previous).statistics);
 	}
 	
 	@Override
