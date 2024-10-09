@@ -1,4 +1,4 @@
-package project.opengl.gui;
+package project.opengl.ui;
 
 final class Uniforms {
 

@@ -1,4 +1,4 @@
-package project.opengl.gui;
+package project.opengl.ui;
 
 
 import org.joml.Matrix4f;
@@ -95,7 +95,7 @@ public class GUIRenderPass implements IRenderPass {
 		this.projectionMatrix.identity().setOrtho2D(0, window.getWidth(), window.getHeight(), 0);
         this.uProjection.update(this.projectionMatrix);
         
-        this.recursivelyRender(renderer, gameState.getActiveGUIRoot());
+        this.recursivelyRender(renderer, gameState.getActiveUIRoot());
 		activeShaderProgram.unbind();
 	}
 	

@@ -1,4 +1,4 @@
-package project.opengl.gui;
+package project.opengl.ui;
 
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
@@ -6,36 +6,34 @@ import org.lwjgl.opengl.GL46;
 
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
-import project.opengl.TextureGL;
 import project.opengl.vao.VAO;
 import project.ui.AUIElement;
-import project.ui.Image;
 import project.ui.props.Properties;
 
-public class RenderImage implements IRenderStrategy<GUIRenderPass, AUIElement> {
+public class RenderDiv implements IRenderStrategy<GUIRenderPass, AUIElement> {
 
 	@Override
 	public void execute(IRenderer renderer, GUIRenderPass renderPass, AUIElement element) {
-		Image image = (Image) element;
 		Properties.Statistics stats = element.getStatistics();
-		TextureGL textureGL = (TextureGL) image.getTexture().getGraphics();
-		Vector4f primaryColor = stats.primaryColor;
+		Vector4f backgroundColor = stats.secondaryColor;
 		
-		renderPass.uPrimaryColor.update(primaryColor);
-		renderPass.uHasTexture.update(1);
-		GL46.glActiveTexture(GL46.GL_TEXTURE0);
-		textureGL.bind();
+			// Skip rendering if the div's alpha value is too low
+			// NOTICE: The content MAY still be rendered if children's primary colors aren't inherited
+		if( backgroundColor.w <= 0.00001f ) {
+			return;
+		}
 		
-		float x = stats.left;
-		float y = stats.top;
+		renderPass.uPrimaryColor.update(backgroundColor);
+		
+		float x = stats.left - stats.anchorX;
+		float y = stats.top - stats.anchorY;
 		float width = stats.width;
 		float height = stats.height;
-		float anchorX = stats.anchorX;
-		float anchorY = stats.anchorY;
 		
 		Matrix4f transform = new Matrix4f()
-		.translationRotateScale(x - anchorX, y - anchorY, 0.0f, 0, 0, 0, 0, width, height, 1.0f);
+		.translationRotateScale(x, y, 0.0f, 0, 0, 0, 0, width, height, 1.0f);
 		renderPass.uObjectTransform.update(transform);
+		renderPass.uHasTexture.update(0);
 		
 		VAO vao = (VAO) renderPass.imagePlane.getGraphics();
 		vao.bind();

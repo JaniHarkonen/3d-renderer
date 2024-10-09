@@ -30,7 +30,7 @@ public class UI implements ITickable, IRenderable {
 	
 	@Override
 	public void submitToRenderer() {
-		Application.getApp().getRenderer().getBackGameState().listGUI(this);
+		Application.getApp().getRenderer().getBackGameState().listUI(this);
 	}
 	
 	public void evaluateElementProperties(IStyleCascade cascade) {

@@ -1,4 +1,4 @@
-package project.opengl.gui;
+package project.opengl.ui;
 
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
