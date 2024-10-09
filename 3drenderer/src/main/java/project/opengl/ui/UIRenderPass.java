@@ -72,10 +72,10 @@ public class UIRenderPass implements IRenderPass {
 		.declareUniform(this.uHasTexture);
 		
 		this.shaderProgram.addShader(
-			new Shader("shaders/gui/gui.vert", GL46.GL_VERTEX_SHADER)
+			new Shader("shaders/ui/ui.vert", GL46.GL_VERTEX_SHADER)
 		);
 		this.shaderProgram.addShader(
-			new Shader("shaders/gui/gui.frag", GL46.GL_FRAGMENT_SHADER)
+			new Shader("shaders/ui/ui.frag", GL46.GL_FRAGMENT_SHADER)
 		);
 		this.shaderProgram.initialize();
 		
