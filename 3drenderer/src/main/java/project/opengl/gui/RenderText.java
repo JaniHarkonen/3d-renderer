@@ -7,16 +7,16 @@ import org.lwjgl.opengl.GL46;
 import project.asset.font.Font;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
-import project.gui.AGUIElement;
+import project.gui.AUIElement;
 import project.gui.Text;
 import project.gui.props.Properties;
 import project.opengl.TextureGL;
 import project.opengl.vao.VAO;
 
-public class RenderText implements IRenderStrategy<GUIRenderPass, AGUIElement> {
+public class RenderText implements IRenderStrategy<GUIRenderPass, AUIElement> {
 
 	@Override
-	public void execute(IRenderer renderer, GUIRenderPass renderPass, AGUIElement element) {
+	public void execute(IRenderer renderer, GUIRenderPass renderPass, AUIElement element) {
 		Properties.Statistics stats = element.getStatistics();
 		float textX = stats.left;
 		float textY = stats.top;

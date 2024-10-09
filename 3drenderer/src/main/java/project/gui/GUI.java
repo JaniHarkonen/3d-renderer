@@ -11,7 +11,7 @@ import project.shared.logger.Logger;
 
 public class GUI implements ITickable, IRenderable {
 	private Body body;
-	private Map<String, AGUIElement> elementTable;
+	private Map<String, AUIElement> elementTable;
 	private Map<String, Theme> themes;
 	private Theme activeTheme;
 	
@@ -39,7 +39,7 @@ public class GUI implements ITickable, IRenderable {
 		}
 	}
 	
-	private void evaluateElementProperties(AGUIElement element, IStyleCascade cascade) {
+	private void evaluateElementProperties(AUIElement element, IStyleCascade cascade) {
 		element.evaluateStatistics(cascade);
 		IStyleCascade inheritedCascade = cascade.newCascade();
 		
@@ -47,19 +47,19 @@ public class GUI implements ITickable, IRenderable {
 			element.getText().evaluateStatistics(cascade);
 		}
 		
-		for( AGUIElement child : element.children ) {
+		for( AUIElement child : element.children ) {
 			this.evaluateElementProperties(child, inheritedCascade);
 		}
 	}
 	
-	public boolean addChildTo(String parentID, AGUIElement child) {
-		AGUIElement parent = this.getElementByID(parentID);
+	public boolean addChildTo(String parentID, AUIElement child) {
+		AUIElement parent = this.getElementByID(parentID);
 		if( parent == null ) {
 			this.errorNonExistingParent(parentID, child.getID());
 			return false;
 		}
 		
-		AGUIElement error = this.canAddElement(child);
+		AUIElement error = this.canAddElement(child);
 		
 		if( error != null ) {
 			this.errorAlreadyExists(error.getID());
@@ -72,14 +72,14 @@ public class GUI implements ITickable, IRenderable {
 	}
 	
 	public boolean addCollectionTo(String parentID, String childID, Collection childCollection) {
-		AGUIElement parent = this.getElementByID(parentID);
+		AUIElement parent = this.getElementByID(parentID);
 		if( parent == null ) {
 			this.errorNonExistingParent(parentID, childID);
 			return false;
 		}
 		
-		AGUIElement childRoot = childCollection.buildNode(this, childID);
-		AGUIElement error = this.canAddElement(childRoot);
+		AUIElement childRoot = childCollection.buildNode(this, childID);
+		AUIElement error = this.canAddElement(childRoot);
 		
 		if( error != null ) {
 			this.errorAlreadyExists(error.getID());
@@ -92,7 +92,7 @@ public class GUI implements ITickable, IRenderable {
 		return true;
 	}
 	
-	private boolean registerElement(AGUIElement element) {
+	private boolean registerElement(AUIElement element) {
 		if( this.getElementByID(element.getID()) != null ) {
 			Logger.get().warn(
 				this, 
@@ -103,7 +103,7 @@ public class GUI implements ITickable, IRenderable {
 		}
 		
 		this.elementTable.put(element.getID(), element);
-		for( AGUIElement child : element.getChildren() ) {
+		for( AUIElement child : element.getChildren() ) {
 			if( !this.registerElement(child) ) {
 				return false;
 			}
@@ -122,18 +122,18 @@ public class GUI implements ITickable, IRenderable {
 		}
 		
 		this.elementTable = new HashMap<>();
-		AGUIElement body = collection.buildNode(this, null);
+		AUIElement body = collection.buildNode(this, null);
 		this.registerElement(body);
 		this.body = (Body) body;
 	}
 	
-	private AGUIElement canAddElement(AGUIElement element) {
+	private AUIElement canAddElement(AUIElement element) {
 		if( this.getElementByID(element.getID()) != null ) {
 			return element;
 		}
 		
-		for( AGUIElement child : element.getChildren() ) {
-			AGUIElement error = this.canAddElement(child);
+		for( AUIElement child : element.getChildren() ) {
+			AUIElement error = this.canAddElement(child);
 			if( error != null ) {
 				return error;
 			}
@@ -170,7 +170,7 @@ public class GUI implements ITickable, IRenderable {
 		return this.body;
 	}
 	
-	public AGUIElement getElementByID(String id) {
+	public AUIElement getElementByID(String id) {
 		return this.elementTable.get(id);
 	}
 	

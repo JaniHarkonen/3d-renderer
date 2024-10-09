@@ -12,7 +12,7 @@ import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
 import project.core.renderer.RenderStrategyManager;
-import project.gui.AGUIElement;
+import project.gui.AUIElement;
 import project.gui.Div;
 import project.gui.Image;
 import project.gui.Text;
@@ -36,7 +36,7 @@ public class GUIRenderPass implements IRenderPass {
 	
 	private final Matrix4f projectionMatrix;
 	private GameState gameState;
-	private RenderStrategyManager<GUIRenderPass, AGUIElement> renderStrategyManager;
+	private RenderStrategyManager<GUIRenderPass, AUIElement> renderStrategyManager;
 	
 	public GUIRenderPass() {
 		this.projectionMatrix = new Matrix4f();
@@ -45,7 +45,7 @@ public class GUIRenderPass implements IRenderPass {
 		this.shaderProgram = new ShaderProgram();
 		
 		this.renderStrategyManager = 
-			new RenderStrategyManager<>(new NullRenderStrategy<GUIRenderPass, AGUIElement>());
+			new RenderStrategyManager<>(new NullRenderStrategy<GUIRenderPass, AUIElement>());
 		this.renderStrategyManager
 		.addStrategy(Div.class, new RenderDiv())
 		.addStrategy(Text.class, new RenderText())
@@ -99,7 +99,7 @@ public class GUIRenderPass implements IRenderPass {
 		activeShaderProgram.unbind();
 	}
 	
-	private void recursivelyRender(IRenderer renderer, AGUIElement element) {
+	private void recursivelyRender(IRenderer renderer, AUIElement element) {
 		this.renderStrategyManager.getStrategy(element.getClass()).execute(renderer, this, element);
 		
 		if( element.hasText() ) {
@@ -107,7 +107,7 @@ public class GUIRenderPass implements IRenderPass {
 			this.renderStrategyManager.getStrategy(text.getClass()).execute(renderer, this, text);
 		}
 		
-		for( AGUIElement child : element.getChildren() ) {
+		for( AUIElement child : element.getChildren() ) {
 			this.recursivelyRender(renderer, child);
 		}
 	}

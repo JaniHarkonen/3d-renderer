@@ -2,7 +2,7 @@ package project.gui;
 
 import project.asset.texture.Texture;
 
-public class Image extends AGUIElement {
+public class Image extends AUIElement {
 	private Texture imageTexture;
 	
 	public Image(GUI gui, String id, Texture imageTexture) {
@@ -23,7 +23,7 @@ public class Image extends AGUIElement {
 	}
 	
 	@Override
-	public boolean rendererEquals(AGUIElement previous) {
+	public boolean rendererEquals(AUIElement previous) {
 		if( !(previous instanceof Image) ) {
 			return false;
 		}

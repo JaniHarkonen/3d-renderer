@@ -6,16 +6,16 @@ import org.lwjgl.opengl.GL46;
 
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
-import project.gui.AGUIElement;
+import project.gui.AUIElement;
 import project.gui.Image;
 import project.gui.props.Properties;
 import project.opengl.TextureGL;
 import project.opengl.vao.VAO;
 
-public class RenderImage implements IRenderStrategy<GUIRenderPass, AGUIElement> {
+public class RenderImage implements IRenderStrategy<GUIRenderPass, AUIElement> {
 
 	@Override
-	public void execute(IRenderer renderer, GUIRenderPass renderPass, AGUIElement element) {
+	public void execute(IRenderer renderer, GUIRenderPass renderPass, AUIElement element) {
 		Image image = (Image) element;
 		Properties.Statistics stats = element.getStatistics();
 		TextureGL textureGL = (TextureGL) image.getTexture().getGraphics();

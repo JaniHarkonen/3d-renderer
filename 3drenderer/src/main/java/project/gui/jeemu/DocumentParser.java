@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import project.gui.AGUIElement;
+import project.gui.AUIElement;
 import project.gui.Body;
 import project.gui.Collection;
 import project.gui.Div;
@@ -38,7 +38,7 @@ public class DocumentParser {
 		}
 	}
 	
-	private static final Map<String, AGUIElement> elementsByType;
+	private static final Map<String, AUIElement> elementsByType;
 	static {
 		elementsByType = new HashMap<>();
 		elementsByType.put(Tokenizer.KEYWORD_DIV, new Div(null, null));
@@ -46,7 +46,7 @@ public class DocumentParser {
 			// NOTICE: Text is omitted here due to its special status
 	}
 	
-	private static AGUIElement getElementByType(String elementType) {
+	private static AUIElement getElementByType(String elementType) {
 		return elementsByType.get(elementType);
 	}
 	
@@ -128,7 +128,7 @@ public class DocumentParser {
 						// Determine the element from which the collection is derived
 					this.advance();
 					String elementType = (String) this.next().value;
-					AGUIElement superElement = this.createElement(elementType, this.targetUI, null);
+					AUIElement superElement = this.createElement(elementType, this.targetUI, null);
 					
 					if( superElement == null ) {
 						return this.parserError("Attempting to derive a collection from a non-existing element.");
@@ -295,7 +295,7 @@ public class DocumentParser {
 		return null;
 	}
 	
-	private Result children(Collection collection, AGUIElement parent) {
+	private Result children(Collection collection, AUIElement parent) {
 		Token nextToken = this.next();
 		
 		if( this.checkToken(nextToken, TokenType.BLOCK_END) ) {
@@ -342,7 +342,7 @@ public class DocumentParser {
 				} else {
 						// Determine the ID of the child, so that it can be instantiated as IDs are 
 						// final (ID should be the first property)
-					AGUIElement child;
+					AUIElement child;
 					String childID = this.readID();
 					
 					if( childID == null ) {
@@ -401,8 +401,8 @@ public class DocumentParser {
 		return null;
 	}
 	
-	private AGUIElement createElement(String elementType, GUI targetUI, String id) {
-		AGUIElement element = getElementByType(elementType);
+	private AUIElement createElement(String elementType, GUI targetUI, String id) {
+		AUIElement element = getElementByType(elementType);
 		if( element != null ) {
 			return element.createInstance(targetUI, id);
 		}
@@ -445,7 +445,7 @@ public class DocumentParser {
 		
 			// Make sure the ID is allowed
 		String id = idBuilder.toString();
-		if( !AGUIElement.validateID(id) ) {
+		if( !AUIElement.validateID(id) ) {
 			return null;
 		}
 		

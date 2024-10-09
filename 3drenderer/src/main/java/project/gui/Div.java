@@ -1,23 +1,23 @@
 package project.gui;
 
-public class Div extends AGUIElement {
+public class Div extends AUIElement {
 
 	public Div(GUI gui, String id) {
 		super(gui, id);
 	}
 	
-	private Div(AGUIElement src) {
+	private Div(AUIElement src) {
 		super(src);
 	}
 
 	
 	@Override
-	public AGUIElement rendererCopy() {
+	public AUIElement rendererCopy() {
 		return new Div(this);
 	}
 
 	@Override
-	public boolean rendererEquals(AGUIElement previous) {
+	public boolean rendererEquals(AUIElement previous) {
 		if( !(previous instanceof Div) ) {
 			return false;
 		}

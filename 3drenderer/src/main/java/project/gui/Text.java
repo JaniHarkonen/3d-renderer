@@ -5,7 +5,7 @@ import project.gui.props.Properties;
 import project.gui.props.Property;
 import project.testing.TestAssets;
 
-public class Text extends AGUIElement {
+public class Text extends AUIElement {
 	private Font font;
 	private String content;
 	
@@ -35,7 +35,7 @@ public class Text extends AGUIElement {
 	}
 	
 	@Override
-	public boolean rendererEquals(AGUIElement previous) {
+	public boolean rendererEquals(AUIElement previous) {
 		if( !(previous instanceof Text) ) {
 			return false;
 		}

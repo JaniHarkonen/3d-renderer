@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.joml.Vector4f;
 
-import project.gui.AGUIElement;
+import project.gui.AUIElement;
 
 public class Properties {
 	public static class Statistics {
@@ -223,10 +223,10 @@ public class Properties {
 		}
 	}
 	
-	private final AGUIElement owner;
+	private final AUIElement owner;
 	private final List<Style> stylesByResponsiveness;
 	
-	public Properties(AGUIElement owner) {
+	public Properties(AUIElement owner) {
 		this.owner = owner;
 		Map<String, Property> defaultProperties = new LinkedHashMap<>();
 		this.stylesByResponsiveness = new ArrayList<>();
@@ -307,7 +307,7 @@ public class Properties {
 		return null;
 	}
 	
-	public AGUIElement getOwner() {
+	public AUIElement getOwner() {
 		return this.owner;
 	}
 	

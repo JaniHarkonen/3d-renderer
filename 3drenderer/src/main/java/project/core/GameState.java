@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import project.core.asset.IGraphicsAsset;
-import project.gui.AGUIElement;
+import project.gui.AUIElement;
 import project.gui.GUI;
 import project.gui.Theme;
 import project.scene.ASceneObject;
@@ -22,7 +22,7 @@ public class GameState {
 	private final Map<String, Object> debugData;
 	
 	private Camera activeCamera;
-	private AGUIElement activeGUIRoot;
+	private AUIElement activeGUIRoot;
 	private Theme activeGUITheme;
 	
 	public GameState() {
@@ -63,7 +63,7 @@ public class GameState {
 	}
 	
 	public void listGUI(GUI gui) {
-		AGUIElement root = gui.getBody();
+		AUIElement root = gui.getBody();
 		//this.activeGUITheme = gui.getActiveTheme();
 		
 		//if( this.activeGUITheme != Theme.NULL_THEME ) {
@@ -77,16 +77,16 @@ public class GameState {
 		}
 	}
 	
-	private void listChildGUINodes(AGUIElement real, AGUIElement copy) {
-		List<AGUIElement> realChildren = real.getChildren();
-		List<AGUIElement> copyChildren = copy.getChildren();
+	private void listChildGUINodes(AUIElement real, AUIElement copy) {
+		List<AUIElement> realChildren = real.getChildren();
+		List<AUIElement> copyChildren = copy.getChildren();
 		int minChildCount = Math.min(realChildren.size(), copyChildren.size());
 		
 			// Check all similar children, exit when dissimilar child found
 		int i;
 		for( i = 0; i < minChildCount; i++ ) {
-			AGUIElement realChild = realChildren.get(i);
-			AGUIElement copyChild = copyChildren.get(i);
+			AUIElement realChild = realChildren.get(i);
+			AUIElement copyChild = copyChildren.get(i);
 			
 			if( !copyChild.rendererEquals(realChild) ) {
 				break;
@@ -135,7 +135,7 @@ public class GameState {
 		return this.activeScene.values();
 	}
 	
-	public AGUIElement getActiveGUIRoot() {
+	public AUIElement getActiveGUIRoot() {
 		return this.activeGUIRoot;
 	}
 	

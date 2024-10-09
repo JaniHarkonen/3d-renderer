@@ -6,14 +6,14 @@ import org.lwjgl.opengl.GL46;
 
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
-import project.gui.AGUIElement;
+import project.gui.AUIElement;
 import project.gui.props.Properties;
 import project.opengl.vao.VAO;
 
-public class RenderDiv implements IRenderStrategy<GUIRenderPass, AGUIElement> {
+public class RenderDiv implements IRenderStrategy<GUIRenderPass, AUIElement> {
 
 	@Override
-	public void execute(IRenderer renderer, GUIRenderPass renderPass, AGUIElement element) {
+	public void execute(IRenderer renderer, GUIRenderPass renderPass, AUIElement element) {
 		Properties.Statistics stats = element.getStatistics();
 		Vector4f backgroundColor = stats.secondaryColor;
 		

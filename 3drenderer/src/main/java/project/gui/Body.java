@@ -5,7 +5,7 @@ import project.Window;
 import project.gui.props.Properties;
 import project.gui.props.Property;
 
-public class Body extends AGUIElement {
+public class Body extends AUIElement {
 	public static final String BODY_ID = "BODY";
 
 	public Body(GUI gui) {
@@ -33,12 +33,12 @@ public class Body extends AGUIElement {
 	}
 	
 	@Override
-	public AGUIElement rendererCopy() {
+	public AUIElement rendererCopy() {
 		return new Body(this);
 	}
 
 	@Override
-	public boolean rendererEquals(AGUIElement previous) {
+	public boolean rendererEquals(AUIElement previous) {
 		if( !(previous instanceof Body) ) {
 			return false;
 		}

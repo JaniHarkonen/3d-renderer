@@ -4,18 +4,18 @@ import project.gui.props.Properties;
 
 public class Collection {
 
-	private AGUIElement model;
+	private AUIElement model;
 	
-	public Collection(AGUIElement model) {
+	public Collection(AUIElement model) {
 		this.model = model;
 	}
 	
 	
-	public AGUIElement buildNode(GUI ui, String containerID) {
+	public AUIElement buildNode(GUI ui, String containerID) {
 		return this.buildNode(ui, containerID, this.model);
 	}
 	
-	private AGUIElement buildNode(GUI ui, String containerID, AGUIElement node) {
+	private AUIElement buildNode(GUI ui, String containerID, AUIElement node) {
 			// For the base case, we are assuming that 'containerID' is ""
 		String id;
 		if( containerID == null ) {
@@ -26,29 +26,29 @@ public class Collection {
 			id = containerID + "." + node.getID();
 		}
 		
-		AGUIElement root = node.createInstance(ui, id);
+		AUIElement root = node.createInstance(ui, id);
 		root.setProperties(new Properties(node.getProperties()));
 		
 		if( node.getText() != null ) {
 			root.setText(new Text(node.getText()));
 		}
 		
-		for( AGUIElement child : node.getChildren() ) {
+		for( AUIElement child : node.getChildren() ) {
 			root.addChild(this.buildNode(ui, containerID, child));
 		}
 		
 		return root;
 	}
 	
-	public void addChildTo(AGUIElement parent, AGUIElement child) {
+	public void addChildTo(AUIElement parent, AUIElement child) {
 		parent.addChild(child);
 	}
 	
-	public void setModel(AGUIElement model) {
+	public void setModel(AUIElement model) {
 		this.model = model;
 	}
 	
-	public AGUIElement getRoot() {
+	public AUIElement getRoot() {
 		return this.model;
 	}
 }

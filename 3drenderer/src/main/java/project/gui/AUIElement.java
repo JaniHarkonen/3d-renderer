@@ -8,7 +8,7 @@ import project.core.ITickable;
 import project.gui.props.IStyleCascade;
 import project.gui.props.Properties;
 
-public abstract class AGUIElement implements IRenderable, ITickable {
+public abstract class AUIElement implements IRenderable, ITickable {
 	public static boolean validateID(String id) {
 		for( int i = 0; i < id.length(); i++ ) {
 			char c = id.charAt(i);
@@ -27,10 +27,10 @@ public abstract class AGUIElement implements IRenderable, ITickable {
 	
 	protected Properties properties;
 	protected Properties.Statistics statistics; // This will contain property evaluations from last cascade run
-	protected List<AGUIElement> children;
+	protected List<AUIElement> children;
 	protected Text text;
 	
-	public AGUIElement(GUI gui, String id) {
+	public AUIElement(GUI gui, String id) {
 		this.id = id;
 		this.gui = gui;
 		this.properties = new Properties(this);
@@ -40,7 +40,7 @@ public abstract class AGUIElement implements IRenderable, ITickable {
 	}
 	
 		// Renderer copy constructor
-	protected AGUIElement(AGUIElement src) {
+	protected AUIElement(AUIElement src) {
 		this.gui = null;
 		this.id = src.id;
 		this.properties = new Properties(src.properties);
@@ -51,7 +51,7 @@ public abstract class AGUIElement implements IRenderable, ITickable {
 		}
 		
 		this.children = new ArrayList<>(src.children.size());
-		for( AGUIElement child : src.children ) {
+		for( AUIElement child : src.children ) {
 			this.addChild(child.rendererCopy());
 		}
 	}
@@ -59,7 +59,7 @@ public abstract class AGUIElement implements IRenderable, ITickable {
 	
 	@Override
 	public void tick(float deltaTime) {
-		for( AGUIElement child : this.children ) {
+		for( AUIElement child : this.children ) {
 			child.tick(deltaTime);
 		}
 	}
@@ -69,18 +69,18 @@ public abstract class AGUIElement implements IRenderable, ITickable {
 		//Application.getApp().getRenderer().getBackGameState().listGUIRoot(this);
 	}
 	
-	public abstract AGUIElement rendererCopy();
+	public abstract AUIElement rendererCopy();
 	
-	public abstract boolean rendererEquals(AGUIElement previous);
+	public abstract boolean rendererEquals(AUIElement previous);
 	
-	public abstract AGUIElement createInstance(GUI ui, String id);
+	public abstract AUIElement createInstance(GUI ui, String id);
 	
 	public void evaluateStatistics(IStyleCascade cascade) {
 		this.statistics = cascade.evaluateProperties(this.properties);
 	}
 	
-	void addChild(AGUIElement... children) {
-		for( AGUIElement child : children ) {
+	void addChild(AUIElement... children) {
+		for( AUIElement child : children ) {
 			this.children.add(child);
 		}
 	}
@@ -105,7 +105,7 @@ public abstract class AGUIElement implements IRenderable, ITickable {
 		return this.properties;
 	}
 	
-	public List<AGUIElement> getChildren() {
+	public List<AUIElement> getChildren() {
 		return this.children;
 	}
 	
