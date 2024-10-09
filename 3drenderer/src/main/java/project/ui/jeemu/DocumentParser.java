@@ -8,7 +8,7 @@ import project.ui.AUIElement;
 import project.ui.Body;
 import project.ui.Collection;
 import project.ui.Div;
-import project.ui.GUI;
+import project.ui.UI;
 import project.ui.Image;
 import project.ui.Text;
 import project.ui.Theme;
@@ -54,7 +54,7 @@ public class DocumentParser {
 		private PropertyBuilder builder;
 	}
 
-	private GUI targetUI;
+	private UI targetUI;
 	private List<Token> tokens;
 	private int cursor;
 	private Map<String, Collection> collections;
@@ -67,7 +67,7 @@ public class DocumentParser {
 	}
 	
 	
-	public Result parse(GUI targetUI, List<Token> tokens) {
+	public Result parse(UI targetUI, List<Token> tokens) {
 		this.targetUI = targetUI;
 		this.tokens = tokens;
 		this.cursor = -1;
@@ -401,7 +401,7 @@ public class DocumentParser {
 		return null;
 	}
 	
-	private AUIElement createElement(String elementType, GUI targetUI, String id) {
+	private AUIElement createElement(String elementType, UI targetUI, String id) {
 		AUIElement element = getElementByType(elementType);
 		if( element != null ) {
 			return element.createInstance(targetUI, id);

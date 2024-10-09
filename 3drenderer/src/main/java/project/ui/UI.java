@@ -9,13 +9,13 @@ import project.core.ITickable;
 import project.shared.logger.Logger;
 import project.ui.props.IStyleCascade;
 
-public class GUI implements ITickable, IRenderable {
+public class UI implements ITickable, IRenderable {
 	private Body body;
 	private Map<String, AUIElement> elementTable;
 	private Map<String, Theme> themes;
 	private Theme activeTheme;
 	
-	public GUI() {
+	public UI() {
 		this.body = null;
 		this.elementTable = new HashMap<>();
 		this.themes = new HashMap<>();

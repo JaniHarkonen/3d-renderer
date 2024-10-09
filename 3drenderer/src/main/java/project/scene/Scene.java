@@ -20,7 +20,7 @@ import project.testing.TestDebugDataHandles;
 import project.testing.TestDummy;
 import project.testing.TestPlayer;
 import project.testing.TestPointLight;
-import project.ui.GUI;
+import project.ui.UI;
 import project.ui.StyleCascade;
 import project.ui.jeemu.DocumentParser;
 import project.ui.jeemu.Tokenizer;
@@ -30,7 +30,7 @@ import project.utils.FileUtils;
 public class Scene {
 	private List<ASceneObject> objects;
 	private Camera activeCamera;
-	private GUI gui;
+	private UI gui;
 	private long deltaTimer;
 	private long tickDelta;
 	private int tickRate;
@@ -303,7 +303,7 @@ public class Scene {
 		}
 		
 		DocumentParser parser = new DocumentParser();
-		this.gui = new GUI();
+		this.gui = new UI();
 		DocumentParser.Result parserResult = parser.parse(this.gui, tokenizerResult.tokens);
 		
 		if( !parserResult.wasSuccessful ) {
@@ -419,7 +419,7 @@ public class Scene {
 		return this.app;
 	}
 	
-	public GUI getGUI() {
+	public UI getGUI() {
 		return this.gui;
 	}
 	

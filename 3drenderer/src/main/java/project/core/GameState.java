@@ -12,7 +12,7 @@ import project.core.asset.IGraphicsAsset;
 import project.scene.ASceneObject;
 import project.scene.Camera;
 import project.ui.AUIElement;
-import project.ui.GUI;
+import project.ui.UI;
 import project.ui.Theme;
 
 public class GameState {
@@ -62,7 +62,7 @@ public class GameState {
 		}
 	}
 	
-	public void listGUI(GUI gui) {
+	public void listGUI(UI gui) {
 		AUIElement root = gui.getBody();
 		//this.activeGUITheme = gui.getActiveTheme();
 		

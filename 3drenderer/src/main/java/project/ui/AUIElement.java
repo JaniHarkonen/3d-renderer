@@ -22,7 +22,7 @@ public abstract class AUIElement implements IRenderable, ITickable {
 		return true;
 	}
 	
-	protected final GUI gui;
+	protected final UI gui;
 	protected final String id;
 	
 	protected Properties properties;
@@ -30,7 +30,7 @@ public abstract class AUIElement implements IRenderable, ITickable {
 	protected List<AUIElement> children;
 	protected Text text;
 	
-	public AUIElement(GUI gui, String id) {
+	public AUIElement(UI gui, String id) {
 		this.id = id;
 		this.gui = gui;
 		this.properties = new Properties(this);
@@ -73,7 +73,7 @@ public abstract class AUIElement implements IRenderable, ITickable {
 	
 	public abstract boolean rendererEquals(AUIElement previous);
 	
-	public abstract AUIElement createInstance(GUI ui, String id);
+	public abstract AUIElement createInstance(UI ui, String id);
 	
 	public void evaluateStatistics(IStyleCascade cascade) {
 		this.statistics = cascade.evaluateProperties(this.properties);
@@ -93,7 +93,7 @@ public abstract class AUIElement implements IRenderable, ITickable {
 		this.text = text;
 	}
 	
-	public GUI getGUI() {
+	public UI getGUI() {
 		return this.gui;
 	}
 	

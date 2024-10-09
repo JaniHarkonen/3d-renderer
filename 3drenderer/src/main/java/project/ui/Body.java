@@ -8,7 +8,7 @@ import project.ui.props.Property;
 public class Body extends AUIElement {
 	public static final String BODY_ID = "BODY";
 
-	public Body(GUI gui) {
+	public Body(UI gui) {
 		super(gui, BODY_ID);
 		this.properties.setProperty(
 			Properties.WIDTH, new Property(Properties.WIDTH, 0.0f, Property.PX)
@@ -46,7 +46,7 @@ public class Body extends AUIElement {
 	}
 	
 	@Override
-	public Body createInstance(GUI ui, String id) {
+	public Body createInstance(UI ui, String id) {
 		return new Body(ui);
 	}
 }

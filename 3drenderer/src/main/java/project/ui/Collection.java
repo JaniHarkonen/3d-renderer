@@ -11,11 +11,11 @@ public class Collection {
 	}
 	
 	
-	public AUIElement buildNode(GUI ui, String containerID) {
+	public AUIElement buildNode(UI ui, String containerID) {
 		return this.buildNode(ui, containerID, this.model);
 	}
 	
-	private AUIElement buildNode(GUI ui, String containerID, AUIElement node) {
+	private AUIElement buildNode(UI ui, String containerID, AUIElement node) {
 			// For the base case, we are assuming that 'containerID' is ""
 		String id;
 		if( containerID == null ) {

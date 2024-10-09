@@ -2,7 +2,7 @@ package project.ui;
 
 public class Div extends AUIElement {
 
-	public Div(GUI gui, String id) {
+	public Div(UI gui, String id) {
 		super(gui, id);
 	}
 	
@@ -25,7 +25,7 @@ public class Div extends AUIElement {
 	}
 	
 	@Override
-	public Div createInstance(GUI ui, String id) {
+	public Div createInstance(UI ui, String id) {
 		return new Div(ui, id);
 	}
 }

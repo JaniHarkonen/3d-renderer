@@ -5,7 +5,7 @@ import project.asset.texture.Texture;
 public class Image extends AUIElement {
 	private Texture imageTexture;
 	
-	public Image(GUI gui, String id, Texture imageTexture) {
+	public Image(UI gui, String id, Texture imageTexture) {
 		super(gui, id);
 		this.imageTexture = imageTexture;
 	}
@@ -37,7 +37,7 @@ public class Image extends AUIElement {
 	}
 	
 	@Override
-	public Image createInstance(GUI ui, String id) {
+	public Image createInstance(UI ui, String id) {
 		return new Image(ui, id, null);
 	}
 	

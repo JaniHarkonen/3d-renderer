@@ -9,7 +9,7 @@ public class Text extends AUIElement {
 	private Font font;
 	private String content;
 	
-	public Text(GUI gui, String content) {
+	public Text(UI gui, String content) {
 		super(gui, null);
 		this.font = TestAssets.FONT_ARIAL_16;
 		this.content = content;
@@ -50,7 +50,7 @@ public class Text extends AUIElement {
 	}
 	
 	@Override
-	public Text createInstance(GUI ui, String id) {
+	public Text createInstance(UI ui, String id) {
 		return new Text(ui, "");
 	}
 	
