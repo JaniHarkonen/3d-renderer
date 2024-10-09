@@ -114,9 +114,9 @@ public class RendererGL implements IRenderer {
 			this.sceneRenderPass.setCascadeShadowRenderPass(this.cascadeRenderPass);
 			this.sceneRenderPass.render(this, gameState);
 			
-				// GUI render pass
-			GL46.glDisable(GL46.GL_CULL_FACE); // Ignores which direction GUI elements are facing
-		  	GL46.glDisable(GL46.GL_DEPTH_TEST); // Prevents close faces from overlapping with GUI
+				// UI render pass
+			GL46.glDisable(GL46.GL_CULL_FACE); // Ignores which direction UI elements are facing
+		  	GL46.glDisable(GL46.GL_DEPTH_TEST); // Prevents close faces from overlapping with UI
 		  	this.uiRenderPass.render(this, gameState);
 		}
 	}

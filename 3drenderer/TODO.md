@@ -4,11 +4,10 @@
 - add responsiveness queries to Jeemu document parser
 - Context currently holds no reference to a Font, implement font lookup by name
 - expr parenthesis checking is currently broken
-- rename GUI to UI across the code base
-- AGUIElement's children-field should be private as all changes to children should be done through the GUI in order to keep the element table consistent
+- AUIElement's children-field should be private as all changes to children should be done through the UI in order to keep the element table consistent
 - rename primaryColor & secondaryColor to color & background color respectively
 
-### ASceneObject & AGUIElement
+### ASceneObject & AUIElement
 - consider if references to the renderer can be removed (don't use method names like 'rendererEquals' or 'rendererCopy')
 
 ### ANetworkMessage
@@ -38,7 +37,7 @@
 
 ### GameState
 - it is unclear whether delta-checking procures any performance improvement compared to simply copying scene objects every tick
-- implement delistSceneObject() & delistGUIElement()
+- implement delistSceneObject() & delistUIElement()
 
 ### Window
 - create getters and setters for window attributes (such as, dimensions, position, vsync, fullscreen mode, fps limiter, etc.)

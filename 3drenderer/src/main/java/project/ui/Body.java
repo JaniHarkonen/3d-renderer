@@ -8,8 +8,8 @@ import project.ui.props.Property;
 public class Body extends AUIElement {
 	public static final String BODY_ID = "BODY";
 
-	public Body(UI gui) {
-		super(gui, BODY_ID);
+	public Body(UI ui) {
+		super(ui, BODY_ID);
 		this.properties.setProperty(
 			Properties.WIDTH, new Property(Properties.WIDTH, 0.0f, Property.PX)
 		);

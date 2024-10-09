@@ -2,8 +2,8 @@ package project.ui;
 
 public class Div extends AUIElement {
 
-	public Div(UI gui, String id) {
-		super(gui, id);
+	public Div(UI ui, String id) {
+		super(ui, id);
 	}
 	
 	private Div(AUIElement src) {

@@ -22,7 +22,7 @@ public abstract class AUIElement implements IRenderable, ITickable {
 		return true;
 	}
 	
-	protected final UI gui;
+	protected final UI ui;
 	protected final String id;
 	
 	protected Properties properties;
@@ -30,9 +30,9 @@ public abstract class AUIElement implements IRenderable, ITickable {
 	protected List<AUIElement> children;
 	protected Text text;
 	
-	public AUIElement(UI gui, String id) {
+	public AUIElement(UI ui, String id) {
 		this.id = id;
-		this.gui = gui;
+		this.ui = ui;
 		this.properties = new Properties(this);
 		this.statistics = new Properties.Statistics();
 		this.children = new ArrayList<>();
@@ -41,7 +41,7 @@ public abstract class AUIElement implements IRenderable, ITickable {
 	
 		// Renderer copy constructor
 	protected AUIElement(AUIElement src) {
-		this.gui = null;
+		this.ui = null;
 		this.id = src.id;
 		this.properties = new Properties(src.properties);
 		this.statistics = new Properties.Statistics(src.statistics);
@@ -66,7 +66,7 @@ public abstract class AUIElement implements IRenderable, ITickable {
 	
 	@Override
 	public void submitToRenderer() {
-		//Application.getApp().getRenderer().getBackGameState().listGUIRoot(this);
+		//Application.getApp().getRenderer().getBackGameState().listUIRoot(this);
 	}
 	
 	public abstract AUIElement rendererCopy();
@@ -93,8 +93,8 @@ public abstract class AUIElement implements IRenderable, ITickable {
 		this.text = text;
 	}
 	
-	public UI getGUI() {
-		return this.gui;
+	public UI getUI() {
+		return this.ui;
 	}
 	
 	public String getID() {

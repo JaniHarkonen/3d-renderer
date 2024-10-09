@@ -52,64 +52,6 @@ public class Application {
 		final int FPS_MAX = 60;
 		final int TICK_RATE = 60;
 		
-		//Tokenizer tokenizer = new Tokenizer();
-		/*Tokenizer.Result result = tokenizer.tokenize("      // Declares a custom div called 'custom'\r\n" + 
-				"    custom collection as div {\r\n" + 
-				"      width: 100px;\r\n" + 
-				"      height: 100px;\r\n" + 
-				"      backgroundColor: #FFFFFF;\r\n" + 
-				"    }\r\n" + 
-				"\r\n" + 
-				"    body {\r\n" + 
-				"      div {\r\n" + 
-				"        width: 50%;\r\n" + 
-				"        height: 50%;\r\n" + 
-				"\r\n" + 
-				"          // Use the 'custom' collection\r\n" + 
-				"        custom {\r\n" + 
-				"          width: 200px; // Sets the width overriding the pre-defined value\r\n" + 
-				"          primaryColor: #000000;\r\n" + 
-				"\r\n" + 
-				"            // Adds a text child into the div\r\n" + 
-				"          text {\r\n" + 
-				"            Hello world!\r\n" + 
-				"          }\r\n" + 
-				"        }\r\n" + 
-				"      }\r\n" + 
-				"    }");*/
-		/*Tokenizer.Result result = tokenizer.tokenize(
-			//"casual theme {someProp:'this is a testprop';}\n"+
-			"box collection as div {\n"
-			+ "width:56px; div{ID:'inner';}}\n"+
-			 "body{\n"
-			+ "div {\n"
-			+ "ID: 'testing';\n"
-			+ "width: 50%;\n"
-			+ "height:100px;\n"
-			+ "div{ID:'another-test'; minWidth: 6r;}\n"
-			+ "}\n"
-			+ " box {ID:'yet-another-div';div{ID:'placed-div';}}\n"
-			+ "}"
-		);
-		DebugUtils.log(this, result.errorMessage);
-		String tokenString = "";
-		for( Token token : result.tokens ) {
-			tokenString += token.type + "\n";
-		}
-		DebugUtils.log(this, tokenString);
-		DocumentParser parser = new DocumentParser();
-		GUI test = new GUI();
-		DocumentParser.Result parse = parser.parse(test, result.tokens);
-		DebugUtils.log(this, parse.errorMessage);
-		//DebugUtils.log(this, test.getElementByID("BODY").getID());
-		//DebugUtils.log(this, test.getBody().getChildren().size());
-		DebugUtils.log(this, test.getElementByID("placed-div"));
-		//DebugUtils.log(this, test.getElementByID("another-test").getProperties().getProperty(Properties.MIN_WIDTH).getValue());
-		//DebugUtils.log(this, test.getElementByID("yet-another-test"));
-		
-		//DebugUtils.log(this, test.getTheme("casual").getPropertyBuilder("someProp"));
-		DebugUtils.log(this, test.getTheme("casual").getPropertyBuilder("someProp").value);*/
-		
 			// Asset manager
 		this.assetManager = new AssetManager();
 		

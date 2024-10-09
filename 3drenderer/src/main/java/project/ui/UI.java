@@ -154,7 +154,7 @@ public class UI implements ITickable, IRenderable {
 		Logger.get().error(
 			this, 
 			"Failed to add element with ID '" + id + "'!", 
-			"Such an element already exists in the GUI."
+			"Such an element already exists in the UI."
 		);
 	}
 	

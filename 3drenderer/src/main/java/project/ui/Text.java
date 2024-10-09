@@ -9,8 +9,8 @@ public class Text extends AUIElement {
 	private Font font;
 	private String content;
 	
-	public Text(UI gui, String content) {
-		super(gui, null);
+	public Text(UI ui, String content) {
+		super(ui, null);
 		this.font = TestAssets.FONT_ARIAL_16;
 		this.content = content;
 		this.properties.setProperty(

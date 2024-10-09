@@ -5,8 +5,8 @@ import project.asset.texture.Texture;
 public class Image extends AUIElement {
 	private Texture imageTexture;
 	
-	public Image(UI gui, String id, Texture imageTexture) {
-		super(gui, id);
+	public Image(UI ui, String id, Texture imageTexture) {
+		super(ui, id);
 		this.imageTexture = imageTexture;
 	}
 	
