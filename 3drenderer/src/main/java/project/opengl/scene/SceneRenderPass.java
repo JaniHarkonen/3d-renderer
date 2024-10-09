@@ -58,7 +58,7 @@ public class SceneRenderPass implements IRenderPass {
 	
 	private GameState gameState;
 	private Camera activeCamera;
-	private RenderStrategyManager<SceneRenderPass> renderStrategyManager;
+	private RenderStrategyManager<SceneRenderPass, ASceneObject> renderStrategyManager;
 	
 	public SceneRenderPass() {
 		this.gameState = null;
@@ -67,7 +67,7 @@ public class SceneRenderPass implements IRenderPass {
 		this.activeCamera = null;
 		
 		this.renderStrategyManager = 
-			new RenderStrategyManager<>(new NullRenderStrategy<SceneRenderPass>())
+			new RenderStrategyManager<>(new NullRenderStrategy<SceneRenderPass, ASceneObject>())
 		.addStrategy(Model.class, new RenderModel())
 		.addStrategy(PointLight.class, new RenderPointLight())
 		.addStrategy(AmbientLight.class, new RenderAmbientLight());

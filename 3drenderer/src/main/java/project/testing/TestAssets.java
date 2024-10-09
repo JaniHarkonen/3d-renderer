@@ -73,7 +73,7 @@ public final class TestAssets {
 	public static Material MAT_SOLDIER_GADGETS;
 	public static Material MAT_SOLDIER_EYES;
 	
-	public static Texture TEX_GUI_CROSSHAIR;
+	public static Texture TEX_UI_CROSSHAIR;
 	
 	public static void initialize() {
 		initFonts();
@@ -317,7 +317,7 @@ public final class TestAssets {
 	}
 	
 	public static void initTextures() {
-		TEX_GUI_CROSSHAIR = loadTexture("tex-crosshair", "textures/crosshair.png");
+		TEX_UI_CROSSHAIR = loadTexture("tex-crosshair", "textures/crosshair.png");
 	}
 	
 	public static Model createTestSceneOutside(Scene scene) {

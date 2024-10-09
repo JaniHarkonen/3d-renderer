@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 import project.core.asset.IGraphicsAsset;
-import project.gui.AGUIElement;
-import project.gui.GUI;
-import project.gui.Theme;
 import project.scene.ASceneObject;
 import project.scene.Camera;
+import project.ui.AUIElement;
+import project.ui.UI;
+import project.ui.Theme;
 
 public class GameState {
 	private final Map<Long, ASceneObject> activeScene;
@@ -22,16 +22,16 @@ public class GameState {
 	private final Map<String, Object> debugData;
 	
 	private Camera activeCamera;
-	private AGUIElement activeGUIRoot;
-	private Theme activeGUITheme;
+	private AUIElement activeUIRoot;
+	private Theme activeUITheme;
 	
 	public GameState() {
 		this.activeScene = new LinkedHashMap<>();
 		this.graphicsGenerationRequests = new ArrayDeque<>();
 		this.graphicsDisposalRequests = new ArrayDeque<>();
 		this.debugData = new HashMap<>();
-		this.activeGUIRoot = null;
-		this.activeGUITheme = null;
+		this.activeUIRoot = null;
+		this.activeUITheme = null;
 	}
 	
 	public GameState(GameState src) {
@@ -39,8 +39,8 @@ public class GameState {
 		this.graphicsGenerationRequests = new ArrayDeque<>();
 		this.graphicsDisposalRequests = new ArrayDeque<>();
 		this.debugData = new HashMap<>();
-		this.activeGUIRoot = src.activeGUIRoot;
-		this.activeGUITheme = src.activeGUITheme;
+		this.activeUIRoot = src.activeUIRoot;
+		this.activeUITheme = src.activeUITheme;
 	}
 	
 	
@@ -62,37 +62,37 @@ public class GameState {
 		}
 	}
 	
-	public void listGUI(GUI gui) {
-		AGUIElement root = gui.getBody();
+	public void listUI(UI ui) {
+		AUIElement root = ui.getBody();
 		//this.activeGUITheme = gui.getActiveTheme();
 		
 		//if( this.activeGUITheme != Theme.NULL_THEME ) {
 			//this.activeGUITheme = new Theme(gui.getActiveTheme());
 		//}
 		
-		if( this.activeGUIRoot == null || !this.activeGUIRoot.rendererEquals(root) ) {
-			this.activeGUIRoot = root.rendererCopy();
+		if( this.activeUIRoot == null || !this.activeUIRoot.rendererEquals(root) ) {
+			this.activeUIRoot = root.rendererCopy();
 		} else {
-			this.listChildGUINodes(root, this.activeGUIRoot);
+			this.listChildUINodes(root, this.activeUIRoot);
 		}
 	}
 	
-	private void listChildGUINodes(AGUIElement real, AGUIElement copy) {
-		List<AGUIElement> realChildren = real.getChildren();
-		List<AGUIElement> copyChildren = copy.getChildren();
+	private void listChildUINodes(AUIElement real, AUIElement copy) {
+		List<AUIElement> realChildren = real.getChildren();
+		List<AUIElement> copyChildren = copy.getChildren();
 		int minChildCount = Math.min(realChildren.size(), copyChildren.size());
 		
 			// Check all similar children, exit when dissimilar child found
 		int i;
 		for( i = 0; i < minChildCount; i++ ) {
-			AGUIElement realChild = realChildren.get(i);
-			AGUIElement copyChild = copyChildren.get(i);
+			AUIElement realChild = realChildren.get(i);
+			AUIElement copyChild = copyChildren.get(i);
 			
 			if( !copyChild.rendererEquals(realChild) ) {
 				break;
 			}
 			
-			this.listChildGUINodes(realChild, copyChild);
+			this.listChildUINodes(realChild, copyChild);
 		}
 		
 			// Remove dissimilar and everything after it
@@ -135,15 +135,15 @@ public class GameState {
 		return this.activeScene.values();
 	}
 	
-	public AGUIElement getActiveGUIRoot() {
-		return this.activeGUIRoot;
+	public AUIElement getActiveUIRoot() {
+		return this.activeUIRoot;
 	}
 	
 	public Camera getActiveCamera() {
 		return this.activeCamera;
 	}
 	
-	public Theme getActiveGUITheme() {
-		return this.activeGUITheme;
+	public Theme getActiveUITheme() {
+		return this.activeUITheme;
 	}
 }

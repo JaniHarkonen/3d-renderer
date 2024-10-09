@@ -9,27 +9,28 @@ import org.lwjgl.glfw.GLFW;
 import project.Application;
 import project.Window;
 import project.controls.Controller;
-import project.gui.GUI;
-import project.gui.Image;
-import project.gui.Theme;
-import project.gui.props.Properties;
-import project.gui.props.Property;
 import project.input.Input;
 import project.input.InputSnapshot;
 import project.input.KeyHeld;
 import project.input.MouseMove;
+import project.shared.logger.Logger;
 import project.testing.ActionSet;
 import project.testing.TestAssets;
 import project.testing.TestDebugDataHandles;
 import project.testing.TestDummy;
 import project.testing.TestPlayer;
 import project.testing.TestPointLight;
+import project.ui.UI;
+import project.ui.StyleCascade;
+import project.ui.jeemu.DocumentParser;
+import project.ui.jeemu.Tokenizer;
 import project.utils.DebugUtils;
+import project.utils.FileUtils;
 
 public class Scene {
 	private List<ASceneObject> objects;
 	private Camera activeCamera;
-	private GUI gui;
+	private UI ui;
 	private long deltaTimer;
 	private long tickDelta;
 	private int tickRate;
@@ -48,7 +49,7 @@ public class Scene {
 	public Scene(Application app, int tickRate) {
 		this.objects = null;
 		this.activeCamera = null;
-		this.gui = null;
+		this.ui = null;
 		this.deltaTimer = System.nanoTime();
 		this.setTickRate(tickRate);
 		this.app = app;
@@ -125,9 +126,9 @@ public class Scene {
 			this.objects.add(randomSoldier);
 		}*/
 		
-			// GUI
-		this.createGUI();
-		DebugUtils.log(this, "GUI created!");
+			// UI
+		this.DEBUGcreateUI();
+		DebugUtils.log(this, "UI created!");
 
 			// Camera
 		TestPlayer player = new TestPlayer(this);
@@ -171,7 +172,7 @@ public class Scene {
 		Vector3f pl0Position = this.DEBUGtestPointLight0.getTransform().getPosition();
 		Vector3f pl0Color = this.DEBUGtestPointLight0.getPointLight().getColor();
 		
-		if( this.gui != null ) {
+		if( this.ui != null ) {
 			/*this.DEBUGtextAppStatistics.setContent(
 				"FPS: " + appWindow.getFPS() + " / " + appWindow.getMaxFPS() + "\n" +
 				"TICK: " + this.tickRate + " (d: " + deltaTime + ")\n" +
@@ -214,10 +215,10 @@ public class Scene {
 		InputSnapshot inputSnapshot = this.app.getWindow().getInputSnapshot();
 		
 		if( inputSnapshot.isKeyPressed(GLFW.GLFW_KEY_H) ) {
-			if( this.gui == null ) {
-				this.createGUI();
+			if( this.ui == null ) {
+				this.DEBUGcreateUI();
 			} else {
-				this.gui = null;
+				this.ui = null;
 			}
 		}
 		
@@ -252,10 +253,12 @@ public class Scene {
 			object.submitToRenderer();
 		}
 		
-		if( this.gui != null ) {
-			this.gui.tick(deltaTime);
-			this.gui.submitToRenderer();
-			//this.gui.getBody().submitToRenderer();
+		if( this.ui != null ) {
+			StyleCascade cascade = 
+				new StyleCascade(Application.getApp().getWindow(), this.ui.getActiveTheme());
+			this.ui.tick(deltaTime);
+			this.ui.evaluateElementProperties(cascade);
+			this.ui.submitToRenderer();
 		}
 		
 		Application.getApp().getRenderer().getBackGameState()
@@ -287,91 +290,26 @@ public class Scene {
 		return n + units[index];
 	}
 	
-	private void createGUI() {
-		//this.DEBUGtextAppStatistics = new Text(this.gui, "test-text", "");
-		this.gui = new GUI();
-		this.gui.initialize();
+	private void DEBUGcreateUI() {
+		String source = FileUtils.readTextFile(FileUtils.getResourcePath("ui/test.jeemu"));
+		DebugUtils.log(this, source);
 		
-			// Theme
-		Theme t = new Theme();
-		/*t.setProperty(new Property("epic-prop", "e(rgba(0,0,255,255))", Property.EXPRESSION));
-			Theme subt = new Theme();
-			//subt.setProperty(new Property("sub-prop", "fdffcd", Property.COLOR_HEX));
-			subt.setProperty(new Property("sub-prop", "e(rgba(0,0,255,255))", Property.EXPRESSION));
-			//subt.setProperty(new Property("sub-prop", "e(-1+59*612+4/45*41-1-6)", Property.EXPRESSION));
-		t.setSection("sub-section", subt);*/
-		this.gui.addTheme("epic-theme", t);
-		this.gui.setActiveTheme("epic-theme");
+		Tokenizer tokenizer = new Tokenizer();
+		Tokenizer.Result tokenizerResult = tokenizer.tokenize(source);
 		
-		Properties props;
-		Properties.Style style;
+		if( !tokenizerResult.wasSuccessful ) {
+			Logger.get().error(this, tokenizerResult.errorMessage);
+			return;
+		}
 		
-		/*Div div = new Div(this.gui, "test-div");
-			props = div.getProperties();
-			props.getProperty(Properties.WIDTH).set(1, Property.WPC);
-			props.getProperty(Properties.HEIGHT).set(0.25f, Property.HPC);
-			props.getProperty(Properties.COLS).set(10, Property.NUMBER);
-			props.getProperty(Properties.ROWS).set(10, Property.NUMBER);
-			props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(0, 0, 0, 1/3f), Property.COLOR);
-			props.getProperty(Properties.MIN_WIDTH).set(500, Property.PX);
-			props.getProperty(Properties.MIN_HEIGHT).set(500, Property.PX);
-			
-			Div cdiv = new Div(this.gui, "test-div-child");
-				props = cdiv.getProperties();
-				props.getProperty(Properties.LEFT).set(1, Property.C);
-				props.getProperty(Properties.WIDTH).set(8, Property.C);
-				props.getProperty(Properties.TOP).set(1, Property.R);
-				props.getProperty(Properties.HEIGHT).set(8, Property.R);
-				style = props.addResponsiveStyle(new RQuery(400, Float.MAX_VALUE));
-				style.addProperty(new Property(Properties.WIDTH, 200, Property.PX));
-				
-				
-			this.gui.addChildTo(div, cdiv);*/
-			
-			/*Text text = new Text(this.gui, "test-text", "Hello world!");
-				props = text.getProperties();
-				props.getProperty(Properties.LEFT).set(1, Property.C);
-				props.getProperty(Properties.TOP).set(1, Property.R);
-				props.getProperty(Properties.WIDTH).set(8, Property.C);
-				props.getProperty(Properties.HEIGHT).set(1, Property.R);
-				props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(1, 1, 1, 1), Property.COLOR);
-			this.gui.addChildTo(div, text);*/
-			
-		//this.gui.addChildTo(this.gui.getBody(), div);
+		DocumentParser parser = new DocumentParser();
+		this.ui = new UI();
+		DocumentParser.Result parserResult = parser.parse(this.ui, tokenizerResult.tokens);
 		
-		Image image = new Image(this.gui, "img-crosshair", TestAssets.TEX_GUI_CROSSHAIR);
-			props = image.getProperties();
-			props.getProperty(Properties.LEFT).set(0.5f, Property.WPERCENT);
-			props.getProperty(Properties.TOP).set(0.5f, Property.HPERCENT);
-			props.getProperty(Properties.WIDTH).set(16, Property.PX);
-			props.getProperty(Properties.HEIGHT).set(16, Property.PX);
-			props.getProperty(Properties.ANCHOR_X).set(0.5f, Property.WPERCENT);
-			props.getProperty(Properties.ANCHOR_Y).set(0.5f, Property.HPERCENT);
-			//props.getProperty(Properties.PRIMARY_COLOR).set("sub-section.sub-prop", Property.THEME);
-			//props.getProperty(Properties.PRIMARY_COLOR).set("9fd3c7", Property.COLOR_HEX);
-		this.gui.addChildTo(this.gui.getBody(), image);
-		
-		/*Div div = new Div(this.gui, "test-div");
-			props = div.getProperties();
-			props.getProperty(Properties.LEFT).set(0, Property.PC);
-			props.getProperty(Properties.WIDTH).set(0.5f, Property.C);
-			props.getProperty(Properties.HEIGHT).set(32, Property.PX);
-			props.getProperty(Properties.PRIMARY_COLOR).set(new Vector4f(1, 1, 1, 1), Property.COLOR);
-		this.gui.addChildTo(div, this.gui.getBody());
-		
-		Div div2 = new Div(this.gui, "test-div-2");
-			props = div2.getProperties();
-			props.getProperty(Properties.LEFT).set(0.5f, Property.PC);
-			props.getProperty(Properties.WIDTH).set(0.5f, Property.PC);
-			props.getProperty(Properties.HEIGHT).set(32, Property.PX);
-		this.gui.addChildTo(div2, this.gui.getBody());*/
-			
-		//this.gui.addElement(this.DEBUGtextAppStatistics);
-		
-		//this.DEBUGcrosshair = new Image(this.gui, "test-image", TestAssets.TEX_GUI_CROSSHAIR);
-		//this.DEBUGcrosshair.getTransform().setPosition(400, 300, 0);
-		//this.DEBUGcrosshair.setAnchor(8, 8);
-		//this.gui.addElement(this.DEBUGcrosshair);
+		if( !parserResult.wasSuccessful ) {
+			Logger.get().error(this, parserResult.errorMessage);
+			return;
+		}
 	}
 	
 	public void addObject(ASceneObject sceneObject) {
@@ -395,8 +333,8 @@ public class Scene {
 		return this.app;
 	}
 	
-	public GUI getGUI() {
-		return this.gui;
+	public UI getUI() {
+		return this.ui;
 	}
 	
 	public Vector3f getShadowLightPosition() {

@@ -15,8 +15,8 @@ import project.core.asset.IGraphics;
 import project.core.asset.IGraphicsAsset;
 import project.core.renderer.IRenderer;
 import project.opengl.cshadow.CascadeShadowRenderPass;
-import project.opengl.gui.GUIRenderPass;
 import project.opengl.scene.SceneRenderPass;
+import project.opengl.ui.UIRenderPass;
 import project.opengl.vao.VAO;
 import project.scene.Camera;
 import project.shared.logger.Logger;
@@ -29,7 +29,7 @@ public class RendererGL implements IRenderer {
 	private GameState backGameState;
 	private CascadeShadowRenderPass cascadeRenderPass;
 	private SceneRenderPass sceneRenderPass;
-	private GUIRenderPass guiRenderPass;
+	private UIRenderPass uiRenderPass;
 	
 	private IGraphics defaultMeshGraphics;
 	private IGraphics defaultTextureGraphics;
@@ -40,7 +40,7 @@ public class RendererGL implements IRenderer {
 		this.clientWindow = clientWindow;
 		this.cascadeRenderPass = new CascadeShadowRenderPass();
 		this.sceneRenderPass = new SceneRenderPass();
-		this.guiRenderPass = new GUIRenderPass();
+		this.uiRenderPass = new UIRenderPass();
 		
 		this.defaultMeshGraphics = null;
 		this.defaultTextureGraphics = null;
@@ -55,7 +55,7 @@ public class RendererGL implements IRenderer {
 		this.generateDefaults();
 		this.cascadeRenderPass.initialize();
 		this.sceneRenderPass.initialize();
-		this.guiRenderPass.initialize();
+		this.uiRenderPass.initialize();
 		
 		return true;
 	}
@@ -114,10 +114,10 @@ public class RendererGL implements IRenderer {
 			this.sceneRenderPass.setCascadeShadowRenderPass(this.cascadeRenderPass);
 			this.sceneRenderPass.render(this, gameState);
 			
-				// GUI render pass
-			GL46.glDisable(GL46.GL_CULL_FACE); // Ignores which direction GUI elements are facing
-		  	GL46.glDisable(GL46.GL_DEPTH_TEST); // Prevents close faces from overlapping with GUI
-		  	this.guiRenderPass.render(this, gameState);
+				// UI render pass
+			GL46.glDisable(GL46.GL_CULL_FACE); // Ignores which direction UI elements are facing
+		  	GL46.glDisable(GL46.GL_DEPTH_TEST); // Prevents close faces from overlapping with UI
+		  	this.uiRenderPass.render(this, gameState);
 		}
 	}
 	

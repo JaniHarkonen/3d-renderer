@@ -3,17 +3,17 @@ package project.opengl.cshadow;
 import org.lwjgl.opengl.GL46;
 
 import project.asset.sceneasset.Mesh;
-import project.core.IRenderable;
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
 import project.opengl.vao.VAO;
+import project.scene.ASceneObject;
 import project.scene.Model;
 
-class RenderModel implements IRenderStrategy<CascadeShadowRenderPass> {
+class RenderModel implements IRenderStrategy<CascadeShadowRenderPass, ASceneObject> {
 
 	@Override
-	public void execute(IRenderer renderer, CascadeShadowRenderPass renderPass, IRenderable renderable) {
-		Model model = (Model) renderable;
+	public void execute(IRenderer renderer, CascadeShadowRenderPass renderPass, ASceneObject object) {
+		Model model = (Model) object;
 		for( int j = 0; j < model.getMeshCount(); j++ ) {
 			Mesh mesh = model.getMesh(j);
 			VAO vao = (VAO) mesh.getGraphics();
