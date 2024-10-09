@@ -1,4 +1,4 @@
-package project.gui;
+package project.ui;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 import project.core.asset.IGraphicsAsset;
-import project.gui.AUIElement;
-import project.gui.GUI;
-import project.gui.Theme;
 import project.scene.ASceneObject;
 import project.scene.Camera;
+import project.ui.AUIElement;
+import project.ui.GUI;
+import project.ui.Theme;
 
 public class GameState {
 	private final Map<Long, ASceneObject> activeScene;

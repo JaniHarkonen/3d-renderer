@@ -12,15 +12,15 @@ import project.core.renderer.IRenderPass;
 import project.core.renderer.IRenderer;
 import project.core.renderer.NullRenderStrategy;
 import project.core.renderer.RenderStrategyManager;
-import project.gui.AUIElement;
-import project.gui.Div;
-import project.gui.Image;
-import project.gui.Text;
 import project.opengl.shader.Shader;
 import project.opengl.shader.ShaderProgram;
 import project.opengl.shader.uniform.UAMatrix4f;
 import project.opengl.shader.uniform.UInteger1;
 import project.opengl.shader.uniform.UVector4f;
+import project.ui.AUIElement;
+import project.ui.Div;
+import project.ui.Image;
+import project.ui.Text;
 
 public class GUIRenderPass implements IRenderPass {
 		// Shared context

@@ -1,4 +1,4 @@
-package project.gui;
+package project.ui;
 
 import project.Application;
 import project.Window;

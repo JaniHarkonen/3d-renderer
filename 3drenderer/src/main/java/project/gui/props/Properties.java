@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.joml.Vector4f;
 
-import project.gui.AUIElement;
+import project.ui.AUIElement;
 
 public class Properties {
 	public static class Statistics {

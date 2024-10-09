@@ -1,4 +1,4 @@
-package project.gui;
+package project.ui;
 
 public class Div extends AUIElement {
 

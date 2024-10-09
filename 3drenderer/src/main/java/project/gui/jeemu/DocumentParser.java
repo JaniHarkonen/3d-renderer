@@ -4,16 +4,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import project.gui.AUIElement;
-import project.gui.Body;
-import project.gui.Collection;
-import project.gui.Div;
-import project.gui.GUI;
-import project.gui.Image;
-import project.gui.Text;
-import project.gui.Theme;
 import project.gui.props.Property;
 import project.gui.props.PropertyBuilder;
+import project.ui.AUIElement;
+import project.ui.Body;
+import project.ui.Collection;
+import project.ui.Div;
+import project.ui.GUI;
+import project.ui.Image;
+import project.ui.Text;
+import project.ui.Theme;
 
 public class DocumentParser {
 	public class Result {
