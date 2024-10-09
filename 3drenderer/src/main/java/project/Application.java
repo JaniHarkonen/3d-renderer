@@ -3,16 +3,11 @@ package project;
 import project.core.Networker;
 import project.core.asset.AssetManager;
 import project.core.renderer.IRenderer;
-import project.gui.jeemu.DocumentParser;
-import project.gui.jeemu.Token;
-import project.gui.jeemu.Tokenizer;
 import project.opengl.RendererGL;
 import project.scene.Scene;
 import project.shared.ConsoleRecorder;
 import project.shared.logger.Logger;
 import project.testing.TestAssets;
-import project.ui.GUI;
-import project.utils.DebugUtils;
 
 public class Application {
 	

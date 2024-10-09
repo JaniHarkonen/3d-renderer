@@ -1,9 +1,9 @@
 package project.ui;
 
 import project.asset.font.Font;
-import project.gui.props.Properties;
-import project.gui.props.Property;
 import project.testing.TestAssets;
+import project.ui.props.Properties;
+import project.ui.props.Property;
 
 public class Text extends AUIElement {
 	private Font font;

@@ -6,11 +6,11 @@ import org.lwjgl.opengl.GL46;
 
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
-import project.gui.props.Properties;
 import project.opengl.TextureGL;
 import project.opengl.vao.VAO;
 import project.ui.AUIElement;
 import project.ui.Image;
+import project.ui.props.Properties;
 
 public class RenderImage implements IRenderStrategy<GUIRenderPass, AUIElement> {
 

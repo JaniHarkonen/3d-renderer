@@ -9,8 +9,6 @@ import org.lwjgl.glfw.GLFW;
 import project.Application;
 import project.Window;
 import project.controls.Controller;
-import project.gui.jeemu.DocumentParser;
-import project.gui.jeemu.Tokenizer;
 import project.input.Input;
 import project.input.InputSnapshot;
 import project.input.KeyHeld;
@@ -24,6 +22,8 @@ import project.testing.TestPlayer;
 import project.testing.TestPointLight;
 import project.ui.GUI;
 import project.ui.StyleCascade;
+import project.ui.jeemu.DocumentParser;
+import project.ui.jeemu.Tokenizer;
 import project.utils.DebugUtils;
 import project.utils.FileUtils;
 

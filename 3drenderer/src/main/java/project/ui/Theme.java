@@ -3,7 +3,7 @@ package project.ui;
 import java.util.HashMap;
 import java.util.Map;
 
-import project.gui.props.PropertyBuilder;
+import project.ui.props.PropertyBuilder;
 
 public class Theme {
 	private final Map<String, Theme> sections;

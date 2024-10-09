@@ -3,11 +3,11 @@ package project.ui;
 import org.joml.Vector4f;
 
 import project.Window;
-import project.gui.props.IStyleCascade;
-import project.gui.props.Properties;
-import project.gui.props.Property;
-import project.gui.props.parser.ExpressionRunner;
 import project.shared.logger.Logger;
+import project.ui.props.IStyleCascade;
+import project.ui.props.Properties;
+import project.ui.props.Property;
+import project.ui.props.parser.ExpressionRunner;
 
 public class StyleCascade implements IStyleCascade {
 	private static final ExpressionRunner RUNNER;

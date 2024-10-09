@@ -5,8 +5,8 @@ import java.util.List;
 
 import project.core.IRenderable;
 import project.core.ITickable;
-import project.gui.props.IStyleCascade;
-import project.gui.props.Properties;
+import project.ui.props.IStyleCascade;
+import project.ui.props.Properties;
 
 public abstract class AUIElement implements IRenderable, ITickable {
 	public static boolean validateID(String id) {

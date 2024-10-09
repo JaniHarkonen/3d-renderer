@@ -6,8 +6,8 @@ import java.util.Map;
 import project.Application;
 import project.core.IRenderable;
 import project.core.ITickable;
-import project.gui.props.IStyleCascade;
 import project.shared.logger.Logger;
+import project.ui.props.IStyleCascade;
 
 public class GUI implements ITickable, IRenderable {
 	private Body body;

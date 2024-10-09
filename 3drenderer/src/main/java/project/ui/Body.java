@@ -2,8 +2,8 @@ package project.ui;
 
 import project.Application;
 import project.Window;
-import project.gui.props.Properties;
-import project.gui.props.Property;
+import project.ui.props.Properties;
+import project.ui.props.Property;
 
 public class Body extends AUIElement {
 	public static final String BODY_ID = "BODY";

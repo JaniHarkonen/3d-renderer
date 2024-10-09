@@ -6,9 +6,9 @@ import org.lwjgl.opengl.GL46;
 
 import project.core.renderer.IRenderStrategy;
 import project.core.renderer.IRenderer;
-import project.gui.props.Properties;
 import project.opengl.vao.VAO;
 import project.ui.AUIElement;
+import project.ui.props.Properties;
 
 public class RenderDiv implements IRenderStrategy<GUIRenderPass, AUIElement> {
 

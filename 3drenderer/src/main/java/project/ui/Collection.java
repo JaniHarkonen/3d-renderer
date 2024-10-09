@@ -1,6 +1,6 @@
 package project.ui;
 
-import project.gui.props.Properties;
+import project.ui.props.Properties;
 
 public class Collection {
 
