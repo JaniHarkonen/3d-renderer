@@ -14,6 +14,7 @@ import project.ui.props.PercentageBuilder;
 import project.ui.props.Properties;
 import project.ui.props.Property;
 import project.ui.props.PropertyBuilder;
+import project.utils.DebugUtils;
 
 public class Tokenizer {
 	public static final String KEYWORD_BODY = "body";
@@ -178,7 +179,7 @@ public class Tokenizer {
 				continue;
 			}
 			
-			if( this.isLiteral(charAt) ) {
+			if( this.isLiteral(charAt) || charAt == '@' ) {
 				error = this.literal();
 			} else if( this.isDigit(charAt) ) {
 				error = this.numeric();
@@ -217,6 +218,9 @@ public class Tokenizer {
 	}
 	
 	private Result literal() {
+		boolean isRQueryWord = (this.charAtCursor() == '@');
+		this.advance(isRQueryWord ? 1: 0);
+		
 		int start = this.cursor;
 		char charAt;
 		while( this.isLiteral(charAt = this.charAtCursor()) || this.isDigit(charAt) ) {
@@ -227,12 +231,16 @@ public class Tokenizer {
 			// to a custom item
 		TokenType type;
 		String literal = this.jeemuString.substring(start, this.cursor);
-		if( Property.functionExists(literal) ) {
+		
+		if( isRQueryWord ) {
+			if( !isRQuery(literal) ) {
+				return this.tokenizerError("Invalid responsiveness keyword '" + literal + "' encountered.");
+			}
+			type = TokenType.RQUERY_KEYWORD;
+		} else if( Property.functionExists(literal) ) {
 			type = TokenType.FUNCTION;
 		} else if( isKeyword(literal) ){
 			type = TokenType.KEYWORD;
-		} else if( isRQuery(literal) ) {
-			type = TokenType.RQUERY;
 		} else if( Properties.isProperty(literal) ) {
 			type = TokenType.PROPERTY;
 		} else if( literal.equals(RESERVED_ID) ) {
@@ -275,13 +283,13 @@ public class Tokenizer {
 				} else {
 					value = value * factor + digit;
 				}
-			} else if( this.isLetter(numberChar) ) {
+			} else if( this.isLetter(numberChar) || this.isAspectRatio(numberChar) ) {
 					// Handle property type
 				type += Character.toString(numberChar).toLowerCase();
 					
 					// Handle responsiveness query types (e.g. '800x600')
 				if( 
-					type.length() == 0 && 
+					type.length() == 1 && 
 					(this.isResolution(numberChar) || this.isAspectRatio(numberChar))
 				) {
 					if( firstValue != Float.POSITIVE_INFINITY ) {
@@ -316,6 +324,7 @@ public class Tokenizer {
 						// R-queries
 					case Property.RQUERY_ASPECT_RATIO_SEPARATOR:
 					case Property.RQUERY_DIMENSION_SEPARATOR:
+						DebugUtils.log(this, firstValue, value);
 						this.token(TokenType.RQUERY, new float[] { firstValue, value });
 						break;
 					
@@ -440,10 +449,12 @@ public class Tokenizer {
 				if( charAt == '*' ) {
 					asteriskCount++;
 				}
+				this.advance();
 			}
 			if( asteriskCount <= 1 ) {
 				return this.tokenizerError("Unexpected end of comment encountered.");
 			}
+			this.advance();
 		}
 		
 		return null;
@@ -529,10 +540,14 @@ public class Tokenizer {
 		this.backtrack(1);
 	}
 	
-	private int advance() {
-		this.cursor++;
-		this.positionInLine++;
+	private int advance(int count) {
+		this.cursor += count;
+		this.positionInLine += count;
 		return this.cursor;
+	}
+	
+	private int advance() {
+		return this.advance(1);
 	}
 	
 	private void newLine() {

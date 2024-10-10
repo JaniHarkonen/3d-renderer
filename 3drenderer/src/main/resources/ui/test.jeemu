@@ -15,6 +15,17 @@ body {
       anchorX: 50%;
       anchorY: 50%;
       secondaryColor: expr(rgba(0,0,0,255));
+
+      @responsive { 
+        @window 400x400 { 
+          width: 64px; 
+          height: 64px; 
+        } 
+        @ratio 1:1 {
+          width: 128px;
+          height: 128px;
+        }
+      }
     }
 
     text {

@@ -33,36 +33,31 @@ public class StyleCascade implements IStyleCascade {
 	
 	
 	@Override
-	public Properties.Statistics evaluateProperties(Properties properties) {
-		float ww = this.window.getWidth();
-		float wh = this.window.getHeight();
-		
+	public Properties.Statistics evaluateProperties(Properties p) {
 		Properties.Statistics stats = new Properties.Statistics();
-		Properties.Style style = properties.getStyle(ww, wh);
+		stats.left = this.lastStats.left + this.evaluateNumeric(this.getProperty(p, Properties.LEFT));
+		stats.top = this.lastStats.top + this.evaluateNumeric(this.getProperty(p, Properties.TOP));
 		
-		stats.left = this.lastStats.left + this.evaluateNumeric(style.getProperty(Properties.LEFT));
-		stats.top = this.lastStats.top + this.evaluateNumeric(style.getProperty(Properties.TOP));
-		
-		stats.minWidth = this.evaluateNumeric(style.getProperty(Properties.MIN_WIDTH));
-		stats.minHeight = this.evaluateNumeric(style.getProperty(Properties.MIN_HEIGHT));
-		stats.maxWidth = this.evaluateNumeric(style.getProperty(Properties.MAX_WIDTH), Float.MAX_VALUE);
-		stats.maxHeight = this.evaluateNumeric(style.getProperty(Properties.MAX_HEIGHT), Float.MAX_VALUE);
+		stats.minWidth = this.evaluateNumeric(this.getProperty(p, Properties.MIN_WIDTH));
+		stats.minHeight = this.evaluateNumeric(this.getProperty(p, Properties.MIN_HEIGHT));
+		stats.maxWidth = this.evaluateNumeric(this.getProperty(p, Properties.MAX_WIDTH), Float.MAX_VALUE);
+		stats.maxHeight = this.evaluateNumeric(this.getProperty(p, Properties.MAX_HEIGHT), Float.MAX_VALUE);
 		
 		stats.width = Math.max(
-			stats.minWidth, Math.min(stats.maxWidth, this.evaluateNumeric(style.getProperty(Properties.WIDTH)))
+			stats.minWidth, Math.min(stats.maxWidth, this.evaluateNumeric(this.getProperty(p, Properties.WIDTH)))
 		);
 		stats.height = Math.max(
-			stats.minHeight, Math.min(stats.maxHeight, this.evaluateNumeric(style.getProperty(Properties.HEIGHT)))
+			stats.minHeight, Math.min(stats.maxHeight, this.evaluateNumeric(this.getProperty(p, Properties.HEIGHT)))
 		);
 		
-		stats.columns = this.evaluateNumeric(style.getProperty(Properties.COLS));
-		stats.rows = this.evaluateNumeric(style.getProperty(Properties.ROWS));
+		stats.columns = this.evaluateNumeric(this.getProperty(p, Properties.COLS));
+		stats.rows = this.evaluateNumeric(this.getProperty(p, Properties.ROWS));
 		stats.primaryColor = this.evaluateColor(
-			style.getProperty(Properties.PRIMARY_COLOR), 
+				this.getProperty(p, Properties.PRIMARY_COLOR), 
 			this.lastStats.primaryColor
 		);
 		stats.secondaryColor = this.evaluateColor(
-			style.getProperty(Properties.SECONDARY_COLOR), 
+			this.getProperty(p, Properties.SECONDARY_COLOR), 
 			Properties.Statistics.DEFAULT_EVALUATION.secondaryColor
 		);
 		
@@ -71,18 +66,18 @@ public class StyleCascade implements IStyleCascade {
 			// percentages are dependent on the dimensions of the element itself (e.g.
 			// percent values in ANCHOR_X correspond to the element rather than the parent)
 		this.lastStats = stats;
-		stats.anchorX = this.evaluateNumeric(style.getProperty(Properties.ANCHOR_X));
-		stats.anchorY = this.evaluateNumeric(style.getProperty(Properties.ANCHOR_Y));
+		stats.anchorX = this.evaluateNumeric(this.getProperty(p, Properties.ANCHOR_X));
+		stats.anchorY = this.evaluateNumeric(this.getProperty(p, Properties.ANCHOR_Y));
 		stats.lineHeight = this.evaluateNumeric(
-			style.getProperty(Properties.LINE_HEIGHT), this.lastStats.lineHeight
+			this.getProperty(p, Properties.LINE_HEIGHT), this.lastStats.lineHeight
 		);
 		stats.baseline = this.evaluateNumeric(
-			style.getProperty(Properties.BASELINE), this.lastStats.baseline
+			this.getProperty(p, Properties.BASELINE), this.lastStats.baseline
 		);
 		
 			// Warn of elements that are invisible due to their dimensions
 		Logger.get().warn(this, (message) -> {
-			String ownerID = properties.getOwner().getID();
+			String ownerID = p.getOwner().getID();
 			
 			if( stats.width != 0 && stats.height != 0 ) {
 				return false;
@@ -100,6 +95,10 @@ public class StyleCascade implements IStyleCascade {
 		});
 		
 		return stats;
+	}
+	
+	private Property getProperty(Properties properties, String propertyName) {
+		return properties.getProperty(propertyName, this.window.getWidth(), this.window.getHeight());
 	}
 	
 	public float evaluateNumeric(Property property) {

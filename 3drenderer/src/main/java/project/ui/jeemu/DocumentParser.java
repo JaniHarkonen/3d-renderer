@@ -8,12 +8,14 @@ import project.ui.AUIElement;
 import project.ui.Body;
 import project.ui.Collection;
 import project.ui.Div;
-import project.ui.UI;
 import project.ui.Image;
 import project.ui.Text;
 import project.ui.Theme;
+import project.ui.UI;
+import project.ui.props.Properties;
 import project.ui.props.Property;
 import project.ui.props.PropertyBuilder;
+import project.ui.props.RQuery;
 
 public class DocumentParser {
 	public class Result {
@@ -135,7 +137,8 @@ public class DocumentParser {
 					}
 					
 					this.advance();
-					if( !this.checkToken(this.next(), TokenType.BLOCK_START) ) {
+					//if( !this.checkToken(this.next(), TokenType.BLOCK_START) ) {
+					if( !this.isBlockStart(this.next()) ) {
 						return this.parserError("Collection body expected.");
 					}
 					
@@ -182,7 +185,8 @@ public class DocumentParser {
 			this.advance(2);
 			
 				// Section
-			if( specifierToken.type == TokenType.BLOCK_START ) {
+			//if( specifierToken.type == TokenType.BLOCK_START ) {
+			if( this.isBlockStart(specifierToken) ) {
 				Theme section = new Theme();
 				Result error = this.theme(section);
 				if( error != null ) {
@@ -214,7 +218,8 @@ public class DocumentParser {
 			
 				// End of theme
 			nextToken = this.next();
-			if( this.checkToken(nextToken, TokenType.BLOCK_END) ) {
+			//if( this.checkToken(nextToken, TokenType.BLOCK_END) ) {
+			if( this.isBlockEnd(nextToken) ) {
 				return null;
 			}
 		}
@@ -273,7 +278,8 @@ public class DocumentParser {
 		
 		this.advance();
 		nextToken = this.next();
-		if( !this.checkToken(nextToken, TokenType.BLOCK_START) ) {
+		//if( !this.checkToken(nextToken, TokenType.BLOCK_START) ) {
+		if( !this.isBlockStart(nextToken) ) {
 			return this.parserError("Body block expected.");
 		}
 		
@@ -296,16 +302,16 @@ public class DocumentParser {
 	}
 	
 	private Result children(Collection collection, AUIElement parent) {
-		Token nextToken = this.next();
-		
-		if( this.checkToken(nextToken, TokenType.BLOCK_END) ) {
+		//if( this.checkToken(nextToken, TokenType.BLOCK_END) ) {
+		if( this.isBlockEnd(this.next()) ) {
 			return null;
 		}
 		
-		while( (nextToken = this.next()) != null ) {
-			if( nextToken.type == TokenType.PROPERTY ) {
+		Token literal;
+		while( (literal = this.next()) != null ) {
+			if( literal.type == TokenType.PROPERTY ) {
 					// Handle property
-				String propertyName = nextToken.value.toString();
+				String propertyName = literal.value.toString();
 				this.advance();
 				if( !this.checkToken(this.next(), TokenType.FIELD_SEPARATOR) ) {
 					return this.parserError("Element body expected.");
@@ -320,17 +326,19 @@ public class DocumentParser {
 				}
 				
 				parent.getProperties().setProperty(propertyName, holder.builder.build(propertyName));
-			} else if( nextToken.type == TokenType.KEYWORD || nextToken.type == TokenType.IDENTIFIER ) {
+			} else if( literal.type == TokenType.KEYWORD || literal.type == TokenType.IDENTIFIER ) {
+					// Handle child elements
 				this.advance();
 				
-				if( !this.checkToken(this.next(), TokenType.BLOCK_START) ) {
+				//if( !this.checkToken(this.next(), TokenType.BLOCK_START) ) {
+				if( !this.isBlockStart(this.next()) ) {
 					return this.parserError("Element body expected.");
 				}
 				
 				this.advance();
 				
 					// Handle text separately due to its special characteristics
-				if( nextToken.value.equals(Tokenizer.KEYWORD_TEXT) ) {
+				if( literal.value.equals(Tokenizer.KEYWORD_TEXT) ) {
 					Text text = new Text(this.targetUI, null);
 					Result error = this.text(text);
 					
@@ -340,8 +348,9 @@ public class DocumentParser {
 					
 					parent.setText(text);
 				} else {
-						// Determine the ID of the child, so that it can be instantiated as IDs are 
-						// final (ID should be the first property)
+						// ID of a child element should be read here as it is required to instantiate the child
+						// (IDs are final and cannot be changed after instantiation). ID should be the first
+						// property
 					AUIElement child;
 					String childID = this.readID();
 					
@@ -353,7 +362,7 @@ public class DocumentParser {
 					}
 					
 						// Determine child's element type
-					String elementType = (String) nextToken.value;
+					String elementType = (String) literal.value;
 					child = this.createElement(elementType, this.targetUI, childID);
 					
 					if( child == null ) {
@@ -370,15 +379,118 @@ public class DocumentParser {
 					
 					collection.addChildTo(parent, child);
 				}
+			} else if( this.checkToken(literal, TokenType.RQUERY_KEYWORD, Tokenizer.RQUERY_RESPONSIVE) ) {
+					// Handle responsiveness queries
+				this.advance();
+				
+				if( !this.isBlockStart(this.next()) ) {
+					return this.parserError("Block start { expected after responsiveness declaration.");
+				}
+				
+				this.advance();
+				
+				Result error = this.responsive(parent);
+				if( error != null ) {
+					return error;
+				}
+			} else {
+				return this.parserError("Unexpected token encountered.");
 			}
 			
 			this.advance();
-			if( this.checkToken(this.next(), TokenType.BLOCK_END) ) {
+			//if( this.checkToken(this.next(), TokenType.BLOCK_END) ) {
+			if( this.isBlockEnd(this.next()) ) {
 				return null;
 			}
 		}
 		
 		return this.parserError("Ran out of tokens while parsing an element.");
+	}
+	
+	private Result responsive(AUIElement parent) {
+		while( this.next() != null ) {
+			Result error = this.responsiveStyle(parent);
+			if( error != null ) {
+				return error;
+			}
+			
+			this.advance();
+			if( this.isBlockEnd(this.next()) ) {
+				return null;
+			}
+		}
+		return this.parserError("Ran out of tokens while parsing a responsive block.");
+	}
+	
+	private Result responsiveStyle(AUIElement parent) {
+		Token categoryToken = this.next();
+		if( !this.checkToken(categoryToken, TokenType.RQUERY_KEYWORD) ) {
+			return this.parserError("Responsiveness category expected.");
+		}
+		
+		this.advance();
+		Token queryToken = this.next();
+		if( !this.checkToken(queryToken, TokenType.RQUERY) ) {
+			return this.parserError("Responsiveness query expected. Got: " + queryToken.type);
+		}
+		
+		RQuery rquery = this.rquery(categoryToken, queryToken);
+		if( rquery == null ) {
+			return this.parserError("Encountered an invalid responsiveness query.");
+		}
+		
+		this.advance();
+		if( !this.isBlockStart(this.next()) ) {
+			return this.parserError("Block start { expected after responsiveness query.");
+		}
+		
+		Properties.Style style = parent.getProperties().addResponsiveStyle(rquery);
+		this.advance();
+		if( this.isBlockEnd(this.next()) ) {
+			return null;
+		}
+		
+		Token propertyToken;
+		while( (propertyToken = this.next()) != null ) {
+			if( !this.checkToken(propertyToken, TokenType.PROPERTY) ) {
+				return this.parserError("Property definition expected inside responsiveness query.");
+			}
+			
+			this.advance();
+			if( !this.checkToken(this.next(), TokenType.FIELD_SEPARATOR) ) {
+				return this.parserError("Properties need to be separated via colons : from their values.");
+			}
+			
+			this.advance();
+			BuilderHolder holder = new BuilderHolder();
+			Result error = this.propertyValue(holder);
+			if( error != null ) {
+				return error;
+			}
+			style.addProperty(holder.builder.build((String) propertyToken.value));
+			
+			this.advance();
+			if( this.isBlockEnd(this.next()) ) {
+				return null;
+			}
+		}
+		
+		return this.parserError("Ran out of tokens while parsing a responsive style.");
+	}
+	
+	private RQuery rquery(Token categoryToken, Token queryToken) {
+		switch( (String) categoryToken.value ) {
+			case Tokenizer.RQUERY_WINDOW: {
+				float[] values = (float[]) queryToken.value;
+				return new RQuery(values[0], values[1]);
+			}
+			case Tokenizer.RQUERY_RATIO: {
+				float[] values = (float[]) queryToken.value;
+				return new RQuery(values[0] / values[1]);
+			}
+		}
+		
+		return null;
 	}
 	
 	private Result text(Text parent) {
@@ -393,7 +505,8 @@ public class DocumentParser {
 		}
 		
 		this.advance();
-		if( !this.checkToken(this.next(), TokenType.BLOCK_END) ) {
+		//if( !this.checkToken(this.next(), TokenType.BLOCK_END) ) {
+		if( !this.isBlockEnd(this.next()) ) {
 			return this.parserError("Text elements can only contain a single text item.");
 		}
 		
@@ -481,6 +594,14 @@ public class DocumentParser {
 	
 	private boolean checkToken(Token token, TokenType type) {
 		return (token != null && token.type == type);
+	}
+	
+	private boolean isBlockStart(Token token) {
+		return this.checkToken(token, TokenType.BLOCK_START);
+	}
+	
+	private boolean isBlockEnd(Token token) {
+		return this.checkToken(token, TokenType.BLOCK_END);
 	}
 	
 	private Result parserError(String errorMessage) {
