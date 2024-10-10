@@ -2,7 +2,6 @@ package project.ui;
 
 import org.joml.Vector4f;
 
-import project.Window;
 import project.shared.logger.Logger;
 import project.ui.props.IStyleCascade;
 import project.ui.props.Properties;
@@ -15,18 +14,21 @@ public class StyleCascade implements IStyleCascade {
 		RUNNER = new ExpressionRunner();
 	}
 	
-	private final Window window;
 	private final Theme activeTheme;
+	private final float windowWidth;
+	private final float windowHeight;
 	private Properties.Statistics lastStats;
 	
-	public StyleCascade(Window window, Theme activeTheme) {
-		this.window = window;
+	public StyleCascade(float windowWidth, float windowHeight, Theme activeTheme) {
+		this.windowWidth = windowWidth;
+		this.windowHeight = windowHeight;
 		this.activeTheme = activeTheme;
 		this.lastStats = new Properties.Statistics();
 	}
 	
 	StyleCascade(StyleCascade src) {
-		this.window = src.window;
+		this.windowWidth = src.windowWidth;
+		this.windowHeight = src.windowHeight;
 		this.activeTheme = src.activeTheme;
 		this.lastStats = new Properties.Statistics(src.lastStats);
 	}
@@ -40,15 +42,17 @@ public class StyleCascade implements IStyleCascade {
 		
 		stats.minWidth = this.evaluateNumeric(this.getProperty(p, Properties.MIN_WIDTH));
 		stats.minHeight = this.evaluateNumeric(this.getProperty(p, Properties.MIN_HEIGHT));
-		stats.maxWidth = this.evaluateNumeric(this.getProperty(p, Properties.MAX_WIDTH), Float.MAX_VALUE);
-		stats.maxHeight = this.evaluateNumeric(this.getProperty(p, Properties.MAX_HEIGHT), Float.MAX_VALUE);
+		stats.maxWidth = this.evaluateNumeric(
+			this.getProperty(p, Properties.MAX_WIDTH), Float.MAX_VALUE
+		);
+		stats.maxHeight = this.evaluateNumeric(
+			this.getProperty(p, Properties.MAX_HEIGHT), Float.MAX_VALUE
+		);
 		
-		stats.width = Math.max(
-			stats.minWidth, Math.min(stats.maxWidth, this.evaluateNumeric(this.getProperty(p, Properties.WIDTH)))
-		);
-		stats.height = Math.max(
-			stats.minHeight, Math.min(stats.maxHeight, this.evaluateNumeric(this.getProperty(p, Properties.HEIGHT)))
-		);
+		float width = this.evaluateNumeric(this.getProperty(p, Properties.WIDTH));
+		float height = this.evaluateNumeric(this.getProperty(p, Properties.HEIGHT));
+		stats.width = Math.max(stats.minWidth, Math.min(stats.maxWidth, width));
+		stats.height = Math.max(stats.minHeight, Math.min(stats.maxHeight, height));
 		
 		stats.columns = this.evaluateNumeric(this.getProperty(p, Properties.COLS));
 		stats.rows = this.evaluateNumeric(this.getProperty(p, Properties.ROWS));
@@ -98,7 +102,7 @@ public class StyleCascade implements IStyleCascade {
 	}
 	
 	private Property getProperty(Properties properties, String propertyName) {
-		return properties.getProperty(propertyName, this.window.getWidth(), this.window.getHeight());
+		return properties.getProperty(propertyName, this.windowWidth, this.windowHeight);
 	}
 	
 	public float evaluateNumeric(Property property) {

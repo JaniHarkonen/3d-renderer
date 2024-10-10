@@ -5,7 +5,6 @@
 - expr parenthesis checking is currently broken
 - AUIElement's children-field should be private as all changes to children should be done through the UI in order to keep the element table consistent
 - rename primaryColor & secondaryColor to color & background color respectively
-- StyleCascade should not depend on window
 - clarify DocumentParser
 
 ### ASceneObject & AUIElement

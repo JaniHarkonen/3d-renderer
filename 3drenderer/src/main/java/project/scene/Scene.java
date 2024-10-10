@@ -249,8 +249,10 @@ public class Scene {
 				"    H to toggle HUD\n"
 			);
 		
+			float windowWidth = appWindow.getWidth();
+			float windowHeight = appWindow.getHeight();
 			StyleCascade cascade = 
-				new StyleCascade(Application.getApp().getWindow(), this.ui.getActiveTheme());
+				new StyleCascade(windowWidth, windowHeight, this.ui.getActiveTheme());
 			this.ui.tick(deltaTime);
 			this.ui.evaluateElementProperties(cascade);
 			this.ui.submitToRenderer();
