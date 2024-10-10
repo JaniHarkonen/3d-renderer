@@ -19,9 +19,9 @@ public class RenderImage implements IRenderStrategy<UIRenderPass, AUIElement> {
 		Image image = (Image) element;
 		Properties.Statistics stats = element.getStatistics();
 		TextureGL textureGL = (TextureGL) image.getTexture().getGraphics();
-		Vector4f primaryColor = stats.primaryColor;
+		Vector4f color = stats.color;
 		
-		renderPass.uPrimaryColor.update(primaryColor);
+		renderPass.uColor.update(color);
 		renderPass.uHasTexture.update(1);
 		GL46.glActiveTexture(GL46.GL_TEXTURE0);
 		textureGL.bind();

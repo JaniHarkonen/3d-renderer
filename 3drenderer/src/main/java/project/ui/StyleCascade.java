@@ -56,13 +56,13 @@ public class StyleCascade implements IStyleCascade {
 		
 		stats.columns = this.evaluateNumeric(this.getProperty(p, Properties.COLS));
 		stats.rows = this.evaluateNumeric(this.getProperty(p, Properties.ROWS));
-		stats.primaryColor = this.evaluateColor(
-				this.getProperty(p, Properties.PRIMARY_COLOR), 
-			this.lastStats.primaryColor
+		stats.color = this.evaluateColor(
+				this.getProperty(p, Properties.COLOR), 
+			this.lastStats.color
 		);
-		stats.secondaryColor = this.evaluateColor(
-			this.getProperty(p, Properties.SECONDARY_COLOR), 
-			Properties.Statistics.DEFAULT_EVALUATION.secondaryColor
+		stats.backgroundColor = this.evaluateColor(
+			this.getProperty(p, Properties.BACKGROUND_COLOR), 
+			Properties.Statistics.DEFAULT_EVALUATION.backgroundColor
 		);
 		
 			// It is crucial that these properties are evaluated after the dimensions of 
@@ -124,7 +124,7 @@ public class StyleCascade implements IStyleCascade {
 		return (Vector4f) this.evaluate(property, defaultValue);
 	}
 	
-	//@Override
+	@Override
 	public Object evaluate(Property property, Object defaultValue) {
 		if( property == null ) {
 			return defaultValue;

@@ -14,7 +14,6 @@ import project.ui.props.PercentageBuilder;
 import project.ui.props.Properties;
 import project.ui.props.Property;
 import project.ui.props.PropertyBuilder;
-import project.utils.DebugUtils;
 
 public class Tokenizer {
 	public static final String KEYWORD_BODY = "body";
@@ -324,7 +323,6 @@ public class Tokenizer {
 						// R-queries
 					case Property.RQUERY_ASPECT_RATIO_SEPARATOR:
 					case Property.RQUERY_DIMENSION_SEPARATOR:
-						DebugUtils.log(this, firstValue, value);
 						this.token(TokenType.RQUERY, new float[] { firstValue, value });
 						break;
 					

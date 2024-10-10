@@ -102,7 +102,7 @@ For example:
           // Use the 'custom' collection
         custom {
           width: 200px; // Sets the width overriding the pre-defined value
-          primaryColor: #000000;
+          color: #000000;
 
             // Adds a text child into the div
           text {

@@ -23,9 +23,9 @@ public class RenderText implements IRenderStrategy<UIRenderPass, AUIElement> {
 		Text text = (Text) element;
 		Font font = text.getFont();
 		TextureGL textureGL = (TextureGL) font.getTexture().getGraphics();
-		Vector4f primaryColor = stats.primaryColor;
+		Vector4f color = stats.color;
 		
-		renderPass.uPrimaryColor.update(primaryColor);
+		renderPass.uColor.update(color);
 		renderPass.uHasTexture.update(1);
 		GL46.glActiveTexture(GL46.GL_TEXTURE0);
 		textureGL.bind();

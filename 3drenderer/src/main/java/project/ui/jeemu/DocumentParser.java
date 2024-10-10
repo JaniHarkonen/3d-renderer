@@ -137,7 +137,6 @@ public class DocumentParser {
 					}
 					
 					this.advance();
-					//if( !this.checkToken(this.next(), TokenType.BLOCK_START) ) {
 					if( !this.isBlockStart(this.next()) ) {
 						return this.parserError("Collection body expected.");
 					}
@@ -185,7 +184,6 @@ public class DocumentParser {
 			this.advance(2);
 			
 				// Section
-			//if( specifierToken.type == TokenType.BLOCK_START ) {
 			if( this.isBlockStart(specifierToken) ) {
 				Theme section = new Theme();
 				Result error = this.theme(section);
@@ -218,7 +216,6 @@ public class DocumentParser {
 			
 				// End of theme
 			nextToken = this.next();
-			//if( this.checkToken(nextToken, TokenType.BLOCK_END) ) {
 			if( this.isBlockEnd(nextToken) ) {
 				return null;
 			}
@@ -278,7 +275,6 @@ public class DocumentParser {
 		
 		this.advance();
 		nextToken = this.next();
-		//if( !this.checkToken(nextToken, TokenType.BLOCK_START) ) {
 		if( !this.isBlockStart(nextToken) ) {
 			return this.parserError("Body block expected.");
 		}
@@ -302,7 +298,6 @@ public class DocumentParser {
 	}
 	
 	private Result children(Collection collection, AUIElement parent) {
-		//if( this.checkToken(nextToken, TokenType.BLOCK_END) ) {
 		if( this.isBlockEnd(this.next()) ) {
 			return null;
 		}
@@ -330,7 +325,6 @@ public class DocumentParser {
 					// Handle child elements
 				this.advance();
 				
-				//if( !this.checkToken(this.next(), TokenType.BLOCK_START) ) {
 				if( !this.isBlockStart(this.next()) ) {
 					return this.parserError("Element body expected.");
 				}
@@ -398,7 +392,6 @@ public class DocumentParser {
 			}
 			
 			this.advance();
-			//if( this.checkToken(this.next(), TokenType.BLOCK_END) ) {
 			if( this.isBlockEnd(this.next()) ) {
 				return null;
 			}
@@ -505,7 +498,6 @@ public class DocumentParser {
 		}
 		
 		this.advance();
-		//if( !this.checkToken(this.next(), TokenType.BLOCK_END) ) {
 		if( !this.isBlockEnd(this.next()) ) {
 			return this.parserError("Text elements can only contain a single text item.");
 		}

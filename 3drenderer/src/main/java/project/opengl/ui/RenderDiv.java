@@ -15,7 +15,7 @@ public class RenderDiv implements IRenderStrategy<UIRenderPass, AUIElement> {
 	@Override
 	public void execute(IRenderer renderer, UIRenderPass renderPass, AUIElement element) {
 		Properties.Statistics stats = element.getStatistics();
-		Vector4f backgroundColor = stats.secondaryColor;
+		Vector4f backgroundColor = stats.backgroundColor;
 		
 			// Skip rendering if the div's alpha value is too low
 			// NOTICE: The content MAY still be rendered if children's primary colors aren't inherited
@@ -23,7 +23,7 @@ public class RenderDiv implements IRenderStrategy<UIRenderPass, AUIElement> {
 			return;
 		}
 		
-		renderPass.uPrimaryColor.update(backgroundColor);
+		renderPass.uColor.update(backgroundColor);
 		
 		float x = stats.left - stats.anchorX;
 		float y = stats.top - stats.anchorY;
