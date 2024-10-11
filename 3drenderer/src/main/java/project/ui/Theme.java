@@ -6,15 +6,22 @@ import java.util.Map;
 import project.ui.props.PropertyBuilder;
 
 public class Theme {
-	private final Map<String, Theme> sections;
+	public static final Theme NULL_THEME = new Theme("NULL");
 	
 		// Using property builders as names of the properties that the theme properties will be 
 		// applied to are ambiguous
 	private final Map<String, PropertyBuilder> properties;
+	private final Map<String, Theme> sections;
+	private String name;
 	
-	public Theme() {
+	public Theme(String name) {
+		this.name = name;
 		this.sections = new HashMap<>();
 		this.properties = new HashMap<>();
+	}
+	
+	public Theme() {
+		this((String) null);
 	}
 	
 	public Theme(Theme src) {
@@ -58,5 +65,9 @@ public class Theme {
 		}
 		
 		return section.getPropertyBuilder(split, ++index);
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 }

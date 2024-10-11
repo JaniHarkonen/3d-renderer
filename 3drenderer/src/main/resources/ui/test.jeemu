@@ -1,3 +1,11 @@
+casual theme {
+  crosshair: expr(rgba(255, 0, 0, 255));
+}
+
+light theme {
+  crosshair: expr(rgba(255, 255, 255, 255));
+}
+
 body {
   div {
     ID: "hud";
@@ -14,7 +22,8 @@ body {
       height: 4px;
       anchorX: 50%;
       anchorY: 50%;
-      backgroundColor: expr(rgba(0,0,0,255));
+      backgroundColor: t("crosshair");
+      //backgroundColor: expr(rgba(0,0,0,255));
 
       @responsive { 
         @window 400x400 { 

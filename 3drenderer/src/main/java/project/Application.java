@@ -82,7 +82,6 @@ public class Application {
 		}
 		
 		//this.networker.abortSession();
-		//DebugUtils.log(this, "main loop terminated!");
 		Logger.get().info(this, "Main loop terminated!");
 	}
 	

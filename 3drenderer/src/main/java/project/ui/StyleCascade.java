@@ -6,6 +6,7 @@ import project.shared.logger.Logger;
 import project.ui.props.IStyleCascade;
 import project.ui.props.Properties;
 import project.ui.props.Property;
+import project.ui.props.PropertyBuilder;
 import project.ui.props.parser.ExpressionRunner;
 
 public class StyleCascade implements IStyleCascade {
@@ -155,20 +156,24 @@ public class StyleCascade implements IStyleCascade {
 				// Evaluate expression
 			case Property.EXPRESSION: 
 				return this.evaluate(this.parseExpression(property), null);
-				
-			/*case Property.THEME: {
-				String key = (String) property.getValue();
-				Property themeProperty = this.activeTheme.getProperty(key);
+			
+			case Property.THEME: {
+				String key = property.getValue().toString();
+				PropertyBuilder builder = this.activeTheme.getPropertyBuilder(key);
 				
 					// Property not found in theme
-				if( themeProperty == null ) {
-					// handle property not found in theme
+				if( builder == null ) {
+					Logger.get().warn(
+						this, 
+						"Trying to access a non-existing property '" + key 
+						+ "' of active theme '" + this.activeTheme.getName() + "'."
+					);
+				} else {
+					return this.evaluate(builder.build(property.getName()), defaultValue);
 				}
-				
-				return this.evaluate(themeProperty);
-			}*/
+			}
 		}
-		return null;
+		return defaultValue;
 	}
 	
 	@Override

@@ -287,7 +287,7 @@ public class Scene {
 		return n + units[index];
 	}
 	
-	private void DEBUGcreateUI() {
+	private boolean DEBUGcreateUI() {
 		String source = FileUtils.readTextFile(FileUtils.getResourcePath("ui/test.jeemu"));
 		
 		Tokenizer tokenizer = new Tokenizer();
@@ -295,17 +295,21 @@ public class Scene {
 		
 		if( !tokenizerResult.wasSuccessful ) {
 			Logger.get().error(this, tokenizerResult.errorMessage);
-			return;
+			return false;
 		}
 		
 		DocumentParser parser = new DocumentParser();
-		this.ui = new UI();
-		DocumentParser.Result parserResult = parser.parse(this.ui, tokenizerResult.tokens);
+		UI ui = new UI();
+		DocumentParser.Result parserResult = parser.parse(ui, tokenizerResult.tokens);
 		
 		if( !parserResult.wasSuccessful ) {
 			Logger.get().error(this, parserResult.errorMessage);
-			return;
+			return false;
 		}
+		
+		this.ui = ui;
+		this.ui.setActiveTheme("light");
+		return true;
 	}
 	
 	public void addObject(ASceneObject sceneObject) {

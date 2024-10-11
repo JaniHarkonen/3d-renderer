@@ -104,8 +104,8 @@ public class DocumentParser {
 			if( nextToken != null && nextToken.type == TokenType.KEYWORD ) {
 					// Extract theme
 				if( nextToken.value.equals(Tokenizer.KEYWORD_THEME) ) {
-					Theme theme = new Theme();
 					this.advance(2); // Skip also the first {
+					Theme theme = new Theme(identifier);
 					Result error = this.theme(theme);
 					
 					if( error != null ) {
@@ -225,6 +225,7 @@ public class DocumentParser {
 	private Result propertyValue(BuilderHolder holder) {
 		Token next = this.next();
 		if( this.checkToken(next, TokenType.EVALUABLE) ) {
+				// Immediately evaluable value
 			this.advance();
 			if( !this.checkToken(this.next(), TokenType.FIELD_END) ) {
 				return this.parserError("Semicolon ; expected after property value.");
@@ -242,7 +243,28 @@ public class DocumentParser {
 				return error;
 			}
 		} else if( this.checkToken(next, TokenType.FUNCTION, Property.FUNCTION_THEME_ABBR) ) {
-			holder.builder = new PropertyBuilder(next.value, Property.THEME);
+				// Theme property getter function
+			this.advance();
+			if( !this.isExpressionStart(this.next()) ) {
+				return this.parserError("Function arguments expected after 't'. Got: '" + this.next().value + "'.");
+			}
+			
+			this.advance();
+			Token fieldToken = this.next();
+			if( !this.checkToken(fieldToken, TokenType.EVALUABLE) ) {
+				return this.parserError("Theme property field expected.");
+			}
+			holder.builder = new PropertyBuilder(fieldToken.value, Property.THEME);
+			
+			this.advance();
+			if( !this.isExpressionEnd(this.next()) ) {
+				return this.parserError("End of expression expected after theme property field.");
+			}
+			
+			this.advance();
+			if( !this.checkToken(this.next(), TokenType.FIELD_END) ) {
+				return this.parserError("Semicolon ; expected after property value.");
+			}
 		} else {
 			return this.parserError("Property value expected.");
 		}
@@ -594,6 +616,14 @@ public class DocumentParser {
 	
 	private boolean isBlockEnd(Token token) {
 		return this.checkToken(token, TokenType.BLOCK_END);
+	}
+	
+	private boolean isExpressionStart(Token token) {
+		return this.checkToken(token, TokenType.EXPRESSION_START);
+	}
+	
+	private boolean isExpressionEnd(Token token) {
+		return this.checkToken(token, TokenType.EXPRESSION_END);
 	}
 	
 	private Result parserError(String errorMessage) {
