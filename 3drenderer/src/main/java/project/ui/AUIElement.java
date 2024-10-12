@@ -27,8 +27,9 @@ public abstract class AUIElement implements IRenderable, ITickable {
 	
 	protected Properties properties;
 	protected Properties.Statistics statistics; // This will contain property evaluations from last cascade run
-	protected List<AUIElement> children;
 	protected Text text;
+	
+	private List<AUIElement> children;
 	
 	public AUIElement(UI ui, String id) {
 		this.id = id;

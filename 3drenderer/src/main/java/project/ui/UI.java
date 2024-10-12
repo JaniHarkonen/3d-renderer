@@ -47,7 +47,7 @@ public class UI implements ITickable, IRenderable {
 			element.getText().evaluateStatistics(cascade);
 		}
 		
-		for( AUIElement child : element.children ) {
+		for( AUIElement child : element.getChildren() ) {
 			this.evaluateElementProperties(child, inheritedCascade);
 		}
 	}
