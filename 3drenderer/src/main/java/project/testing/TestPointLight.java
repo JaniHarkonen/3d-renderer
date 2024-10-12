@@ -24,7 +24,7 @@ public class TestPointLight extends ASceneObject implements IControllable {
 	
 	@Override
 	public void submitToRenderer() {
-		for( ASceneObject child : this.children ) {
+		for( ASceneObject child : this.getChildren() ) {
 			child.submitToRenderer();
 		}
 	}
@@ -41,7 +41,7 @@ public class TestPointLight extends ASceneObject implements IControllable {
 	@Override
 	public void tick(float deltaTime) {
 		this.controller.tick(deltaTime);
-		for( ASceneObject object : this.children ) {
+		for( ASceneObject object : this.getChildren() ) {
 			Quaternionf rotationQuaternion = this.getTransform().getRotator().getAsQuaternion();
 			Vector3f position = this.getTransform().getPosition();
 			object.getTransform().setPosition(position.x, position.y, position.z);

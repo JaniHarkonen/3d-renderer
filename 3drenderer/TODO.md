@@ -3,7 +3,6 @@
 ### Priority
 - Context currently holds no reference to a Font, implement font lookup by name
 - expr parenthesis checking is currently broken
-- AUIElement's children-field should be private as all changes to children should be done through the UI in order to keep the element table consistent
 - clarify DocumentParser
 
 ### ASceneObject & AUIElement
