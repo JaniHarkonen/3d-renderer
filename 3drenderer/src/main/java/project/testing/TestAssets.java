@@ -83,8 +83,8 @@ public final class TestAssets {
 	}
 	
 	public static void initFonts() {
-		FONT_ARIAL_20 = loadFont("font-arial-20", "fonts/arial/size20/arial20", 230, 89);
-		FONT_ARIAL_16 = loadFont("font-arial-16", "fonts/arial/size16/arial16", 178, 76);
+		FONT_ARIAL_20 = loadFont("font-arial-20", "fonts/arial/size20/arial20", 230, 89, 20);
+		FONT_ARIAL_16 = loadFont("font-arial-16", "fonts/arial/size16/arial16", 178, 76, 16);
 	}
 	
 	public static void initMeshes() {
@@ -440,14 +440,14 @@ public final class TestAssets {
 		return result;
 	}
 	
-	private static Font loadFont(String name, String relativePath, int textureWidth, int textureHeight) {
+	private static Font loadFont(String name, String relativePath, int textureWidth, int textureHeight, float fontSize) {
 		Font result = new Font(
 			name, 
 			"0123456789 !\\\"#$%&'()*+,-./:;<=>?@" + 
 			"ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\\\]^_`" + 
 			"abcdefghijklmnopqrstuvwxyz{|}~", 
 			loadTexture("tex-" + name, relativePath + ".png"), 
-			textureWidth, textureHeight
+			textureWidth, textureHeight, fontSize
 		);
 		
 		FontLoadTask task = new FontLoadTask(

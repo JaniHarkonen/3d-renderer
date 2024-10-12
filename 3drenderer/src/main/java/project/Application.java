@@ -1,5 +1,6 @@
 package project;
 
+import project.asset.font.Fonts;
 import project.core.Networker;
 import project.core.asset.AssetManager;
 import project.core.renderer.IRenderer;
@@ -26,6 +27,7 @@ public class Application {
 	private Networker networker;
 	private Window window;
 	private IRenderer renderer;
+	private Fonts fontTable;
 	private Scene scene;
 	
 	public Application() {
@@ -33,6 +35,7 @@ public class Application {
 		this.networker = null;
 		this.window = null;
 		this.renderer = null;
+		this.fontTable = null;
 		this.scene = null;
 		Logger.configure(
 			//Logger.LOG_TIMESTAMP | 
@@ -67,6 +70,9 @@ public class Application {
 			this.renderer = new RendererGL(window);
 			window.setRenderer(this.renderer);
 		window.initialize();
+		
+			// Fonts
+		this.fontTable = new Fonts();
 		
 			// Scene and assets
 		TestAssets.initialize();
@@ -103,6 +109,10 @@ public class Application {
 	
 	public Networker getNetworker() {
 		return this.networker;
+	}
+	
+	public Fonts getFontTable() {
+		return this.fontTable;
 	}
 	
 	public Scene getScene() {

@@ -414,4 +414,16 @@ public class SceneAssetLoadTask implements ILoadTask {
 			this.expectedAnimations.add(animation);
 		}
 	}
+	
+	@Override
+	public List<IAsset> getTargetAssets() {
+		List<IAsset> targetAssets = new ArrayList<>();
+		for( IAsset asset : this.expectedMeshes ) {
+			targetAssets.add(asset);
+		}
+		for( IAsset asset : this.expectedAnimations ) {
+			targetAssets.add(asset);
+		}
+		return targetAssets;
+	}
 }

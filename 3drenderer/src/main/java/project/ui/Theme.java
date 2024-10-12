@@ -12,7 +12,7 @@ public class Theme {
 		// applied to are ambiguous
 	private final Map<String, PropertyBuilder> properties;
 	private final Map<String, Theme> sections;
-	private String name;
+	private final String name;
 	
 	public Theme(String name) {
 		this.name = name;
@@ -25,6 +25,7 @@ public class Theme {
 	}
 	
 	public Theme(Theme src) {
+		this.name = new String(src.name);
 		this.sections = new HashMap<>(src.sections.size());
 		this.properties = new HashMap<>(src.properties.size());
 		

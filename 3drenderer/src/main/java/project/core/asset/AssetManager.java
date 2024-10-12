@@ -1,7 +1,11 @@
 package project.core.asset;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import project.shared.logger.Logger;
 
 public class AssetManager {
 
@@ -40,14 +44,19 @@ public class AssetManager {
 	/************************* AssetManager-class *************************/
 	
 	private final Queue<TaskResult> taskResults;
+	private final Map<String, IAsset> assetTable;
 	
 	public AssetManager() {
 		this.taskResults = new ConcurrentLinkedQueue<>();
+		this.assetTable = new HashMap<>();
 	}
 	
 	
 	public void scheduleLoadTask(ILoadTask loadTask) {
 		LoadProcess process = new LoadProcess(loadTask);
+		for( IAsset targetAsset : loadTask.getTargetAssets() ) {
+			this.assetTable.put(targetAsset.getName(), targetAsset);			
+		}
 		process.start();
 	}
 	
@@ -68,5 +77,23 @@ public class AssetManager {
 	
 	public void notifyResult(IAsset targetAsset, IAssetData assetData) {
 		this.notifyResult(targetAsset, assetData, null);
+	}
+	
+	public IAsset getAsset(String assetName) {
+		return this.assetTable.get(assetName);
+	}
+	
+	public IAsset getAssetOrDefault(String assetName, IAsset defaultAsset) {
+		IAsset asset = this.getAsset(assetName);
+		return (asset != null) ? asset : defaultAsset;
+	}
+	
+	public void logAssets() {
+		Logger.get().info(this, (batch) -> {
+			for( IAsset asset : this.assetTable.values() ) {
+				batch.addMessage(asset.getName());
+			}
+			return true;
+		});
 	}
 }

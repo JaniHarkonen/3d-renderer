@@ -2,6 +2,8 @@ package project.ui;
 
 import org.joml.Vector4f;
 
+import project.Application;
+import project.asset.font.Font;
 import project.shared.logger.Logger;
 import project.ui.props.IStyleCascade;
 import project.ui.props.Properties;
@@ -58,13 +60,24 @@ public class StyleCascade implements IStyleCascade {
 		stats.columns = this.evaluateNumeric(this.getProperty(p, Properties.COLS));
 		stats.rows = this.evaluateNumeric(this.getProperty(p, Properties.ROWS));
 		stats.color = this.evaluateColor(
-				this.getProperty(p, Properties.COLOR), 
+			this.getProperty(p, Properties.COLOR), 
 			this.lastStats.color
 		);
 		stats.backgroundColor = this.evaluateColor(
 			this.getProperty(p, Properties.BACKGROUND_COLOR), 
 			Properties.Statistics.DEFAULT_EVALUATION.backgroundColor
 		);
+		
+		/*Object fontEvaluation = this.evaluate(this.getProperty(p, Properties.FONT), this.lastStats.font);
+		Font font = null;
+		if( fontEvaluation != null ) {
+			font = Application.getApp().getFontTable().getFont(fontEvaluation.toString(), 16);
+		}
+		
+		if( font == null ) {
+			font = (font != null) ? font : this.lastStats.font;
+		}
+		stats.font = font;*/
 		
 			// It is crucial that these properties are evaluated after the dimensions of 
 			// the element have been evaluated (see "width" and "height" above), as their

@@ -123,8 +123,13 @@ public class Scene {
 		}*/
 		
 			// UI
-		this.DEBUGcreateUI();
-		DebugUtils.log(this, "UI created!");
+		if( this.DEBUGcreateUI() ) {
+			DebugUtils.log(this, "UI created!");
+		} else {
+			DebugUtils.log(this, "UI creation failed!");
+		}
+		
+		//Application.getApp().getAssetManager().logAssets();
 
 			// Camera
 		TestPlayer player = new TestPlayer(this);
@@ -152,12 +157,6 @@ public class Scene {
 		Application.getApp().getAssetManager().processTaskResults(System.nanoTime());
 		appWindow.pollInput();
 		
-		//if( this.DEBUGcrosshair != null ) {
-			//this.DEBUGcrosshair.getTransform().setPosition(
-				//this.app.getWindow().getWidth() / 2, this.app.getWindow().getHeight() / 2, 0
-			//);
-		//}
-		
 		for( ASceneObject object : this.objects ) {
 			object.tick(deltaTime);
 		}
@@ -177,7 +176,6 @@ public class Scene {
 				this.ui = null;
 			}
 		}
-		GLFW.glfwSetWindowTitle(Application.getApp().getWindow().getHandle(), ""+Application.getApp().getWindow().getFPS());
 		
 		if( inputSnapshot.isKeyHeld(GLFW.GLFW_KEY_KP_8) ) {
 			this.DEBUGshadowLightPosition.add(0,1*deltaTime,0);
