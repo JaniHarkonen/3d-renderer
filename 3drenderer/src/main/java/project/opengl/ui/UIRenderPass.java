@@ -28,7 +28,7 @@ public class UIRenderPass implements IRenderPass {
 	ShaderProgram shaderProgram;
 	
 		// Uniforms
-	UVector4f uPrimaryColor;
+	UVector4f uColor;
 	UAMatrix4f uObjectTransform;
 	private UAMatrix4f uProjection;
 	private UInteger1 uDiffuseSampler;
@@ -60,7 +60,7 @@ public class UIRenderPass implements IRenderPass {
 		this.shaderProgram = new ShaderProgram();
 		this.uProjection = new UAMatrix4f(Uniforms.PROJECTION);
 		this.uDiffuseSampler = new UInteger1(Uniforms.DIFFUSE_SAMPLER);
-		this.uPrimaryColor = new UVector4f(Uniforms.PRIMARY_COLOR);
+		this.uColor = new UVector4f(Uniforms.COLOR);
 		this.uObjectTransform = new UAMatrix4f(Uniforms.OBJECT_TRANSFORM);
 		this.uHasTexture = new UInteger1(Uniforms.HAS_TEXTURE);
 		
@@ -68,7 +68,7 @@ public class UIRenderPass implements IRenderPass {
 		.declareUniform(this.uProjection)
 		.declareUniform(this.uDiffuseSampler)
 		.declareUniform(this.uObjectTransform)
-		.declareUniform(this.uPrimaryColor)
+		.declareUniform(this.uColor)
 		.declareUniform(this.uHasTexture);
 		
 		this.shaderProgram.addShader(

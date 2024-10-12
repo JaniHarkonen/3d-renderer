@@ -36,8 +36,6 @@ public class Scene {
 	private int tickRate;
 	private Application app;
 	
-	//private Image DEBUGcrosshair;
-	//private Text DEBUGtextAppStatistics;
 	private TestPointLight DEBUGtestPointLight0;
 	private Vector3f DEBUGshadowLightPosition;
 	private boolean DEBUGareNormalsActive;
@@ -54,8 +52,6 @@ public class Scene {
 		this.setTickRate(tickRate);
 		this.app = app;
 		
-		//this.DEBUGcrosshair = null;
-		//this.DEBUGtextAppStatistics = null;
 		this.DEBUGtestPointLight0 = null;
 		this.DEBUGshadowLightPosition = null;
 		this.DEBUGareNormalsActive = true;
@@ -127,8 +123,13 @@ public class Scene {
 		}*/
 		
 			// UI
-		this.DEBUGcreateUI();
-		DebugUtils.log(this, "UI created!");
+		if( this.DEBUGcreateUI() ) {
+			DebugUtils.log(this, "UI created!");
+		} else {
+			DebugUtils.log(this, "UI creation failed!");
+		}
+		
+		//Application.getApp().getAssetManager().logAssets();
 
 			// Camera
 		TestPlayer player = new TestPlayer(this);
@@ -156,12 +157,6 @@ public class Scene {
 		Application.getApp().getAssetManager().processTaskResults(System.nanoTime());
 		appWindow.pollInput();
 		
-		//if( this.DEBUGcrosshair != null ) {
-			//this.DEBUGcrosshair.getTransform().setPosition(
-				//this.app.getWindow().getWidth() / 2, this.app.getWindow().getHeight() / 2, 0
-			//);
-		//}
-		
 		for( ASceneObject object : this.objects ) {
 			object.tick(deltaTime);
 		}
@@ -171,46 +166,6 @@ public class Scene {
 		Vector3f cameraPosition = this.activeCamera.getTransform().getPosition();
 		Vector3f pl0Position = this.DEBUGtestPointLight0.getTransform().getPosition();
 		Vector3f pl0Color = this.DEBUGtestPointLight0.getPointLight().getColor();
-		
-		if( this.ui != null ) {
-			/*this.DEBUGtextAppStatistics.setContent(
-				"FPS: " + appWindow.getFPS() + " / " + appWindow.getMaxFPS() + "\n" +
-				"TICK: " + this.tickRate + " (d: " + deltaTime + ")\n" +
-				"HEAP: " + this.convertToLargestByte(memoryUsage) + " (" + memoryUsage + " bytes)\n" +
-				"camera\n" + 
-				"   pos: (" + 
-					cameraPosition.x + ", " +
-					cameraPosition.y + ", " +
-					cameraPosition.z +
-				")\n" +
-				"pointLight0: \n" +
-				"    pos: (" + 
-					pl0Position.x + ", " + 
-					pl0Position.y + ", " + 
-					pl0Position.z + 
-				")\n" +
-				"    rgb: (" +
-					pl0Color.x + ", " +
-					pl0Color.y + ", " +
-					pl0Color.z +
-				")\n" +
-				"soldier: \n" +
-				"    model.animator.currentFrameIndex: " + this.DEBUGsoldier.getModel().getAnimator().getCurrentFrameIndex() + "\n" +
-				"    intensity: " + this.DEBUGtestPointLight0.getPointLight().getIntensity() + "\n" +
-				"    normal map: " + (this.DEBUGareNormalsActive ? "ON" : "OFF") + " (N to toggle)\n" +
-				"    roughness map: " + (DEBUGisRoughnessActive ? "ON" : "OFF") + " (R to toggle)\n" +
-				"    shadow map cascades: " + (this.DEBUGcascadeShadowEnabled ? "ON" : "OFF") + " (C to toggle)\n\n" +
-				"Controls: \n" + 
-				"    WASD to move\n" +
-				"    MOUSE to look around\n" +
-				"    ARROW KEYS to move point light\n" +
-				"    +/- to change point light intensity\n" +
-				"    1/2 to change point light red value\n" +
-				"    3/4 to change point light green value\n" +
-				"    5/6 to change point light blue value\n" +
-				"    H to toggle HUD\n"
-			);*/
-		}
 		
 		InputSnapshot inputSnapshot = this.app.getWindow().getInputSnapshot();
 		
@@ -254,8 +209,48 @@ public class Scene {
 		}
 		
 		if( this.ui != null ) {
+			this.ui.getElementByID("hud").getText().setContent(
+				"FPS: " + appWindow.getFPS() + " / " + appWindow.getMaxFPS() + "\n" +
+				"TICK: " + this.tickRate + " (d: " + deltaTime + ")\n" +
+				"HEAP: " + this.convertToLargestByte(memoryUsage) + " (" + memoryUsage + " bytes)\n" +
+				"camera\n" + 
+				"   pos: (" + 
+					cameraPosition.x + ", " +
+					cameraPosition.y + ", " +
+					cameraPosition.z +
+				")\n" +
+				"pointLight0: \n" +
+				"    pos: (" + 
+					pl0Position.x + ", " + 
+					pl0Position.y + ", " + 
+					pl0Position.z + 
+				")\n" +
+				"    rgb: (" +
+					pl0Color.x + ", " +
+					pl0Color.y + ", " +
+					pl0Color.z +
+				")\n" +
+				"soldier: \n" +
+				"    model.animator.currentFrameIndex: " + this.DEBUGsoldier.getModel().getAnimator().getCurrentFrameIndex() + "\n" +
+				"    intensity: " + this.DEBUGtestPointLight0.getPointLight().getIntensity() + "\n" +
+				"    normal map: " + (this.DEBUGareNormalsActive ? "ON" : "OFF") + " (N to toggle)\n" +
+				"    roughness map: " + (DEBUGisRoughnessActive ? "ON" : "OFF") + " (R to toggle)\n" +
+				"    shadow map cascades: " + (this.DEBUGcascadeShadowEnabled ? "ON" : "OFF") + " (C to toggle)\n\n" +
+				"Controls: \n" + 
+				"    WASD to move\n" +
+				"    MOUSE to look around\n" +
+				"    ARROW KEYS to move point light\n" +
+				"    +/- to change point light intensity\n" +
+				"    1/2 to change point light red value\n" +
+				"    3/4 to change point light green value\n" +
+				"    5/6 to change point light blue value\n" +
+				"    H to toggle HUD\n"
+			);
+		
+			float windowWidth = appWindow.getWidth();
+			float windowHeight = appWindow.getHeight();
 			StyleCascade cascade = 
-				new StyleCascade(Application.getApp().getWindow(), this.ui.getActiveTheme());
+				new StyleCascade(windowWidth, windowHeight, this.ui.getActiveTheme());
 			this.ui.tick(deltaTime);
 			this.ui.evaluateElementProperties(cascade);
 			this.ui.submitToRenderer();
@@ -290,26 +285,29 @@ public class Scene {
 		return n + units[index];
 	}
 	
-	private void DEBUGcreateUI() {
+	private boolean DEBUGcreateUI() {
 		String source = FileUtils.readTextFile(FileUtils.getResourcePath("ui/test.jeemu"));
-		DebugUtils.log(this, source);
 		
 		Tokenizer tokenizer = new Tokenizer();
 		Tokenizer.Result tokenizerResult = tokenizer.tokenize(source);
 		
 		if( !tokenizerResult.wasSuccessful ) {
 			Logger.get().error(this, tokenizerResult.errorMessage);
-			return;
+			return false;
 		}
 		
 		DocumentParser parser = new DocumentParser();
-		this.ui = new UI();
-		DocumentParser.Result parserResult = parser.parse(this.ui, tokenizerResult.tokens);
+		UI ui = new UI();
+		DocumentParser.Result parserResult = parser.parse(ui, tokenizerResult.tokens);
 		
 		if( !parserResult.wasSuccessful ) {
 			Logger.get().error(this, parserResult.errorMessage);
-			return;
+			return false;
 		}
+		
+		this.ui = ui;
+		this.ui.setActiveTheme("light");
+		return true;
 	}
 	
 	public void addObject(ASceneObject sceneObject) {

@@ -2,11 +2,14 @@ package project.asset.texture;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 
 import project.Application;
+import project.core.asset.IAsset;
 import project.core.asset.ILoadTask;
 import project.shared.logger.Logger;
 
@@ -51,9 +54,18 @@ public class TextureLoadTask implements ILoadTask {
 			data.height = heightBuffer.get();
 			data.pixels = textureBuffer;
 			
-			Application.getApp().getAssetManager().notifyResult(this.targetTexture, data, Application.getApp().getRenderer());
+			Application.getApp().getAssetManager().notifyResult(
+				this.targetTexture, data, Application.getApp().getRenderer()
+			);
 			
 			return true;
 		}
+	}
+	
+	@Override
+	public List<IAsset> getTargetAssets() {
+		List<IAsset> assets = new ArrayList<>();
+		assets.add(this.targetTexture);
+		return assets;
 	}
 }

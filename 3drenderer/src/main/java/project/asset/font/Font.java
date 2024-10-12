@@ -125,11 +125,14 @@ public class Font implements IAsset {
     /************************* Data-class *************************/
     
     public static class Data implements IAssetData {
+    	float size;
     	Font targetFont;
     	JSONObject charactersJson;
 
 		@Override
 		public void assign(long timestamp) {
+			this.targetFont.size = this.size;
+			
 			for( String characterKey : this.charactersJson.keySet() ) {
 				JSONObject characterJson = this.charactersJson.getJSONObject(characterKey);
 				char character = characterKey.charAt(0);
@@ -164,13 +167,15 @@ public class Font implements IAsset {
     private Texture fontTexture;
     private float textureWidth;
     private float textureHeight;
+    private float size;
     
     public Font(
 		String name,
 		String characterSet,
         Texture fontTexture,
         float textureWidth,
-        float textureHeight
+        float textureHeight,
+        float size
     ) {
     	this.name = name;
     	this.characterSet = characterSet;
@@ -180,6 +185,7 @@ public class Font implements IAsset {
         this.fontTexture = fontTexture;
         this.textureWidth = textureWidth;
         this.textureHeight = textureHeight;
+        this.size = size;
         
         this.calculateLowCharacter();
     }
@@ -266,5 +272,23 @@ public class Font implements IAsset {
     @Override
     public long getLastUpdateTimestamp() {
     	return this.lastUpdateTimestamp;
+    }
+    
+    public float getSize() {
+    	return this.size;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+    	if( o == this ) {
+    		return true;
+    	} else if( !(o instanceof Font) ) {
+    		return false;
+    	}
+    	
+    		// Since each asset should have a unique name, it should be enough to compare asset 
+    		// names
+    	Font font = (Font) o;
+    	return this.name.equals(font.name);
     }
 }

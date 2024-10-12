@@ -19,7 +19,7 @@ public class UI implements ITickable, IRenderable {
 		this.body = null;
 		this.elementTable = new HashMap<>();
 		this.themes = new HashMap<>();
-		this.activeTheme = null;
+		this.activeTheme = Theme.NULL_THEME;
 	}
 	
 	
@@ -47,7 +47,7 @@ public class UI implements ITickable, IRenderable {
 			element.getText().evaluateStatistics(cascade);
 		}
 		
-		for( AUIElement child : element.children ) {
+		for( AUIElement child : element.getChildren() ) {
 			this.evaluateElementProperties(child, inheritedCascade);
 		}
 	}
@@ -163,6 +163,10 @@ public class UI implements ITickable, IRenderable {
 	}
 	
 	public void setActiveTheme(String name) {
+		Theme theme = this.themes.getOrDefault(name, Theme.NULL_THEME);
+		if( theme == Theme.NULL_THEME ) {
+			Logger.get().error(this, "Unable to set theme '" + name + "'. Theme doesn't exist.");
+		}
 		this.activeTheme = this.themes.get(name);
 	}
 	

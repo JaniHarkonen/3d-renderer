@@ -74,7 +74,7 @@ public final class Logger {
 		loggerMessage.timestamp();
 		isLogged = batcher.apply(loggerMessage);
 		
-		if( !isLogged ) {
+		if( !isLogged || loggerMessage.getMessages().size() == 0 ) {
 			return;
 		}
 		

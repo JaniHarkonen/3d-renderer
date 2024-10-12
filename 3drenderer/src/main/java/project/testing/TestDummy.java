@@ -21,7 +21,7 @@ public class TestDummy extends ASceneObject {
 				this.restart();
 			}
 		}).setSpeed(1 / 24.0f);
-		this.children.add(model);
+		this.addChild(model);
 	}
 	
 	public TestDummy(Scene scene) {
@@ -31,7 +31,7 @@ public class TestDummy extends ASceneObject {
 	
 	@Override
 	public void submitToRenderer() {
-		for( ASceneObject child : this.children ) {
+		for( ASceneObject child : this.getChildren() ) {
 			child.submitToRenderer();
 		}
 	}
@@ -50,7 +50,7 @@ public class TestDummy extends ASceneObject {
 	public void tick(float deltaTime) {
 		this.model.getAnimator().update(deltaTime);
 		
-		for( ASceneObject object : this.children ) {
+		for( ASceneObject object : this.getChildren() ) {
 			Vector3f position = getTransform().getPosition();
 			object.getTransform().setPosition(position.x, position.y, position.z);
 			Quaternionf rotationQuaternion = this.getTransform().getRotator().getAsQuaternion();

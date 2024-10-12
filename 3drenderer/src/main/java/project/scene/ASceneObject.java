@@ -13,7 +13,7 @@ public abstract class ASceneObject implements IRenderable, ITickable {
 
 	protected final long id;
 	protected final Scene scene;
-	protected final List<ASceneObject> children;
+	private final List<ASceneObject> children;
 	
 	protected Transform transform;
 	

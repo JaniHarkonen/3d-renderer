@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.joml.Vector4f;
 
+import project.asset.font.Font;
 import project.ui.AUIElement;
 
 public class Properties {
@@ -27,8 +28,9 @@ public class Properties {
 		
 		public float columns;
 		public float rows;
-		public Vector4f primaryColor;
-		public Vector4f secondaryColor;
+		public Vector4f color;
+		public Vector4f backgroundColor;
+		public Font font;
 		public float lineHeight;
 		public float baseline;
 		public float anchorX;
@@ -47,8 +49,9 @@ public class Properties {
 			
 			this.columns = 1;
 			this.rows = 1;
-			this.primaryColor = new Vector4f(0, 0, 0, 1);
-			this.secondaryColor = new Vector4f(1, 1, 1, 0);
+			this.color = new Vector4f(0, 0, 0, 1);
+			this.backgroundColor = new Vector4f(1, 1, 1, 0);
+			this.font = null;
 			this.lineHeight = 22;
 			this.baseline = 16;
 			this.anchorX = 0;
@@ -68,8 +71,9 @@ public class Properties {
 			
 			this.columns = src.columns;
 			this.rows = src.rows;
-			this.primaryColor = new Vector4f(src.primaryColor);
-			this.secondaryColor = new Vector4f(src.secondaryColor);
+			this.color = new Vector4f(src.color);
+			this.backgroundColor = new Vector4f(src.backgroundColor);
+			this.font = src.font;
 			this.lineHeight = src.lineHeight;
 			this.baseline = src.baseline;
 			this.anchorX = src.anchorX;
@@ -99,8 +103,9 @@ public class Properties {
 				this.height == s.height && 
 				this.columns == s.columns && 
 				this.rows == s.rows && 
-				this.primaryColor.equals(s.primaryColor) && 
-				this.secondaryColor.equals(s.secondaryColor) && 
+				this.color.equals(s.color) && 
+				this.backgroundColor.equals(s.backgroundColor) && 
+				//this.font.equals(s.font) && 
 				this.lineHeight == s.lineHeight && 
 				this.baseline == s.baseline && 
 				this.anchorX == s.anchorX && 
@@ -150,8 +155,9 @@ public class Properties {
 	
 	public static final String COLS = "cols";
 	public static final String ROWS = "rows";
-	public static final String PRIMARY_COLOR = "primaryColor";
-	public static final String SECONDARY_COLOR = "secondaryColor";
+	public static final String COLOR = "color";
+	public static final String BACKGROUND_COLOR = "backgroundColor";
+	public static final String FONT = "font";
 	public static final String ANCHOR_X = "anchorX";
 	public static final String ANCHOR_Y = "anchorY";
 	public static final String LINE_HEIGHT = "lineHeight";
@@ -188,8 +194,9 @@ public class Properties {
 		propertySet.add(HEIGHT);
 		propertySet.add(COLS);
 		propertySet.add(ROWS);
-		propertySet.add(PRIMARY_COLOR);
-		propertySet.add(SECONDARY_COLOR);
+		propertySet.add(COLOR);
+		propertySet.add(BACKGROUND_COLOR);
+		propertySet.add(FONT);
 		propertySet.add(ANCHOR_X);
 		propertySet.add(ANCHOR_Y);
 		propertySet.add(LINE_HEIGHT);
